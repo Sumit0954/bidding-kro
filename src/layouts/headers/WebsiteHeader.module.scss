@@ -1,0 +1,26 @@
+.custom-navbar {
+	background-color: var(--primary-color);
+
+	.logo-img {
+		height: 50px;
+	}
+
+	.header-btn {
+		width: 101px;
+		height: 35px;
+		border: 1px solid #ffffff !important;
+		background: none;
+		color: #ffffff !important;
+	}
+	.custom-toggle {
+		color: #ffffff;
+		border: 1px solid #ffffff;
+	}
+	.custom-icon {
+		background: url(../../assets/images/home/toggle-icon.svg);
+	}
+	.header-btn:hover {
+		color: #ffffff !important;
+		background: var(--primary) !important;
+	}
+}
