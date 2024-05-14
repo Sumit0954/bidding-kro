@@ -16,14 +16,12 @@ const WebsiteHeader = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+
               <li className="nav-item">
-                <a className={cn(['nav-link', 'text-light', 'px-3'])} aria-current="page" href="#">Home</a>
+                <a className={cn(['nav-link', 'px-3', styles['custom-navlink']])} href="#">About</a>
               </li>
               <li className="nav-item">
-                <a className={cn(['nav-link', 'text-light', 'px-3'])} href="#">About</a>
-              </li>
-              <li className="nav-item">
-                <a className={cn(['nav-link', 'text-light', 'px-3'])} href="#">Contact</a>
+                <a className={cn(['nav-link', 'px-3', styles['custom-navlink']])} href="#">Contact</a>
               </li>
 
             </ul>

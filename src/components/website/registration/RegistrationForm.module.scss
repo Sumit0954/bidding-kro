@@ -1,0 +1,30 @@
+.form-container {
+	background-color: var(--white);
+	box-shadow: 2px 2px 10px var(--box-shadow), -2px -2px 10px var(--box-shadow);
+	width: 50% !important;
+	margin: 50px auto !important;
+
+	.form-heading {
+		padding: 10px 0;
+		background-color: var(--primary-color);
+		color: var(--secondary-color);
+
+		h3 {
+			text-align: center;
+		}
+	}
+
+	.form-section {
+		padding: 10px;
+
+		.tnc-note {
+			font-size: 13px;
+			color: var(--gray);
+			text-align: center;
+
+			a {
+				text-decoration: none;
+			}
+		}
+	}
+}

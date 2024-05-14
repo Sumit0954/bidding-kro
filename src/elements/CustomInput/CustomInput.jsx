@@ -8,7 +8,7 @@ const CustomInput = ({
   showLabel = "true",
   name = "",
   placeholder = "",
-  inputType = "",
+  inputType = "text",
   customClassName = "",
   rules = {},
   textFieldProps = {},
@@ -47,9 +47,9 @@ const CustomInput = ({
                 placeholder: placeholder,
               }}
             />
-             {error && (
-                <span className="error">{error.message || "Error"} </span>
-              )}
+            {error && (
+              <span className="error">{error.message || "Error"} </span>
+            )}
           </Box>
         )}
       />

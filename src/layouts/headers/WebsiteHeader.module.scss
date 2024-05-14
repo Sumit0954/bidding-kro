@@ -1,26 +1,42 @@
 .custom-navbar {
-	background-color: var(--primary-color);
+	background-color: var(--white);
+	position: fixed;
+	width: 100%;
+	top: 0;
+	box-shadow: 0 0 8px #00000080;
+	z-index: 3;
 
 	.logo-img {
-		height: 50px;
+		height: 60px;
 	}
 
 	.header-btn {
 		width: 101px;
 		height: 35px;
-		border: 1px solid #ffffff !important;
+		border: 1px solid var(--primary-color) !important;
 		background: none;
-		color: #ffffff !important;
+		color: var(--primary-color) !important;
 	}
 	.custom-toggle {
-		color: #ffffff;
-		border: 1px solid #ffffff;
+		color: var(--primary-color);
+		border: 1px solid var(--primary-color);
 	}
 	.custom-icon {
 		background: url(../../assets/images/home/toggle-icon.svg);
 	}
 	.header-btn:hover {
-		color: #ffffff !important;
-		background: var(--primary) !important;
+		color: var(--secondary-color) !important;
+		border: 1px solid var(--secondary-color) !important;
+	}
+	.custom-navlink {
+		color: var(--primary-color);
+	}
+	.custom-navlink:hover {
+		color: var(--secondary-color);
+	}
+}
+@media screen and (max-width: 576px) {
+	.logo-img {
+		height: 40px;
 	}
 }
