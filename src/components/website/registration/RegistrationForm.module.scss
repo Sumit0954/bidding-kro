@@ -26,5 +26,17 @@
 				text-decoration: none;
 			}
 		}
+
+		.login-link{
+			font-size: 13px;
+			color: var(--gray);
+			text-align: center;
+
+			a{
+				color: var(--primary-color);
+				font-weight: 500;
+				font-size: 15px;
+			}
+		}
 	}
 }

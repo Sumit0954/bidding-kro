@@ -1,17 +1,18 @@
-import styles from './LoginBanner.module.scss'
-import LoginBannerImg from '../../../assets/images/home/login-banner.jpg'
-
+import styles from "./LoginBanner.module.scss";
+import LoginBannerImg from "../../../assets/images/home/login-banner.jpg";
 
 const LoginBanner = () => {
   return (
     <>
-      <div className="row">
-        <div className={styles['banner']}>
-          <img src={LoginBannerImg} alt="" className={styles['banner-img']} />
-        </div>
+      <div className={styles["banner"]}>
+        <img
+          src={LoginBannerImg}
+          alt="LoginBanner"
+          className={styles["banner-img"]}
+        />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default LoginBanner
+export default LoginBanner;

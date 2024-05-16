@@ -18,11 +18,14 @@
 	--black: #000000;
 	--gray: #999999;
 	--box-shadow: #dddddd;
+	--link-color: #0D6EFD;
+	--link-hover-color: #0A58CA;
 	--glow-shadow: 2.14px 2.14px 8.64px rgb(0 119 183 / 40%),
 		-2.14px -2.14px 8.64px rgb(0 119 183 / 25%);
+}
 
-	--base-font: 16px;
-	--heading-font: 24px;
+main{
+	margin-top: 70px;
 }
 
 /* utilities */
@@ -50,4 +53,25 @@ em {
 		border: 1px solid var(--white);
 		box-shadow: 2px 2px 2px var(--primary-color);
 	}
+}
+
+.button{
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  font-weight: 500 !important;
+	padding: 0.3rem 2rem !important;
+
+	&.disable{
+		background-color: var(--gray) !important;
+
+		&:hover{
+			background-color: var(--gray) !important;
+			color: var(--white) !important;
+		}
+	}
+
+  &:hover{
+    background-color: var(--secondary-color) !important;
+    color: var(--primary-color) !important;
+  }
 }

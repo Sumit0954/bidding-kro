@@ -1,69 +1,133 @@
-import React from 'react'
-import styles from './LoginForm.module.scss'
-import CustomInput from '../../../elements/CustomInput/CustomInput'
-import { useForm } from 'react-hook-form'
-import cn from 'classnames'
+import React, { useState } from "react";
+import styles from "./LoginForm.module.scss";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
+import { useForm } from "react-hook-form";
+import cn from "classnames";
+import { NavLink } from "react-router-dom";
 
 const LoginForm = () => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
+  const [isPhoneLogin, setIsPhoneLogin] = useState(false);
+
+  const handleLoginMedium = () => {
+    setIsPhoneLogin(!isPhoneLogin);
+  };
+
+  const submitForm = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
       <div className="container">
         <div className="row">
-
-          <div className={styles['form-container']}>
-            <div className={cn('row', styles['form-heading'])}>
+          <div className={styles["form-container"]}>
+            <div className={cn("row", styles["form-heading"])}>
               <h3>Sign In</h3>
             </div>
+            <div className={cn("row", styles["form-section"])}>
+              <form>
+                <div className="row">
+                  <div className="col-lg-12">
+                    {isPhoneLogin ? (
+                      <CustomInput
+                        control={control}
+                        label="Login with Mobile"
+                        name="mobile"
+                        inputType="tel"
+                        placeholder="Login with Mobile"
+                        rules={{
+                          required: "Mobile number is required.",
+                        }}
+                      />
+                    ) : (
+                      <CustomInput
+                        control={control}
+                        label="Login with Email"
+                        name="email"
+                        placeholder="Login with Email"
+                        rules={{
+                          required: "Email is required.",
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
 
-            <div className={cn('row', styles['form-section'])}>
-              <form action="">
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
-                      label='Login with Mobile'
-                      name='login with mobile'
-                      placeholder='Login with Mobile'
+                      label="Password"
+                      name="password"
+                      placeholder="Password"
+                      inputType="password"
                       rules={{
-                        required: 'Login with mobile is required.'
+                        required: "Password is required.",
                       }}
                     />
                   </div>
-
                 </div>
+
+                <div className="row">
+                  <div className="col-lg-6">
+                    <p className={cn('mb-0', styles["frogetpassword-link"])}>
+                      <NavLink to={"/login/forgot-password"}>
+                        Forgot your Password?
+                      </NavLink>
+                    </p>
+                  </div>
+                  <div className="col-lg-6">
+                    <p className={cn('mb-0', styles["switch-link"])}>
+                      <span className="cursor" onClick={handleLoginMedium}>
+                        {isPhoneLogin
+                          ? "Login With Email"
+                          : "Login With Mobile"}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col text-center">
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      onClick={handleSubmit(submitForm)}
+                    >
+                      Login
+                    </button>
+                  </div>
+                </div>
+
+                <div className="row mt-1">
+                  <div className="col-lg-12">
+                    <p className={cn("mb-0", styles["tnc-note"])}>
+                      By continuing, you agree to our{" "}
+                      <NavLink to={"/terms-and-conditions"}>
+                        Terms and Conditions
+                      </NavLink>{" "}
+                      and{" "}
+                      <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
+                    </p>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-lg-12">
-                    <CustomInput
-                      control={control}
-                      label='Password'
-                      name='password'
-                      placeholder='Password'
-                      inputType='password'
-                      rules={{
-                        required: 'Password is required.'
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <p className={styles['frogetpassword-link']} > <a href='/login/forgot-password'>Forgot your Password? </a> </p>
-                  </div>
-                  <div className="col-lg-6">
-                    <p className={styles['email-link']} > <a href='#'>Login with Email </a> </p>
+                    <p className={styles["register-link"]}>
+                      New to Bidding Karo?{" "}
+                      <NavLink to={"/register"}>Register Now</NavLink>
+                    </p>
                   </div>
                 </div>
               </form>
             </div>
           </div>
-
         </div>
-
       </div>
     </>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

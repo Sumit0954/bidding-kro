@@ -7,7 +7,7 @@
 	.form-heading {
 		padding: 10px 0;
 		background-color: var(--primary-color);
-		color: var(--secondary-color);
+		color: var(--white);
 
 		h3 {
 			text-align: center;
@@ -18,20 +18,39 @@
 		padding: 10px;
 
 		.frogetpassword-link {
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.switch-link {
+			float: right;
+			color: var(--link-color);
+
+			&:hover {
+				color: var(--link-hover-color);
+			}
+		}
+
+		.tnc-note {
 			font-size: 13px;
 			color: var(--gray);
+			text-align: center;
 
 			a {
 				text-decoration: none;
 			}
 		}
-		.email-link {
+
+		.register-link {
 			font-size: 13px;
 			color: var(--gray);
-			float: right;
+			text-align: center;
 
 			a {
-				text-decoration: none;
+				color: var(--primary-color);
+				font-weight: 500;
+				font-size: 15px;
 			}
 		}
 	}
