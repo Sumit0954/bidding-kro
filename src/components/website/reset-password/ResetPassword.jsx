@@ -1,0 +1,60 @@
+import React from 'react'
+import styles from './ResetPassword.module.scss'
+import CustomInput from '../../../elements/CustomInput/CustomInput'
+import { useForm } from 'react-hook-form'
+import cn from 'classnames'
+
+const ResetPassword = () => {
+  const { control } = useForm();
+  return (
+    <>
+      <div className="container">
+        <div className="row">
+          <div className={styles['form-container']}>
+            <div className={cn('row', styles['form-heading'])}>
+              <h3>Reset Password</h3>
+            </div>
+
+
+            <div className={cn('row', styles['form-section'])}>
+              <form action="">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <CustomInput
+                      control={control}
+                      label='Enter New Password'
+                      name='enter new password'
+                      placeholder='Enter New Password'
+                      inputType='password'
+                      rules={{
+                        required: 'Enter new password is required.'
+                      }}
+                    />
+                  </div>
+                  <div className="col-lg-12">
+                    <CustomInput
+                      control={control}
+                      label='Re-Enter Password'
+                      name='re-enter password'
+                      placeholder='Re-Enter Password'
+                      inputType='password'
+                      rules={{
+                        required: 'Re-enter password is required.'
+                      }}
+                    />
+                  </div>
+                </div>
+
+
+              </form>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </>
+  )
+}
+
+export default ResetPassword

@@ -7,7 +7,7 @@
 	.form-heading {
 		padding: 10px 0;
 		background-color: var(--primary-color);
-		color: var(--white);
+		color: var(--secondary-color);
 
 		h3 {
 			text-align: center;
@@ -17,10 +17,18 @@
 	.form-section {
 		padding: 10px;
 
-		.tnc-note {
+		.frogetpassword-link {
 			font-size: 13px;
 			color: var(--gray);
-			text-align: center;
+
+			a {
+				text-decoration: none;
+			}
+		}
+		.email-link {
+			font-size: 13px;
+			color: var(--gray);
+			float: right;
 
 			a {
 				text-decoration: none;
