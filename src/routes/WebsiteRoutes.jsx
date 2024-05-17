@@ -6,7 +6,7 @@ import LoginPage from "../pages/website/LoginPage";
 import RegistrationOTP from "../components/website/registration/RegistrationOTP";
 import ForgotPasswordPage from "../pages/website/ForgotPasswordPage";
 import ForgotPasswordOTP from "../components/website/forgot-password/ForgotPasswordOTP";
-import ResetPassword from "../components/website/reset-password/ResetPassword";
+import ResetPasswordPage from "../pages/website/ResetPasswordPage";
 
 const WebsiteRoutes = () => {
   return (
@@ -26,7 +26,7 @@ const WebsiteRoutes = () => {
             path="/login/forgot-password/otp"
             element={<ForgotPasswordOTP />}
           />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Routes>
       </main>
     </>

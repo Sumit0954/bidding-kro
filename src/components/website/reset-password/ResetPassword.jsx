@@ -1,60 +1,71 @@
-import React from 'react'
-import styles from './ResetPassword.module.scss'
-import CustomInput from '../../../elements/CustomInput/CustomInput'
-import { useForm } from 'react-hook-form'
-import cn from 'classnames'
+import React from "react";
+import styles from "./ResetPassword.module.scss";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
+import { useForm } from "react-hook-form";
+import cn from "classnames";
 
 const ResetPassword = () => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
+
+  const submitForm = (data) => {
+    console.log(data)
+  }
+
   return (
     <>
       <div className="container">
         <div className="row">
-          <div className={styles['form-container']}>
-            <div className={cn('row', styles['form-heading'])}>
+          <div className={styles["form-container"]}>
+            <div className={cn("row", styles["form-heading"])}>
               <h3>Reset Password</h3>
             </div>
-
-
-            <div className={cn('row', styles['form-section'])}>
-              <form action="">
+            <div className={cn("row", styles["form-section"])}>
+              <form>
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
-                      label='Enter New Password'
-                      name='enter new password'
-                      placeholder='Enter New Password'
-                      inputType='password'
+                      label="Enter New Password"
+                      name="new-password"
+                      placeholder="Enter New Password"
+                      inputType="password"
                       rules={{
-                        required: 'Enter new password is required.'
+                        required: "Enter new password is required.",
                       }}
                     />
                   </div>
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
-                      label='Re-Enter Password'
-                      name='re-enter password'
-                      placeholder='Re-Enter Password'
-                      inputType='password'
+                      label="Re-Enter Password"
+                      name="confirm-password"
+                      placeholder="Re-Enter Password"
+                      inputType="password"
                       rules={{
-                        required: 'Re-enter password is required.'
+                        required: "Confirm password is required.",
                       }}
                     />
                   </div>
                 </div>
 
-
+                <div className="row my-3">
+                  <div className="col text-center">
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      onClick={handleSubmit(submitForm)}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
-
         </div>
-
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ResetPassword
+export default ResetPassword;
