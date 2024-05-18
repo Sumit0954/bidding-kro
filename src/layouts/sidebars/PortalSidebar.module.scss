@@ -1,0 +1,50 @@
+.sidebar-container {
+  background-color: var(--primary-color);
+  height: 100vh;
+
+  .sidebar-items {
+    list-style: none;
+    padding: 20px 10px;
+
+    .item-link {
+      text-decoration: none;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      color: var(--white);
+
+      .sidebar-item {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      &:hover{
+        color: var(--primary-color);
+
+        .sidebar-item{
+          background-color: var(--white);
+
+          .item-icon{
+            filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
+          }
+        }
+      }
+
+      &.active{
+        color: var(--primary-color);
+      
+        .sidebar-item{
+          background-color: var(--white);
+      
+          .item-icon{
+            filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
+          }
+        }
+      }
+    }
+  }
+}
+
+

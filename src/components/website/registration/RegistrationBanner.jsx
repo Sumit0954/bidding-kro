@@ -1,4 +1,4 @@
-import RegistrationBannnerImg from "../../../assets/images/home/registration-banner.png";
+import RegistrationBannnerImg from "../../../assets/images/website/home/registration-banner.png";
 import styles from "./RegistrationBanner.module.scss";
 
 const RegistrationBanner = () => {

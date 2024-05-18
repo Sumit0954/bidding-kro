@@ -1,5 +1,5 @@
 import styles from "./LoginBanner.module.scss";
-import LoginBannerImg from "../../../assets/images/home/login-banner.jpg";
+import LoginBannerImg from "../../../assets/images/website/home/login-banner.jpg";
 
 const LoginBanner = () => {
   return (

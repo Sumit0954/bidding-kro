@@ -1,0 +1,42 @@
+import React from "react";
+import styles from "./PortalSidebar.module.scss";
+import { NavLink } from "react-router-dom";
+
+const PortalSidebar = () => {
+  return (
+    <>
+      <div className={styles["sidebar-container"]}>
+        <ul className={styles["sidebar-items"]}>
+          {sidebarMenu.map((item, index) => (
+            <NavLink
+              to={item.path}
+              className={({ isActive }) =>
+                isActive ? `${styles["item-link"]} ${styles['active']}` : styles["item-link"]
+              }
+              key={index}
+            >
+              <li className={styles["sidebar-item"]}>
+                <img
+                  className={styles["item-icon"]}
+                  src={item.icon}
+                  alt={item.title}
+                />
+                <span className={styles["item-name"]}>{item.title}</span>
+              </li>
+            </NavLink>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+};
+
+export default PortalSidebar;
+
+const sidebarMenu = [
+  {
+    icon: "/images/portal/layout/icons/dashboard-icon.svg",
+    title: "Dashboard",
+    path: "/portal",
+  },
+];

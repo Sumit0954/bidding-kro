@@ -35,23 +35,23 @@ const WebsiteHeader = () => {
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a
+                <NavLink
                   className={cn(["nav-link", "px-3", styles["custom-navlink"]])}
                   href="#"
                 >
                   About
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a
+                <NavLink
                   className={cn(["nav-link", "px-3", styles["custom-navlink"]])}
                   href="#"
                 >
                   Contact
-                </a>
+                </NavLink>
               </li>
             </ul>
-            <div className={styles['btn-container']}>
+            <div className={styles["btn-container"]}>
               <NavLink
                 to={"/register"}
                 className={cn("btn", "mx-2", styles["header-btn"])}

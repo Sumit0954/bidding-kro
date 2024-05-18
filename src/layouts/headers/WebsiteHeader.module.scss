@@ -11,23 +11,29 @@
 	}
 
 	.custom-toggle {
-		color: var(--primary-color);
-		border: 1px solid var(--primary-color);
+		border: none;
 
 		.custom-icon {
-			background: url(../../assets/images/home/toggle-icon.svg);
+			background: url(../../assets/images/website/home/toggle-icon.svg);
+		}
+
+		&:focus {
+			outline: unset;
+			box-shadow: none;
 		}
 	}
 
 	.custom-navlink {
-		color: var(--primary-color);
+		color: var(--primary-color) !important;
+
 		&:hover {
-			color: var(--secondary-color);
+			color: var(--secondary-color) !important;
 		}
 	}
 
-	.btn-container{
+	.btn-container {
 		display: flex;
+
 		.header-btn {
 			width: 100px;
 			height: 35px;
@@ -37,7 +43,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-	
+
 			&:hover {
 				color: var(--secondary-color) !important;
 				border: 1px solid var(--secondary-color) !important;
@@ -47,12 +53,12 @@
 }
 
 @media screen and (max-width: 575px) {
-	.custom-navbar{
+	.custom-navbar {
 		.logo-img {
 			height: 40px;
 		}
 
-		.btn-container{
+		.btn-container {
 			margin-bottom: 10px;
 		}
 	}
