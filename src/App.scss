@@ -8,9 +8,16 @@
 	padding: 0;
 }
 
+body{
+	overflow: visible !important;
+	padding: 0 !important;
+}
+
 :root {
 	--primary-color: #062d72;
+	--admin-primary-color: #696969;
 	--secondary-color: #05baee;
+	--portal-bg-color: #F7FBFF;
 	--error: red;
 	--success: #00c87d;
 	--required: #ff3801;

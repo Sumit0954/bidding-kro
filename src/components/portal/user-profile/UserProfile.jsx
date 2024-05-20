@@ -1,48 +1,37 @@
-import styles from './UserProfile.module.scss'
-import UserImg from '../../../assets/images/portal/layout/icons/user-profile-img.png'
-import CustomInput from '../../../elements/CustomInput/CustomInput';
+import styles from "./UserProfile.module.scss";
+import UserImg from "../../../assets/images/portal/user-profile/user-profile-img.png";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const UserProfile = () => {
   const { control, handleSubmit } = useForm();
-  const navigate = useNavigate();
 
   const submitForm = (data) => {
-    return (
-      navigate('/register/otp')
-    )
-  }
+    console.log(data);
+  };
+
   return (
     <>
       <div className="container">
         <div className="row">
           <div className={styles["form-container"]}>
-            <div className={cn("row", styles["form-heading"])}>
-              <div className="col-lg-12">
-                <img src={UserImg} alt="" srcset="" className={styles['logo-img']} />
-              </div>
-              <div className={cn("col-lg-12", styles['custom-text'])}>
-                <div className="col text-center">
-                  <button
-                    type="button"
-                    className={cn("btn", "button")}
-                    onClick={handleSubmit(submitForm)}
-                  >
-                    Change Profile Image
-                  </button>
-
-
-                </div>
-                <br />
-                <p>200KB max. JPEG, PNG, JPG format only. Suggested photo width and height: 200*100px.</p>
-              </div>
-            </div>
-
-
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
+                <div className="row">
+                  <div className={cn("col-lg-12", styles["image-section"])}>
+                    <img src={UserImg} alt="" className={styles["logo-img"]} />
+                    <button type="button" className={cn("btn", "button")}>
+                      Change Profile Image
+                    </button>
+                    <p className={styles['img-suggestion']}>
+                      200KB max. JPEG, PNG, JPG format only. Suggested photo
+                      width and height: 200*100px.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
@@ -93,7 +82,6 @@ const UserProfile = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
@@ -120,39 +108,27 @@ const UserProfile = () => {
                     />
                   </div>
                 </div>
-
-
-
-                <div className="row my-3">
-                  <div className="col text-center">
+                <div className={cn("row", "my-3")}>
+                  <div className={styles["btn-section"]}>
                     <button
                       type="submit"
-                      className={cn("btn", "button", styles['custom-update'])}
-                    // onClick={handleSubmit(submitForm)}
+                      className={cn("btn", "button")}
+                      onClick={handleSubmit(submitForm)}
                     >
                       Update
                     </button>
-
-                  </div>
-                  <div className="col text-center">
-                    <button
-                      type="button"
-                      className={cn("btn", "button", styles['custom-btn'])}
-                    >
+                    <NavLink to={'/portal/company-profile'} className={cn("btn", "button")}>
                       Add Company
-                    </button>
-
+                    </NavLink>
                   </div>
                 </div>
-
-
               </form>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;

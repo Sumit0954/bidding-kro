@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import cn from "classnames";
 import styles from "./PortalHeader.module.scss";
 import { NavLink } from "react-router-dom";
 import NotificationIcon from "../../assets/images/portal/layout/icons/notification-icon.svg";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
+import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
+import { Box } from "@mui/material";
 
 const PortalHeader = () => {
+  const [isActive, setIsActive] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setIsActive(!isActive);
+    console.log(event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  };
+
   return (
     <header>
       <nav
@@ -46,9 +58,11 @@ const PortalHeader = () => {
               <NavLink to={""} className={styles["icons"]}>
                 <img src={NotificationIcon} alt="NotificationIcon" />
               </NavLink>
-              <NavLink to={""} className={styles["icons"]}>
+
+              <Box className={cn('cursor')} onClick={handleClick}>
                 <img src={UserIcon} alt="NotificationIcon" />
-              </NavLink>
+              </Box>
+              <AccountSettingMenu open={open} anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
             </div>
           </div>
         </div>

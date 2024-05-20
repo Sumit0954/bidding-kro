@@ -1,18 +1,14 @@
-import React from 'react'
-import styles from './SetNewPassword.module.scss'
-import CustomInput from '../../../elements/CustomInput/CustomInput';
+import React from "react";
+import styles from "./SetNewPassword.module.scss";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { useNavigate, NavLink } from "react-router-dom";
 
 const SetNewPassword = () => {
   const { control, handleSubmit } = useForm();
-  const navigate = useNavigate();
   const submitForm = (data) => {
-    return (
-      navigate('/register/otp')
-    )
-  }
+    console.log(data);
+  };
 
   return (
     <>
@@ -20,7 +16,7 @@ const SetNewPassword = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-heading"])}>
-              <h3 className="mb-0" >Set New Password</h3>
+              <h3 className="mb-0">Set New Password</h3>
             </div>
 
             <div className={cn("row", styles["form-section"])}>
@@ -50,7 +46,6 @@ const SetNewPassword = () => {
                       }}
                     />
                   </div>
-
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
@@ -65,7 +60,6 @@ const SetNewPassword = () => {
                   </div>
                 </div>
 
-
                 <div className="row my-3">
                   <div className="col text-center">
                     <button
@@ -77,15 +71,13 @@ const SetNewPassword = () => {
                     </button>
                   </div>
                 </div>
-
-
               </form>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SetNewPassword
+export default SetNewPassword;

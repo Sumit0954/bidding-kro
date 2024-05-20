@@ -1,50 +1,70 @@
-import React from 'react'
-import styles from './CompanyProfile.module.scss'
-import CustomInput from '../../../elements/CustomInput/CustomInput';
+import React from "react";
+import styles from "./CompanyProfile.module.scss";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { useNavigate, NavLink } from "react-router-dom";
+import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
 
 const CompanyProfile = () => {
-  const { control, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const { control, handleSubmit, register } = useForm();
 
   const submitForm = (data) => {
-    return (
-      navigate('/register/otp')
-    )
-  }
+    console.log(data);
+  };
+
   return (
     <>
       <div className="container">
         <div className="row">
           <div className={styles["form-container"]}>
-            <div className={cn("row", styles["form-heading"])}>
+            {/* <div className={cn("row", styles["form-heading"])}>
               <div className="col-lg-4">
                 <p>Company Logo</p>
-                <div className={styles['company-logo']}></div>
+                <div className={styles["company-logo"]}></div>
               </div>
               <div className="col-lg-4">
                 <div className="col text-center">
-                  <button
-                    type="button"
-                    className={cn("btn", "button")}
-
-                  >
+                  <button type="button" className={cn("btn", "button")}>
                     + Add Logo
                   </button>
-
-
                 </div>
               </div>
               <div className="col-lg-4">
-                <p>200KB max. JPEG, PNG, JPG format only. Suggested photo width and height: 200*100px.</p>
+                <p>
+                  200KB max. JPEG, PNG, JPG format only. Suggested photo width
+                  and height: 200*100px.
+                </p>
               </div>
-            </div>
-
+            </div> */}
 
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
+                <div className="row">
+                  <label>Company Logo</label>
+                  <div className={styles["img-container"]}>
+                    <div className={styles["img-box"]}>
+                      <img
+                        src={DummyLogo}
+                        className={styles["logo-img"]}
+                        alt="company-logo"
+                      />
+                    </div>
+                    <label>
+                      <input
+                        {...register("company_logo")}
+                        type="file"
+                        accept=".jpeg, .jpg, .png"
+                        placeholder="logo"
+                      />
+                      <span>+ ADD Logo</span>
+                    </label>
+                    <p className={styles["img-suggestion"]}>
+                      200KB max. JPEG, PNG, JPG format only. Suggested photo
+                      width and height: 200*100px.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
@@ -93,26 +113,25 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label=" Business  Email"
+                      label="Business Email"
                       name=" business-email"
-                      placeholder=" Business  Email"
+                      placeholder="Business Email"
                       inputType="email"
                       rules={{
-                        required: " Business  Email is required.",
+                        required: " Business Email is required.",
                       }}
                     />
                   </div>
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="Business Mobile "
+                      label="Business Mobile"
                       name="business-mobile"
-                      placeholder="Business Mobile "
+                      placeholder="Business Mobile"
                       inputType="tel"
                       rules={{
                         required: "Business Mobile  is required.",
@@ -124,9 +143,9 @@ const CompanyProfile = () => {
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="GST "
+                      label="GST"
                       name="gst"
-                      placeholder=" GST "
+                      placeholder="GST"
                       inputType="text"
                       rules={{
                         required: " GST is required.",
@@ -136,15 +155,16 @@ const CompanyProfile = () => {
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="No. of Employees "
-                      name="no.-of-employees"
-                      placeholder="No. of Employees "
+                      label="No. of Employees"
+                      name="no-of-employees"
+                      placeholder="No. of Employees"
                       rules={{
                         required: "No. of Employees is required.",
                       }}
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomInput
@@ -175,23 +195,21 @@ const CompanyProfile = () => {
                   <div className="col text-center">
                     <button
                       type="button"
-                      className={cn("btn", "button", styles['custom-btn'])}
-
+                      className={cn("btn", "button", styles["custom-btn"])}
                     >
                       Update Business
                     </button>
-
                   </div>
                 </div>
 
                 {/* company profile address */}
                 <div className="row">
-                  <div className={cn("col-lg-12", styles['custom-address'])}>
+                  <div className={cn("col-lg-12", styles["custom-address"])}>
                     <h4>Addresses(1)</h4>
                     <div className="col text-center">
                       <button
                         type="button"
-                        className={cn("btn", "button", styles['custom-btn'])}
+                        className={cn("btn", "button", styles["custom-btn"])}
                       >
                         + Add Address
                       </button>
@@ -205,7 +223,6 @@ const CompanyProfile = () => {
                       label="Address"
                       name="address"
                       placeholder="Address"
-
                       rules={{
                         required: "Address  is required.",
                       }}
@@ -219,7 +236,6 @@ const CompanyProfile = () => {
                       label="Country"
                       name="country"
                       placeholder="Country"
-
                       rules={{
                         required: "Country  is required.",
                       }}
@@ -231,7 +247,6 @@ const CompanyProfile = () => {
                       label="State"
                       name="state"
                       placeholder="State"
-
                       rules={{
                         required: "State  is required.",
                       }}
@@ -245,7 +260,6 @@ const CompanyProfile = () => {
                       label="City"
                       name="city"
                       placeholder="City"
-
                       rules={{
                         required: "City  is required.",
                       }}
@@ -257,7 +271,6 @@ const CompanyProfile = () => {
                       label="Pincode"
                       name="pincode"
                       placeholder="Pincode"
-
                       rules={{
                         required: "Pincode  is required.",
                       }}
@@ -268,23 +281,21 @@ const CompanyProfile = () => {
                   <div className="col text-center">
                     <button
                       type="button"
-                      className={cn("btn", "button", styles['custom-btn'])}
-
+                      className={cn("btn", "button", styles["custom-btn"])}
                     >
                       Save
                     </button>
-
                   </div>
                 </div>
                 {/* Company Certifications (1) */}
 
                 <div className="row">
-                  <div className={cn("col-lg-12", styles['custom-address'])}>
+                  <div className={cn("col-lg-12", styles["custom-address"])}>
                     <h3> Certifications (1)</h3>
                     <div className="col text-center">
                       <button
                         type="button"
-                        className={cn("btn", "button", styles['custom-btn'])}
+                        className={cn("btn", "button", styles["custom-btn"])}
                       >
                         + Add Certifications
                       </button>
@@ -298,7 +309,6 @@ const CompanyProfile = () => {
                       label="Company Name "
                       name="company-name "
                       placeholder="Company Name "
-
                       rules={{
                         required: "Company Name   is required.",
                       }}
@@ -320,7 +330,6 @@ const CompanyProfile = () => {
                       label="Certification Number "
                       name="certification-number "
                       placeholder="Certification Number "
-
                       rules={{
                         required: "Certification Number is required.",
                       }}
@@ -359,12 +368,10 @@ const CompanyProfile = () => {
                   <div className="col text-center">
                     <button
                       type="button"
-                      className={cn("btn", "button", styles['custom-btn'])}
-
+                      className={cn("btn", "button", styles["custom-btn"])}
                     >
                       Save
                     </button>
-
                   </div>
                 </div>
               </form>
@@ -373,7 +380,7 @@ const CompanyProfile = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default CompanyProfile
+export default CompanyProfile;
