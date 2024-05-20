@@ -1,0 +1,33 @@
+.form-container {
+	width: 80% !important;
+	margin: 0px auto !important;
+
+	.logo-img {
+		margin: auto;
+		display: flex;
+		height: 90px;
+	}
+	.custom-text {
+		padding: 10px;
+	}
+
+	.form-heading {
+		padding: 10px 0;
+		text-align: center;
+		font-size: 14px;
+
+		p {
+			text-align: center;
+		}
+	}
+
+	.form-section {
+		padding: 10px;
+	}
+	.custom-update {
+		margin-left: 128%;
+	}
+	.custom-btn {
+		float: right;
+	}
+}
