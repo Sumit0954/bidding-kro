@@ -1,9 +1,25 @@
-import React from 'react'
+import React from "react";
+import AdminDataTable from "../../../elements/CustomDataTable/AdminDataTable";
+import { companies_column } from "../../../elements/CustomDataTable/TableHeadData";
+import { companiesRowData } from "../../../elements/CustomDataTable/TableRowData";
+import { TableCell } from "@mui/material";
 
 const CompanyList = () => {
-  return (
-    <div>CompanyList</div>
-  )
-}
+  const addAction = (cell) => {
+    return (
+      <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
+    );
+  };
 
-export default CompanyList
+  return (
+    <>
+      <AdminDataTable
+        headCells={companies_column}
+        headCellData={companiesRowData}
+        action={addAction}
+      />
+    </>
+  );
+};
+
+export default CompanyList;
