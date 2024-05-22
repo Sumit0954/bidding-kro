@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import LayoutPage from "../pages/admin/LayoutPage";
 import CompanyListPage from "../pages/admin/CompanyListPage";
+import CompanyDetailPage from "../pages/admin/CompanyDetailPage";
 import AdminHeader from "../layouts/headers/AdminHeader";
 
 const AdminRoutes = () => {
@@ -13,6 +14,10 @@ const AdminRoutes = () => {
           <Route
             path="/companies"
             element={<LayoutPage Component={CompanyListPage} />}
+          />
+          <Route
+            path="/companies/:company_id"
+            element={<LayoutPage Component={CompanyDetailPage} />}
           />
         </Routes>
       </main>

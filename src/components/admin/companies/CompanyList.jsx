@@ -1,6 +1,6 @@
 import React from "react";
 import AdminDataTable from "../../../elements/CustomDataTable/AdminDataTable";
-import { companies_column } from "../../../elements/CustomDataTable/TableHeadData";
+import { companies_column } from "../../../elements/CustomDataTable/AdminColumnData";
 import { companiesRowData } from "../../../elements/CustomDataTable/TableRowData";
 import { TableCell } from "@mui/material";
 

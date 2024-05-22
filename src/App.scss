@@ -8,7 +8,7 @@
 	padding: 0;
 }
 
-body{
+body {
 	overflow: visible !important;
 	padding: 0 !important;
 }
@@ -18,7 +18,10 @@ body{
 	--admin-primary-color: #696969;
 	--secondary-color: #05baee;
 	--portal-bg-color: #F7FBFF;
+	--admin-text-color-1: #555555;
+	--admin-text-color-2: #A19D9D;
 	--error: red;
+	--pending: #FFC107;
 	--success: #00c87d;
 	--required: #ff3801;
 	--white: #ffffff;
@@ -31,7 +34,7 @@ body{
 		-2.14px -2.14px 8.64px rgb(0 119 183 / 25%);
 }
 
-main{
+main {
 	margin-top: 70px;
 }
 
@@ -62,23 +65,70 @@ em {
 	}
 }
 
-.button{
-  background-color: var(--primary-color) !important;
-  color: var(--white) !important;
-  font-weight: 500 !important;
+.button {
+	background-color: var(--primary-color) !important;
+	color: var(--white) !important;
+	font-weight: 500 !important;
 	padding: 0.3rem 2rem !important;
 
-	&.disable{
+	&.disable {
 		background-color: var(--gray) !important;
 
-		&:hover{
+		&:hover {
 			background-color: var(--gray) !important;
 			color: var(--white) !important;
 		}
 	}
 
-  &:hover{
-    background-color: var(--secondary-color) !important;
-    color: var(--primary-color) !important;
-  }
+	&.pending {
+		background-color: var(--pending) !important;
+		color: var(--white) !important;
+
+		
+	}
+
+	&.approve{
+		background-color: var(--success) !important;
+
+		&:hover {
+			background-color: var(--white) !important;
+			color: var(--success) !important;
+			border: 1px solid var(--success);
+		}
+	}
+
+	&.reject{
+		background-color: var(--error) !important;
+
+		&:hover {
+			background-color: var(--white) !important;
+			color: var(--error) !important;
+			border: 1px solid var(--error);
+		}
+	}
+
+	&:hover {
+		background-color: var(--secondary-color) !important;
+		color: var(--primary-color) !important;
+	}
+}
+
+.custom-accordion{
+	position: unset !important;
+	box-shadow: 2px 2px 10px var(--box-shadow), -2px -2px 10px var(--box-shadow) !important;
+	border-radius: 5px !important;
+	margin: 20px auto;
+
+	.custom-accordion-heading{
+		font-weight: bold;
+		letter-spacing: 0.2px;
+		color: var(--admin-text-color-1);
+		font-size: 18px;
+	}
+
+	.custom-divider{
+		margin: 1rem 0 !important;
+		opacity: unset;
+		border-width: 1px !important;
+	}
 }
