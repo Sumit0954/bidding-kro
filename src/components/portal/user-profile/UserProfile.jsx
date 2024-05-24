@@ -4,9 +4,29 @@ import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const UserProfile = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, register, watch, getValues } = useForm();
+  const [profileImage, setProfileImage] = useState(UserImg);
+
+  const profile_image = watch("profile_image");
+  useEffect(() => {
+    // Update previews on file change
+    if (typeof profile_image === "object" && profile_image?.length > 0) {
+      setProfileImage(URL.createObjectURL(profile_image[0]));
+    }
+  }, [profile_image]);
+
+  useEffect(() => {
+    // Update preview image state if input type="file" (image Blob) was set previously
+    const value = getValues("profile_image");
+    if (value) {
+      if (typeof value === "object" && value?.length > 0) {
+        setProfileImage(URL.createObjectURL(value[0]));
+      }
+    }
+  }, [getValues]);
 
   const submitForm = (data) => {
     console.log(data);
@@ -21,11 +41,25 @@ const UserProfile = () => {
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className={cn("col-lg-12", styles["image-section"])}>
-                    <img src={UserImg} alt="" className={styles["logo-img"]} />
-                    <button type="button" className={cn("btn", "button")}>
-                      Change Profile Image
-                    </button>
-                    <p className={styles['img-suggestion']}>
+                    <img
+                      src={profileImage}
+                      alt="profile-img"
+                      className={styles["logo-img"]}
+                    />
+                    <label htmlFor="profile-image">
+                      <input
+                        {...register("profile_image")}
+                        type="file"
+                        accept=".jpeg, .jpg, .png"
+                        id="profile-image"
+                      />
+                      <span
+                        className={cn("btn", "button", styles["upload-btn"])}
+                      >
+                        Change Profile Image
+                      </span>
+                    </label>
+                    <p className={styles["img-suggestion"]}>
                       200KB max. JPEG, PNG, JPG format only. Suggested photo
                       width and height: 200*100px.
                     </p>
@@ -117,7 +151,10 @@ const UserProfile = () => {
                     >
                       Update
                     </button>
-                    <NavLink to={'/portal/company-profile'} className={cn("btn", "button")}>
+                    <NavLink
+                      to={"/portal/company-profile"}
+                      className={cn("btn", "button")}
+                    >
                       Add Company
                     </NavLink>
                   </div>

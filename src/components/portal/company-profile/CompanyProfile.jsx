@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./CompanyProfile.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
@@ -10,10 +10,30 @@ import AddressForm from "../../../elements/MultiForm/AddressForm";
 import CertificateUpload from "../../../elements/MultiUpload/CertificateUpload";
 
 const CompanyProfile = () => {
-  const { control, handleSubmit, register } = useForm();
+  const { control, handleSubmit, register, getValues, watch } = useForm();
+  const [companyLogo, setCompanyLogo] = useState(DummyLogo);
   const [addresses, setAddresses] = useState([
     { street: "", city: "", state: "", pincode: "" },
   ]);
+
+
+  const company_logo = watch('company_logo');
+  useEffect(() => {
+    // Update previews on file change
+    if (typeof company_logo === 'object' && company_logo?.length > 0) {
+      setCompanyLogo(URL.createObjectURL(company_logo[0]));
+    }
+  }, [company_logo]);
+
+  useEffect(() => {
+    // Update preview image state if input type="file" (image Blob) was set previously
+    const value = getValues('company_logo');
+    if (value) {
+      if (typeof value === 'object' && value?.length > 0) {
+        setCompanyLogo(URL.createObjectURL(value[0]));
+      }
+    }
+  }, [getValues]);
 
   const submitForm = (data) => {
     console.log(data);
@@ -31,7 +51,7 @@ const CompanyProfile = () => {
                   <div className={styles["img-container"]}>
                     <div className={styles["img-box"]}>
                       <img
-                        src={DummyLogo}
+                        src={companyLogo}
                         className={styles["logo-img"]}
                         alt="company-logo"
                       />

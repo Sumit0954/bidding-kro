@@ -15,6 +15,33 @@
 				border-radius: 50%;
 			}
 
+			label {
+				position: relative;
+
+				input[type='file'] {
+					visibility: hidden;
+				}
+
+				.upload-btn{
+					position: absolute;
+					left: 15%;
+				}
+
+				// span {
+				// 	position: absolute;
+				// 	top: 0;
+				// 	left: 50%;
+				// 	transform: translate(-50%);
+				// 	background-color: var(--primary-color);
+				// 	padding: 5px 10px;
+				// 	border-radius: 5px;
+				// 	color: var(--white);
+				// 	width: 8rem;
+				// 	text-align: center;
+				// 	cursor: pointer;
+				// }
+			}
+
 			.img-suggestion{
 				font-size: 13px;
 				color: var(--gray);
