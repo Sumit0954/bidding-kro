@@ -119,6 +119,10 @@ em {
 	border-radius: 5px !important;
 	margin: 20px auto;
 
+	&.Mui-expanded{
+		margin-top: 20px !important;
+	}
+
 	.custom-accordion-heading{
 		font-weight: bold;
 		letter-spacing: 0.2px;
@@ -131,4 +135,27 @@ em {
 		opacity: unset;
 		border-width: 1px !important;
 	}
+}
+
+.ck.ck-editor{
+	box-shadow: var(--glow-shadow) !important;
+	border: 1px solid var(--primary-color) !important;
+	border-radius: 5px !important;
+	margin-bottom: 0.1rem !important;
+}
+
+.ck-editor__editable {
+	min-height: 200px !important;
+	max-height: 350px !important;
+}
+
+.ck {
+	&.ck-content {
+		padding-left: 20px !important;
+	}
+}
+
+.ck-content.ck-editor__editable.ck-editor__editable_inline {
+	font-size: 14px;
+	line-height: 1.3;
 }

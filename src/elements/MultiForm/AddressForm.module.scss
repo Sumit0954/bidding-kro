@@ -1,0 +1,16 @@
+.address-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary-color);
+  margin: 30px auto !important;
+  margin-bottom: 0 !important;
+}
+
+.custom-accordion-summary {
+  >div {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+}

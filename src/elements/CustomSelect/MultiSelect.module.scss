@@ -1,0 +1,39 @@
+.input-field-container{
+  .form-control{
+    margin: 10px 0;
+
+    .input-field{
+      width: 100%;
+      box-shadow: var(--glow-shadow);
+      background-color: var(--white);
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      border-style: none;
+      margin-bottom: 0.1rem;
+      
+      
+
+      >div{
+        min-height: 40px;
+        padding: 2px;
+        padding-left: 9px !important;
+        padding-right: 39px !important;
+
+        fieldset {
+          border-color: var(--primary-color);
+        }
+
+        &:hover{
+          fieldset {
+            border-color: unset;
+          }
+        }
+      }
+
+      &:focus-visible{
+        outline: 2px solid var(--primary-color);
+        border: none;
+      }
+    }
+  }
+}

@@ -1,10 +1,8 @@
 import React from "react";
-import breadcrumbStyles from "../../elements/CustomBreadCrumb/CustomBreadCrumb.module.scss";
-import CustomBreadCrumb from "../../elements/CustomBreadCrumb/CustomBreadCrumb";
 import CompanyDetail from "../../components/admin/companies/CompanyDetail";
 import ApprovalRequestCard from "../../components/admin/companies/ApprovalRequestCard";
 import { NavLink } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Breadcrumbs, Typography } from "@mui/material";
 
 const CompanyDetailPage = () => {
   const breadcrumbs = [
@@ -13,7 +11,7 @@ const CompanyDetailPage = () => {
       key="1"
       color="inherit"
       to="/admin/companies"
-      className={breadcrumbStyles["custom-links"]}
+      style={{textDecoration: "none"}}
     >
       Companies
     </NavLink>,
@@ -24,7 +22,9 @@ const CompanyDetailPage = () => {
 
   return (
     <>
-      <CustomBreadCrumb breadcrumbs={breadcrumbs} />
+      <div role="presentation">
+        <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
+      </div>
       <ApprovalRequestCard />
       <CompanyDetail />
     </>

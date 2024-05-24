@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./CompanyProfile.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
+import MultiSelect from "../../../elements/CustomSelect/MultiSelect";
+import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
+import AddressForm from "../../../elements/MultiForm/AddressForm";
+import CertificateUpload from "../../../elements/MultiUpload/CertificateUpload";
 
 const CompanyProfile = () => {
   const { control, handleSubmit, register } = useForm();
+  const [addresses, setAddresses] = useState([
+    { street: "", city: "", state: "", pincode: "" },
+  ]);
 
   const submitForm = (data) => {
     console.log(data);
@@ -17,26 +24,6 @@ const CompanyProfile = () => {
       <div className="container">
         <div className="row">
           <div className={styles["form-container"]}>
-            {/* <div className={cn("row", styles["form-heading"])}>
-              <div className="col-lg-4">
-                <p>Company Logo</p>
-                <div className={styles["company-logo"]}></div>
-              </div>
-              <div className="col-lg-4">
-                <div className="col text-center">
-                  <button type="button" className={cn("btn", "button")}>
-                    + Add Logo
-                  </button>
-                </div>
-              </div>
-              <div className="col-lg-4">
-                <p>
-                  200KB max. JPEG, PNG, JPG format only. Suggested photo width
-                  and height: 200*100px.
-                </p>
-              </div>
-            </div> */}
-
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
@@ -64,7 +51,6 @@ const CompanyProfile = () => {
                     </p>
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
@@ -164,217 +150,47 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-lg-12">
-                    <CustomInput
+                    <MultiSelect
                       control={control}
-                      label="Categories"
                       name="categories"
-                      placeholder="Categories "
-                      inputType="tel"
+                      label="Categories"
+                      className="business-group"
+                      options={[]}
                       rules={{
-                        required: "Categories is required.",
+                        required: "Choose atleast one category.",
                       }}
                     />
                   </div>
                 </div>
-
                 <div className="row">
                   <div className="col-lg-12">
-                    <CustomInput
+                    <CustomCkEditor
                       control={control}
+                      name="company_desc"
                       label="Company Description"
-                      name="company-description"
-                      placeholder="Company Description"
+                      rules={{
+                        required: "Company description is required.",
+                      }}
                     />
                   </div>
                 </div>
-
                 <div className="row my-3">
-                  <div className="col text-center">
+                  <div className="col text-end">
                     <button
-                      type="button"
+                      type="submit"
                       className={cn("btn", "button", styles["custom-btn"])}
                     >
                       Update Business
                     </button>
                   </div>
                 </div>
-
-                {/* company profile address */}
-                <div className="row">
-                  <div className={cn("col-lg-12", styles["custom-address"])}>
-                    <h4>Addresses(1)</h4>
-                    <div className="col text-center">
-                      <button
-                        type="button"
-                        className={cn("btn", "button", styles["custom-btn"])}
-                      >
-                        + Add Address
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CustomInput
-                      control={control}
-                      label="Address"
-                      name="address"
-                      placeholder="Address"
-                      rules={{
-                        required: "Address  is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Country"
-                      name="country"
-                      placeholder="Country"
-                      rules={{
-                        required: "Country  is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="State"
-                      name="state"
-                      placeholder="State"
-                      rules={{
-                        required: "State  is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="City"
-                      name="city"
-                      placeholder="City"
-                      rules={{
-                        required: "City  is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Pincode"
-                      name="pincode"
-                      placeholder="Pincode"
-                      rules={{
-                        required: "Pincode  is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col text-center">
-                    <button
-                      type="button"
-                      className={cn("btn", "button", styles["custom-btn"])}
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-                {/* Company Certifications (1) */}
-
-                <div className="row">
-                  <div className={cn("col-lg-12", styles["custom-address"])}>
-                    <h3> Certifications (1)</h3>
-                    <div className="col text-center">
-                      <button
-                        type="button"
-                        className={cn("btn", "button", styles["custom-btn"])}
-                      >
-                        + Add Certifications
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Company Name "
-                      name="company-name "
-                      placeholder="Company Name "
-                      rules={{
-                        required: "Company Name   is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Certification Type "
-                      name="certification-type "
-                      placeholder="Certification Type "
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Certification Number "
-                      name="certification-number "
-                      placeholder="Certification Number "
-                      rules={{
-                        required: "Certification Number is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Expiry Date"
-                      name="expiry-date"
-                      placeholder="Expiry Date"
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Issuing Authority "
-                      name="issuing-authority "
-                      placeholder="Issuing Authority "
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Renewal Status"
-                      name="renewal-status"
-                      placeholder="Renewal Status"
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col text-center">
-                    <button
-                      type="button"
-                      className={cn("btn", "button", styles["custom-btn"])}
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
               </form>
+
+              <AddressForm addresses={addresses} />
+
+              <CertificateUpload />
             </div>
           </div>
         </div>

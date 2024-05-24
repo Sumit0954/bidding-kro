@@ -37,7 +37,7 @@ const CustomInput = ({
                 handleChange && handleChange(e);
                 return field.onChange(e);
               }}
-              error={error}
+              error={!!error}
               size="small"
               className={styles['input-field']}
               type={inputType}
