@@ -1,0 +1,57 @@
+.form-container {
+	background-color: var(--white);
+	box-shadow: 2px 2px 10px var(--box-shadow), -2px -2px 10px var(--box-shadow);
+	width: 50% !important;
+	margin: 50px auto !important;
+
+	.form-heading {
+		padding: 10px 0;
+		background-color: var(--primary-color);
+		color: var(--white);
+
+		h3 {
+			text-align: center;
+		}
+	}
+
+	.form-section {
+		padding: 10px;
+
+		.frogetpassword-link {
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.switch-link {
+			float: right;
+			color: var(--link-color);
+
+			&:hover {
+				color: var(--link-hover-color);
+			}
+		}
+
+		.tnc-note {
+			font-size: 13px;
+			color: var(--gray);
+			text-align: center;
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.register-link {
+			font-size: 13px;
+			color: var(--gray);
+			text-align: center;
+
+			a {
+				color: var(--primary-color);
+				font-weight: 500;
+				font-size: 15px;
+			}
+		}
+	}
+}

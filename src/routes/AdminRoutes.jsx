@@ -4,6 +4,8 @@ import LayoutPage from "../pages/admin/LayoutPage";
 import CompanyListPage from "../pages/admin/CompanyListPage";
 import CompanyDetailPage from "../pages/admin/CompanyDetailPage";
 import AdminHeader from "../layouts/headers/AdminHeader";
+import LoginPage from "../pages/admin/LoginPage";
+import ForgotPasswordPage from "../pages/admin/ForgotPasswordPage";
 
 const AdminRoutes = () => {
   return (
@@ -11,6 +13,11 @@ const AdminRoutes = () => {
       <AdminHeader />
       <main>
         <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route
+            path="/forgot-password"
+            element={<ForgotPasswordPage />}
+          />
           <Route
             path="/companies"
             element={<LayoutPage Component={CompanyListPage} />}

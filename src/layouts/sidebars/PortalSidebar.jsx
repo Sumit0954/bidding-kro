@@ -39,4 +39,9 @@ const sidebarMenu = [
     title: "Dashboard",
     path: "/portal",
   },
+  {
+    icon: "/images/portal/layout/icons/bid-list-icon.svg",
+    title: "Bids",
+    path: "/portal/bids",
+  },
 ];

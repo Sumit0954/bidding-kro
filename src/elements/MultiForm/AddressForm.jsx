@@ -63,7 +63,7 @@ const AddressForm = ({ addresses }) => {
             <Accordion
               defaultExpanded
               square={true}
-              classes={{ root: "custom-accordion" }}
+              classes={{ root: `custom-accordion ${styles['address-accordion']}` }}
             >
               <AccordionSummary className={styles["custom-accordion-summary"]}>
                 <Typography classes={{ root: "custom-accordion-heading" }}>
