@@ -29,7 +29,7 @@
 
         &:hover{
           fieldset {
-            border-color: unset;
+            border-color: var(--primary-color);
           }
         }
       }

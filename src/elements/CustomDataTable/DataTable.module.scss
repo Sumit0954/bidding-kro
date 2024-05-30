@@ -1,3 +1,7 @@
+.paper-root {
+  box-shadow: unset !important;
+}
+
 .custom-table-pagination {
   p {
     margin-bottom: 0;
@@ -6,4 +10,19 @@
 
 .table-link {
   text-decoration: none;
+}
+
+.bids-data-table {
+  box-shadow: var(--glow-shadow);
+  margin: 20px auto;
+  border-radius: 5px;
+}
+
+.search-input-field {
+  width: 40%;
+
+  input {
+    min-height: 40px;
+    padding: 0 10px !important;
+  }
 }

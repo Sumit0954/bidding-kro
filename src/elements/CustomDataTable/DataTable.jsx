@@ -11,6 +11,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  TextField,
   Toolbar,
   Tooltip,
   Typography,
@@ -18,10 +19,11 @@ import {
 } from "@mui/material";
 
 import { useTable } from "react-table";
-import { Delete, FilterList } from "@mui/icons-material";
-import React, { useMemo, useState } from "react";
+import { Delete } from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
+import { debounce } from "lodash";
 
 function descendingComparator(a, b, orderBy) {
   if (b.values[orderBy] < a.values[orderBy]) {
@@ -112,7 +114,7 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, rowCount } = props;
+  const { numSelected, rowCount, setSearchQuery } = props;
 
   return (
     <Toolbar
@@ -155,13 +157,44 @@ function EnhancedTableToolbar(props) {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterList />
-          </IconButton>
-        </Tooltip>
+        <EnhancedTableSearchBar setSearchQuery={setSearchQuery} />
       )}
     </Toolbar>
+  );
+}
+
+function EnhancedTableSearchBar(props) {
+  const { setSearchQuery } = props;
+
+  // Debounce the search input
+  const debouncedSearch = useMemo(
+    () => debounce((query) => setSearchQuery(query), 300),
+    [setSearchQuery]
+  );
+
+  const handleSearch = (search_keyword) => {
+    const query = search_keyword.toLowerCase();
+    debouncedSearch(query);
+  };
+
+  useEffect(() => {
+    // Cleanup the debounce on unmount
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  return (
+    <TextField
+      InputProps={{
+        placeholder: "Search...",
+        type: "search",
+      }}
+      classes={{ root: styles["search-input-field"] }}
+      onChange={(e) => {
+        handleSearch(e.target.value);
+      }}
+    />
   );
 }
 
@@ -171,12 +204,14 @@ const DataTable = ({
   action = (cell) => (
     <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
   ),
+  customClassName = "",
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const columns = useMemo(() => propsColumn, [propsColumn]);
   const data = useMemo(() => propsData, [propsData]);
@@ -235,23 +270,34 @@ const DataTable = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const visibleRows = useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+  const visibleRows = useMemo(() => {
+    if (searchQuery) {
+      const filtered = rows.filter((row) =>
+        row.allCells.some((cell) =>
+          String(cell.value).toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+
+      return stableSort(filtered, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage, rows]
-  );
+      );
+    } else {
+      return stableSort(rows, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      );
+    }
+  }, [order, orderBy, page, rowsPerPage, rows, searchQuery]);
 
   return (
     <>
-      <Box>
-        
-        <Paper>
+      <Box className={styles[customClassName]}>
+        <Paper className={styles["paper-root"]}>
           <EnhancedTableToolbar
             numSelected={selected.length}
             rowCount={rows.length}
+            setSearchQuery={setSearchQuery}
           />
           <TableContainer>
             <Table
