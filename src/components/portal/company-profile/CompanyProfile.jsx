@@ -4,10 +4,10 @@ import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
-import MultiSelect from "../../../elements/CustomSelect/MultiSelect";
+import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
-import AddressForm from "../../../elements/MultiForm/AddressForm";
-import CertificateUpload from "../../../elements/MultiUpload/CertificateUpload";
+import AddressForm from "./AddressForm";
+import CertificateForm from "./CertificateForm";
 
 const CompanyProfile = () => {
   const { control, handleSubmit, register, getValues, watch } = useForm();
@@ -16,20 +16,19 @@ const CompanyProfile = () => {
     { street: "", city: "", state: "", pincode: "" },
   ]);
 
-
-  const company_logo = watch('company_logo');
+  const company_logo = watch("company_logo");
   useEffect(() => {
     // Update previews on file change
-    if (typeof company_logo === 'object' && company_logo?.length > 0) {
+    if (typeof company_logo === "object" && company_logo?.length > 0) {
       setCompanyLogo(URL.createObjectURL(company_logo[0]));
     }
   }, [company_logo]);
 
   useEffect(() => {
     // Update preview image state if input type="file" (image Blob) was set previously
-    const value = getValues('company_logo');
+    const value = getValues("company_logo");
     if (value) {
-      if (typeof value === 'object' && value?.length > 0) {
+      if (typeof value === "object" && value?.length > 0) {
         setCompanyLogo(URL.createObjectURL(value[0]));
       }
     }
@@ -89,9 +88,6 @@ const CompanyProfile = () => {
                       label="Website Url"
                       name="website-url"
                       placeholder="Website Url"
-                      rules={{
-                        required: "Website url is required.",
-                      }}
                     />
                   </div>
                 </div>
@@ -102,9 +98,6 @@ const CompanyProfile = () => {
                       label="Year of Incorporation "
                       name="year-of-incorporation "
                       placeholder="Year of Incorporation"
-                      rules={{
-                        required: "Year of Incorporation is required.",
-                      }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -113,9 +106,6 @@ const CompanyProfile = () => {
                       label="Organisation Type"
                       name="organisation-type"
                       placeholder="Organisation Type"
-                      rules={{
-                        required: "Organisation Type  is required.",
-                      }}
                     />
                   </div>
                 </div>
@@ -164,15 +154,12 @@ const CompanyProfile = () => {
                       label="No. of Employees"
                       name="no-of-employees"
                       placeholder="No. of Employees"
-                      rules={{
-                        required: "No. of Employees is required.",
-                      }}
                     />
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-lg-12">
-                    <MultiSelect
+                    <CategoriesSelect
                       control={control}
                       name="categories"
                       label="Categories"
@@ -190,9 +177,6 @@ const CompanyProfile = () => {
                       control={control}
                       name="company_desc"
                       label="Company Description"
-                      rules={{
-                        required: "Company description is required.",
-                      }}
                     />
                   </div>
                 </div>
@@ -210,7 +194,7 @@ const CompanyProfile = () => {
 
               <AddressForm addresses={addresses} />
 
-              <CertificateUpload />
+              <CertificateForm />
             </div>
           </div>
         </div>

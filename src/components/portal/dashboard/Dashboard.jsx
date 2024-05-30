@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 function Dashboard() {
   return (
     <>
-      <div className="container">
+      {/* <div className="container">
         <div className="row">
           <div className={styles["dashboard-container"]}>
             <div className="row">
@@ -29,7 +29,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

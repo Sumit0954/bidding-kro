@@ -3,6 +3,8 @@ import styles from "./PortalSidebar.module.scss";
 import { NavLink } from "react-router-dom";
 
 const PortalSidebar = () => {
+  const current_url = window.location.pathname;
+
   return (
     <>
       <div className={styles["sidebar-container"]}>
@@ -10,8 +12,10 @@ const PortalSidebar = () => {
           {sidebarMenu.map((item, index) => (
             <NavLink
               to={item.path}
-              className={({ isActive }) =>
-                isActive ? `${styles["item-link"]} ${styles['active']}` : styles["item-link"]
+              className={
+                current_url === item.path
+                  ? `${styles["item-link"]} ${styles["active"]}`
+                  : styles["item-link"]
               }
               key={index}
             >

@@ -1,5 +1,5 @@
 import React from "react";
-import AdminDataTable from "../../../elements/CustomDataTable/AdminDataTable";
+import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { companies_column } from "../../../elements/CustomDataTable/AdminColumnData";
 import { companiesRowData } from "../../../elements/CustomDataTable/TableRowData";
 import { TableCell } from "@mui/material";
@@ -13,9 +13,9 @@ const CompanyList = () => {
 
   return (
     <>
-      <AdminDataTable
-        headCells={companies_column}
-        headCellData={companiesRowData}
+      <DataTable
+        propsColumn={companies_column}
+        propsData={companiesRowData}
         action={addAction}
       />
     </>

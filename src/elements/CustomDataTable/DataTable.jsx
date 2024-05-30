@@ -20,14 +20,14 @@ import {
 import { useTable } from "react-table";
 import { Delete, FilterList } from "@mui/icons-material";
 import React, { useMemo, useState } from "react";
-import styles from "./AdminDataTable.module.scss";
+import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
+  if (b.values[orderBy] < a.values[orderBy]) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b.values[orderBy] > a.values[orderBy]) {
     return 1;
   }
   return 0;
@@ -165,9 +165,9 @@ function EnhancedTableToolbar(props) {
   );
 }
 
-const AdminDataTable = ({
-  headCells,
-  headCellData,
+const DataTable = ({
+  propsColumn,
+  propsData,
   action = (cell) => (
     <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
   ),
@@ -178,8 +178,8 @@ const AdminDataTable = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const columns = useMemo(() => headCells, [headCells]);
-  const data = useMemo(() => headCellData, [headCellData]);
+  const columns = useMemo(() => propsColumn, [propsColumn]);
+  const data = useMemo(() => propsData, [propsData]);
 
   const { headerGroups, getTableProps, getTableBodyProps, prepareRow, rows } =
     useTable({
@@ -188,7 +188,6 @@ const AdminDataTable = ({
     });
 
   const handleRequestSort = (event, property) => {
-    console.log(orderBy, property, order);
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -248,6 +247,7 @@ const AdminDataTable = ({
   return (
     <>
       <Box>
+        
         <Paper>
           <EnhancedTableToolbar
             numSelected={selected.length}
@@ -328,4 +328,4 @@ const AdminDataTable = ({
   );
 };
 
-export default AdminDataTable;
+export default DataTable;

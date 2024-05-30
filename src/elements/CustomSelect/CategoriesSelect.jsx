@@ -1,9 +1,9 @@
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import React from "react";
 import { Controller } from "react-hook-form";
-import styles from "./MultiSelect.module.scss";
+import styles from "./CategoriesSelect.module.scss";
 
-const MultiSelect = ({
+const CategoriesSelect = ({
   control,
   name,
   label = "",
@@ -106,7 +106,7 @@ const MultiSelect = ({
   );
 };
 
-export default MultiSelect;
+export default CategoriesSelect;
 
 const getUniqueParents = (data) =>
   Array.from(

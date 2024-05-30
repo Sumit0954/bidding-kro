@@ -124,9 +124,6 @@ const UserProfile = () => {
                       name="whatsapp"
                       placeholder="WhatsApp"
                       inputType="tel"
-                      rules={{
-                        required: "Whatsapp is required.",
-                      }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -136,9 +133,6 @@ const UserProfile = () => {
                       name="designation"
                       placeholder="Designation "
                       inputType="text"
-                      rules={{
-                        required: "Designation is required.",
-                      }}
                     />
                   </div>
                 </div>
