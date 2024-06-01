@@ -17,6 +17,12 @@
 	.form-section {
 		padding: 10px;
 
+		.checkbox-field{
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
 		.tnc-note {
 			font-size: 13px;
 			color: var(--gray);

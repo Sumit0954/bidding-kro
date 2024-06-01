@@ -1,8 +1,12 @@
-.input-field-container{
-  .form-control{
+.input-field-container {
+  .form-control {
     margin: 10px 0;
 
-    .input-field{
+    &.remove-mb {
+      margin-bottom: 0 !important;
+    }
+
+    .input-field {
       width: 100%;
       box-shadow: var(--glow-shadow);
       background-color: var(--white);
@@ -11,22 +15,29 @@
       border-style: none;
       margin-bottom: 0.1rem;
 
-      >div{
+      >div {
         fieldset {
           border-color: var(--primary-color);
         }
 
-        &:hover{
+        &:hover {
           fieldset {
             border-color: unset;
           }
         }
       }
 
-      &:focus-visible{
+      &:focus-visible {
         outline: 2px solid var(--primary-color);
         border: none;
       }
+    }
+
+    .password-icon {
+      position: absolute;
+      right: 32%;
+      margin-top: 7px;
+      color: var(--gray);
     }
   }
 }

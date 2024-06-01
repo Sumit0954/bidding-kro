@@ -1,19 +1,58 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./RegistrationForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import { useNavigate, NavLink } from "react-router-dom";
+import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
+import { emailValidator, phoneValidator } from "../../../helpers/patterns";
+import _sendApiRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const RegistrationForm = () => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    formState: { errors },
+    setError,
+  } = useForm();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [registerData, setRegisterData] = useContext(RegisterDataContext);
 
-  const submitForm = (data) => {
-    return (
-      navigate('/register/otp')
-    )
-  }
+  const submitForm = async (data) => {
+    setLoading(true);
+    setRegisterData(data);
+    const mobile_number = "+91" + data.mobile_number;
+
+    try {
+      const response = await _sendApiRequest(
+        { mobile_number: mobile_number },
+        WebsiteApiUrls.REGISTER_SEND_OTP,
+        "POST"
+      );
+      if (response.status === 204) {
+        setLoading(false);
+        navigate("/register/otp");
+      }
+    } catch (error) {
+      const { mobile_number } = error.response.data;
+      if (mobile_number) {
+        setError("mobile_number", {
+          type: "focus",
+          message: mobile_number,
+        });
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    reset(registerData);
+  }, [reset, registerData]);
 
   return (
     <>
@@ -21,7 +60,7 @@ const RegistrationForm = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-heading"])}>
-              <h3 className="mb-0" >Sign Up</h3>
+              <h3 className="mb-0">Sign Up</h3>
             </div>
 
             <div className={cn("row", styles["form-section"])}>
@@ -31,7 +70,7 @@ const RegistrationForm = () => {
                     <CustomInput
                       control={control}
                       label="First Name"
-                      name="first-name"
+                      name="first_name"
                       placeholder="First Name"
                       rules={{
                         required: "First name is required.",
@@ -42,7 +81,7 @@ const RegistrationForm = () => {
                     <CustomInput
                       control={control}
                       label="Last Name"
-                      name="last-name"
+                      name="last_name"
                       placeholder="Last Name"
                       rules={{
                         required: "Last name is required.",
@@ -60,6 +99,7 @@ const RegistrationForm = () => {
                       inputType="email"
                       rules={{
                         required: "Email address is required.",
+                        pattern: emailValidator,
                       }}
                     />
                   </div>
@@ -69,11 +109,12 @@ const RegistrationForm = () => {
                     <CustomInput
                       control={control}
                       label="Mobile"
-                      name="mobile"
+                      name="mobile_number"
                       placeholder="Mobile"
                       inputType="tel"
                       rules={{
                         required: "Mobile number is required.",
+                        pattern: phoneValidator,
                       }}
                     />
                   </div>
@@ -92,26 +133,45 @@ const RegistrationForm = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row mt-1">
-                  <div className="col-lg-12">
+                  <div className={cn("col-lg-12", styles["checkbox-field"])}>
+                    <input
+                      {...register("checkbox", {
+                        required: "checkbox is required",
+                      })}
+                      type="checkbox"
+                      name="checkbox"
+                      className="cursor"
+                    />
                     <p className={cn("mb-0", styles["tnc-note"])}>
                       By continuing, you agree to our{" "}
-                      <NavLink to={"/terms-and-conditions"}>Terms and Conditions</NavLink>{" "}and{" "}
+                      <NavLink to={"/terms-and-conditions"}>
+                        Terms and Conditions
+                      </NavLink>{" "}
+                      and{" "}
                       <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
                     </p>
                   </div>
+                  {errors.checkbox && (
+                    <span className="error">
+                      {errors.checkbox.message || "Error"}
+                    </span>
+                  )}
                 </div>
 
                 <div className="row my-3">
                   <div className="col text-center">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Register
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Register
+                      </button>
+                    )}
                   </div>
                 </div>
 

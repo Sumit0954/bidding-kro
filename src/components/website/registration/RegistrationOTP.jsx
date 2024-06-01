@@ -1,15 +1,21 @@
 import styles from "./RegistrationOTP.module.scss";
 import cn from "classnames";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
+import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
+import _sendApiRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const RegistrationOTP = () => {
   const { handleSubmit } = useForm();
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [initialCount, setInitialCount] = useState(0);
   const [showThankyou, setShowThankyou] = useState(false);
+  const [registerData] = useContext(RegisterDataContext);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -33,14 +39,43 @@ const RegistrationOTP = () => {
     return () => clearInterval(interval);
   }, [initialCount]);
 
-  const resendOTP = () => {
-    setInitialCount(45);
-    setOtp(new Array(4).fill(""));
+  const resendOTP = async () => {
+    const mobile_number = "+91" + registerData.mobile_number;
+
+    try {
+      const response = await _sendApiRequest(
+        { mobile_number: mobile_number },
+        WebsiteApiUrls.REGISTER_SEND_OTP,
+        "POST"
+      );
+      if (response.status === 204) {
+        setInitialCount(45);
+        setOtp(new Array(4).fill(""));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const submitForm = () => {
-    console.log(otp.join(""))
-    setShowThankyou(true);
+  const submitForm = async () => {
+    setLoading(true);
+    registerData.mobile_number = "+91" + registerData.mobile_number;
+    registerData.otp = otp.join("");
+
+    try {
+      const response = await _sendApiRequest(
+        registerData,
+        WebsiteApiUrls.REGISTER,
+        "POST"
+      );
+      if (response.status === 201) {
+        setLoading(false);
+        setShowThankyou(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,10 +92,16 @@ const RegistrationOTP = () => {
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className={styles["number-container"]}>
-                  <p className={cn("mb-0", styles["mobile-number"])}>
-                    +91-9999999999
-                  </p>
-                  <NavLink to={-1}>
+                  <div>
+                    <p className={cn("mb-0", styles["mobile-number"])}>
+                      {registerData.mobile_number}
+                    </p>
+                    <p className={cn("mb-0", styles["mobile-number"])}>
+                      {registerData.email}
+                    </p>
+                  </div>
+
+                  <NavLink to="/register">
                     <div className="btn button">Edit</div>
                   </NavLink>
                 </div>
@@ -103,12 +144,16 @@ const RegistrationOTP = () => {
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  className={cn("btn", "button", styles["otp-submit-btn"])}
-                >
-                  Submit
-                </button>
+                {loading ? (
+                  <ButtonLoader />
+                ) : (
+                  <button
+                    type="submit"
+                    className={cn("btn", "button", styles["otp-submit-btn"])}
+                  >
+                    Submit
+                  </button>
+                )}
               </form>
             </div>
           </div>
@@ -118,9 +163,7 @@ const RegistrationOTP = () => {
         <ThankyouModal
           open={true}
           setShowThankyou={setShowThankyou}
-          description={
-            "Your registration has been successful. Please check your email to verify your account."
-          }
+          description={`Your registration has been successful. Please check your ${registerData.email} to verify your account.`}
         />
       )}
     </>

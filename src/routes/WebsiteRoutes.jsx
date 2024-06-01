@@ -7,28 +7,31 @@ import RegistrationOTP from "../components/website/registration/RegistrationOTP"
 import ForgotPasswordPage from "../pages/website/ForgotPasswordPage";
 import ForgotPasswordOTP from "../components/website/forgot-password/ForgotPasswordOTP";
 import ResetPasswordPage from "../pages/website/ResetPasswordPage";
+import RegisterDataProvider from "../contexts/RegisterDataProvider";
 
 const WebsiteRoutes = () => {
   return (
     <>
-      <WebsiteHeader />
-      <main>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/register/otp" element={<RegistrationOTP />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/login/forgot-password"
-            element={<ForgotPasswordPage />}
-          />
-          <Route
-            path="/login/forgot-password/otp"
-            element={<ForgotPasswordOTP />}
-          />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-        </Routes>
-      </main>
+      <RegisterDataProvider>
+        <WebsiteHeader />
+        <main>
+          <Routes>
+            <Route index element={<HomePage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/register/otp" element={<RegistrationOTP />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/login/forgot-password"
+              element={<ForgotPasswordPage />}
+            />
+            <Route
+              path="/login/forgot-password/otp"
+              element={<ForgotPasswordOTP />}
+            />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+          </Routes>
+        </main>
+      </RegisterDataProvider>
     </>
   );
 };
