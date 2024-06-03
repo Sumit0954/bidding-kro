@@ -3,27 +3,67 @@ import styles from "./ForgotPassword.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import CheckEmailModal from "../../../elements/CustomModal/CheckEmailModal";
+import _sendApiRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 
 const ForgotPassword = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, setError } = useForm();
   const [isPhoneReset, setIsPhoneReset] = useState(false);
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleResetMedium = () => {
     setIsPhoneReset(!isPhoneReset);
   };
 
-  const submitForm = (data) => {
-    console.log(data)
-    if(isPhoneReset){
-      navigate('/login/forgot-password/otp')
+  const submitForm = async (data) => {
+    if (isPhoneReset) {
+      data.mobile_number = "+91" + data.mobile_number;
+      try {
+        const response = await _sendApiRequest(
+          data,
+          WebsiteApiUrls.FORGOT_SEND_OTP,
+          "POST"
+        );
+        if (response.status === 204) {
+          navigate("/login/forgot-password/otp", {
+            state: { mobile_number: data.mobile_number },
+          });
+        }
+      } catch (error) {
+        const { data } = error.response;
+        if (data.error) {
+          setError("mobile_number", {
+            type: "focus",
+            message: data.error,
+          });
+        }
+      }
     } else {
-      setCheckEmail(true)
+      try {
+        const response = await _sendApiRequest(
+          data,
+          WebsiteApiUrls.FORGOT_PASSWORD_EMAIL,
+          "POST"
+        );
+        if (response.status === 204) {
+          setEmail(data.email);
+          setCheckEmail(true);
+        }
+      } catch (error) {
+        const { data } = error.response;
+        if (data.error) {
+          setError("email", {
+            type: "focus",
+            message: data.error,
+          });
+        }
+      }
     }
-  }
+  };
 
   return (
     <>
@@ -38,8 +78,8 @@ const ForgotPassword = () => {
               <div className={cn("row", styles["reset-info"])}>
                 {isPhoneReset ? (
                   <p>
-                    Enter the phone number associated with your account. We will send
-                    you an OTP to reset your password.
+                    Enter the phone number associated with your account. We will
+                    send you an OTP to reset your password.
                   </p>
                 ) : (
                   <p>
@@ -56,7 +96,7 @@ const ForgotPassword = () => {
                       <CustomInput
                         control={control}
                         label="Mobile Number"
-                        name="mobile"
+                        name="mobile_number"
                         placeholder="Mobile Number"
                         inputType="tel"
                         rules={{
@@ -79,8 +119,13 @@ const ForgotPassword = () => {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-12">
-                    <p className={cn('mb-0', styles["switch-link"])}>
+                  <div className="col-lg-6">
+                    <NavLink to={-1} className={styles["back-btn"]}>
+                      Back
+                    </NavLink>
+                  </div>
+                  <div className="col-lg-6">
+                    <p className={cn("mb-0", styles["switch-link"])}>
                       <span className="cursor" onClick={handleResetMedium}>
                         {isPhoneReset
                           ? "Use Email Instead"
@@ -107,13 +152,11 @@ const ForgotPassword = () => {
         </div>
       </div>
 
-      { !isPhoneReset && checkEmail && (
+      {!isPhoneReset && checkEmail && (
         <CheckEmailModal
           open={true}
           setCheckEmail={setCheckEmail}
-          description={
-            "We've sent a link to reset your password at example@gmail.com"
-          }
+          description={`We've sent a link to reset your password at ${email}`}
         />
       )}
     </>

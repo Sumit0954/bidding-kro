@@ -5,8 +5,8 @@ export default async function _sendAPIRequest(
   data,
   url,
   action,
+  useAuthInstance = false,
   headers = {},
-  useAuthInstance = false
 ) {
   const instance = useAuthInstance ? axiosInstance : axios;
 

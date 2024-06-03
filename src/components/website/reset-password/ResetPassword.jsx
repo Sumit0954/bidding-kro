@@ -1,15 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ResetPassword.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
+import _sendApiRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { useNavigate } from "react-router-dom";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const ResetPassword = () => {
-  const { control, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
+  const { control, handleSubmit, setError } = useForm();
+  const navigate = useNavigate();
 
-  const submitForm = (data) => {
-    console.log(data)
-  }
+  const submitForm = async (data) => {
+    setLoading(true);
+    const { new_password, confirm_password } = data;
+
+    if (new_password !== confirm_password) {
+      setError("confirm_password", {
+        type: "focus",
+        message: "Passwords do not match.",
+      });
+    } else {
+      try {
+        const response = await _sendApiRequest(
+          { new_password: new_password },
+          WebsiteApiUrls.RESET_PASSWORD,
+          "POST",
+          true
+        );
+        if (response.status === 204) {
+          setLoading(false);
+          navigate("/portal");
+        }
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <>
@@ -26,7 +56,7 @@ const ResetPassword = () => {
                     <CustomInput
                       control={control}
                       label="Enter New Password"
-                      name="new-password"
+                      name="new_password"
                       placeholder="Enter New Password"
                       inputType="password"
                       rules={{
@@ -38,7 +68,7 @@ const ResetPassword = () => {
                     <CustomInput
                       control={control}
                       label="Re-Enter Password"
-                      name="confirm-password"
+                      name="confirm_password"
                       placeholder="Re-Enter Password"
                       inputType="password"
                       rules={{
@@ -50,13 +80,17 @@ const ResetPassword = () => {
 
                 <div className="row my-3">
                   <div className="col text-center">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Submit
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Submit
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

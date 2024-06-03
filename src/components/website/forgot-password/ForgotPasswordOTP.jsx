@@ -3,12 +3,18 @@ import cn from "classnames";
 import styles from "./ForgotPasswordOTP.module.scss";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { login } from "../../../utils/AxiosInterceptors";
 
 const ForgotPasswordOTP = () => {
   const { handleSubmit } = useForm();
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [initialCount, setInitialCount] = useState(0);
+  const location = useLocation();
+  const { mobile_number } = location.state;
+  const navigate = useNavigate();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -32,13 +38,38 @@ const ForgotPasswordOTP = () => {
     return () => clearInterval(interval);
   }, [initialCount]);
 
-  const resendOTP = () => {
-    setInitialCount(45);
-    setOtp(new Array(4).fill(""));
+  const resendOTP = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        { mobile_number: mobile_number },
+        WebsiteApiUrls.FORGOT_SEND_OTP,
+        "POST"
+      );
+      if (response.status === 204) {
+        setInitialCount(45);
+        setOtp(new Array(4).fill(""));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const submitForm = () => {
-    console.log(otp.join(""))
+  const submitForm = async () => {
+    let formData = new FormData();
+    formData.append("mobile_number", mobile_number);
+    formData.append("otp", otp.join(""));
+
+    try {
+      const response = await _sendAPIRequest(
+        formData,
+        WebsiteApiUrls.FORGOT_VERIFY_OTP,
+        "POST"
+      );
+      if (response.status === 200) {
+        await login(response.data);
+        navigate("/reset-password");
+      }
+    } catch (error) {}
   };
 
   return (
@@ -56,7 +87,7 @@ const ForgotPasswordOTP = () => {
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className={styles["number-container"]}>
                   <p className={cn("mb-0", styles["mobile-number"])}>
-                    +91-9999999999
+                    {mobile_number}
                   </p>
                   <NavLink to={-1}>
                     <div className="btn button">Edit</div>
