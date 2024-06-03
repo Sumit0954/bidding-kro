@@ -74,11 +74,12 @@ const RegistrationOTP = () => {
         setShowThankyou(true);
       }
     } catch (error) {
+      console.log(error.response.data)
       setLoading(false);
-      const { email, mobile_number } = error.response.data;
-      if (email || mobile_number) {
-        navigate("/register");
-      }
+      // const { email, mobile_number } = error.response.data;
+      // if (email || mobile_number) {
+      //   navigate("/register");
+      // }
     }
   };
 

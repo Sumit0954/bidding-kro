@@ -3,18 +3,42 @@ import styles from "./LoginForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { login } from "../../../utils/AxiosInterceptors";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const LoginForm = () => {
   const { control, handleSubmit } = useForm();
   const [isPhoneLogin, setIsPhoneLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLoginMedium = () => {
     setIsPhoneLogin(!isPhoneLogin);
   };
 
-  const submitForm = (data) => {
-    console.log(data);
+  const submitForm = async (data) => {
+    setLoading(true);
+    const url = isPhoneLogin
+      ? WebsiteApiUrls.LOGIN_MOBILE
+      : WebsiteApiUrls.LOGIN_EMAIL;
+
+    if (isPhoneLogin){
+      data.mobile_number = "+91" + data.mobile_number
+    }
+
+    try {
+      const response = await _sendAPIRequest(data, url, "POST");
+      if (response.status === 200) {
+        await login(response.data);
+        navigate("/portal");
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,7 +57,7 @@ const LoginForm = () => {
                       <CustomInput
                         control={control}
                         label="Login with Mobile"
-                        name="mobile"
+                        name="mobile_number"
                         inputType="tel"
                         placeholder="Login with Mobile"
                         rules={{
@@ -71,14 +95,14 @@ const LoginForm = () => {
 
                 <div className="row">
                   <div className="col-lg-6">
-                    <p className={cn('mb-0', styles["frogetpassword-link"])}>
+                    <p className={cn("mb-0", styles["frogetpassword-link"])}>
                       <NavLink to={"/login/forgot-password"}>
                         Forgot your Password?
                       </NavLink>
                     </p>
                   </div>
                   <div className="col-lg-6">
-                    <p className={cn('mb-0', styles["switch-link"])}>
+                    <p className={cn("mb-0", styles["switch-link"])}>
                       <span className="cursor" onClick={handleLoginMedium}>
                         {isPhoneLogin
                           ? "Login With Email"
@@ -90,13 +114,17 @@ const LoginForm = () => {
 
                 <div className="row my-3">
                   <div className="col text-center">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Login
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Login
+                      </button>
+                    )}
                   </div>
                 </div>
 

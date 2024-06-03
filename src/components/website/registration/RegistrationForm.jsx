@@ -39,6 +39,7 @@ const RegistrationForm = () => {
         navigate("/register/otp");
       }
     } catch (error) {
+      console.log(error.response.data)
       setLoading(false);
       const { email, mobile_number } = error.response.data;
 
