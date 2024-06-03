@@ -29,6 +29,6 @@ export default async function _sendAPIRequest(
         throw new Error(`Unsupported action type: ${action}`);
     }
   } catch (error) {
-    return error.response;
+    throw error;
   }
 }

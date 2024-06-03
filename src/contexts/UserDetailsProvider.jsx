@@ -1,17 +1,13 @@
-import { createContext, useState, useEffect } from "react";
-import _sendAPIRequest from "../utils/CommonFunctions";
+import { createContext, useState } from "react";
 
 export const userDetailsContext = createContext();
 const UserDetailsProvider = (props) => {
   const [userDetails, setUserDetails] = useState();
-  const [isLogin, setIsLogin] = useState(false);
-
-  
   
 
   return (
     <userDetailsContext.Provider
-      value={[userDetails, setUserDetails, isLogin, setIsLogin]}
+      value={[userDetails, setUserDetails]}
     >
       {props.children}
     </userDetailsContext.Provider>

@@ -2,7 +2,7 @@ import styles from "./RegistrationOTP.module.scss";
 import cn from "classnames";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
 import _sendApiRequest from "../../../helpers/api";
@@ -16,6 +16,7 @@ const RegistrationOTP = () => {
   const [showThankyou, setShowThankyou] = useState(false);
   const [registerData] = useContext(RegisterDataContext);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -45,7 +46,7 @@ const RegistrationOTP = () => {
     try {
       const response = await _sendApiRequest(
         { mobile_number: mobile_number },
-        WebsiteApiUrls.REGISTER_SEND_OTP,
+        WebsiteApiUrls.SEND_OTP,
         "POST"
       );
       if (response.status === 204) {
@@ -73,8 +74,11 @@ const RegistrationOTP = () => {
         setShowThankyou(true);
       }
     } catch (error) {
-      console.log(error);
       setLoading(false);
+      const { email, mobile_number } = error.response.data;
+      if (email || mobile_number) {
+        navigate("/register");
+      }
     }
   };
 
@@ -145,7 +149,9 @@ const RegistrationOTP = () => {
                 </div>
 
                 {loading ? (
-                  <ButtonLoader />
+                  <div className="text-center mt-2">
+                    <ButtonLoader size={60} />
+                  </div>
                 ) : (
                   <button
                     type="submit"

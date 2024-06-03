@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import cn from "classnames";
 import { useNavigate, NavLink } from "react-router-dom";
 import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
-import { emailValidator, phoneValidator } from "../../../helpers/patterns";
+import { emailValidator, phoneValidator } from "../../../helpers/validation";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
@@ -31,7 +31,7 @@ const RegistrationForm = () => {
     try {
       const response = await _sendApiRequest(
         { mobile_number: mobile_number },
-        WebsiteApiUrls.REGISTER_SEND_OTP,
+        WebsiteApiUrls.SEND_OTP,
         "POST"
       );
       if (response.status === 204) {
@@ -39,14 +39,22 @@ const RegistrationForm = () => {
         navigate("/register/otp");
       }
     } catch (error) {
-      const { mobile_number } = error.response.data;
+      setLoading(false);
+      const { email, mobile_number } = error.response.data;
+
+      if (email) {
+        setError("email", {
+          type: "focus",
+          message: email,
+        });
+      }
+
       if (mobile_number) {
         setError("mobile_number", {
           type: "focus",
           message: mobile_number,
         });
       }
-      setLoading(false);
     }
   };
 
