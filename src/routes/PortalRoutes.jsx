@@ -8,6 +8,9 @@ import SettingPage from "../pages/portal/SettingPage";
 import BidListPage from "../pages/portal/BidListPage";
 import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
+import BidFormPage from "../pages/portal/BidFormPage";
+import BidDeatailsPage from "../pages/portal/BidDeatailsPage";
+
 
 const PortalRoutes = () => {
   return (
@@ -39,6 +42,8 @@ const PortalRoutes = () => {
                 element={<LayoutPage Component={BidListPage} />}
               />
             </Route>
+            <Route path="/bids/create" element={<LayoutPage Component={BidFormPage} />} />
+            <Route path="/bids/details" element={<LayoutPage Component={BidDeatailsPage} />} />
           </Routes>
         </main>
       </AuthProvider>
