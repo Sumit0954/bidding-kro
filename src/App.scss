@@ -27,6 +27,7 @@ body {
 	--white: #ffffff;
 	--black: #000000;
 	--gray: #999999;
+	--disable: #D7D7D7;
 	--link-color: #0D6EFD;
 	--link-hover-color: #0A58CA;
 	--box-shadow: #dddddd;
@@ -174,3 +175,6 @@ em {
 	border-color: var(--primary-color) !important;
 }
 
+.disable-input-field{
+	background-color: var(--disable) !important;
+}

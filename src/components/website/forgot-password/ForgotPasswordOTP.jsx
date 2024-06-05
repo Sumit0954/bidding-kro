@@ -41,9 +41,9 @@ const ForgotPasswordOTP = () => {
   const resendOTP = async () => {
     try {
       const response = await _sendAPIRequest(
-        { mobile_number: mobile_number },
+        "POST",
         WebsiteApiUrls.FORGOT_SEND_OTP,
-        "POST"
+        { mobile_number: mobile_number },
       );
       if (response.status === 204) {
         setInitialCount(45);
@@ -61,9 +61,9 @@ const ForgotPasswordOTP = () => {
 
     try {
       const response = await _sendAPIRequest(
-        formData,
+        "POST",
         WebsiteApiUrls.FORGOT_VERIFY_OTP,
-        "POST"
+        formData,
       );
       if (response.status === 200) {
         await login(response.data);

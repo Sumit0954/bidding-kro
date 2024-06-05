@@ -8,6 +8,7 @@ import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const RegistrationOTP = () => {
   const { handleSubmit } = useForm();
@@ -17,6 +18,7 @@ const RegistrationOTP = () => {
   const [registerData] = useContext(RegisterDataContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setAlert } = useContext(AlertContext);
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -44,11 +46,9 @@ const RegistrationOTP = () => {
     const mobile_number = "+91" + registerData.mobile_number;
 
     try {
-      const response = await _sendApiRequest(
-        { mobile_number: mobile_number },
-        WebsiteApiUrls.SEND_OTP,
-        "POST"
-      );
+      const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
+        mobile_number: mobile_number,
+      });
       if (response.status === 204) {
         setInitialCount(45);
         setOtp(new Array(4).fill(""));
@@ -65,17 +65,35 @@ const RegistrationOTP = () => {
 
     try {
       const response = await _sendApiRequest(
-        registerData,
+        "POST",
         WebsiteApiUrls.REGISTER,
-        "POST"
+        registerData
       );
       if (response.status === 201) {
         setLoading(false);
         setShowThankyou(true);
       }
     } catch (error) {
-      console.log(error.response.data)
       setLoading(false);
+      const { data } = error.response;
+
+      if (data) {
+        const { email, mobile_number, error } = data;
+        setAlert({
+          isVisible: true,
+          message: error,
+          severity: "error",
+        });
+
+        if (email || mobile_number) {
+          setAlert({
+            isVisible: true,
+            message: email || mobile_number,
+            severity: "error",
+          });
+          navigate("/register");
+        }
+      }
     }
   };
 

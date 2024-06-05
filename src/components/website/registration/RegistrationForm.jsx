@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import cn from "classnames";
 import { useNavigate, NavLink } from "react-router-dom";
 import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
+import { AlertContext } from "../../../contexts/AlertProvider";
 import { emailValidator, phoneValidator } from "../../../helpers/validation";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
@@ -17,11 +18,11 @@ const RegistrationForm = () => {
     reset,
     register,
     formState: { errors },
-    setError,
   } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [registerData, setRegisterData] = useContext(RegisterDataContext);
+  const { setAlert } = useContext(AlertContext);
 
   const submitForm = async (data) => {
     setLoading(true);
@@ -29,32 +30,31 @@ const RegistrationForm = () => {
     const mobile_number = "+91" + data.mobile_number;
 
     try {
-      const response = await _sendApiRequest(
-        { mobile_number: mobile_number },
-        WebsiteApiUrls.SEND_OTP,
-        "POST"
-      );
+      const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
+        mobile_number: mobile_number,
+      });
       if (response.status === 204) {
         setLoading(false);
+        setAlert({
+          isVisible: true,
+          message: "OTP is sent to Your Mobile Number.",
+          severity: "success",
+        });
         navigate("/register/otp");
       }
     } catch (error) {
-      console.log(error.response.data)
       setLoading(false);
-      const { email, mobile_number } = error.response.data;
+      const { data } = error.response;
 
-      if (email) {
-        setError("email", {
-          type: "focus",
-          message: email,
-        });
-      }
-
-      if (mobile_number) {
-        setError("mobile_number", {
-          type: "focus",
-          message: mobile_number,
-        });
+      if (data) {
+        const { error } = data;
+        if (error) {
+          setAlert({
+            isVisible: true,
+            message: error,
+            severity: "error",
+          });
+        }
       }
     }
   };

@@ -3,7 +3,7 @@ import styles from "./LoginForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { login } from "../../../utils/AxiosInterceptors";
@@ -13,7 +13,6 @@ const LoginForm = () => {
   const { control, handleSubmit } = useForm();
   const [isPhoneLogin, setIsPhoneLogin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleLoginMedium = () => {
     setIsPhoneLogin(!isPhoneLogin);
@@ -25,15 +24,14 @@ const LoginForm = () => {
       ? WebsiteApiUrls.LOGIN_MOBILE
       : WebsiteApiUrls.LOGIN_EMAIL;
 
-    if (isPhoneLogin){
-      data.mobile_number = "+91" + data.mobile_number
+    if (isPhoneLogin) {
+      data.mobile_number = "+91" + data.mobile_number;
     }
 
     try {
-      const response = await _sendAPIRequest(data, url, "POST");
+      const response = await _sendAPIRequest("POST", url, data);
       if (response.status === 200) {
         await login(response.data);
-        navigate("/portal");
       }
       setLoading(false);
     } catch (error) {

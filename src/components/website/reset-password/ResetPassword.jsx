@@ -25,9 +25,9 @@ const ResetPassword = () => {
     } else {
       try {
         const response = await _sendApiRequest(
-          { new_password: new_password },
-          WebsiteApiUrls.RESET_PASSWORD,
           "POST",
+          WebsiteApiUrls.RESET_PASSWORD,
+          { new_password: new_password },
           true
         );
         if (response.status === 204) {

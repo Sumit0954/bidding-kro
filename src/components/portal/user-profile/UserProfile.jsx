@@ -3,12 +3,33 @@ import UserImg from "../../../assets/images/portal/user-profile/user-profile-img
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
+import { useContext, useEffect, useState } from "react";
+import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { phoneValidator } from "../../../helpers/validation";
+import { addCountryCode, numberFormatter } from "../../../helpers/formatter";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const UserProfile = () => {
-  const { control, handleSubmit, register, watch, getValues } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    watch,
+    getValues,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm();
   const [profileImage, setProfileImage] = useState(UserImg);
+  const { userDetails, setUserDetails } = useContext(UserDetailsContext);
+  const { companyDetails } = useContext(CompanyDetailsContext);
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const profile_image = watch("profile_image");
   useEffect(() => {
@@ -28,9 +49,77 @@ const UserProfile = () => {
     }
   }, [getValues]);
 
-  const submitForm = (data) => {
-    console.log(data);
+  const submitForm = async (data) => {
+    setLoading(true);
+    let updateFormData = new FormData();
+    let excludeFields = ["email", "mobile_number"];
+    data.whatsapp_number = addCountryCode(data.whatsapp_number);
+
+    // Don't send profile_image if not updated
+    if (typeof data.profile_image !== "object") {
+      excludeFields.push("profile_image");
+    }
+
+    /* Build FormData */
+    if (data) {
+      Object.entries(data).map((item) => {
+        const [key, value] = item;
+
+        if (!excludeFields.includes(key)) {
+          if (typeof value === "object" && value?.length > 0) {
+            updateFormData.append(key, value[0], value[0].name);
+          } else {
+            updateFormData.append(key, value ? value : "");
+          }
+        }
+      });
+    }
+    /* -- */
+
+    try {
+      const response = await _sendAPIRequest(
+        "PATCH",
+        PortalApiUrls.UPDATE_USER_PROFILE,
+        updateFormData,
+        true
+      );
+      if (response.status === 200) {
+        setUserDetails(response.data);
+        setLoading(false);
+        setAlert({
+          isVisible: true,
+          message: "Profile has been updated successfully.",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      const { data } = error.response;
+      if (data) {
+        const { profile_image } = data;
+        if (profile_image) {
+          setError("profile_image", {
+            type: "focus",
+            message: profile_image,
+          });
+        }
+      }
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    const { user, ...user_profile } = userDetails;
+    const mobile_number = numberFormatter(user?.mobile_number);
+    const whatsapp_number = numberFormatter(user_profile?.whatsapp_number);
+    setProfileImage(user_profile?.profile_image);
+    reset({
+      ...user,
+      ...user_profile,
+      mobile_number: mobile_number,
+      whatsapp_number: whatsapp_number,
+    });
+  }, [reset, userDetails]);
 
   return (
     <>
@@ -59,6 +148,11 @@ const UserProfile = () => {
                         Change Profile Image
                       </span>
                     </label>
+                    {errors.profile_image && (
+                      <span className="error mb-0">
+                        {errors.profile_image.message || "Error"}
+                      </span>
+                    )}
                     <p className={styles["img-suggestion"]}>
                       200KB max. JPEG, PNG, JPG format only. Suggested photo
                       width and height: 200*100px.
@@ -71,7 +165,7 @@ const UserProfile = () => {
                     <CustomInput
                       control={control}
                       label="First Name"
-                      name="first-name"
+                      name="first_name"
                       placeholder="First Name"
                       rules={{
                         required: "First name is required.",
@@ -82,7 +176,7 @@ const UserProfile = () => {
                     <CustomInput
                       control={control}
                       label="Last Name"
-                      name="last-name"
+                      name="last_name"
                       placeholder="Last Name"
                       rules={{
                         required: "Last name is required.",
@@ -101,18 +195,20 @@ const UserProfile = () => {
                       rules={{
                         required: "Email address is required.",
                       }}
+                      disableField={true}
                     />
                   </div>
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
                       label="Mobile"
-                      name="mobile"
+                      name="mobile_number"
                       placeholder="Mobile"
                       inputType="tel"
                       rules={{
                         required: "Mobile number is required.",
                       }}
+                      disableField={true}
                     />
                   </div>
                 </div>
@@ -120,10 +216,13 @@ const UserProfile = () => {
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="WhatsApp"
-                      name="whatsapp"
+                      label="WhatsApp Number"
+                      name="whatsapp_number"
                       placeholder="WhatsApp"
                       inputType="tel"
+                      rules={{
+                        pattern: phoneValidator,
+                      }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -138,19 +237,25 @@ const UserProfile = () => {
                 </div>
                 <div className={cn("row", "my-3")}>
                   <div className={styles["btn-section"]}>
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Update
-                    </button>
-                    <NavLink
-                      to={"/portal/company-profile"}
-                      className={cn("btn", "button")}
-                    >
-                      Add Company
-                    </NavLink>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Update
+                      </button>
+                    )}
+                    {!companyDetails && (
+                      <NavLink
+                        to={"/portal/company-profile/create"}
+                        className={cn("btn", "button")}
+                      >
+                        Add Company
+                      </NavLink>
+                    )}
                   </div>
                 </div>
               </form>

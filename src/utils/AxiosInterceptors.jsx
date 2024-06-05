@@ -1,47 +1,94 @@
-// Used to refresh the token using interceptor
-
-import {
-  applyAuthTokenInterceptor,
-  setAuthTokens,
-  clearAuthTokens,
-} from "axios-jwt";
 import axios from "axios";
 
 export const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-// 1. Create an axios instance that you wish to apply the interceptor to
+// Create an axios instance that you wish to apply the interceptor to
 export const axiosInstance = axios.create({ baseURL: BASE_URL });
 
-// 2. Define token refresh function.
-const requestRefresh = async (refresh) => {
-  // Notice that this is the global axios instance, not the axiosInstance!  <-- important
-  return axios
-    .post(`${BASE_URL}user/token/refresh/`, { refresh })
-    .then((response) => {
-      return {
-        accessToken: response.data.access,
-        refreshToken: response.data.refresh,
-      };
-    })
-    .catch((err) => {
-      window.location.href = "/logout";
-    });
+// Add a request interceptor
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers["Authorization"] = "Bearer " + accessToken;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401) {
+      try {
+        const { access } = await requestRefresh();
+        setAccessToken(access);
+        axiosInstance.defaults.headers["Authorization"] = "Bearer " + access;
+        originalRequest.headers["Authorization"] = "Bearer " + access;
+        return axiosInstance(originalRequest);
+      } catch (error) {
+        removeTokens();
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Define token refresh function.
+export const requestRefresh = async () => {
+  const refreshToken = getRefreshToken();
+  let formData = new FormData();
+  formData.append("refresh", refreshToken);
+  const response = await axios.post(
+    `${BASE_URL}/user/token/refresh/`,
+    formData
+  );
+  return response.data;
 };
 
-// 3. Apply interceptor
-applyAuthTokenInterceptor(axiosInstance, { requestRefresh }); // Notice that this uses the axiosInstance instance.  <-- important
-
-// 4. Logging in
+// Logging in
 export const login = async (data) => {
   // save tokens to storage
-  setAuthTokens({
-    accessToken: data.access,
-    refreshToken: data.refresh,
-  });
+  localStorage.setItem("accessToken", data.access);
+  localStorage.setItem("refreshToken", data.refresh);
+  window.location.href = "/portal";
 };
 
-// 5. Logging out
-export const logout = () => clearAuthTokens();
+// Logging out
+export const logout = async () => {
+  // remove tokens to storage
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  window.location.href = "/login";
+};
 
-// Now just make all requests using your axiosInstance instance
-// axiosInstance.get('/api/endpoint/that/requires/login').then(response => { console.log('inside instance get method') })
+// AuthServices
+export const getAccessToken = () => {
+  return localStorage.getItem("accessToken");
+};
+
+export const getRefreshToken = () => {
+  return localStorage.getItem("refreshToken");
+};
+
+export const setAccessToken = (accessToken) => {
+  localStorage.setItem("accessToken", accessToken);
+};
+
+export const setRefreshToken = (token) => {
+  localStorage.setItem("refreshToken", token);
+};
+
+export const removeTokens = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+};

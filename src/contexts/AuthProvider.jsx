@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { getAccessToken, clearAuthTokens } from "axios-jwt";
+import { getAccessToken } from "../utils/AxiosInterceptors";
 
 export const AuthContext = createContext();
 const AuthProvider = (props) => {
@@ -18,13 +18,8 @@ const AuthProvider = (props) => {
     checkAuth();
   }, []);
 
-  const logout = () => {
-    clearAuthTokens();
-    setIsAuthenticated(false);
-  };
-
   return (
-    <AuthContext.Provider value={[isAuthenticated, setIsAuthenticated, logout]}>
+    <AuthContext.Provider value={[isAuthenticated, setIsAuthenticated]}>
       {props.children}
     </AuthContext.Provider>
   );

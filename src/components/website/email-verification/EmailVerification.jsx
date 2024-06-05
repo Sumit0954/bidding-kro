@@ -22,9 +22,9 @@ const EmailVerification = () => {
     const submitForm = async () => {
       try {
         const response = await _sendAPIRequest(
-          formData,
+          "POST",
           WebsiteApiUrls.VERIFY_EMAIL,
-          "POST"
+          formData,
         );
         if (response.status === 200) {
           setSuccess(true);

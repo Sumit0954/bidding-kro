@@ -2,9 +2,9 @@ import axios from "axios";
 import { axiosInstance } from "../utils/AxiosInterceptors";
 
 export default async function _sendAPIRequest(
-  data,
-  url,
   action,
+  url,
+  data,
   useAuthInstance = false,
   headers = {},
 ) {

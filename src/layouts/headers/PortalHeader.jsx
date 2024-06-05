@@ -14,7 +14,6 @@ const PortalHeader = () => {
 
   const handleClick = (event) => {
     setIsActive(!isActive);
-    console.log(event.currentTarget);
     setAnchorEl(event.currentTarget);
   };
 

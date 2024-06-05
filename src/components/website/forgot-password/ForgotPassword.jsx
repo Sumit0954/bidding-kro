@@ -24,9 +24,9 @@ const ForgotPassword = () => {
       data.mobile_number = "+91" + data.mobile_number;
       try {
         const response = await _sendApiRequest(
-          data,
+          "POST",
           WebsiteApiUrls.FORGOT_SEND_OTP,
-          "POST"
+          data,
         );
         if (response.status === 204) {
           navigate("/login/forgot-password/otp", {
@@ -45,9 +45,9 @@ const ForgotPassword = () => {
     } else {
       try {
         const response = await _sendApiRequest(
-          data,
+          "POST",
           WebsiteApiUrls.FORGOT_PASSWORD_EMAIL,
-          "POST"
+          data,
         );
         if (response.status === 204) {
           setEmail(data.email);

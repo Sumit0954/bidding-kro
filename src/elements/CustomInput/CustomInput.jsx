@@ -16,6 +16,7 @@ const CustomInput = ({
   textFieldProps = {},
   control,
   handleChange,
+  disableField = false,
 }) => {
   const text = useRef();
   const [showPassword, setShowPassword] = useState(false);
@@ -57,25 +58,29 @@ const CustomInput = ({
                 }}
                 error={!!error}
                 size="small"
-                className={styles["input-field"]}
+                className={cn(
+                  styles["input-field"],
+                  `${disableField && "disable-input-field"}`
+                )}
                 type={inputType}
                 inputProps={{
                   type: inputType,
                   "aria-label": "controlled",
                   placeholder: placeholder,
                 }}
+                disabled={disableField}
               />
 
               {inputType === "password" &&
                 (showPassword ? (
                   <Visibility
                     onClick={inputTypeChange}
-                    className={cn('cursor', styles["password-icon"])}
+                    className={cn("cursor", styles["password-icon"])}
                   />
                 ) : (
                   <VisibilityOff
                     onClick={inputTypeChange}
-                    className={cn('cursor', styles["password-icon"])}
+                    className={cn("cursor", styles["password-icon"])}
                   />
                 ))}
             </Box>
