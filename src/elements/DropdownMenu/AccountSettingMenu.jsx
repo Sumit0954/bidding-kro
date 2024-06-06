@@ -1,7 +1,6 @@
 import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./AccountSettingMenu.module.scss";
-import ProfileImg from "../../assets/images/common/profile.png";
 import {
   AccountCircleRounded,
   Logout,
@@ -9,9 +8,14 @@ import {
   StoreRounded,
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import cn from 'classnames'
+import cn from "classnames";
+import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
+import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 
 const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
+  const { userDetails } = useContext(UserDetailsContext);
+  const { companyDetails } = useContext(CompanyDetailsContext);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -54,8 +58,12 @@ const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Avatar src={ProfileImg} alt="ProfileImg" />
-          Nitish Kumar
+          {userDetails && (
+            <>
+              <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
+              {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
+            </>
+          )}
         </MenuItem>
 
         <Divider className={styles["divider"]} />
@@ -70,7 +78,11 @@ const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
         </NavLink>
 
         <NavLink
-          to={"/portal/company-profile"}
+          to={
+            companyDetails
+              ? "/portal/company-profile/update"
+              : "/portal/company-profile/create"
+          }
           className={styles["menu-links"]}
         >
           <MenuItem>
@@ -90,7 +102,7 @@ const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
           </MenuItem>
         </NavLink>
 
-        <Divider className={cn('my-2',styles["divider"])} />
+        <Divider className={cn("my-2", styles["divider"])} />
 
         <MenuItem>
           <ListItemIcon>

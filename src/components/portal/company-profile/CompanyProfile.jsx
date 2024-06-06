@@ -10,10 +10,18 @@ import AddressForm from "./AddressForm";
 import CertificateForm from "./CertificateForm";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
-import { modifiedData, numberFormatter } from "../../../helpers/formatter";
-import _sendAPIRequest from "../../../helpers/api";
+import {
+  addCountryCode,
+  modifiedData,
+  numberFormatter,
+} from "../../../helpers/formatter";
+import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { websiteValidator } from "../../../helpers/validation";
+import { useParams } from "react-router-dom";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const CompanyProfile = () => {
   const {
@@ -23,11 +31,19 @@ const CompanyProfile = () => {
     getValues,
     watch,
     reset,
-    formState: { errors },
+    setError,
+    formState: { errors, dirtyFields },
   } = useForm();
   const [companyLogo, setCompanyLogo] = useState(DummyLogo);
   const { userDetails } = useContext(UserDetailsContext);
+  const { companyDetails, setCompanyDetails } = useContext(
+    CompanyDetailsContext
+  );
+  const { setAlert } = useContext(AlertContext);
   const [organizationTypes, setOrganizationType] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { action } = useParams();
   const [addresses, setAddresses] = useState([
     { street: "", city: "", state: "", pincode: "" },
   ]);
@@ -67,46 +83,167 @@ const CompanyProfile = () => {
     }
   };
 
+  const getCategories = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setCategories(response.data);
+      }
+    } catch (error) {}
+  };
+
   // Fetch Dropdown's List Data
   useEffect(() => {
     getOrganizationType();
+    getCategories();
   }, []);
 
   const submitForm = async (data) => {
-    console.log(data);
+    setLoading(true);
     let updateFormData = new FormData();
+    let createFormData = new FormData();
 
     /* Build FormData */
     if (data) {
       Object.entries(data).map((item) => {
         const [key, value] = item;
 
-        if (typeof value === "object" && value?.length > 0) {
-          updateFormData.append(key, value[0], value[0].name);
-        } else {
-          updateFormData.append(key, value ? value : "");
+        if (action === "create") {
+          if (
+            key === "logo" &&
+            typeof value === "object" &&
+            value?.length > 0
+          ) {
+            createFormData.append(key, value[0], value[0].name);
+          } else if (key === "business_mobile") {
+            const mobile_number = addCountryCode(value);
+            createFormData.append(key, mobile_number);
+          } else if (key === "category") {
+            value?.map((item) => createFormData.append(key, item));
+          } else {
+            createFormData.append(key, value);
+          }
+        }
+
+        if (action === "update") {
+          Object.entries(dirtyFields).forEach(async (k) => {
+            let changedKey = k[0];
+            if (key === changedKey) {
+              if (
+                key === "logo" &&
+                typeof value === "object" &&
+                value?.length > 0
+              ) {
+                updateFormData.append(key, value[0], value[0].name);
+              } else if (key === "business_mobile") {
+                const mobile_number = addCountryCode(value);
+                updateFormData.append(key, mobile_number);
+              } else if (key === "category") {
+                console.log(value);
+                value?.map((item) => updateFormData.append(key, item));
+              } else {
+                updateFormData.append(key, value ? value : "");
+              }
+            }
+          });
         }
       });
     }
     /* -- */
 
-    try {
-      const response = await _sendAPIRequest('POST', PortalApiUrls.CREATE_COMPANY, updateFormData, true)
-      console.log(response)
-    } catch (error) {
-      console.log(error)
+    if (action === "create") {
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          PortalApiUrls.CREATE_COMPANY,
+          createFormData,
+          true
+        );
+        if (response.status === 200) {
+          setLoading(false);
+          setCompanyDetails(response.data);
+          setAlert({
+            isVisible: true,
+            message: "Company has been created successfully.",
+            severity: "success",
+          });
+        }
+      } catch (error) {
+        setLoading(false);
+        const { data } = error.response;
+        if (data) {
+          setErrors(data, watch, setError);
+
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
+    }
+
+    if (action === "update") {
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          PortalApiUrls.UPDATE_COMPANY,
+          updateFormData,
+          true
+        );
+        if (response.status === 200) {
+          setLoading(false);
+          setCompanyDetails(response.data);
+          setAlert({
+            isVisible: true,
+            message: "Company has been updated successfully.",
+            severity: "success",
+          });
+        }
+      } catch (error) {
+        setLoading(false);
+        const { data } = error.response;
+        if (data) {
+          setErrors(data, watch, setError);
+
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
     }
   };
 
   useEffect(() => {
-    const business_mobile = numberFormatter(userDetails?.user?.mobile_number);
-    const business_email = userDetails?.user?.email;
+    if (action === "create") {
+      reset({
+        business_mobile: numberFormatter(userDetails?.user?.mobile_number),
+        business_email: userDetails?.user?.email,
+      });
+    }
 
-    reset({
-      business_mobile: business_mobile,
-      business_email: business_email,
-    });
-  }, [reset, userDetails]);
+    if (action === "update") {
+      setCompanyLogo(companyDetails?.logo);
+      reset({
+        ...companyDetails,
+        organization_type: companyDetails?.organization_type,
+        business_mobile: numberFormatter(companyDetails?.business_mobile),
+        business_email: companyDetails?.business_email,
+        category: companyDetails?.categories,
+      });
+    }
+  }, [action, reset, companyDetails, userDetails]);
 
   return (
     <>
@@ -238,10 +375,11 @@ const CompanyProfile = () => {
                   <div className="col-lg-12">
                     <CategoriesSelect
                       control={control}
-                      name="categories"
+                      name="category"
                       label="Categories"
                       className="business-group"
-                      options={[]}
+                      options={categories}
+                      showRootCategories={true}
                       rules={{
                         required: "Choose atleast one category.",
                       }}
@@ -259,12 +397,16 @@ const CompanyProfile = () => {
                 </div>
                 <div className="row my-3">
                   <div className="col text-end">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button", styles["custom-btn"])}
-                    >
-                      Update Business
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button", styles["custom-btn"])}
+                      >
+                        {action === "create" ? "Create" : "Update"} Business
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

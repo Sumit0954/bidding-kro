@@ -95,11 +95,12 @@ const CustomCkEditor = ({
             <CKEditor
               className={styles['custom-editor']}
               editor={ClassicEditor}
+              defaultValue={value || ''}
               config={config}
-              data={value}
+              data={value || ''}
               onReady={(editor) => {
                 // You can store the "editor" and use when it is needed.
-                console.log("Editor is ready to use!", editor);
+                console.log("Editor is ready to use!");
               }}
               onChange={(event, editor) => {
                 const data = editor.getData();

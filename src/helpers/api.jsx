@@ -6,24 +6,23 @@ export default async function _sendAPIRequest(
   url,
   data,
   useAuthInstance = false,
-  headers = {},
+  headers = {}
 ) {
   const instance = useAuthInstance ? axiosInstance : axios;
 
   try {
     switch (action) {
       case "POST":
-        const postResponse = await instance.post(url, data, { headers });
+        const postResponse = await instance.post(url, data);
         return postResponse;
       case "GET":
-        const config = { headers, params: data };
-        const getResponse = await instance.get(url, config);
+        const getResponse = await instance.get(url);
         return getResponse;
       case "PATCH":
-        const patchResponse = await instance.patch(url, data, { headers });
+        const patchResponse = await instance.patch(url, data);
         return patchResponse;
       case "DELETE":
-        const deleteResponse = await instance.delete(url, { headers });
+        const deleteResponse = await instance.delete(url);
         return deleteResponse;
       default:
         throw new Error(`Unsupported action type: ${action}`);
@@ -32,3 +31,18 @@ export default async function _sendAPIRequest(
     throw error;
   }
 }
+
+// method for setting error dynamically
+export const setErrors = (errors, watch, setError) => {
+  Object.entries(errors).map((item) => {
+    const [key, value] = item;
+
+    if (key in watch()) {
+      if (Array.isArray(value)) {
+        setError(key, { message: value[0] }, { shouldFocus: true });
+      } else if (typeof value === "object" && value !== null) {
+        setErrors(value);
+      }
+    }
+  });
+};

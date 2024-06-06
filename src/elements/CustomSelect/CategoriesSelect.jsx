@@ -35,8 +35,10 @@ const CategoriesSelect = ({
           }
 
           // Fetch existing selections
-          const getSelectedValues = mergedOptions.filter((option) =>
-            field?.value?.includes(option.id)
+          const getSelectedValues = mergedOptions?.filter(
+            (option) =>
+              field.value?.some((newValue) => newValue.id === option.id) ||
+              field.value?.includes(option.id)
           );
 
           return (

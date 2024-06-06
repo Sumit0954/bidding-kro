@@ -40,16 +40,33 @@ const CustomSelect = ({
                 getOptionLabel={(option) => option.lable || ""}
                 onChange={(event, newValue) => {
                   handleChange && handleChange(newValue);
-                  field.onChange(newValue);
+                  if (multiple) {
+                    field.onChange(newValue.map((option) => option.value));
+                  } else {
+                    field.onChange(newValue ? newValue.value : null);
+                  }
                 }}
-                value={field.value}
-                renderOption={(props, option) => (
-                  <Box {...props}>
-                    <Typography>
-                      <span>{option.lable}</span>
-                    </Typography>
-                  </Box>
-                )}
+                isOptionEqualToValue={(option, value) => {
+                  return option.value === value;
+                }}
+                value={
+                  multiple
+                    ? options.filter((option) =>
+                        (field.value || []).includes(option.value)
+                      )
+                    : options.find((option) => option.value === field.value) ||
+                      null
+                }
+                renderOption={(props, option) => {
+                  const { key, ...rest } = props;
+                  return (
+                    <Box key={key} {...rest}>
+                      <Typography>
+                        <span>{option.lable}</span>
+                      </Typography>
+                    </Box>
+                  );
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -57,7 +74,6 @@ const CustomSelect = ({
                     classes={{ root: styles["input-field"] }}
                   />
                 )}
-                error={!!error}
               />
 
               {error && (
