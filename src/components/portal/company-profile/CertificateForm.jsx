@@ -27,6 +27,8 @@ const CertificateForm = () => {
     console.log(data);
   };
 
+  
+
   return (
     <>
       <div className={styles["certificate-section"]}>
@@ -40,32 +42,7 @@ const CertificateForm = () => {
               control={control}
               name="certificate-type"
               placeholder="Certificate Type"
-              options={[
-                {
-                  lable: "India",
-                  value: 101,
-                },
-                {
-                  lable: "Delhi",
-                  value: 102,
-                },
-                {
-                  lable: "New delhi",
-                  value: 103,
-                },
-                {
-                  lable: "United States",
-                  value: 233,
-                },
-                {
-                  lable: "United Kingdom",
-                  value: 232,
-                },
-                {
-                  lable: "Australia",
-                  value: 14,
-                },
-              ]}
+              options={[]}
               label="Certificate Type"
               multiple={false}
               rules={{

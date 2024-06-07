@@ -13,9 +13,11 @@ const SearchSelect = ({
   rules = {},
   control,
   handleChange,
+  handleInputChange,
+  setValue,
+  value,
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const [value, setValue] = useState(null);
   return (
     <Box className={styles["input-field-container"]}>
       {showLabel && (
@@ -37,23 +39,29 @@ const SearchSelect = ({
                 id="free-solo-2-demo"
                 disableClearable
                 options={
-                  inputValue.length > 2
-                    ? options.map((option) => option.lable)
-                    : []
+                  inputValue.length >= 3 ? options.map((option) => option) : []
                 }
+                getOptionLabel={(option) => option.lable || ""}
                 inputValue={inputValue}
                 value={value}
                 onInputChange={(event, newInputValue) => {
-                  setInputValue(newInputValue);
+                  return (
+                    handleInputChange &&
+                      handleInputChange(event, newInputValue),
+                    setInputValue(newInputValue)
+                  );
                 }}
                 onChange={(event, newValue) => {
+                  handleChange && handleChange(event, newValue);
                   field.onChange(newValue);
                   setValue(newValue);
                   setInputValue("");
                 }}
                 filterOptions={(options) => {
                   return options.filter((option) =>
-                    option.toLowerCase().includes(inputValue?.toLowerCase())
+                    option.lable
+                      .toLowerCase()
+                      .includes(inputValue?.toLowerCase())
                   );
                 }}
                 renderInput={(params) => (

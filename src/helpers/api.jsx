@@ -16,13 +16,14 @@ export default async function _sendAPIRequest(
         const postResponse = await instance.post(url, data);
         return postResponse;
       case "GET":
-        const getResponse = await instance.get(url);
+        const config = { params: data };
+        const getResponse = await instance.get(url, config);
         return getResponse;
       case "PATCH":
         const patchResponse = await instance.patch(url, data);
         return patchResponse;
       case "DELETE":
-        const deleteResponse = await instance.delete(url);
+        const deleteResponse = await instance.delete(url, { data });
         return deleteResponse;
       default:
         throw new Error(`Unsupported action type: ${action}`);

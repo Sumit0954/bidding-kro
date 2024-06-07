@@ -18,7 +18,7 @@ import {
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { websiteValidator } from "../../../helpers/validation";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
@@ -47,6 +47,7 @@ const CompanyProfile = () => {
   const [addresses, setAddresses] = useState([
     { street: "", city: "", state: "", pincode: "" },
   ]);
+  const navigate = useNavigate();
 
   const logo = watch("logo");
   useEffect(() => {
@@ -164,7 +165,7 @@ const CompanyProfile = () => {
           createFormData,
           true
         );
-        if (response.status === 200) {
+        if (response.status === 201) {
           setLoading(false);
           setCompanyDetails(response.data);
           setAlert({
@@ -172,6 +173,7 @@ const CompanyProfile = () => {
             message: "Company has been created successfully.",
             severity: "success",
           });
+          navigate("/portal/company-profile/update");
         }
       } catch (error) {
         setLoading(false);
@@ -234,6 +236,7 @@ const CompanyProfile = () => {
     }
 
     if (action === "update") {
+      setAddresses(companyDetails?.address);
       setCompanyLogo(companyDetails?.logo);
       reset({
         ...companyDetails,
@@ -411,9 +414,11 @@ const CompanyProfile = () => {
                 </div>
               </form>
 
-              <AddressForm addresses={addresses} />
+              {action === "update" && (
+                <AddressForm addresses={addresses} action={action} />
+              )}
 
-              <CertificateForm />
+              {action === "update" && <CertificateForm />}
             </div>
           </div>
         </div>

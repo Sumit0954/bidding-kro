@@ -6,4 +6,10 @@ export const PortalApiUrls = Object.freeze({
   UPDATE_COMPANY: "/company/customer/",
   GET_COMPANY_PROFILE: "/company/customer/",
   GET_CATEGORIES: "/category/",
+  GET_STATES: "/global-places/states/",
+  GET_CITIES: "/global-places/cities/",
+  RETRIEVE_CITY: "/global-places/cities/",
+  CREATE_ADDRESS: "/company/customer/address/",
+  DELETE_ADDRESS: "/company/customer/address/",
+  GET_CERTIFICATE_TYPE: "/company/choices/certificate_type/",
 });
