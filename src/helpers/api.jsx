@@ -22,6 +22,9 @@ export default async function _sendAPIRequest(
       case "PATCH":
         const patchResponse = await instance.patch(url, data);
         return patchResponse;
+      case "PUT":
+        const putResponse = await instance.put(url, data);
+        return putResponse;
       case "DELETE":
         const deleteResponse = await instance.delete(url, { data });
         return deleteResponse;
