@@ -12,4 +12,6 @@ export const PortalApiUrls = Object.freeze({
   CREATE_ADDRESS: "/company/customer/address/",
   DELETE_ADDRESS: "/company/customer/address/",
   GET_CERTIFICATE_TYPE: "/company/choices/certificate_type/",
+  CREATE_CERTIFICATE: "/company/customer/certificate/",
+  DELETE_CERTIFICATE: "/company/customer/certificate/",
 });

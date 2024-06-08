@@ -47,6 +47,7 @@ const CompanyProfile = () => {
   const [addresses, setAddresses] = useState([
     { street: "", city: "", state: "", pincode: "" },
   ]);
+  const [certificates, setCertificates] = useState([]);
   const navigate = useNavigate();
 
   const logo = watch("logo");
@@ -237,6 +238,7 @@ const CompanyProfile = () => {
 
     if (action === "update") {
       setAddresses(companyDetails?.address);
+      setCertificates(companyDetails?.certificate);
       setCompanyLogo(companyDetails?.logo);
       reset({
         ...companyDetails,
@@ -418,7 +420,9 @@ const CompanyProfile = () => {
                 <AddressForm addresses={addresses} action={action} />
               )}
 
-              {action === "update" && <CertificateForm />}
+              {action === "update" && (
+                <CertificateForm certificates={certificates} />
+              )}
             </div>
           </div>
         </div>

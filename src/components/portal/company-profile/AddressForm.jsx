@@ -237,6 +237,7 @@ const IndividualAddressForm = ({ address, index, action, onDelete }) => {
         true
       );
       if (response.status === 201) {
+        window.location.reload();
         setLoading(false);
       }
     } catch (error) {
