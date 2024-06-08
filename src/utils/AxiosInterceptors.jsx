@@ -46,13 +46,15 @@ axiosInstance.interceptors.response.use(
 // Define token refresh function.
 export const requestRefresh = async () => {
   const refreshToken = getRefreshToken();
-  let formData = new FormData();
-  formData.append("refresh", refreshToken);
-  const response = await axios.post(
-    `${BASE_URL}/user/token/refresh/`,
-    formData
-  );
-  return response.data;
+  if (refreshToken) {
+    let formData = new FormData();
+    formData.append("refresh", refreshToken);
+    const response = await axios.post(
+      `${BASE_URL}/user/token/refresh/`,
+      formData
+    );
+    return response.data;
+  }
 };
 
 // Logging in
@@ -60,7 +62,6 @@ export const login = async (data) => {
   // save tokens to storage
   localStorage.setItem("accessToken", data.access);
   localStorage.setItem("refreshToken", data.refresh);
-  window.location.href = "/portal";
 };
 
 // Logging out

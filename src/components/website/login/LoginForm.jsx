@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./LoginForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { login } from "../../../utils/AxiosInterceptors";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { addCountryCode } from "../../../helpers/formatter";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const LoginForm = () => {
   const { control, handleSubmit } = useForm();
   const [isPhoneLogin, setIsPhoneLogin] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate()
 
   const handleLoginMedium = () => {
     setIsPhoneLogin(!isPhoneLogin);
@@ -25,17 +29,26 @@ const LoginForm = () => {
       : WebsiteApiUrls.LOGIN_EMAIL;
 
     if (isPhoneLogin) {
-      data.mobile_number = "+91" + data.mobile_number;
+      data.mobile_number = addCountryCode(data.mobile_number);
     }
 
     try {
       const response = await _sendAPIRequest("POST", url, data);
       if (response.status === 200) {
-        await login(response.data);
+        setLoading(false);
+        login(response.data);
+        navigate('/portal')
       }
-      setLoading(false);
     } catch (error) {
       setLoading(false);
+      const { data } = error.response;
+      if (data) {
+        setAlert({
+          isVisible: true,
+          message: data.error,
+          severity: "error",
+        });
+      }
     }
   };
 

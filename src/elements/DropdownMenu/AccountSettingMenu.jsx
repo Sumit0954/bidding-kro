@@ -11,6 +11,7 @@ import { NavLink } from "react-router-dom";
 import cn from "classnames";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
+import { logout } from "../../utils/AxiosInterceptors";
 
 const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
   const { userDetails } = useContext(UserDetailsContext);
@@ -104,7 +105,7 @@ const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
 
         <Divider className={cn("my-2", styles["divider"])} />
 
-        <MenuItem>
+        <MenuItem onClick={() => logout()}>
           <ListItemIcon>
             <Logout fontSize="medium" />
           </ListItemIcon>

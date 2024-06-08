@@ -26,7 +26,7 @@ const UserProfile = () => {
     formState: { errors },
   } = useForm();
   const [profileImage, setProfileImage] = useState(UserImg);
-  const { userDetails, setUserDetails } = useContext(UserDetailsContext);
+  const { userDetails } = useContext(UserDetailsContext);
   const { companyDetails } = useContext(CompanyDetailsContext);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -84,7 +84,6 @@ const UserProfile = () => {
         true
       );
       if (response.status === 200) {
-        setUserDetails(response.data);
         setLoading(false);
         setAlert({
           isVisible: true,
@@ -93,7 +92,6 @@ const UserProfile = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       const { data } = error.response;
       if (data) {
         const { profile_image } = data;
@@ -112,7 +110,7 @@ const UserProfile = () => {
     const { user, ...user_profile } = userDetails;
     const mobile_number = numberFormatter(user?.mobile_number);
     const whatsapp_number = numberFormatter(user_profile?.whatsapp_number);
-    setProfileImage(user_profile?.profile_image);
+    setProfileImage(user_profile?.profile_image || UserImg);
     reset({
       ...user,
       ...user_profile,

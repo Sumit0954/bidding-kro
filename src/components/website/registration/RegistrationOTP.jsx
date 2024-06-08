@@ -9,6 +9,7 @@ import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import { addCountryCode } from "../../../helpers/formatter";
 
 const RegistrationOTP = () => {
   const { handleSubmit } = useForm();
@@ -43,7 +44,7 @@ const RegistrationOTP = () => {
   }, [initialCount]);
 
   const resendOTP = async () => {
-    const mobile_number = "+91" + registerData.mobile_number;
+    const mobile_number = addCountryCode(registerData.mobile_number);
 
     try {
       const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
@@ -60,7 +61,7 @@ const RegistrationOTP = () => {
 
   const submitForm = async () => {
     setLoading(true);
-    registerData.mobile_number = "+91" + registerData.mobile_number;
+    registerData.mobile_number = addCountryCode(registerData.mobile_number);
     registerData.otp = otp.join("");
 
     try {

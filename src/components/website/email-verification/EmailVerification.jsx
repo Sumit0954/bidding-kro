@@ -24,12 +24,16 @@ const EmailVerification = () => {
         const response = await _sendAPIRequest(
           "POST",
           WebsiteApiUrls.VERIFY_EMAIL,
-          formData,
+          formData
         );
         if (response.status === 200) {
           setSuccess(true);
-          await login(response.data);
-          type === "reset" && navigate("/reset-password");
+          login(response.data);
+          if (type === "reset") {
+            window.location.href = "/reset-password";
+          } else {
+            window.location.href = "/portal";
+          }
         }
       } catch (error) {
         if (error.response.status === 400) {

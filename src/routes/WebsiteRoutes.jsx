@@ -13,42 +13,45 @@ import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
+import UserDetailsProvider from "../contexts/UserDetailsProvider";
 
 const WebsiteRoutes = () => {
   return (
     <>
       <AlertProvider>
         <AuthProvider>
-          <RegisterDataProvider>
-            <WebsiteHeader />
-            <main>
-              <Routes>
-                <Route index element={<HomePage />} />
-                <Route path="/register" element={<RegistrationPage />} />
-                <Route path="/register/otp" element={<RegistrationOTP />} />
-                <Route
-                  path="/email/verification"
-                  element={<EmailVerificationPage />}
-                />
-                <Route path="/login" element={<LoginPage />} />
-                <Route
-                  path="/login/forgot-password"
-                  element={<ForgotPasswordPage />}
-                />
-                <Route
-                  path="/login/forgot-password/otp"
-                  element={<ForgotPasswordOTP />}
-                />
-                <Route element={<ProtectedRoutes />}>
+          {/* <UserDetailsProvider> */}
+            <RegisterDataProvider>
+              <WebsiteHeader />
+              <main>
+                <Routes>
+                  <Route index element={<HomePage />} />
+                  <Route path="/register" element={<RegistrationPage />} />
+                  <Route path="/register/otp" element={<RegistrationOTP />} />
                   <Route
-                    path="/reset-password"
-                    element={<ResetPasswordPage />}
+                    path="/email/verification"
+                    element={<EmailVerificationPage />}
                   />
-                </Route>
-              </Routes>
-              <CallAlert />
-            </main>
-          </RegisterDataProvider>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route
+                    path="/login/forgot-password"
+                    element={<ForgotPasswordPage />}
+                  />
+                  <Route
+                    path="/login/forgot-password/otp"
+                    element={<ForgotPasswordOTP />}
+                  />
+                  <Route element={<ProtectedRoutes />}>
+                    <Route
+                      path="/reset-password"
+                      element={<ResetPasswordPage />}
+                    />
+                  </Route>
+                </Routes>
+                <CallAlert />
+              </main>
+            </RegisterDataProvider>
+          {/* </UserDetailsProvider> */}
         </AuthProvider>
       </AlertProvider>
     </>

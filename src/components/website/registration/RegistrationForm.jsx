@@ -10,6 +10,7 @@ import { emailValidator, phoneValidator } from "../../../helpers/validation";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { addCountryCode } from "../../../helpers/formatter";
 
 const RegistrationForm = () => {
   const {
@@ -27,7 +28,7 @@ const RegistrationForm = () => {
   const submitForm = async (data) => {
     setLoading(true);
     setRegisterData(data);
-    const mobile_number = "+91" + data.mobile_number;
+    const mobile_number = addCountryCode(data.mobile_number);
 
     try {
       const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {

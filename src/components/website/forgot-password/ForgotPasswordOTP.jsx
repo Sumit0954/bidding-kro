@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import cn from "classnames";
 import styles from "./ForgotPasswordOTP.module.scss";
 import { useEffect, useState } from "react";
@@ -7,6 +7,8 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { login } from "../../../utils/AxiosInterceptors";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const ForgotPasswordOTP = () => {
   const { handleSubmit } = useForm();
@@ -15,6 +17,8 @@ const ForgotPasswordOTP = () => {
   const location = useLocation();
   const { mobile_number } = location.state;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -43,7 +47,7 @@ const ForgotPasswordOTP = () => {
       const response = await _sendAPIRequest(
         "POST",
         WebsiteApiUrls.FORGOT_SEND_OTP,
-        { mobile_number: mobile_number },
+        { mobile_number: mobile_number }
       );
       if (response.status === 204) {
         setInitialCount(45);
@@ -55,6 +59,7 @@ const ForgotPasswordOTP = () => {
   };
 
   const submitForm = async () => {
+    setLoading(true);
     let formData = new FormData();
     formData.append("mobile_number", mobile_number);
     formData.append("otp", otp.join(""));
@@ -63,13 +68,37 @@ const ForgotPasswordOTP = () => {
       const response = await _sendAPIRequest(
         "POST",
         WebsiteApiUrls.FORGOT_VERIFY_OTP,
-        formData,
+        formData
       );
+      
       if (response.status === 200) {
-        await login(response.data);
-        navigate("/reset-password");
+        setLoading(false);
+        login(response.data);
+        window.location.href = '/reset-password'
       }
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+
+      const { data } = error.response;
+
+      if (data) {
+        const { mobile_number, error } = data;
+        setAlert({
+          isVisible: true,
+          message: error,
+          severity: "error",
+        });
+
+        if (mobile_number) {
+          setAlert({
+            isVisible: true,
+            message: mobile_number,
+            severity: "error",
+          });
+          navigate("/login/forgot-password/");
+        }
+      }
+    }
   };
 
   return (
@@ -132,12 +161,18 @@ const ForgotPasswordOTP = () => {
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  className={cn("btn", "button", styles["otp-submit-btn"])}
-                >
-                  Submit
-                </button>
+                {loading ? (
+                  <div className="text-center mt-2">
+                    <ButtonLoader size={60} />
+                  </div>
+                ) : (
+                  <button
+                    type="submit"
+                    className={cn("btn", "button", styles["otp-submit-btn"])}
+                  >
+                    Submit
+                  </button>
+                )}
               </form>
             </div>
           </div>

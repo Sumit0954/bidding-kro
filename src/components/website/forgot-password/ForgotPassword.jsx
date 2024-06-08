@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./ForgotPassword.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
@@ -7,6 +7,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import CheckEmailModal from "../../../elements/CustomModal/CheckEmailModal";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { addCountryCode } from "../../../helpers/formatter";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const ForgotPassword = () => {
   const { control, handleSubmit, setError } = useForm();
@@ -14,26 +17,36 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState(false);
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
   const handleResetMedium = () => {
     setIsPhoneReset(!isPhoneReset);
   };
 
   const submitForm = async (data) => {
+    setLoading(true);
     if (isPhoneReset) {
-      data.mobile_number = "+91" + data.mobile_number;
+      data.mobile_number = addCountryCode(data.mobile_number);
       try {
         const response = await _sendApiRequest(
           "POST",
           WebsiteApiUrls.FORGOT_SEND_OTP,
-          data,
+          data
         );
         if (response.status === 204) {
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "OTP is sent to Your Mobile Number.",
+            severity: "success",
+          });
           navigate("/login/forgot-password/otp", {
             state: { mobile_number: data.mobile_number },
           });
         }
       } catch (error) {
+        setLoading(false);
         const { data } = error.response;
         if (data.error) {
           setError("mobile_number", {
@@ -47,13 +60,15 @@ const ForgotPassword = () => {
         const response = await _sendApiRequest(
           "POST",
           WebsiteApiUrls.FORGOT_PASSWORD_EMAIL,
-          data,
+          data
         );
         if (response.status === 204) {
+          setLoading(false);
           setEmail(data.email);
           setCheckEmail(true);
         }
       } catch (error) {
+        setLoading(false);
         const { data } = error.response;
         if (data.error) {
           setError("email", {
@@ -137,13 +152,17 @@ const ForgotPassword = () => {
 
                 <div className="row my-3">
                   <div className="col text-center">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Submit
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Submit
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>
