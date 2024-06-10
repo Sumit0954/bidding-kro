@@ -12,9 +12,15 @@
   text-decoration: none;
 }
 
-.bids-data-table {
+.portal-data-table {
   box-shadow: var(--glow-shadow);
   margin: 20px auto;
+  border-radius: 5px;
+}
+
+.admin-data-table {
+  box-shadow: 2.14px 2.14px 8.64px var(--box-shadow),
+    -2.14px -2.14px 8.64px var(--box-shadow);
   border-radius: 5px;
 }
 

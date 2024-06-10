@@ -1,10 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import _sendAPIRequest from "../helpers/api";
 import { PortalApiUrls } from "../helpers/api-urls/PortalApiUrls";
+import { AuthContext } from "./AuthProvider";
 
 export const UserDetailsContext = createContext();
 const UserDetailsProvider = (props) => {
   const [userDetails, setUserDetails] = useState({});
+  const { isAuthenticated } = useContext(AuthContext);
 
   const getUserProfile = async () => {
     try {
@@ -23,8 +25,10 @@ const UserDetailsProvider = (props) => {
   };
 
   useEffect(() => {
-    getUserProfile();
-  }, []);
+    if (isAuthenticated) {
+      getUserProfile();
+    }
+  }, [isAuthenticated]);
 
   return (
     <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>

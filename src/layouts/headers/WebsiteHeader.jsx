@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./WebsiteHeader.module.scss";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
+import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
+import { Avatar } from "@mui/material";
 
 const WebsiteHeader = () => {
+  const { userDetails } = useContext(UserDetailsContext);
+  console.log(userDetails);
   return (
     <header>
       <nav
@@ -51,20 +55,28 @@ const WebsiteHeader = () => {
                 </NavLink>
               </li>
             </ul>
-            <div className={styles["btn-container"]}>
-              <NavLink
-                to={"/register"}
-                className={cn("btn", "mx-2", styles["header-btn"])}
-              >
-                Register
+
+            {userDetails?.user ? (
+              <NavLink to={'/portal'} className={cn(styles["loggedin-profile"])}>
+                <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
+                {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
               </NavLink>
-              <NavLink
-                to={"/login"}
-                className={cn("btn", "mx-2", styles["header-btn"])}
-              >
-                Login
-              </NavLink>
-            </div>
+            ) : (
+              <div className={styles["btn-container"]}>
+                <NavLink
+                  to={"/register"}
+                  className={cn("btn", "mx-2", styles["header-btn"])}
+                >
+                  Register
+                </NavLink>
+                <NavLink
+                  to={"/login"}
+                  className={cn("btn", "mx-2", styles["header-btn"])}
+                >
+                  Login
+                </NavLink>
+              </div>
+            )}
           </div>
         </div>
       </nav>

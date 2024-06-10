@@ -13,6 +13,8 @@ import { addCountryCode, numberFormatter } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { NavLink } from "react-router-dom";
+import { CloudUpload } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 const UserProfile = () => {
   const {
@@ -133,19 +135,28 @@ const UserProfile = () => {
                       alt="profile-img"
                       className={styles["logo-img"]}
                     />
-                    <label htmlFor="profile-image">
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      tabIndex={-1}
+                      startIcon={<CloudUpload />}
+                      sx={{
+                        backgroundColor: "var(--primary-color)",
+                        "&:hover": {
+                          backgroundColor: "var(--secondary-color)",
+                        },
+                      }}
+                    >
+                      Change Profile Image
                       <input
                         {...register("profile_image")}
                         type="file"
                         accept=".jpeg, .jpg, .png"
-                        id="profile-image"
+                        className="visually-hidden-input"
                       />
-                      <span
-                        className={cn("btn", "button", styles["upload-btn"])}
-                      >
-                        Change Profile Image
-                      </span>
-                    </label>
+                    </Button>
+
                     {errors.profile_image && (
                       <span className="error mb-0">
                         {errors.profile_image.message || "Error"}

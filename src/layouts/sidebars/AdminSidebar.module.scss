@@ -20,31 +20,29 @@
         margin-bottom: 10px;
       }
 
-      &:hover{
+      &:hover {
         color: var(--admin-primary-color);
 
-        .sidebar-item{
+        .sidebar-item {
           background-color: var(--white);
 
-          .item-icon{
-            filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
+          .item-icon {
+            filter: invert(50%) sepia(0%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%)
           }
         }
       }
 
-      &.active{
+      &.active {
         color: var(--admin-primary-color);
-      
-        .sidebar-item{
+
+        .sidebar-item {
           background-color: var(--white);
-      
-          .item-icon{
-            filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
+
+          .item-icon {
+            filter: invert(50%) sepia(0%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%)
           }
         }
       }
     }
   }
 }
-
-

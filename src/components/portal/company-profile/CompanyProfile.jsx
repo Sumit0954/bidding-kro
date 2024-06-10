@@ -22,6 +22,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import { CloudUpload } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 const CompanyProfile = () => {
   const {
@@ -267,15 +269,28 @@ const CompanyProfile = () => {
                         alt="company-logo"
                       />
                     </div>
-                    <label>
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      tabIndex={-1}
+                      startIcon={<CloudUpload />}
+                      sx={{
+                        width: "15rem",
+                        backgroundColor: "var(--primary-color)",
+                        "&:hover": {
+                          backgroundColor: "var(--secondary-color)",
+                        },
+                      }}
+                    >
+                      Upload Logo
                       <input
                         {...register("logo")}
                         type="file"
                         accept=".jpeg, .jpg, .png"
-                        placeholder="logo"
+                        className="visually-hidden-input"
                       />
-                      <span>+ ADD Logo</span>
-                    </label>
+                    </Button>
                     <p className={styles["img-suggestion"]}>
                       200KB max. JPEG, PNG, JPG format only. Suggested photo
                       width and height: 200*100px.

@@ -8,6 +8,7 @@
 			align-items: center;
 			margin-top: 10px;
 			margin-bottom: 0.4rem;
+			gap: 4rem;
 
 			.img-box {
 				img.logo-img {
@@ -16,28 +17,6 @@
 					aspect-ratio: 2 / 1;
 					padding: 2px;
 					border: 2px solid var(--primary-color);
-				}
-			}
-
-			label {
-				position: relative;
-
-				input[type='file'] {
-					visibility: hidden;
-				}
-
-				span {
-					position: absolute;
-					top: 0;
-					left: 50%;
-					transform: translate(-50%);
-					background-color: var(--primary-color);
-					padding: 5px 10px;
-					border-radius: 5px;
-					color: var(--white);
-					width: 8rem;
-					text-align: center;
-					cursor: pointer;
 				}
 			}
 

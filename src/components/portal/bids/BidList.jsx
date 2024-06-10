@@ -1,7 +1,6 @@
 import React from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
-import { companiesRowData } from "../../../elements/CustomDataTable/TableRowData";
 import { TableCell } from "@mui/material";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { useForm } from "react-hook-form";
@@ -64,17 +63,17 @@ const BidList = ({ listType }) => {
       {listType === "created" ? (
         <DataTable
           propsColumn={bids_column}
-          propsData={companiesRowData}
+          propsData={[]}
           action={addAction}
-          customClassName="bids-data-table"
+          customClassName="portal-data-table"
         />
       ) : (
         listType === "invited" && (
           <DataTable
-            propsColumn={[]}
+            propsColumn={bids_column}
             propsData={[]}
             action={addAction}
-            customClassName="bids-data-table"
+            customClassName="portal-data-table"
           />
         )
       )}
