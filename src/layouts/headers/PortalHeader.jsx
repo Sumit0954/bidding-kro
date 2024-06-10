@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import cn from "classnames";
 import styles from "./PortalHeader.module.scss";
 import { NavLink } from "react-router-dom";
@@ -6,8 +6,12 @@ import NotificationIcon from "../../assets/images/portal/layout/icons/notificati
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
 import { Box } from "@mui/material";
+import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
+import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 
 const PortalHeader = () => {
+  const { userDetails } = useContext(UserDetailsContext);
+  const { companyDetails } = useContext(CompanyDetailsContext);
   const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -58,10 +62,17 @@ const PortalHeader = () => {
                 <img src={NotificationIcon} alt="NotificationIcon" />
               </NavLink>
 
-              <Box className={cn('cursor')} onClick={handleClick}>
+              <Box className={cn("cursor")} onClick={handleClick}>
                 <img src={UserIcon} alt="NotificationIcon" />
               </Box>
-              <AccountSettingMenu open={open} anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
+              <AccountSettingMenu
+                open={open}
+                anchorEl={anchorEl}
+                setAnchorEl={setAnchorEl}
+                from={"Portal"}
+                userDetails={userDetails}
+                companyDetails={companyDetails}
+              />
             </div>
           </div>
         </div>

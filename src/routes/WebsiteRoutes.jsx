@@ -13,7 +13,6 @@ import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
-import UserDetailsProvider from "../contexts/UserDetailsProvider";
 
 const WebsiteRoutes = () => {
   return (
@@ -21,36 +20,36 @@ const WebsiteRoutes = () => {
       <AlertProvider>
         <AuthProvider>
           {/* <UserDetailsProvider> */}
-            <RegisterDataProvider>
-              <WebsiteHeader />
-              <main>
-                <Routes>
-                  <Route index element={<HomePage />} />
-                  <Route path="/register" element={<RegistrationPage />} />
-                  <Route path="/register/otp" element={<RegistrationOTP />} />
+          <RegisterDataProvider>
+            <WebsiteHeader />
+            <main>
+              <Routes>
+                <Route index element={<HomePage />} />
+                <Route path="/register" element={<RegistrationPage />} />
+                <Route path="/register/otp" element={<RegistrationOTP />} />
+                <Route
+                  path="/email/verification"
+                  element={<EmailVerificationPage />}
+                />
+                <Route path="/login" element={<LoginPage />} />
+                <Route
+                  path="/login/forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path="/login/forgot-password/otp"
+                  element={<ForgotPasswordOTP />}
+                />
+                <Route element={<ProtectedRoutes />}>
                   <Route
-                    path="/email/verification"
-                    element={<EmailVerificationPage />}
+                    path="/reset-password"
+                    element={<ResetPasswordPage />}
                   />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route
-                    path="/login/forgot-password"
-                    element={<ForgotPasswordPage />}
-                  />
-                  <Route
-                    path="/login/forgot-password/otp"
-                    element={<ForgotPasswordOTP />}
-                  />
-                  <Route element={<ProtectedRoutes />}>
-                    <Route
-                      path="/reset-password"
-                      element={<ResetPasswordPage />}
-                    />
-                  </Route>
-                </Routes>
-                <CallAlert />
-              </main>
-            </RegisterDataProvider>
+                </Route>
+              </Routes>
+              <CallAlert />
+            </main>
+          </RegisterDataProvider>
           {/* </UserDetailsProvider> */}
         </AuthProvider>
       </AlertProvider>
@@ -61,8 +60,12 @@ const WebsiteRoutes = () => {
 export default WebsiteRoutes;
 
 export const ProtectedRoutes = () => {
-  const [isAuthenticated] = useContext(AuthContext);
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  const { role, isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated && role === "PORTAL" ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 export const CallAlert = () => {

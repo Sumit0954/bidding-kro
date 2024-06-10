@@ -36,7 +36,7 @@ const LoginForm = () => {
       const response = await _sendAPIRequest("POST", url, data);
       if (response.status === 200) {
         setLoading(false);
-        login(response.data);
+        login(response.data, 'PORTAL');
         navigate('/portal')
       }
     } catch (error) {

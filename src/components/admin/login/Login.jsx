@@ -1,15 +1,50 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import styles from "./Login.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { NavLink } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { login } from "../../../utils/AxiosInterceptors";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const Login = () => {
   const { control, handleSubmit } = useForm();
-  const submitForm = (data) => {
-    console.log(data);
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
+
+  const submitForm = async (data) => {
+    setLoading(true);
+    try {
+      const formData = {
+        email: data.email,
+        password: data.password,
+      };
+      const response = await _sendAPIRequest(
+        "POST",
+        AdminApiUrls.ADMIN_LOGIN,
+        formData
+      );
+      if (response.status === 200) {
+        setLoading(false);
+        login(response.data, "ADMIN");
+        window.location.href = "/admin/companies";
+      }
+    } catch (error) {
+      setLoading(false);
+      const { data } = error.response;
+      if (data) {
+        setAlert({
+          isVisible: true,
+          message: data.error,
+          severity: "error",
+        });
+      }
+    }
   };
+
   return (
     <>
       <div className="container">
@@ -61,13 +96,17 @@ const Login = () => {
 
                 <div className="row my-3">
                   <div className="col text-center">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      onClick={handleSubmit(submitForm)}
-                    >
-                      Login
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button
+                        type="submit"
+                        className={cn("btn", "button")}
+                        onClick={handleSubmit(submitForm)}
+                      >
+                        Login
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

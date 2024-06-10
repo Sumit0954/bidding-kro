@@ -58,18 +58,18 @@ export const requestRefresh = async () => {
 };
 
 // Logging in
-export const login = async (data) => {
+export const login = async (data, role) => {
   // save tokens to storage
   localStorage.setItem("accessToken", data.access);
   localStorage.setItem("refreshToken", data.refresh);
+  localStorage.setItem("role", role);
 };
 
 // Logging out
-export const logout = async () => {
+export const logout = async ({redirectPath}) => {
   // remove tokens to storage
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-  window.location.href = "/login";
+  localStorage.clear();
+  window.location.href = redirectPath;
 };
 
 // AuthServices
@@ -90,6 +90,5 @@ export const setRefreshToken = (token) => {
 };
 
 export const removeTokens = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  localStorage.clear();
 };

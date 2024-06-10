@@ -22,6 +22,18 @@
 			box-shadow: none;
 		}
 	}
+
+	.custom-navbar-collapse{
+		justify-content: flex-end;
+		align-items: center;
+
+		.icon-container{
+			display: flex;
+			align-items: center;
+			gap: 30px;
+			margin-right: 2rem;
+		}
+	}
 }
 
 @media screen and (max-width: 575px) {

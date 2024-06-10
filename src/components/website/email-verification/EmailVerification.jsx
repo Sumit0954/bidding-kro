@@ -28,7 +28,7 @@ const EmailVerification = () => {
         );
         if (response.status === 200) {
           setSuccess(true);
-          login(response.data);
+          login(response.data, 'PORTAL');
           if (type === "reset") {
             window.location.href = "/reset-password";
           } else {

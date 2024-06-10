@@ -1,5 +1,5 @@
 import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./AccountSettingMenu.module.scss";
 import {
   AccountCircleRounded,
@@ -9,14 +9,16 @@ import {
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import cn from "classnames";
-import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
-import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 import { logout } from "../../utils/AxiosInterceptors";
 
-const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
-  const { userDetails } = useContext(UserDetailsContext);
-  const { companyDetails } = useContext(CompanyDetailsContext);
-
+const AccountSettingMenu = ({
+  open,
+  anchorEl,
+  setAnchorEl,
+  from,
+  userDetails,
+  companyDetails,
+}) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -59,53 +61,71 @@ const AccountSettingMenu = ({ open, anchorEl, setAnchorEl }) => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          {userDetails && (
+          {from === "Portal" && userDetails ? (
             <>
               <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
               {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
             </>
+          ) : (
+            <>
+              <Avatar />
+              {"Super Admin"}
+            </>
           )}
         </MenuItem>
 
-        <Divider className={styles["divider"]} />
+        {from === "Portal" && companyDetails && (
+          <>
+            <Divider className={styles["divider"]} />
 
-        <NavLink to={"/portal/user-profile"} className={styles["menu-links"]}>
-          <MenuItem>
-            <ListItemIcon>
-              <AccountCircleRounded fontSize="medium" />
-            </ListItemIcon>
-            User Profile
-          </MenuItem>
-        </NavLink>
+            <NavLink
+              to={"/portal/user-profile"}
+              className={styles["menu-links"]}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <AccountCircleRounded fontSize="medium" />
+                </ListItemIcon>
+                User Profile
+              </MenuItem>
+            </NavLink>
 
-        <NavLink
-          to={
-            companyDetails
-              ? "/portal/company-profile/update"
-              : "/portal/company-profile/create"
-          }
-          className={styles["menu-links"]}
-        >
-          <MenuItem>
-            <ListItemIcon>
-              <StoreRounded fontSize="medium" />
-            </ListItemIcon>
-            Company Profile
-          </MenuItem>
-        </NavLink>
+            <NavLink
+              to={
+                companyDetails
+                  ? "/portal/company-profile/update"
+                  : "/portal/company-profile/create"
+              }
+              className={styles["menu-links"]}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <StoreRounded fontSize="medium" />
+                </ListItemIcon>
+                Company Profile
+              </MenuItem>
+            </NavLink>
 
-        <NavLink to={"/portal/settings"} className={styles["menu-links"]}>
-          <MenuItem>
-            <ListItemIcon>
-              <Settings fontSize="medium" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-        </NavLink>
+            <NavLink to={"/portal/settings"} className={styles["menu-links"]}>
+              <MenuItem>
+                <ListItemIcon>
+                  <Settings fontSize="medium" />
+                </ListItemIcon>
+                Settings
+              </MenuItem>
+            </NavLink>
+          </>
+        )}
 
         <Divider className={cn("my-2", styles["divider"])} />
 
-        <MenuItem onClick={() => logout()}>
+        <MenuItem
+          onClick={() =>
+            logout({
+              redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+            })
+          }
+        >
           <ListItemIcon>
             <Logout fontSize="medium" />
           </ListItemIcon>

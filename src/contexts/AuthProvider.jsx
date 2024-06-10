@@ -4,6 +4,7 @@ import { getAccessToken } from "../utils/AxiosInterceptors";
 export const AuthContext = createContext();
 const AuthProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!getAccessToken());
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     const checkAuth = () => {
@@ -19,7 +20,7 @@ const AuthProvider = (props) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={[isAuthenticated, setIsAuthenticated]}>
+    <AuthContext.Provider value={{ role, isAuthenticated, setIsAuthenticated }}>
       {props.children}
     </AuthContext.Provider>
   );

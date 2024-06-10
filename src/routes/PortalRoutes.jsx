@@ -70,8 +70,12 @@ const PortalRoutes = () => {
 export default PortalRoutes;
 
 export const ProtectedRoutes = () => {
-  const [isAuthenticated] = useContext(AuthContext);
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  const { role, isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated && role === "PORTAL" ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 export const CallAlert = () => {

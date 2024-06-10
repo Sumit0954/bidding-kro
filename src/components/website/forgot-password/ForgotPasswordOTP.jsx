@@ -73,7 +73,7 @@ const ForgotPasswordOTP = () => {
       
       if (response.status === 200) {
         setLoading(false);
-        login(response.data);
+        login(response.data, 'PORTAL');
         window.location.href = '/reset-password'
       }
     } catch (error) {
