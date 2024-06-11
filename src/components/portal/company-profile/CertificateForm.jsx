@@ -3,7 +3,7 @@ import styles from "./CertificateForm.module.scss";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
 import { Button, ImageList, ImageListItem } from "@mui/material";
-import { Cancel } from "@mui/icons-material";
+import { Cancel, CloudUpload } from "@mui/icons-material";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -161,24 +161,38 @@ const CertificateForm = ({ certificates }) => {
                     <Cancel sx={{ color: "var(--gray)" }} />
                   </Button>
                 </div>
-                {errors.file && (
-                  <span className="error d-flex justify-content-center">
-                    {errors?.file?.message || "Error"}
-                  </span>
-                )}
               </>
             ) : (
-              <label>
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUpload />}
+                sx={{
+                  width: "15rem",
+                  backgroundColor: "var(--primary-color)",
+                  "&:hover": {
+                    backgroundColor: "var(--secondary-color)",
+                  },
+                }}
+                className="mt-4"
+              >
+                Upload Certificate
                 <input
                   {...register("file", {
                     required: "Certificate file is required.",
                   })}
                   type="file"
                   accept=".jpeg, .jpg, .png"
-                  placeholder="logo"
+                  className="visually-hidden-input"
                 />
-                <span>+ ADD Certificate</span>
-              </label>
+              </Button>
+            )}
+            {errors.file && (
+              <span className="error d-flex justify-content-center mt-1">
+                {errors?.file?.message || "Error"}
+              </span>
             )}
           </div>
 
@@ -186,7 +200,10 @@ const CertificateForm = ({ certificates }) => {
             {loading ? (
               <ButtonLoader size={60} />
             ) : (
-              <button className="btn button mt-4" type="submit">
+              <button
+                className={`btn button ${!errors.file ? "mt-4" : "mb-2"}`}
+                type="submit"
+              >
                 Upload
               </button>
             )}

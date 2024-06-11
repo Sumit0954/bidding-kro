@@ -6,6 +6,9 @@ import {
   AccordionSummary,
   Chip,
   Divider,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
   Stack,
   Typography,
 } from "@mui/material";
@@ -49,7 +52,9 @@ const CompanyDetail = ({ companyDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Organisation Type</h6>
-              <p className={styles["col-data"]}>Private Company (LTD.)</p>
+              <p className={styles["col-data"]}>
+                {companyDetails?.organization_type?.name}
+              </p>
             </div>
           </div>
           <Divider classes={{ root: "custom-divider" }} />
@@ -77,7 +82,9 @@ const CompanyDetail = ({ companyDetails }) => {
               <h6 className={styles["col-heading"]}>
                 Average Annual Reveue (last 3 years)
               </h6>
-              <p className={styles["col-data"]}>4,85,633.00</p>
+              <p className={styles["col-data"]}>
+                {companyDetails?.avg_annual_revenue}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Business Email</h6>
@@ -126,27 +133,42 @@ const CompanyDetail = ({ companyDetails }) => {
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Owner Name</h6>
-              <p className={styles["col-data"]}>Arvind Kumar</p>
+              <p className={styles["col-data"]}>
+                {companyDetails?.customer_profile?.user?.first_name}{" "}
+                {companyDetails?.customer_profile?.user?.last_name}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Designation</h6>
-              <p className={styles["col-data"]}>Owner</p>
+              <p className={styles["col-data"]}>
+                {companyDetails?.customer_profile?.designation}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Mobile</h6>
               <p className={styles["col-data"]}>
-                <a href="tel:+91-9999999999">+91-9999999999</a>
+                <a
+                  href={`tel:${companyDetails?.customer_profile?.user?.mobile_number}`}
+                >
+                  {companyDetails?.customer_profile?.user?.mobile_number}
+                </a>
               </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Email</h6>
               <p className={styles["col-data"]}>
-                <a href="mailto:arvind@gmail.com">arvind@gmail.com</a>
+                <a
+                  href={`mailto:${companyDetails?.customer_profile?.user?.email}`}
+                >
+                  {companyDetails?.customer_profile?.user?.email}
+                </a>
               </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>WhatsApp</h6>
-              <p className={styles["col-data"]}>+91-9999999999</p>
+              <p className={styles["col-data"]}>
+                {companyDetails?.customer_profile?.whatsapp_number}
+              </p>
             </div>
           </div>
         </AccordionDetails>
@@ -274,6 +296,36 @@ const CompanyDetail = ({ companyDetails }) => {
               </>
             );
           })}
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        expanded={expanded === "Certificates"}
+        onChange={handleChange("Certificates")}
+        square={true}
+        classes={{ root: "custom-accordion" }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Certificates ({companyDetails?.certificate?.length})
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ImageList cols={5} gap={10} sx={{ overflowY: "unset" }}>
+            {companyDetails?.certificate?.map((item, index) => (
+              <>
+                <ImageListItem key={index}>
+                  <img
+                    srcSet={`${item.file}?w=164&h=164&fit=contain&auto=format&dpr=2 2x`}
+                    src={item.file}
+                    alt={`Certificate ${index + 1}`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar title={item.type.name} />
+                </ImageListItem>
+              </>
+            ))}
+          </ImageList>
         </AccordionDetails>
       </Accordion>
     </>

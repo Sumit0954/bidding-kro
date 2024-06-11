@@ -73,9 +73,16 @@ em {
 	background-color: var(--primary-color) !important;
 	color: var(--white) !important;
 	font-weight: 500 !important;
-	padding: 0.3rem 2rem !important;
-	transition: all 0.3s ease 0s !important;
 	border: unset !important;
+	border-radius: 4px !important;
+	text-transform: uppercase !important;
+	font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+	font-size: 0.875rem !important;
+	line-height: 1.75 !important;
+	letter-spacing: 0.02857em !important;
+	min-width: 64px;
+	padding: 6px 16px !important;
+	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
 
 	&.disable {
@@ -90,11 +97,9 @@ em {
 	&.pending {
 		background-color: var(--pending) !important;
 		color: var(--white) !important;
-
-		
 	}
 
-	&.approve{
+	&.approve {
 		background-color: var(--success) !important;
 
 		&:hover {
@@ -104,7 +109,7 @@ em {
 		}
 	}
 
-	&.reject{
+	&.reject {
 		background-color: var(--error) !important;
 
 		&:hover {
@@ -116,31 +121,29 @@ em {
 
 	&:hover {
 		background-color: var(--secondary-color) !important;
-		color: var(--primary-color) !important;
-		transform: translateY(-7px);
-		box-shadow: 0px 5px 20px rgb(0 119 183 / 40%);
+		box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 	}
 }
 
 // common accordion css
-.custom-accordion{
+.custom-accordion {
 	position: unset !important;
 	box-shadow: 2px 2px 10px var(--box-shadow), -2px -2px 10px var(--box-shadow) !important;
 	border-radius: 5px !important;
 	margin: 20px auto;
 
-	&.Mui-expanded{
+	&.Mui-expanded {
 		margin-top: 20px !important;
 	}
 
-	.custom-accordion-heading{
+	.custom-accordion-heading {
 		font-weight: bold;
 		letter-spacing: 0.2px;
 		color: var(--admin-text-color-1);
 		font-size: 18px;
 	}
 
-	.custom-divider{
+	.custom-divider {
 		margin: 1rem 0 !important;
 		opacity: unset;
 		border-width: 1px !important;
@@ -148,7 +151,7 @@ em {
 }
 
 // common ck-editor css
-.ck.ck-editor{
+.ck.ck-editor {
 	box-shadow: var(--glow-shadow) !important;
 	border: 1px solid var(--primary-color) !important;
 	border-radius: 5px !important;
@@ -175,18 +178,18 @@ em {
 	border-color: var(--primary-color) !important;
 }
 
-.disable-input-field{
+.disable-input-field {
 	background-color: var(--disable) !important;
 }
 
 .visually-hidden-input {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  white-space: nowrap;
-  width: 1px;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	white-space: nowrap;
+	width: 1px;
 }

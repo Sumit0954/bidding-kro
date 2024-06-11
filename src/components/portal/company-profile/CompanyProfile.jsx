@@ -302,8 +302,9 @@ const CompanyProfile = () => {
                     </span>
                   )}
                 </div>
+
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-12">
                     <CustomInput
                       control={control}
                       label="Company Name"
@@ -312,6 +313,17 @@ const CompanyProfile = () => {
                       rules={{
                         required: "Company name is required.",
                       }}
+                    />
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-lg-6">
+                    <CustomInput
+                      control={control}
+                      label="Avg. Annual Revenue"
+                      name="avg_annual_revenue"
+                      placeholder="Ex. 500000"
                     />
                   </div>
                   <div className="col-lg-6">
@@ -326,6 +338,7 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
