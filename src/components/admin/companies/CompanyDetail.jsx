@@ -194,7 +194,7 @@ const CompanyDetail = ({ companyDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion
+      {/* <Accordion
         expanded={expanded === "Contacts"}
         onChange={handleChange("Contacts")}
         square={true}
@@ -262,7 +262,7 @@ const CompanyDetail = ({ companyDetails }) => {
             </div>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
       <Accordion
         expanded={expanded === "Addresses"}
