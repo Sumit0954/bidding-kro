@@ -67,7 +67,7 @@ const LoginForm = () => {
                     {isPhoneLogin ? (
                       <CustomInput
                         control={control}
-                        label="Login with Mobile"
+                        label="Login with Phone Number"
                         name="mobile_number"
                         inputType="tel"
                         placeholder="Login with Mobile"
@@ -117,7 +117,7 @@ const LoginForm = () => {
                       <span className="cursor" onClick={handleLoginMedium}>
                         {isPhoneLogin
                           ? "Login With Email"
-                          : "Login With Mobile"}
+                          : "Login With Phone Number"}
                       </span>
                     </p>
                   </div>

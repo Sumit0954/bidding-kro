@@ -7,6 +7,7 @@ import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { useNavigate } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { passwordValidator } from "../../../helpers/validation";
 
 const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
@@ -61,6 +62,11 @@ const ResetPassword = () => {
                       inputType="password"
                       rules={{
                         required: "Enter new password is required.",
+                        validate: async (value) =>
+                          value &&
+                          ((await passwordValidator(value)) !== true
+                            ? await passwordValidator(value)
+                            : true),
                       }}
                     />
                   </div>
@@ -73,6 +79,11 @@ const ResetPassword = () => {
                       inputType="password"
                       rules={{
                         required: "Confirm password is required.",
+                        validate: async (value) =>
+                          value &&
+                          ((await passwordValidator(value)) !== true
+                            ? await passwordValidator(value)
+                            : true),
                       }}
                     />
                   </div>

@@ -6,7 +6,11 @@ import cn from "classnames";
 import { useNavigate, NavLink } from "react-router-dom";
 import { RegisterDataContext } from "../../../contexts/RegisterDataProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
-import { emailValidator, phoneValidator } from "../../../helpers/validation";
+import {
+  emailValidator,
+  passwordValidator,
+  phoneValidator,
+} from "../../../helpers/validation";
 import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
@@ -118,9 +122,9 @@ const RegistrationForm = () => {
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
-                      label="Mobile"
+                      label="Phone Number"
                       name="mobile_number"
-                      placeholder="Mobile"
+                      placeholder="Phone Number"
                       inputType="tel"
                       rules={{
                         required: "Mobile number is required.",
@@ -139,6 +143,11 @@ const RegistrationForm = () => {
                       inputType="password"
                       rules={{
                         required: "Password is required.",
+                        validate: async (value) =>
+                          value &&
+                          ((await passwordValidator(value)) !== true
+                            ? await passwordValidator(value)
+                            : true),
                       }}
                     />
                   </div>

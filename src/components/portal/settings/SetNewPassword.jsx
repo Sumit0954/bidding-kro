@@ -7,6 +7,7 @@ import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { passwordValidator } from "../../../helpers/validation";
 
 const SetNewPassword = () => {
   const { control, handleSubmit, setError } = useForm();
@@ -87,6 +88,11 @@ const SetNewPassword = () => {
                       inputType="password"
                       rules={{
                         required: "New Password is required.",
+                        validate: async (value) =>
+                          value &&
+                          ((await passwordValidator(value)) !== true
+                            ? await passwordValidator(value)
+                            : true),
                       }}
                     />
                   </div>
@@ -99,6 +105,11 @@ const SetNewPassword = () => {
                       inputType="password"
                       rules={{
                         required: "Confirm Password is required.",
+                        validate: async (value) =>
+                          value &&
+                          ((await passwordValidator(value)) !== true
+                            ? await passwordValidator(value)
+                            : true),
                       }}
                     />
                   </div>

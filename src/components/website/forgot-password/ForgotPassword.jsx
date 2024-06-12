@@ -110,7 +110,7 @@ const ForgotPassword = () => {
                     {isPhoneReset ? (
                       <CustomInput
                         control={control}
-                        label="Mobile Number"
+                        label="Enter Phone Number"
                         name="mobile_number"
                         placeholder="Mobile Number"
                         inputType="tel"
@@ -121,7 +121,7 @@ const ForgotPassword = () => {
                     ) : (
                       <CustomInput
                         control={control}
-                        label="Email Address"
+                        label="Enter Email Address"
                         name="email"
                         placeholder="Email Address"
                         inputType="tel"
@@ -143,8 +143,8 @@ const ForgotPassword = () => {
                     <p className={cn("mb-0", styles["switch-link"])}>
                       <span className="cursor" onClick={handleResetMedium}>
                         {isPhoneReset
-                          ? "Use Email Instead"
-                          : "Use Mobile Instead"}
+                          ? "Reset Using Email"
+                          : "Reset Using Phone Number"}
                       </span>
                     </p>
                   </div>
