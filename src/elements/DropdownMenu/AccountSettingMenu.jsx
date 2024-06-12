@@ -74,7 +74,7 @@ const AccountSettingMenu = ({
           )}
         </MenuItem>
 
-        {from === "Portal" && companyDetails && (
+        {from === "Portal" && (
           <>
             <Divider className={styles["divider"]} />
 
