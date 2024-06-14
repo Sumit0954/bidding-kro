@@ -410,7 +410,6 @@ const CompanyProfile = () => {
                       control={control}
                       name="category"
                       label="Categories"
-                      className="business-group"
                       options={categories}
                       showRootCategories={true}
                       rules={{

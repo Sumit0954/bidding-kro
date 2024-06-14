@@ -10,13 +10,16 @@ import { login } from "../../../utils/AxiosInterceptors";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { addCountryCode } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import CheckEmailModal from "../../../elements/CustomModal/CheckEmailModal";
 
 const LoginForm = () => {
   const { control, handleSubmit } = useForm();
   const [isPhoneLogin, setIsPhoneLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [checkEmail, setCheckEmail] = useState(false);
+  const [email, setEmail] = useState();
 
   const handleLoginMedium = () => {
     setIsPhoneLogin(!isPhoneLogin);
@@ -36,16 +39,46 @@ const LoginForm = () => {
       const response = await _sendAPIRequest("POST", url, data);
       if (response.status === 200) {
         setLoading(false);
-        login(response.data, 'PORTAL');
-        navigate('/portal')
+        login(response.data, "PORTAL");
+        navigate("/portal");
       }
     } catch (error) {
       setLoading(false);
-      const { data } = error.response;
-      if (data) {
+      const { data, config } = error.response;
+      const parsedData = JSON.parse(config?.data);
+      setEmail(parsedData.email);
+
+      if (data.error_code === 1001) {
         setAlert({
           isVisible: true,
-          message: data.error,
+          message: data.error_description,
+          severity: "error",
+        });
+        try {
+          const formData = { email: parsedData.email };
+          const response = await _sendAPIRequest(
+            "POST",
+            WebsiteApiUrls.RESEND_VERIFY_EMAIL,
+            formData
+          );
+          if (response.status === 204) {
+            setCheckEmail(true);
+          }
+        } catch (error) {
+          if (error.response.data.error_code === 1003) {
+            setAlert({
+              isVisible: true,
+              message: error.response.data.error_description,
+              severity: "error",
+            });
+          }
+        }
+      }
+
+      if (data.error_code === 1002) {
+        setAlert({
+          isVisible: true,
+          message: data.error_description,
           severity: "error",
         });
       }
@@ -165,6 +198,13 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
+      {checkEmail && (
+        <CheckEmailModal
+          open={true}
+          setCheckEmail={setCheckEmail}
+          description={`Your email address is not verified yet. Please check your ${email} to verify your account.`}
+        />
+      )}
     </>
   );
 };

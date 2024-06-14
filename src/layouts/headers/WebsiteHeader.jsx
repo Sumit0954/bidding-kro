@@ -7,7 +7,6 @@ import { Avatar } from "@mui/material";
 
 const WebsiteHeader = () => {
   const { userDetails } = useContext(UserDetailsContext);
-  console.log(userDetails);
   return (
     <header>
       <nav

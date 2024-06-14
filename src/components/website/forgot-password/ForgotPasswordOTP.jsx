@@ -70,11 +70,11 @@ const ForgotPasswordOTP = () => {
         WebsiteApiUrls.FORGOT_VERIFY_OTP,
         formData
       );
-      
+
       if (response.status === 200) {
         setLoading(false);
-        login(response.data, 'PORTAL');
-        window.location.href = '/reset-password'
+        login(response.data, "PORTAL");
+        window.location.href = "/reset-password";
       }
     } catch (error) {
       setLoading(false);

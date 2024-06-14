@@ -28,11 +28,12 @@ const EmailVerification = () => {
         );
         if (response.status === 200) {
           setSuccess(true);
-          login(response.data, 'PORTAL');
+          login(response.data, "PORTAL");
           if (type === "reset") {
             window.location.href = "/reset-password";
           } else {
-            window.location.href = "/portal";
+            const showReset = localStorage.getItem("showReset");
+            window.location.href = showReset ? "/reset-password" : "/portal";
           }
         }
       } catch (error) {
@@ -66,7 +67,9 @@ const EmailVerification = () => {
               id="modal-modal-description"
               sx={{ mt: 2 }}
             >
-              Your email has been successfully verified.
+              {success
+                ? "Your email has been successfully verified."
+                : "Your email verification has been failed."}
             </Typography>
 
             {type === "verify" && success && (

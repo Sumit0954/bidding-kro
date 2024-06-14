@@ -10,12 +10,14 @@ import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { addCountryCode } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import _sendAPIRequest from "../../../helpers/api";
 
 const ForgotPassword = () => {
   const { control, handleSubmit, setError } = useForm();
   const [isPhoneReset, setIsPhoneReset] = useState(false);
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState(false);
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -47,11 +49,46 @@ const ForgotPassword = () => {
         }
       } catch (error) {
         setLoading(false);
-        const { data } = error.response;
-        if (data.error) {
+        const { data, config } = error.response;
+        if (data.error_code === 1004) {
           setError("mobile_number", {
             type: "focus",
-            message: data.error,
+            message: data.error_description,
+          });
+        } else if (data.error_code === 1002) {
+          const parsedData = JSON.parse(config?.data);
+
+          try {
+            const response = await _sendApiRequest(
+              "POST",
+              WebsiteApiUrls.SEND_OTP,
+              { mobile_number: addCountryCode(parsedData?.mobile_number) }
+            );
+            if (response.status === 204) {
+              setLoading(false);
+              setAlert({
+                isVisible: true,
+                message: "OTP is sent to Your Mobile Number.",
+                severity: "success",
+              });
+              navigate("/login/forgot-password/otp", {
+                state: { mobile_number: parsedData?.mobile_number },
+              });
+            }
+          } catch (error) {
+            const { data } = error.response;
+            if (data.error_code === 1004) {
+              setError("mobile_number", {
+                type: "focus",
+                message: data.error_description,
+              });
+            }
+          }
+        } else {
+          setAlert({
+            isVisible: true,
+            message: data.error_description,
+            severity: "error",
           });
         }
       }
@@ -64,17 +101,39 @@ const ForgotPassword = () => {
         );
         if (response.status === 204) {
           setLoading(false);
-          setEmail(data.email);
           setCheckEmail(true);
         }
       } catch (error) {
         setLoading(false);
-        const { data } = error.response;
-        if (data.error) {
-          setError("email", {
-            type: "focus",
-            message: data.error,
+        const { data, config } = error.response;
+        const parsedData = JSON.parse(config?.data);
+        setEmail(parsedData.email);
+        if (data.error_code === 1001) {
+          setAlert({
+            isVisible: true,
+            message: data.error_description,
+            severity: "error",
           });
+          try {
+            const formData = { email: parsedData.email };
+            const response = await _sendAPIRequest(
+              "POST",
+              WebsiteApiUrls.RESEND_VERIFY_EMAIL,
+              formData
+            );
+            if (response.status === 204) {
+              setShowVerificationPopup(true);
+              localStorage.setItem("showReset", true);
+            }
+          } catch (error) {
+            if (error.response.data.error_code === 1003) {
+              setAlert({
+                isVisible: true,
+                message: error.response.data.error_description,
+                severity: "error",
+              });
+            }
+          }
         }
       }
     }
@@ -176,6 +235,14 @@ const ForgotPassword = () => {
           open={true}
           setCheckEmail={setCheckEmail}
           description={`We've sent a link to reset your password at ${email}`}
+        />
+      )}
+
+      {showVerificationPopup && (
+        <CheckEmailModal
+          open={true}
+          setCheckEmail={setShowVerificationPopup}
+          description={`Your email address is not verified yet. Please check your ${email} to verify your account.`}
         />
       )}
     </>
