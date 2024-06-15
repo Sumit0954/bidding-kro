@@ -129,7 +129,12 @@ const CompanyProfile = () => {
             createFormData.append(key, mobile_number);
           } else if (key === "category") {
             value?.map((item) => createFormData.append(key, item));
-          } else {
+          } else if (
+            value !== undefined &&
+            value !== null &&
+            value[0] !== undefined &&
+            value[0] !== null
+          ) {
             createFormData.append(key, value);
           }
         }
@@ -241,7 +246,7 @@ const CompanyProfile = () => {
     if (action === "update") {
       setAddresses(companyDetails?.address);
       setCertificates(companyDetails?.certificate);
-      setCompanyLogo(companyDetails?.logo);
+      setCompanyLogo(companyDetails?.logo || DummyLogo);
       reset({
         ...companyDetails,
         organization_type: companyDetails?.organization_type,
@@ -331,7 +336,7 @@ const CompanyProfile = () => {
                       control={control}
                       label="Website Url"
                       name="website"
-                      placeholder="Website Url"
+                      placeholder="https://example.com"
                       rules={{
                         pattern: websiteValidator,
                       }}

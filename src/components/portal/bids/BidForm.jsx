@@ -1,23 +1,18 @@
-import styles from './BidForm.module.scss'
+import styles from "./BidForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import React, { useEffect, useState } from "react";
 import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
+import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 
-
 const BidForm = () => {
-  const { control, handleSubmit, register, getValues, watch } = useForm();
-  const [addresses, setAddresses] = useState([
-    { street: "", city: "", state: "", pincode: "" },
-  ]);
-
+  const { control, handleSubmit } = useForm();
 
   const submitForm = (data) => {
     console.log(data);
   };
-
 
   return (
     <>
@@ -25,36 +20,36 @@ const BidForm = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
-              <form onSubmit={handleSubmit(submitForm)}>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <h3>Create Bid</h3>
-                  </div>
+              <div className="row border-bottom border-secondary mb-4">
+                <div className="col-lg-12">
+                  <h3>Create Bid</h3>
                 </div>
+              </div>
+              <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomInput
                       control={control}
                       label="Bid Title"
-                      name="bid-title"
+                      name="bid_title"
                       placeholder="Bid Title"
                       rules={{
                         required: "Bid Title is required.",
                       }}
                     />
                   </div>
-
                 </div>
                 <div className="row">
                   <div className="col-lg-6">
-                    <CustomInput
+                    <CustomSelect
                       control={control}
                       label="Bid Type"
-                      name="bid-type"
+                      options={[]}
+                      name="bid_type"
                       placeholder="Bid Type"
-                      rules={{
-                        required: "Bid Type is required.",
-                      }}
+                      // rules={{
+                      //   required: "Bid Type is required.",
+                      // }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -68,7 +63,6 @@ const BidForm = () => {
                       }}
                     />
                   </div>
-
                 </div>
                 <div className="row">
                   <div className="col-lg-12">
@@ -76,35 +70,42 @@ const BidForm = () => {
                       control={control}
                       name="categories"
                       label="Categories"
-                      className="business-group"
                       options={[]}
-                      rules={{
-                        required: "Choose atleast one category.",
-                      }}
+                      // rules={{
+                      //   required: "Choose atleast one category.",
+                      // }}
                     />
                   </div>
                 </div>
-
-
-
-
-
                 <div className="row">
-
+                  <div className="col-lg-12">
+                    <CategoriesSelect
+                      control={control}
+                      name="product_type"
+                      label="Product Type"
+                      placeholder="Select Products"
+                      options={[]}
+                      // rules={{
+                      //   required: "Choose atleast one product.",
+                      // }}
+                    />
+                  </div>
+                </div>
+                <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="Product Type"
-                      name="product-type"
-                      placeholder="Product Type"
-                      inputType="tel"
+                      label="Product Quantity"
+                      name="product_quantity"
+                      placeholder="Product Quantity"
+                      inputType="text"
                       rules={{
-                        required: "Product Type is required.",
+                        required: "Product Quantity is required.",
                       }}
                     />
                   </div>
                   <div className="col-lg-6">
-                    <CustomInput
+                    <CustomSelect
                       control={control}
                       label="Unit"
                       name="unit"
@@ -120,52 +121,30 @@ const BidForm = () => {
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="Product Quantity"
-                      name="product-quantity"
-                      placeholder="Product Quantity"
-                      inputType="text"
-                      rules={{
-                        required: "Product Quantity is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
                       label="Delivery Timeline"
-                      name="delivery-timeline"
+                      name="delivery_timeline"
                       placeholder="Delivery Timeline"
-                      inputType="text"
+                      inputType="datetime-local"
                       rules={{
-                        required: "Product Quantity is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Opening Date"
-                      name="opening-date"
-                      placeholder="Opening Date"
-                      rules={{
-                        required: "Opening Date is required.",
+                        required: "Delivery Timeline is required.",
                       }}
                     />
                   </div>
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="Closing Date"
-                      name="closing-date"
-                      placeholder="Closing Date"
+                      label="Bidding Date & Time"
+                      name="bidding_date_time"
+                      placeholder="Bidding Date & Time"
+                      inputType="datetime-local"
                       rules={{
-                        required: "Closing Date is required.",
+                        required: "Bidding Date & Time is required.",
                       }}
                     />
                   </div>
                 </div>
+
+
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -214,35 +193,6 @@ const BidForm = () => {
                     />
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-lg-12">
-
-
-                    <div className="col text-end">
-                      <button
-                        type="submit"
-                        className={cn("btn", "button", styles["custom-btn"])}
-                      >
-                        +  Add Question
-                      </button>
-                    </div>
-
-                    <CustomInput
-                      control={control}
-                      label="Questions for Suppliers"
-                      name="questions-for-suppliers"
-                      placeholder="Questions for Suppliers"
-                      rules={{
-                        required: "Questions for Suppliers is required.",
-                      }}
-                    />
-
-
-                  </div>
-
-                </div>
-
-
 
                 <div className="row my-3">
                   <div className="col text-end">
@@ -255,15 +205,12 @@ const BidForm = () => {
                   </div>
                 </div>
               </form>
-
-
             </div>
           </div>
         </div>
       </div>
-
     </>
-  )
-}
+  );
+};
 
-export default BidForm
+export default BidForm;

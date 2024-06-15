@@ -12,6 +12,7 @@ const CategoriesSelect = ({
   showRootCategories = false,
   showLabel = true,
   rules = {},
+  placeholder="Select Categories"
 }) => {
   return (
     <Box className={styles["input-field-container"]}>
@@ -87,7 +88,7 @@ const CategoriesSelect = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder="Select Categories"
+                    placeholder={placeholder}
                     helperText={
                       field?.value?.length >= maxAllowedCategoriesCnt
                         ? "Note: Maximum number of selections reached."
