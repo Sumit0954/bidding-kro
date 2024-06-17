@@ -48,6 +48,14 @@ const LoginForm = () => {
       const parsedData = JSON.parse(config?.data);
       setEmail(parsedData.email);
 
+      if (data.error_code === 9999) {
+        setAlert({
+          isVisible: true,
+          message: data.error,
+          severity: "error",
+        });
+      }
+
       if (data.error_code === 1001) {
         setAlert({
           isVisible: true,
