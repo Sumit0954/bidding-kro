@@ -12,7 +12,7 @@ import { phoneValidator } from "../../../helpers/validation";
 import { addCountryCode, numberFormatter } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CloudUpload } from "@mui/icons-material";
 import { Button } from "@mui/material";
 
@@ -32,6 +32,7 @@ const UserProfile = () => {
   const { companyDetails } = useContext(CompanyDetailsContext);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
 
   const profile_image = watch("profile_image");
   useEffect(() => {
@@ -92,6 +93,11 @@ const UserProfile = () => {
           message: "Profile has been updated successfully.",
           severity: "success",
         });
+        if (companyDetails) {
+          navigate("/portal/company-profile/update");
+        } else {
+          navigate("/portal/company-profile/create");
+        }
       }
     } catch (error) {
       const { data } = error.response;

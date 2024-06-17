@@ -12,6 +12,7 @@ import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import {
   addCountryCode,
+  formatUrl,
   modifiedData,
   numberFormatter,
 } from "../../../helpers/formatter";
@@ -23,7 +24,13 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { CloudUpload } from "@mui/icons-material";
-import { Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 const CompanyProfile = () => {
   const {
@@ -51,6 +58,7 @@ const CompanyProfile = () => {
   ]);
   const [certificates, setCertificates] = useState([]);
   const navigate = useNavigate();
+  const [gstRegistered, setGstRegistered] = useState("No");
 
   const logo = watch("logo");
   useEffect(() => {
@@ -129,6 +137,8 @@ const CompanyProfile = () => {
             createFormData.append(key, mobile_number);
           } else if (key === "category") {
             value?.map((item) => createFormData.append(key, item));
+          } else if (key === "website") {
+            createFormData.append(key, formatUrl(value));
           } else if (
             value !== undefined &&
             value !== null &&
@@ -153,8 +163,9 @@ const CompanyProfile = () => {
                 const mobile_number = addCountryCode(value);
                 updateFormData.append(key, mobile_number);
               } else if (key === "category") {
-                console.log(value);
                 value?.map((item) => updateFormData.append(key, item));
+              } else if (key === "website") {
+                updateFormData.append(key, formatUrl(value));
               } else {
                 updateFormData.append(key, value ? value : "");
               }
@@ -244,6 +255,7 @@ const CompanyProfile = () => {
     }
 
     if (action === "update") {
+      if (companyDetails?.gstin) setGstRegistered("Yes");
       setAddresses(companyDetails?.address);
       setCertificates(companyDetails?.certificate);
       setCompanyLogo(companyDetails?.logo || DummyLogo);
@@ -326,9 +338,10 @@ const CompanyProfile = () => {
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
-                      label="Avg. Annual Revenue"
+                      label="Avg. Annual Turnover (Cr.)"
                       name="avg_annual_revenue"
-                      placeholder="Ex. 500000"
+                      placeholder="Ex. 200"
+                      inputType="number"
                     />
                   </div>
                   <div className="col-lg-6">
@@ -336,10 +349,10 @@ const CompanyProfile = () => {
                       control={control}
                       label="Website Url"
                       name="website"
-                      placeholder="https://example.com"
-                      rules={{
-                        pattern: websiteValidator,
-                      }}
+                      placeholder="www.example.com"
+                      // rules={{
+                      //   pattern: websiteValidator,
+                      // }}
                     />
                   </div>
                 </div>
@@ -351,6 +364,7 @@ const CompanyProfile = () => {
                       label="Year of Incorporation "
                       name="incorporation_year"
                       placeholder="Year of Incorporation"
+                      inputType="number"
                     />
                   </div>
                   <div className="col-lg-6">
@@ -385,20 +399,45 @@ const CompanyProfile = () => {
                       placeholder="Business Mobile"
                       inputType="tel"
                       rules={{
-                        required: "Business Mobile  is required.",
+                        required: "Business Mobile is required.",
                       }}
                     />
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="GST"
-                      name="gstin"
-                      placeholder="GST"
-                      inputType="text"
-                    />
+                    {gstRegistered === "No" ? (
+                      <>
+                        <Box>
+                          <label>GST Registered</label>
+                        </Box>
+                        <RadioGroup defaultValue="No" row>
+                          <FormControlLabel
+                            value="Yes"
+                            control={<Radio />}
+                            label="Yes"
+                            onClick={() => setGstRegistered("Yes")}
+                          />
+                          <FormControlLabel
+                            value="No"
+                            control={<Radio />}
+                            label="No"
+                            onClick={() => setGstRegistered("No")}
+                          />
+                        </RadioGroup>
+                      </>
+                    ) : (
+                      <CustomInput
+                        control={control}
+                        label="GST"
+                        name="gstin"
+                        placeholder="GST"
+                        inputType="text"
+                        rules={{
+                          required: "GST is required.",
+                        }}
+                      />
+                    )}
                   </div>
                   <div className="col-lg-6">
                     <CustomInput
@@ -406,6 +445,7 @@ const CompanyProfile = () => {
                       label="No. of Employees"
                       name="employee_count"
                       placeholder="No. of Employees"
+                      inputType="number"
                     />
                   </div>
                 </div>

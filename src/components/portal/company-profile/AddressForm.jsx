@@ -48,34 +48,39 @@ const AddressForm = ({ addresses, action }) => {
   };
 
   const handleDeleteAddress = async (index, address_id) => {
-    try {
-      const data = { address_id: address_id };
-      const response = await _sendAPIRequest(
-        "DELETE",
-        PortalApiUrls.DELETE_ADDRESS,
-        data,
-        true
-      );
-      if (response.status === 204) {
-        remove(index);
-        setFormCount(formCount - 1);
-        setAlert({
-          isVisible: true,
-          message: `Address line ${index + 1} has been deleted.`,
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      const { data } = error.response;
-      if (data) {
-        if (data.error) {
+    if (address_id) {
+      try {
+        const data = { address_id: address_id };
+        const response = await _sendAPIRequest(
+          "DELETE",
+          PortalApiUrls.DELETE_ADDRESS,
+          data,
+          true
+        );
+        if (response.status === 204) {
+          remove(index);
+          setFormCount(formCount - 1);
           setAlert({
             isVisible: true,
-            message: data.error,
-            severity: "error",
+            message: `Address line ${index + 1} has been deleted.`,
+            severity: "success",
           });
         }
+      } catch (error) {
+        const { data } = error.response;
+        if (data) {
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
       }
+    } else {
+      remove(index);
+      setFormCount(formCount - 1);
     }
   };
 

@@ -19,3 +19,10 @@ export const modifiedData = (data) => {
   });
   return modified;
 };
+
+export const formatUrl = (inputUrl) => {
+  if (!inputUrl.startsWith("http://") && !inputUrl.startsWith("https://")) {
+    return `https://${inputUrl}`;
+  }
+  return inputUrl;
+};

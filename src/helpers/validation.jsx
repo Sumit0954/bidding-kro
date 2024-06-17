@@ -11,7 +11,7 @@ export const emailValidator = {
 export const websiteValidator = {
   value:
     /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/,
-  message: "Enter a valid website",
+  message: "Enter a valid website url",
 };
 
 export const passwordValidator = async (password) => {
