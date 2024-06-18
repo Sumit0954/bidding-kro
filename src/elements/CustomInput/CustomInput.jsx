@@ -17,9 +17,19 @@ const CustomInput = ({
   control,
   handleChange,
   disableField = false,
+  showPasswordMsg = true,
 }) => {
   const text = useRef();
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const inputTypeChange = () => {
     showPassword
@@ -69,6 +79,8 @@ const CustomInput = ({
                   placeholder: placeholder,
                 }}
                 disabled={disableField}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
 
               {inputType === "password" &&
@@ -86,6 +98,26 @@ const CustomInput = ({
             </Box>
             {error && (
               <span className="error">{error.message || "Error"} </span>
+            )}
+
+            {inputType === "password" && isFocused && showPasswordMsg &&(
+              <div className={cn(styles["password-message"])}>
+                <p>Requirements for choosing password :</p>
+                <ul>
+                  <li className="bullet-points">
+                    Your password must be at least 12 characters long.
+                  </li>
+                  <li className="bullet-points">
+                    Your password must have 1 uppercase character.
+                  </li>
+                  <li className="bullet-points">
+                    Your password must have 1 special character.
+                  </li>
+                  <li className="bullet-points">
+                    Your password must have 1 numeric character.
+                  </li>
+                </ul>
+              </div>
             )}
           </>
         )}

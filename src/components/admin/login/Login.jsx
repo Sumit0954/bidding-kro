@@ -80,6 +80,7 @@ const Login = () => {
                       rules={{
                         required: "Password is required.",
                       }}
+                      showPasswordMsg={false}
                     />
                   </div>
                 </div>

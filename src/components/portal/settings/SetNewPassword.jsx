@@ -77,6 +77,7 @@ const SetNewPassword = () => {
                       rules={{
                         required: "Old Password is required.",
                       }}
+                      showPasswordMsg={false}
                     />
                   </div>
                   <div className="col-lg-12">

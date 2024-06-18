@@ -41,4 +41,20 @@
       margin-left: -35px;
     }
   }
+
+  .password-message {
+    margin-top: 5px;
+    padding: 10px;
+    word-spacing: 1px;
+    letter-spacing: 0.5px;
+
+    p {
+      margin-bottom: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0 !important;
+    }
+  }
 }

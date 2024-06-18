@@ -141,6 +141,7 @@ const LoginForm = () => {
                       rules={{
                         required: "Password is required.",
                       }}
+                      showPasswordMsg={false}
                     />
                   </div>
                 </div>
