@@ -5,18 +5,23 @@ export const companies_column = [
   {
     Header: "Company Name",
     accessor: "name",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     Cell: (data) => {
       return (
-        <NavLink className={styles['table-link']} to={`/admin/companies/${data?.row?.original?.id}`}>{data?.row?.original?.name}</NavLink>
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/companies/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.name}
+        </NavLink>
       );
     },
   },
   {
     Header: "Email",
     accessor: "business_email",
-    numeric: false,
+    align: "left",
     disablePadding: false,
   },
 ];

@@ -9,6 +9,8 @@ import BidListPage from "../pages/portal/BidListPage";
 import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
 import BidFormPage from "../pages/portal/BidFormPage";
+import BidQuestionsPage from "../pages/portal/BidQuestionsPage";
+import BidDocumentsPage from "../pages/portal/BidDocumentsPage";
 import BidDeatailsPage from "../pages/portal/BidDeatailsPage";
 import UserDetailsProvider from "../contexts/UserDetailsProvider";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
@@ -47,15 +49,24 @@ const PortalRoutes = () => {
                       path="/bids"
                       element={<LayoutPage Component={BidListPage} />}
                     />
+                    <Route
+                      path="/bids/create"
+                      element={<LayoutPage Component={BidFormPage} />}
+                    />
+                    <Route
+                      path="/questions/:action"
+                      element={<LayoutPage Component={BidQuestionsPage} />}
+                    />
+                    <Route
+                      path="/documents/:action"
+                      element={<LayoutPage Component={BidDocumentsPage} />}
+                    />
+
+                    <Route
+                      path="/bids/details"
+                      element={<LayoutPage Component={BidDeatailsPage} />}
+                    />
                   </Route>
-                  <Route
-                    path="/bids/create"
-                    element={<LayoutPage Component={BidFormPage} />}
-                  />
-                  <Route
-                    path="/bids/details"
-                    element={<LayoutPage Component={BidDeatailsPage} />}
-                  />
                 </Routes>
                 <CallAlert />
               </main>

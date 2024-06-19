@@ -1,17 +1,17 @@
-import { Box, Modal, Typography } from '@mui/material';
-import React from 'react'
-import styles from "./ThankyouModal.module.scss";
+import { Box, Modal, Typography } from "@mui/material";
+import React from "react";
+import styles from "./Modal.module.scss";
 import cn from "classnames";
-import EmailIcon from '../../assets/images/common/email.png'
+import EmailIcon from "../../assets/images/common/email.png";
 
-const CheckEmailModal = ({ open, setCheckEmail, description }) => {
+const CheckEmailModal = ({ checkEmail, setCheckEmail, description }) => {
   const handleClose = () => {
     setCheckEmail(false);
   };
   return (
     <>
       <Modal
-        open={open}
+        open={checkEmail}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >
@@ -39,7 +39,7 @@ const CheckEmailModal = ({ open, setCheckEmail, description }) => {
         </Box>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default CheckEmailModal
+export default CheckEmailModal;

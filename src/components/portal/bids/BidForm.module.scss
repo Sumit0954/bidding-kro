@@ -2,6 +2,11 @@
 	width: 80% !important;
 	margin: 0 auto !important;
 
-	.form-section {
+	.bid-form-section {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		border-bottom: 2px solid var(--primary-color);
+		margin: 30px auto !important;
 	}
 }

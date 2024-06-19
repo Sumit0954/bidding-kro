@@ -17,7 +17,9 @@ const Summary = () => {
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -57,9 +59,7 @@ const Summary = () => {
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
-              <h6 className={styles["col-heading"]}>
-                Product Quantity
-              </h6>
+              <h6 className={styles["col-heading"]}>Product Quantity</h6>
               <p className={styles["col-data"]}>10</p>
             </div>
             <div className="col">
@@ -77,10 +77,22 @@ const Summary = () => {
               <h6 className={styles["col-heading"]}>Description</h6>
               <p className={styles["col-data"]}>
                 <ul>
-                  <li>Objective: Procurement of cotton material to meet manufacturing needs.</li>
-                  <li>Invitation: Seeking proposals from qualified suppliers for premium-grade cotton fabric.</li>
-                  <li>Specifications: Suppliers must adhere to predefined specifications and industry standards.</li>
-                  <li>Partnership: Aim to establish a mutually beneficial partnership with the selected supplier.</li>
+                  <li>
+                    Objective: Procurement of cotton material to meet
+                    manufacturing needs.
+                  </li>
+                  <li>
+                    Invitation: Seeking proposals from qualified suppliers for
+                    premium-grade cotton fabric.
+                  </li>
+                  <li>
+                    Specifications: Suppliers must adhere to predefined
+                    specifications and industry standards.
+                  </li>
+                  <li>
+                    Partnership: Aim to establish a mutually beneficial
+                    partnership with the selected supplier.
+                  </li>
                 </ul>
               </p>
             </div>
@@ -91,7 +103,9 @@ const Summary = () => {
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -103,20 +117,26 @@ const Summary = () => {
             <p className={styles["col-data"]}>
               <h6 className={styles["col-heading"]}>May 18, 2024 2:00 AM</h6>
               <ul>
-                <li>Objective: Procurement of cotton material to meet manufacturing needs.</li>
-                <li>Invitation: Seeking proposals from qualified suppliers for premium-grade cotton fabric.</li>
-
+                <li>
+                  Objective: Procurement of cotton material to meet
+                  manufacturing needs.
+                </li>
+                <li>
+                  Invitation: Seeking proposals from qualified suppliers for
+                  premium-grade cotton fabric.
+                </li>
               </ul>
             </p>
           </div>
         </AccordionDetails>
       </Accordion>
 
-
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -126,13 +146,23 @@ const Summary = () => {
         <AccordionDetails>
           <div className="row">
             <p className={styles["col-data"]}>
-
               <ul>
-                <li>Objective: Procurement of cotton material to meet manufacturing needs.</li>
-                <li>Invitation: Seeking proposals from qualified suppliers for premium-grade cotton fabric.</li>
-                <li>Specifications: Suppliers must adhere to predefined specifications and industry standards.</li>
-                <li>Partnership: Aim to establish a mutually beneficial partnership with the selected supplier.</li>
-
+                <li>
+                  Objective: Procurement of cotton material to meet
+                  manufacturing needs.
+                </li>
+                <li>
+                  Invitation: Seeking proposals from qualified suppliers for
+                  premium-grade cotton fabric.
+                </li>
+                <li>
+                  Specifications: Suppliers must adhere to predefined
+                  specifications and industry standards.
+                </li>
+                <li>
+                  Partnership: Aim to establish a mutually beneficial
+                  partnership with the selected supplier.
+                </li>
               </ul>
             </p>
           </div>
@@ -142,7 +172,9 @@ const Summary = () => {
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -182,7 +214,9 @@ const Summary = () => {
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -201,7 +235,9 @@ const Summary = () => {
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -211,22 +247,36 @@ const Summary = () => {
         <AccordionDetails>
           <div className="row">
             <p className={styles["col-data"]}>
-
               <ul>
-                <li>Valid Business Registration: Suppliers must hold a current and valid business registration.</li>
-                <li>Experience: Demonstrated experience in procuring and supplying cotton material, with evidence of successful past contracts.</li>
-                <li>Financial Stability: Evidence of financial stability, including solvency and capacity to handle the proposed contract.</li>
-                <li>Compliance: Compliance with all relevant legal and regulatory requirements.</li>
-
+                <li>
+                  Valid Business Registration: Suppliers must hold a current and
+                  valid business registration.
+                </li>
+                <li>
+                  Experience: Demonstrated experience in procuring and supplying
+                  cotton material, with evidence of successful past contracts.
+                </li>
+                <li>
+                  Financial Stability: Evidence of financial stability,
+                  including solvency and capacity to handle the proposed
+                  contract.
+                </li>
+                <li>
+                  Compliance: Compliance with all relevant legal and regulatory
+                  requirements.
+                </li>
               </ul>
             </p>
           </div>
         </AccordionDetails>
       </Accordion>
+
       <Accordion
         defaultExpanded
         square={true}
-        classes={{ root: "custom-accordion" }}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
@@ -236,22 +286,22 @@ const Summary = () => {
         <AccordionDetails>
           <div className="row">
             <p className={styles["col-data"]}>
-
               <ol>
                 <li>Material Composition: High-quality 100% cotton fabric.</li>
-                <li>Weight: Minimum weight of [insert weight] grams per square meter (GSM).</li>
+                <li>
+                  Weight: Minimum weight of [insert weight] grams per square
+                  meter (GSM).
+                </li>
                 <li>Weave: Plain weave, ensuring durability and comfort.</li>
                 <li>Color: White or as per organization's requirements.</li>
                 <li>Width: Standard width of [insert width] inches.</li>
-
               </ol>
             </p>
           </div>
         </AccordionDetails>
       </Accordion>
-
     </>
-  )
-}
+  );
+};
 
-export default Summary
+export default Summary;

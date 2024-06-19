@@ -6,12 +6,44 @@ import React, { useEffect, useState } from "react";
 import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
+import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTimeRangePicker";
+import { getMinMaxDate } from "../../../helpers/common";
+import { useNavigate } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const BidForm = () => {
   const { control, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+
+  const minDate = getMinMaxDate(1, 10)[0].toISOString().split("T")[0];
+  const maxDate = getMinMaxDate(1, 10)[1].toISOString().split("T")[0];
+
+  const getCategories = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setCategories(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Fetch Dropdown's List Data
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   const submitForm = (data) => {
     console.log(data);
+    navigate("/portal/questions/add");
   };
 
   return (
@@ -19,12 +51,10 @@ const BidForm = () => {
       <div className="container">
         <div className="row">
           <div className={styles["form-container"]}>
+            <div className={styles["bid-form-section"]}>
+              <h4>Create Bid</h4>
+            </div>
             <div className={cn("row", styles["form-section"])}>
-              <div className="row border-bottom border-secondary mb-4">
-                <div className="col-lg-12">
-                  <h3>Create Bid</h3>
-                </div>
-              </div>
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className="col-lg-12">
@@ -44,12 +74,12 @@ const BidForm = () => {
                     <CustomSelect
                       control={control}
                       label="Bid Type"
-                      options={[]}
+                      options={[{ lable: "Test", value: 1 }]}
                       name="bid_type"
                       placeholder="Bid Type"
-                      // rules={{
-                      //   required: "Bid Type is required.",
-                      // }}
+                      rules={{
+                        required: "Bid Type is required.",
+                      }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -70,10 +100,10 @@ const BidForm = () => {
                       control={control}
                       name="categories"
                       label="Categories"
-                      options={[]}
-                      // rules={{
-                      //   required: "Choose atleast one category.",
-                      // }}
+                      options={categories}
+                      rules={{
+                        required: "Choose atleast one category.",
+                      }}
                     />
                   </div>
                 </div>
@@ -84,10 +114,10 @@ const BidForm = () => {
                       name="product_type"
                       label="Product Type"
                       placeholder="Select Products"
-                      options={[]}
-                      // rules={{
-                      //   required: "Choose atleast one product.",
-                      // }}
+                      options={categories}
+                      rules={{
+                        required: "Choose atleast one product.",
+                      }}
                     />
                   </div>
                 </div>
@@ -109,8 +139,8 @@ const BidForm = () => {
                       control={control}
                       label="Unit"
                       name="unit"
+                      options={[{ lable: "Test", value: 1 }]}
                       placeholder="Unit"
-                      inputType="text"
                       rules={{
                         required: "Unit is required.",
                       }}
@@ -119,40 +149,39 @@ const BidForm = () => {
                 </div>
                 <div className="row">
                   <div className="col-lg-6">
-                    <CustomInput
+                    <DateTimeRangePicker
                       control={control}
-                      label="Delivery Timeline"
-                      name="delivery_timeline"
-                      placeholder="Delivery Timeline"
-                      inputType="datetime-local"
+                      label="Opening Date & Time"
+                      name="opening_date_time"
                       rules={{
-                        required: "Delivery Timeline is required.",
+                        required: "Opening Date & Time is required.",
                       }}
+                      minDate={minDate}
+                      maxDate={maxDate}
                     />
                   </div>
                   <div className="col-lg-6">
-                    <CustomInput
+                    <DateTimeRangePicker
                       control={control}
-                      label="Bidding Date & Time"
-                      name="bidding_date_time"
-                      placeholder="Bidding Date & Time"
-                      inputType="datetime-local"
+                      label="Closing Date & Time"
+                      name="closing_date_time"
                       rules={{
-                        required: "Bidding Date & Time is required.",
+                        required: "Closing Date & Time is required.",
                       }}
+                      minDate={minDate}
+                      maxDate={maxDate}
                     />
                   </div>
                 </div>
-
-
                 <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
+                  <div className="col-lg-6">
+                    <DateTimeRangePicker
                       control={control}
-                      name="payment_term"
-                      label="Payment Term"
+                      label="Delivery Timeline"
+                      name="delivery_timeline"
+                      inputType="datetime-local"
                       rules={{
-                        required: "Payment Term is required.",
+                        required: "Delivery Timeline is required.",
                       }}
                     />
                   </div>
@@ -163,9 +192,27 @@ const BidForm = () => {
                       control={control}
                       name="description"
                       label="Description"
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <CustomCkEditor
+                      control={control}
+                      name="delivery_term"
+                      label="Delivery Term"
                       rules={{
-                        required: "Description is required.",
+                        required: "Delivery Term is required.",
                       }}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <CustomCkEditor
+                      control={control}
+                      name="payment_term"
+                      label="Payment Term"
                     />
                   </div>
                 </div>
@@ -175,9 +222,6 @@ const BidForm = () => {
                       control={control}
                       name="eligiblity_criteria"
                       label="Eligiblity Criteria"
-                      rules={{
-                        required: "Eligiblity Criteria is required.",
-                      }}
                     />
                   </div>
                 </div>
@@ -187,20 +231,16 @@ const BidForm = () => {
                       control={control}
                       name="technical_specification"
                       label="Technical Specification"
-                      rules={{
-                        required: "Technical Specification is required.",
-                      }}
                     />
                   </div>
                 </div>
-
                 <div className="row my-3">
                   <div className="col text-end">
                     <button
                       type="submit"
                       className={cn("btn", "button", styles["custom-btn"])}
                     >
-                      Save & Next
+                      Add Questions
                     </button>
                   </div>
                 </div>

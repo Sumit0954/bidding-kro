@@ -5,7 +5,7 @@ export const bids_column = [
   {
     Header: "Company Name",
     accessor: "company_name",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     Cell: (data) => {
       return (
@@ -21,25 +21,64 @@ export const bids_column = [
   {
     Header: "Buyer Name",
     accessor: "buyer_name",
-    numeric: false,
+    align: "left",
     disablePadding: false,
   },
   {
     Header: "Email",
     accessor: "email",
-    numeric: false,
+    align: "left",
     disablePadding: false,
   },
   {
     Header: "Category",
     accessor: "category",
-    numeric: false,
+    align: "left",
     disablePadding: false,
   },
   {
     Header: "City",
     accessor: "city",
-    numeric: false,
+    align: "left",
     disablePadding: false,
+  },
+];
+
+export const documents_column = [
+  {
+    Header: "Document Name",
+    accessor: "document_name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Document Type",
+    accessor: "document_type",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Document Size",
+    accessor: "document_size",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Document Date",
+    accessor: "document_date",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true
   },
 ];

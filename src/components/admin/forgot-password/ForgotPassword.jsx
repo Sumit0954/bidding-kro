@@ -67,7 +67,7 @@ const ForgotPassword = () => {
 
         {checkEmail && (
           <CheckEmailModal
-            open={true}
+            checkEmail={checkEmail}
             setCheckEmail={setCheckEmail}
             description={
               "We've sent a link to reset your password at example@gmail.com"

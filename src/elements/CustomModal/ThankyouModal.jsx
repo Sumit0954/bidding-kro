@@ -1,11 +1,11 @@
 import React from "react";
 import { Typography, Modal, Box } from "@mui/material";
-import styles from "./ThankyouModal.module.scss";
+import styles from "./Modal.module.scss";
 import Check from "../../assets/images/common/check.svg";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
 
-const ThankyouModal = ({ open, setShowThankyou, description }) => {
+const ThankyouModal = ({ showThankyou, setShowThankyou, description }) => {
   const handleClose = () => {
     setShowThankyou(false);
   };
@@ -13,7 +13,7 @@ const ThankyouModal = ({ open, setShowThankyou, description }) => {
   return (
     <>
       <Modal
-        open={open}
+        open={showThankyou}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >

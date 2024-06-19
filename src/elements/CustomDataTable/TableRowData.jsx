@@ -1,18 +1,10 @@
-export const companiesRowData = [
+export const bidsRowData = [
     {
-      company_id: 1,
-      company_name: "Bombay Dyeing and Manufacturing",
-      buyer_name: "Ankit Singh",
-      email: "ankit@gmail.com",
-      category: "Apparel",
-      city:"Faridabad"
+      bid_id: 1,
+      document_name: "home-page.pdf",
+      document_type: "application/pdf",
+      document_size: 7337610,
+      document_date: "17-06-2024",
     },
-    {
-      company_id: 2,
-      company_name: "Dyeing and Manufacturing",
-      buyer_name: "Nitish kumar",
-      email: "nitish@gmail.com",
-      category: "Apparel",
-      city:"Delhi"
-    }
+    
 ];

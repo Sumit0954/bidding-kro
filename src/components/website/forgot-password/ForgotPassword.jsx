@@ -232,7 +232,7 @@ const ForgotPassword = () => {
 
       {!isPhoneReset && checkEmail && (
         <CheckEmailModal
-          open={true}
+          checkEmail={checkEmail}
           setCheckEmail={setCheckEmail}
           description={`We've sent a link to reset your password at ${email}`}
         />
@@ -240,7 +240,7 @@ const ForgotPassword = () => {
 
       {showVerificationPopup && (
         <CheckEmailModal
-          open={true}
+          checkEmail={showVerificationPopup}
           setCheckEmail={setShowVerificationPopup}
           description={`Your email address is not verified yet. Please check your ${email} to verify your account.`}
         />

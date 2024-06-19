@@ -84,17 +84,18 @@ function EnhancedTableHead(props) {
           </TableCell>
           {headerGroup.headers.map((column) => (
             <TableCell
-              sx={{ minWidth: "150px" }}
+              sx={{ minWidth: column.width }}
               {...column.getHeaderProps()}
               key={column.id}
-              align={column.numeric ? "right" : "left"}
+              align={column.align}
               padding={column.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === column.id ? order : false}
             >
               <TableSortLabel
-                active={orderBy === column.id}
+                active={orderBy === column.id && !column.hideSortIcon}
                 direction={orderBy === column.id ? order : "asc"}
                 onClick={createSortHandler(column.id)}
+                hideSortIcon={column.hideSortIcon}
               >
                 {column.render("Header")}
                 {orderBy === column.id ? (

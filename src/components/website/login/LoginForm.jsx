@@ -209,7 +209,7 @@ const LoginForm = () => {
       </div>
       {checkEmail && (
         <CheckEmailModal
-          open={true}
+          checkEmail={checkEmail}
           setCheckEmail={setCheckEmail}
           description={`Your email address is not verified yet. Please check your ${email} to verify your account.`}
         />

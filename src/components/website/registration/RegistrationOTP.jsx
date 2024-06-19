@@ -183,7 +183,7 @@ const RegistrationOTP = () => {
       </div>
       {showThankyou && (
         <ThankyouModal
-          open={true}
+          showThankyou={showThankyou}
           setShowThankyou={setShowThankyou}
           description={`Your registration has been successful. Please check your ${registerData.email} to verify your account.`}
         />
