@@ -13,6 +13,7 @@ const PortalSidebar = () => {
             <NavLink
               to={item.path}
               className={
+                current_url.includes(item.title.toLowerCase()) ||
                 current_url === item.path
                   ? `${styles["item-link"]} ${styles["active"]}`
                   : styles["item-link"]

@@ -5,16 +5,33 @@ import Summary from "../../components/portal/bids/Summary";
 import Documents from "../../components/portal/bids/Documents";
 import Award from "../../components/portal/bids/Award";
 import Bids from "../../components/portal/bids/Bids";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import cn from "classnames";
 import AmendmentModal from "../../elements/CustomModal/AmendmentModal";
+import DeleteDialog from "../../elements/CustomDialog/DeleteDialog";
 
 const BidDeatailsPage = () => {
   const [value, setValue] = useState(0);
   const [addAmendment, setAddAmendment] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    id: null,
+    title: "",
+    item: "",
+  });
+
+  const handleDeleteConfirmation = (choice) => {
+    if (choice) {
+      setDeleteDetails({ open: false, id: null, title: "", item: "" });
+    } else {
+      setDeleteDetails({ open: false, id: null, title: "", item: "" });
+    }
   };
 
   const breadcrumbs = [
@@ -31,6 +48,7 @@ const BidDeatailsPage = () => {
       Supply of Cotton Material
     </Typography>,
   ];
+
   return (
     <>
       <div className="d-flex align-items-center justify-content-between mb-2">
@@ -45,10 +63,25 @@ const BidDeatailsPage = () => {
           >
             Amendments
           </button>
-          <button type="submit" className={cn("btn", "button")}>
+          <button
+            type="submit"
+            className={cn("btn", "button")}
+            onClick={() => navigate("/portal/bids/update")}
+          >
             Edit Bid
           </button>
-          <button type="submit" className={cn("btn", "button", "reject")}>
+          <button
+            type="submit"
+            className={cn("btn", "button", "reject")}
+            onClick={() =>
+              setDeleteDetails({
+                open: true,
+                id: null,
+                title: "Cancel Bid",
+                item: "Supply of Cotton Material",
+              })
+            }
+          >
             Cancel Bid
           </button>
         </div>
@@ -84,6 +117,14 @@ const BidDeatailsPage = () => {
         <AmendmentModal
           addAmendment={addAmendment}
           setAddAmendment={setAddAmendment}
+        />
+      )}
+
+      {deleteDetails?.open && (
+        <DeleteDialog
+          title={deleteDetails.title}
+          item={deleteDetails.item}
+          handleClick={handleDeleteConfirmation}
         />
       )}
     </>

@@ -61,7 +61,7 @@ const BidDocuments = () => {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <IconButton className={styles["delete-btn"]}>
-            <Delete onClick={() => console.log('delete')}/>
+            <Delete onClick={() => console.log("delete")} />
           </IconButton>
         </TableCell>
       );
@@ -151,7 +151,7 @@ const BidDocuments = () => {
                   <button
                     className={cn("btn", "button")}
                     type="button"
-                    onClick={() => navigate(`/portal/questions/add`)}
+                    onClick={() => navigate("/portal/bids/questions")}
                   >
                     Back To Questions
                   </button>

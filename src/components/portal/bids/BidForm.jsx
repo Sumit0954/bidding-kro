@@ -8,13 +8,14 @@ import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTimeRangePicker";
 import { getMinMaxDate } from "../../../helpers/common";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const BidForm = () => {
   const { control, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const { action } = useParams();
   const [categories, setCategories] = useState([]);
 
   const minDate = getMinMaxDate(1, 10)[0].toISOString().split("T")[0];
@@ -43,7 +44,7 @@ const BidForm = () => {
 
   const submitForm = (data) => {
     console.log(data);
-    navigate("/portal/questions/add");
+    navigate("/portal/bids/update");
   };
 
   return (
@@ -52,7 +53,7 @@ const BidForm = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={styles["bid-form-section"]}>
-              <h4>Create Bid</h4>
+              <h4>{action === "create" ? "Create" : "Update"} Bid</h4>
             </div>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
@@ -234,15 +235,27 @@ const BidForm = () => {
                     />
                   </div>
                 </div>
-                <div className="row my-3">
-                  <div className="col text-end">
-                    <button
-                      type="submit"
-                      className={cn("btn", "button", styles["custom-btn"])}
-                    >
-                      Add Questions
-                    </button>
-                  </div>
+
+                <div className={cn("my-3", styles["btn-container"])}>
+                  <button
+                    type="submit"
+                    className={cn("btn", "button", styles["custom-btn"])}
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "btn",
+                      "button",
+                      styles["custom-btn"],
+                      action === "create" && "disable"
+                    )}
+                    onClick={() => navigate(`/portal/bids/questions`)}
+                    disabled={action === "create" ? true : false}
+                  >
+                    Add Questions
+                  </button>
                 </div>
               </form>
             </div>

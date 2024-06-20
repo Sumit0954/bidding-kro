@@ -87,14 +87,14 @@ const BidQuestions = () => {
                 <button
                   className={cn("btn", "button")}
                   type="button"
-                  onClick={() => navigate(`/portal/bids/create`)}
+                  onClick={() => navigate("/portal/bids/update")}
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   className={cn("btn", "button")}
-                  onClick={() => navigate(`/portal/documents/${action}`)}
+                  onClick={() => navigate("/portal/bids/documents")}
                 >
                   Upload Documents
                 </button>
