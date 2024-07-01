@@ -1,0 +1,43 @@
+.card {
+	text-align: center;
+	padding: 20px;
+	box-shadow: 0 0 8px #00000080;
+	height: 280px;
+
+	.card-heading {
+		font-size: 25px;
+		padding-bottom: 10px;
+	}
+
+	.service-img {
+		padding-bottom: 10px;
+	}
+}
+
+@media screen and (max-width: 991px) {
+	.card {
+		height: auto;
+		margin: 10px;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.card {
+		height: auto;
+		margin: 10px;
+	}
+}
+
+@media screen and (max-width: 575px) {
+	.card {
+		height: auto;
+		margin: 10px;
+	}
+}
+
+@media screen and (max-width: 324px) {
+	.card {
+		height: auto;
+		margin: 10px;
+	}
+}

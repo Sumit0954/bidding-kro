@@ -14,6 +14,10 @@ import { useContext } from "react";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
 import UserDetailsProvider from "../contexts/UserDetailsProvider";
+import BlogPage from "../pages/website/BlogPage";
+import WebsiteFooter from "../layouts/footers/WebsiteFooter";
+import BlogDetailsPage from "../pages/website/BlogDetailsPage";
+
 
 const WebsiteRoutes = () => {
   return (
@@ -47,13 +51,19 @@ const WebsiteRoutes = () => {
                       element={<ResetPasswordPage />}
                     />
                   </Route>
+
+                  <Route path="/blogs" element={<BlogPage />} />
+
+                  <Route path="/blogs/:slug" element={<BlogDetailsPage />} />
                 </Routes>
+
                 <CallAlert />
               </main>
             </RegisterDataProvider>
           </UserDetailsProvider>
         </AuthProvider>
       </AlertProvider>
+      <WebsiteFooter />
     </>
   );
 };
