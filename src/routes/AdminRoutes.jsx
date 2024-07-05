@@ -9,6 +9,8 @@ import ForgotPasswordPage from "../pages/admin/ForgotPasswordPage";
 import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
+import BlogListPage from "../pages/admin/BlogListPage";
+import BlogCreateUpdatePage from "../pages/admin/BlogCreateUpdatePage";
 
 const AdminRoutes = () => {
   return (
@@ -29,8 +31,15 @@ const AdminRoutes = () => {
                 <Route
                   path="/companies/:company_id"
                   element={<LayoutPage Component={CompanyDetailPage} />}
+
                 />
+                <Route path="/blogs" element={<LayoutPage Component={BlogListPage} />} />
+
+                <Route path="/blogs/:blog_id" element={<LayoutPage Component={BlogCreateUpdatePage} />} />
+
+
               </Route>
+
             </Routes>
             <CallAlert />
           </main>

@@ -24,4 +24,37 @@ export const companies_column = [
     align: "left",
     disablePadding: false,
   },
+
+
+];
+
+export const blogs_column = [
+  {
+    Header: "Blog Id",
+    accessor: "blog id",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/blogs/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Actions",
+    accessor: "action",
+    align: "left",
+    disablePadding: false,
+  },
 ];

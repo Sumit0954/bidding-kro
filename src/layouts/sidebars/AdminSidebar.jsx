@@ -39,4 +39,10 @@ const sidebarMenu = [
     title: "Companies",
     path: "/admin/companies",
   },
+
+  {
+    icon: "/images/admin/layout/icons/blogging-icon.png",
+    title: "Blog Management",
+    path: "/admin/blogs",
+  },
 ];

@@ -8,6 +8,7 @@ const Layout = ({ Component }) => {
       <div className={styles["layout-container"]}>
         <div className={styles["left-section"]}>
           <AdminSidebar />
+
         </div>
         <div className={styles["right-section"]}>
           <Component />

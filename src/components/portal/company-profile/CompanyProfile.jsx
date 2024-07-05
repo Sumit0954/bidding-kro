@@ -106,7 +106,7 @@ const CompanyProfile = () => {
       if (response.status === 200) {
         setCategories(response.data);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   // Fetch Dropdown's List Data
@@ -350,9 +350,9 @@ const CompanyProfile = () => {
                       label="Website Url"
                       name="website"
                       placeholder="www.example.com"
-                      // rules={{
-                      //   pattern: websiteValidator,
-                      // }}
+                    // rules={{
+                    //   pattern: websiteValidator,
+                    // }}
                     />
                   </div>
                 </div>
