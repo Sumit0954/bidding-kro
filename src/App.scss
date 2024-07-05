@@ -206,3 +206,11 @@ em {
 	white-space: nowrap;
 	width: 1px;
 }
+
+.status-cloumn {
+	text-transform: capitalize;
+
+	&.pending {
+		color: var(--pending);
+	}
+}

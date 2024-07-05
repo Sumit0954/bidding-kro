@@ -18,7 +18,7 @@ import { modifiedData } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
-const AddressForm = ({ addresses, action }) => {
+const AddressForm = ({ addresses }) => {
   const { control, reset } = useForm({
     defaultValues: {
       addresses: addresses,
@@ -107,7 +107,6 @@ const AddressForm = ({ addresses, action }) => {
           key={item._id}
           index={index}
           address={item}
-          action={action}
           onDelete={handleDeleteAddress}
         />
       ))}
@@ -117,7 +116,7 @@ const AddressForm = ({ addresses, action }) => {
 
 export default AddressForm;
 
-const IndividualAddressForm = ({ address, index, action, onDelete }) => {
+const IndividualAddressForm = ({ address, index, onDelete }) => {
   const { control, handleSubmit, setError, watch } = useForm({
     defaultValues: {
       address: address,
@@ -232,31 +231,31 @@ const IndividualAddressForm = ({ address, index, action, onDelete }) => {
       formData.append("latitude", geoLocation.latitude);
       formData.append("longitude", geoLocation.longitude);
       formData.append("json_id", geoLocation.json_id);
-    }
 
-    try {
-      const response = await _sendAPIRequest(
-        "POST",
-        PortalApiUrls.CREATE_ADDRESS,
-        formData,
-        true
-      );
-      if (response.status === 201) {
-        window.location.reload();
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          PortalApiUrls.CREATE_ADDRESS,
+          formData,
+          true
+        );
+        if (response.status === 201) {
+          window.location.reload();
+          setLoading(false);
+        }
+      } catch (error) {
         setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      const { data } = error.response;
-      if (data) {
-        setErrors(data, watch, setError);
+        const { data } = error.response;
+        if (data) {
+          setErrors(data, watch, setError);
 
-        if (data.error) {
-          setAlert({
-            isVisible: true,
-            message: data.error,
-            severity: "error",
-          });
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
         }
       }
     }
@@ -279,7 +278,7 @@ const IndividualAddressForm = ({ address, index, action, onDelete }) => {
             <Delete onClick={() => onDelete(index, address.id)} />
           </IconButton>
         </AccordionSummary>
-        {action === "update" && address.id && (
+        {address.id && (
           <AccordionDetails>{`${address.address}, ${address.city}, ${address.state}, ${address.country} - ${address.pincode}`}</AccordionDetails>
         )}
 

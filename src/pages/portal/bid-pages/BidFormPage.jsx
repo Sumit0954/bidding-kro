@@ -1,4 +1,4 @@
-import BidForm from "../../components/portal/bids/BidForm"
+import BidForm from "../../../components/portal/bids/BidForm"
 
 function BidFormPage() {
   return (

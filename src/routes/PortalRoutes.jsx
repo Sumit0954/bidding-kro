@@ -3,19 +3,22 @@ import PortalHeader from "../layouts/headers/PortalHeader";
 import LayoutPage from "../pages/portal/LayoutPage";
 import DashboardPage from "../pages/portal/DashboardPage";
 import UserProfilePage from "../pages/portal/UserProfilePage";
-import CompanyProfilePage from "../pages/portal/CompanyProfilePage";
+import CompanyProfilePage from "../pages/portal/company-profile-pages/CompanyProfilePage";
 import SettingPage from "../pages/portal/SettingPage";
-import BidListPage from "../pages/portal/BidListPage";
+import BidListPage from "../pages/portal/bid-pages/BidListPage";
 import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import { useContext } from "react";
-import BidFormPage from "../pages/portal/BidFormPage";
-import BidQuestionsPage from "../pages/portal/BidQuestionsPage";
-import BidDocumentsPage from "../pages/portal/BidDocumentsPage";
-import BidDeatailsPage from "../pages/portal/BidDeatailsPage";
+import BidQuestionsPage from "../pages/portal/bid-pages/BidQuestionsPage";
+import BidDocumentsPage from "../pages/portal/bid-pages/BidDocumentsPage";
+import BidDetailsPage from "../pages/portal/bid-pages/BidDetailsPage";
 import UserDetailsProvider from "../contexts/UserDetailsProvider";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
 import CompanyDetailsProvider from "../contexts/CompanyDetailsProvider";
+import CompanyCategoryPage from "../pages/portal/company-profile-pages/CompanyCategoryPage";
+import CompanyAddressAndCertificatePage from "../pages/portal/company-profile-pages/CompanyAddressAndCertificatePage";
+import BidFormPage from "../pages/portal/bid-pages/BidFormPage";
+import BidCategoriesPage from "../pages/portal/bid-pages/BidCategoriesPage";
 
 const PortalRoutes = () => {
   return (
@@ -37,14 +40,32 @@ const PortalRoutes = () => {
                       path="/user-profile"
                       element={<LayoutPage Component={UserProfilePage} />}
                     />
+
+                    {/* Company Profile Routes Start */}
                     <Route
                       path="/company-profile/:action"
                       element={<LayoutPage Component={CompanyProfilePage} />}
                     />
                     <Route
+                      path="/company-profile/category/:id"
+                      element={<LayoutPage Component={CompanyCategoryPage} />}
+                    />
+                    <Route
+                      path="/company-profile/address-certificate/:id"
+                      element={
+                        <LayoutPage
+                          Component={CompanyAddressAndCertificatePage}
+                        />
+                      }
+                    />
+                    {/* Company Profile Routes End */}
+
+                    <Route
                       path="/settings"
                       element={<LayoutPage Component={SettingPage} />}
                     />
+
+                    {/* Bids Routes Start */}
                     <Route
                       path="/bids"
                       element={<LayoutPage Component={BidListPage} />}
@@ -54,18 +75,27 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidFormPage} />}
                     />
                     <Route
-                      path="/bids/questions"
+                      path="/bids/:action/:id"
+                      element={<LayoutPage Component={BidFormPage} />}
+                    />
+                    <Route
+                      path="/bids/categories/:id"
+                      element={<LayoutPage Component={BidCategoriesPage} />}
+                    />
+                    <Route
+                      path="/bids/questions/:id"
                       element={<LayoutPage Component={BidQuestionsPage} />}
                     />
                     <Route
-                      path="/bids/documents"
+                      path="/bids/documents/:id"
                       element={<LayoutPage Component={BidDocumentsPage} />}
                     />
 
                     <Route
-                      path="/bids/details"
-                      element={<LayoutPage Component={BidDeatailsPage} />}
+                      path="/bids/details/:id"
+                      element={<LayoutPage Component={BidDetailsPage} />}
                     />
+                    {/* Bids Routes End */}
                   </Route>
                 </Routes>
                 <CallAlert />

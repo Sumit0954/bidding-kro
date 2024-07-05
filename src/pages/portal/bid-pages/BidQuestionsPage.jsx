@@ -1,5 +1,5 @@
 import React from "react";
-import BidQuestions from "../../components/portal/bids/BidQuestions";
+import BidQuestions from "../../../components/portal/bids/BidQuestions";
 
 const BidQuestionsPage = () => {
   return (

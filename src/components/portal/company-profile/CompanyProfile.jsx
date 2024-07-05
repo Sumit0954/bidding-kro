@@ -4,10 +4,7 @@ import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
-import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
-import AddressForm from "./AddressForm";
-import CertificateForm from "./CertificateForm";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import {
@@ -18,7 +15,6 @@ import {
 } from "../../../helpers/formatter";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import { websiteValidator } from "../../../helpers/validation";
 import { useNavigate, useParams } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
@@ -50,13 +46,9 @@ const CompanyProfile = () => {
   );
   const { setAlert } = useContext(AlertContext);
   const [organizationTypes, setOrganizationType] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { action } = useParams();
-  const [addresses, setAddresses] = useState([
-    { street: "", city: "", state: "", pincode: "" },
-  ]);
-  const [certificates, setCertificates] = useState([]);
+  
   const navigate = useNavigate();
   const [gstRegistered, setGstRegistered] = useState("No");
 
@@ -95,24 +87,9 @@ const CompanyProfile = () => {
     }
   };
 
-  const getCategories = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.GET_CATEGORIES,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        setCategories(response.data);
-      }
-    } catch (error) { }
-  };
-
   // Fetch Dropdown's List Data
   useEffect(() => {
     getOrganizationType();
-    getCategories();
   }, []);
 
   const submitForm = async (data) => {
@@ -135,8 +112,6 @@ const CompanyProfile = () => {
           } else if (key === "business_mobile") {
             const mobile_number = addCountryCode(value);
             createFormData.append(key, mobile_number);
-          } else if (key === "category") {
-            value?.map((item) => createFormData.append(key, item));
           } else if (key === "website") {
             createFormData.append(key, formatUrl(value));
           } else if (
@@ -162,8 +137,6 @@ const CompanyProfile = () => {
               } else if (key === "business_mobile") {
                 const mobile_number = addCountryCode(value);
                 updateFormData.append(key, mobile_number);
-              } else if (key === "category") {
-                value?.map((item) => updateFormData.append(key, item));
               } else if (key === "website") {
                 updateFormData.append(key, formatUrl(value));
               } else {
@@ -172,6 +145,7 @@ const CompanyProfile = () => {
             }
           });
         }
+        return null;
       });
     }
     /* -- */
@@ -192,7 +166,7 @@ const CompanyProfile = () => {
             message: "Company has been created successfully.",
             severity: "success",
           });
-          navigate("/portal/company-profile/update");
+          navigate(`/portal/company-profile/category/${response.data.id}`);
         }
       } catch (error) {
         setLoading(false);
@@ -227,6 +201,7 @@ const CompanyProfile = () => {
             message: "Company has been updated successfully.",
             severity: "success",
           });
+          navigate(`/portal/company-profile/category/${response.data.id}`);
         }
       } catch (error) {
         setLoading(false);
@@ -256,15 +231,13 @@ const CompanyProfile = () => {
 
     if (action === "update") {
       if (companyDetails?.gstin) setGstRegistered("Yes");
-      setAddresses(companyDetails?.address);
-      setCertificates(companyDetails?.certificate);
       setCompanyLogo(companyDetails?.logo || DummyLogo);
       reset({
         ...companyDetails,
         organization_type: companyDetails?.organization_type,
         business_mobile: numberFormatter(companyDetails?.business_mobile),
         business_email: companyDetails?.business_email,
-        category: companyDetails?.categories,
+        category: companyDetails?.category_meta?.id,
       });
     }
   }, [action, reset, companyDetails, userDetails]);
@@ -350,9 +323,6 @@ const CompanyProfile = () => {
                       label="Website Url"
                       name="website"
                       placeholder="www.example.com"
-                    // rules={{
-                    //   pattern: websiteValidator,
-                    // }}
                     />
                   </div>
                 </div>
@@ -378,6 +348,7 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
@@ -404,6 +375,7 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-lg-6">
                     {gstRegistered === "No" ? (
@@ -449,20 +421,7 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CategoriesSelect
-                      control={control}
-                      name="category"
-                      label="Categories"
-                      options={categories}
-                      showRootCategories={true}
-                      rules={{
-                        required: "Choose atleast one category.",
-                      }}
-                    />
-                  </div>
-                </div>
+
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -472,6 +431,7 @@ const CompanyProfile = () => {
                     />
                   </div>
                 </div>
+
                 <div className="row my-3">
                   <div className="col text-end">
                     {loading ? (
@@ -487,14 +447,6 @@ const CompanyProfile = () => {
                   </div>
                 </div>
               </form>
-
-              {action === "update" && (
-                <AddressForm addresses={addresses} action={action} />
-              )}
-
-              {action === "update" && (
-                <CertificateForm certificates={certificates} />
-              )}
             </div>
           </div>
         </div>

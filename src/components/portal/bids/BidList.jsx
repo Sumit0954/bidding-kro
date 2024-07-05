@@ -1,21 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { useForm } from "react-hook-form";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const BidList = ({ listType }) => {
   const { control } = useForm();
+  const [bids, setBids] = useState([]);
+
+  const getBidList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.LIST_BIDS,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setBids(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getBidList();
+  }, []);
 
   const addAction = (cell) => {
     return (
-      <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
+      <TableCell {...cell.getCellProps()} align={cell.column.align}>
+        {" "}
+        {cell.render("Cell")}{" "}
+      </TableCell>
     );
   };
   return (
     <>
-      <form>
+      {/* <form>
         <div className="row">
           <div className="col-lg-3">
             <CustomSelect
@@ -58,12 +84,12 @@ const BidList = ({ listType }) => {
             />
           </div>
         </div>
-      </form>
+      </form> */}
 
       {listType === "created" ? (
         <DataTable
           propsColumn={bids_column}
-          propsData={[]}
+          propsData={bids}
           action={addAction}
           customClassName="portal-data-table"
         />

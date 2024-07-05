@@ -1,4 +1,4 @@
-import CompanyProfile from "../../components/portal/company-profile/CompanyProfile"
+import CompanyProfile from "../../../components/portal/company-profile/CompanyProfile"
 
 
 const CompanyProfilePage = () => {

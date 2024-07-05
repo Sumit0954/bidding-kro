@@ -1,121 +1,102 @@
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import React from "react";
-import { Controller } from "react-hook-form";
 import styles from "./CategoriesSelect.module.scss";
+import { Autocomplete, Box, Chip, TextField } from "@mui/material";
+import { Controller } from "react-hook-form";
+import AddIcon from "@mui/icons-material/Add";
 
 const CategoriesSelect = ({
   control,
   name,
   label = "",
-  customClassName = "",
   options = [],
-  showRootCategories = false,
   showLabel = true,
   rules = {},
-  placeholder="Select Categories"
+  placeholder = "",
+  selectedCategories,
+  handleCategoryChange,
+  handleChange,
+  multiple = true,
 }) => {
   return (
-    <Box className={styles["input-field-container"]}>
-      {showLabel && (
-        <label>
-          {label} {rules?.required && <em className="em">*</em>}
-        </label>
-      )}
-      <Controller
-        control={control}
-        name={name}
-        rules={rules}
-        render={({ field, fieldState: { error } }) => {
-          const maxAllowedCategoriesCnt = 10;
-
-          // Fetch & merge unique root categories
-          let mergedOptions = options;
-          if (showRootCategories) {
-            const rootCategories = getUniqueParents(options);
-            mergedOptions = [...rootCategories, ...options];
-          }
-
-          // Fetch existing selections
-          const getSelectedValues = mergedOptions?.filter(
-            (option) =>
-              field.value?.some((newValue) => newValue.id === option.id) ||
-              field.value?.includes(option.id)
-          );
-
-          return (
-            <Box className={styles["form-control"]}>
-              <Autocomplete
-                multiple
-                id="tags-standard"
-                options={mergedOptions}
-                value={getSelectedValues}
-                disableCloseOnSelect={true}
-                getOptionDisabled={(_) =>
-                  field?.value?.length >= maxAllowedCategoriesCnt
-                }
-                onChange={(_, items) => {
-                  // update react hook form value
-                  const categoryIds = items.map((val) => val.id);
-                  field.onChange(categoryIds);
-                }}
-                getOptionLabel={(option) => option.name}
-                filterOptions={(options, state) => {
-                  // Search both child and parent category
-                  const input = state.inputValue.toLowerCase();
-                  return options.filter(
-                    (option) =>
-                      option.name.toLowerCase().includes(input) ||
-                      option.parent?.name?.toLowerCase().includes(input)
-                  );
-                }}
-                renderOption={(props, option) => (
-                  <Box component="li" {...props}>
-                    <Typography
-                      variant="body1"
-                      component="div"
-                      flexDirection="column"
-                    >
-                      <span>{option.name}</span>
-
-                      {option.parent && (
-                        <Typography variant="body2" color="text.secondary">
-                          in {option.parent.name}
-                        </Typography>
-                      )}
-                    </Typography>
-                  </Box>
+    <>
+      <Box className={styles["input-field-container"]}>
+        {showLabel && (
+          <label>
+            {label} {rules?.required && <em className="em">*</em>}
+          </label>
+        )}
+        <Controller
+          control={control}
+          name={name}
+          rules={rules}
+          render={({ field, fieldState: { error } }) => {
+            return (
+              <Box className={styles["form-control"]}>
+                <Autocomplete
+                  {...field}
+                  id="tags-standard"
+                  multiple={multiple}
+                  open={false}
+                  options={options}
+                  getOptionLabel={(option) => option?.name || ""}
+                  forcePopupIcon={false}
+                  value={selectedCategories}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  onChange={(_, newValue) => {
+                    field.onChange(newValue);
+                    handleChange && handleChange(newValue);
+                  }}
+                  disableCloseOnSelect={true}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="standard"
+                      placeholder={placeholder}
+                    />
+                  )}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => {
+                      return (
+                        <Chip
+                          key={index}
+                          label={option.name}
+                          {...getTagProps({ index })}
+                          sx={{
+                            backgroundColor: "var(--secondary-color)",
+                            color: "var(--white)",
+                            "& .MuiChip-deleteIcon": {
+                              color: "var(--white)",
+                            },
+                          }}
+                        />
+                      );
+                    })
+                  }
+                />
+                {error && (
+                  <span className="error">{error.message || "Error"} </span>
                 )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder={placeholder}
-                    helperText={
-                      field?.value?.length >= maxAllowedCategoriesCnt
-                        ? "Note: Maximum number of selections reached."
-                        : ""
-                    }
-                    classes={{ root: styles["input-field"] }}
-                  />
-                )}
-              />
-              {error && (
-                <span className="error">{error.message || "Error"} </span>
-              )}
-            </Box>
-          );
-        }}
-      />
-    </Box>
+                <div style={{ marginTop: "16px" }}>
+                  {options?.map((option) => (
+                    <Chip
+                      key={option?.id}
+                      label={option?.name}
+                      onClick={() =>
+                        handleCategoryChange(option?.depth, option, field.onChange)
+                      }
+                      deleteIcon={<AddIcon />}
+                      onDelete={() => {}}
+                      style={{ margin: "5px", marginLeft: "0px" }}
+                    />
+                  ))}
+                </div>
+              </Box>
+            );
+          }}
+        />
+      </Box>
+    </>
   );
 };
 
 export default CategoriesSelect;
-
-const getUniqueParents = (data) =>
-  Array.from(
-    new Map(
-      data
-        .filter((item) => item.parent && item.parent.parent === null)
-        .map((item) => [item.parent.id, item.parent])
-    ).values()
-  );

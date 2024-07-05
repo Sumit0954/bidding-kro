@@ -1,19 +1,27 @@
 import { Box, Breadcrumbs, Tab, Tabs, Typography } from "@mui/material";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import Summary from "../../components/portal/bids/Summary";
-import Documents from "../../components/portal/bids/Documents";
-import Award from "../../components/portal/bids/Award";
-import Bids from "../../components/portal/bids/Bids";
-import { NavLink, useNavigate } from "react-router-dom";
+import Summary from "../../../components/portal/bids/Summary";
+import Documents from "../../../components/portal/bids/Documents";
+import Award from "../../../components/portal/bids/Award";
+import Bids from "../../../components/portal/bids/Bids";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
-import AmendmentModal from "../../elements/CustomModal/AmendmentModal";
-import DeleteDialog from "../../elements/CustomDialog/DeleteDialog";
+import AmendmentModal from "../../../elements/CustomModal/AmendmentModal";
+import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
+import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
+import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
-const BidDeatailsPage = () => {
+const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
   const [addAmendment, setAddAmendment] = useState(false);
   const navigate = useNavigate();
+  const { userDetails } = useContext(UserDetailsContext);
+  const [activateBid, setActivateBid] = useState(false);
+  const { id } = useParams();
+  const [bidDetails, setBidDetails] = useState({});
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -49,6 +57,26 @@ const BidDeatailsPage = () => {
     </Typography>,
   ];
 
+  const retrieveBid = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.RETRIEVE_BID + `${id}/`,
+        "",
+        true
+      );
+      setBidDetails(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      retrieveBid();
+    }
+  }, [id]);
+
   return (
     <>
       <div className="d-flex align-items-center justify-content-between mb-2">
@@ -59,6 +87,13 @@ const BidDeatailsPage = () => {
           <button
             className={cn("btn", "button")}
             type="button"
+            onClick={() => setActivateBid(true)}
+          >
+            Activate Bid
+          </button>
+          <button
+            className={cn("btn", "button")}
+            type="button"
             onClick={() => setAddAmendment(true)}
           >
             Amendments
@@ -66,7 +101,7 @@ const BidDeatailsPage = () => {
           <button
             type="submit"
             className={cn("btn", "button")}
-            onClick={() => navigate("/portal/bids/update")}
+            onClick={() => navigate(`/portal/bids/update/${bidDetails.id}`)}
           >
             Edit Bid
           </button>
@@ -101,7 +136,7 @@ const BidDeatailsPage = () => {
       </Box>
 
       <TabPanel value={value} index={0}>
-        <Summary />
+        <Summary bidDetails={bidDetails} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Documents />
@@ -127,11 +162,18 @@ const BidDeatailsPage = () => {
           handleClick={handleDeleteConfirmation}
         />
       )}
+
+      {activateBid && (
+        <RazorpayPaymentHandler
+          userData={userDetails}
+          setActivateBid={setActivateBid}
+        />
+      )}
     </>
   );
 };
 
-export default BidDeatailsPage;
+export default BidDetailsPage;
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;

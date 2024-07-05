@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./BidQuestions.module.scss";
 import cn from "classnames";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -14,11 +14,35 @@ import { Delete } from "@mui/icons-material";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { useNavigate, useParams } from "react-router-dom";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 
 const BidQuestions = () => {
-  const { action } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([{ question: "" }]);
+
+  const retrieveBid = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.RETRIEVE_BID + `${id}/`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setQuestions(response.data.question);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      retrieveBid();
+    }
+  }, [id]);
 
   const { control, reset } = useForm({
     defaultValues: {
@@ -34,10 +58,15 @@ const BidQuestions = () => {
 
   const { setAlert } = useContext(AlertContext);
   const [formCount, setFormCount] = useState(fields.length);
-  const MAX_ADDRESS_COUNT = 5;
+  const MAX_QUESTION_COUNT = 5;
+
+  useEffect(() => {
+    reset({ questions });
+    setFormCount(questions?.length);
+  }, [questions, reset]);
 
   const handleQuestions = () => {
-    if (formCount < MAX_ADDRESS_COUNT) {
+    if (formCount < MAX_QUESTION_COUNT) {
       append({ question: "" });
       setFormCount(formCount + 1);
     }
@@ -45,6 +74,34 @@ const BidQuestions = () => {
 
   const handleDeleteQuestion = async (index, question_id) => {
     if (question_id) {
+      try {
+        const response = await _sendAPIRequest(
+          "DELETE",
+          PortalApiUrls.DELETE_QUESTION + `${question_id}/`,
+          "",
+          true
+        );
+        if (response.status === 204) {
+          remove(index);
+          setFormCount(formCount - 1);
+          setAlert({
+            isVisible: true,
+            message: `Question ${index + 1} has been deleted.`,
+            severity: "success",
+          });
+        }
+      } catch (error) {
+        const { data } = error.response;
+        if (data) {
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
     } else {
       remove(index);
       setFormCount(formCount - 1);
@@ -64,10 +121,10 @@ const BidQuestions = () => {
                   className={cn(
                     "btn",
                     "button",
-                    `${formCount >= MAX_ADDRESS_COUNT ? "disable" : ""}`
+                    `${formCount >= MAX_QUESTION_COUNT ? "disable" : ""}`
                   )}
                   onClick={handleQuestions}
-                  disabled={formCount >= MAX_ADDRESS_COUNT ? true : false}
+                  disabled={formCount >= MAX_QUESTION_COUNT ? true : false}
                 >
                   + Add Question
                 </button>
@@ -78,7 +135,7 @@ const BidQuestions = () => {
                   key={item._id}
                   question={item}
                   index={index}
-                  action={action}
+                  id={id}
                   onDelete={handleDeleteQuestion}
                 />
               ))}
@@ -87,14 +144,14 @@ const BidQuestions = () => {
                 <button
                   className={cn("btn", "button")}
                   type="button"
-                  onClick={() => navigate("/portal/bids/update")}
+                  onClick={() => navigate(`/portal/bids/categories/${id}`)}
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   className={cn("btn", "button")}
-                  onClick={() => navigate("/portal/bids/documents")}
+                  onClick={() => navigate(`/portal/bids/documents/${id}`)}
                 >
                   Upload Documents
                 </button>
@@ -109,10 +166,10 @@ const BidQuestions = () => {
 
 export default BidQuestions;
 
-const IndividualQuestionForm = ({ question, index, action, onDelete }) => {
+const IndividualQuestionForm = ({ question, index, id, onDelete }) => {
   const { control, handleSubmit, setError, watch } = useForm({
     defaultValues: {
-      address: question,
+      question: question,
     },
   });
   const { setAlert } = useContext(AlertContext);
@@ -123,10 +180,36 @@ const IndividualQuestionForm = ({ question, index, action, onDelete }) => {
 
     let formData = new FormData();
     if (data) {
-      formData.append("question", data.street);
-    }
+      formData.append("text", data.text);
 
-    console.log(data);
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          PortalApiUrls.ADD_QUESTION + `${id}/`,
+          formData,
+          true
+        );
+        if (response.status === 201) {
+          window.location.reload();
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        const { data } = error.response;
+        if (data) {
+          setErrors(data, watch, setError);
+
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
+    }
   };
 
   return (
@@ -147,37 +230,41 @@ const IndividualQuestionForm = ({ question, index, action, onDelete }) => {
           </IconButton>
         </AccordionSummary>
 
-        <AccordionDetails>
-          <div className="row">
-            <div className="col-lg-12">
-              <CustomInput
-                control={control}
-                label="Question For Supplier"
-                name="question"
-                placeholder="Question For Supplier"
-                rules={{
-                  required: "Question is required.",
-                }}
-              />
-            </div>
-          </div>
+        {question.id && <AccordionDetails>{question.text}</AccordionDetails>}
 
-          <div className="row mt-2">
-            <div className="col text-end">
-              {loading ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <button
-                  type="submit"
-                  className={cn("btn", "button")}
-                  onClick={handleSubmit((data) => submitForm(data, index))}
-                >
-                  Save Address
-                </button>
-              )}
+        {!question.id && (
+          <AccordionDetails>
+            <div className="row">
+              <div className="col-lg-12">
+                <CustomInput
+                  control={control}
+                  label="Question For Supplier"
+                  name="text"
+                  placeholder="Question For Supplier"
+                  rules={{
+                    required: "Question is required.",
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        </AccordionDetails>
+
+            <div className="row mt-2">
+              <div className="col text-end">
+                {loading ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <button
+                    type="submit"
+                    className={cn("btn", "button")}
+                    onClick={handleSubmit((data) => submitForm(data, index))}
+                  >
+                    Save Address
+                  </button>
+                )}
+              </div>
+            </div>
+          </AccordionDetails>
+        )}
       </Accordion>
     </form>
   );

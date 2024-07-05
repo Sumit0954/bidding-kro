@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import BidList from "../../components/portal/bids/BidList";
+import BidList from "../../../components/portal/bids/BidList";
 import { NavLink } from "react-router-dom";
 import cn from "classnames";
 

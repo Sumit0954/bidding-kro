@@ -10,8 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import { dateTimeFormatter } from "../../../helpers/formatter";
+import DOMPurify from "dompurify";
 
-const Summary = () => {
+const Summary = ({ bidDetails }) => {
+  console.log(bidDetails);
   return (
     <>
       <Accordion
@@ -30,41 +33,55 @@ const Summary = () => {
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid ID</h6>
-              <p className={styles["col-data"]}>EB24000036</p>
+              <p className={styles["col-data"]}>
+                {bidDetails?.formatted_number}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>Supply of Cotton Material</p>
+              <p className={styles["col-data"]}>{bidDetails?.title}</p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Reserve Bid Price</h6>
-              <p className={styles["col-data"]}>₹ 3500</p>
+              <p className={styles["col-data"]}>
+                ₹ {bidDetails?.reserved_price}
+              </p>
             </div>
           </div>
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
-              <p className={styles["col-data"]}>L1 Bid</p>
+              <p className={styles["col-data"]}>
+                {bidDetails?.type_meta?.name}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Opening Date and Time</h6>
-              <p className={styles["col-data"]}>Apr 2, 2024 12:00 AM</p>
+              <p className={styles["col-data"]}>
+                {dateTimeFormatter(bidDetails?.bid_start_date)}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Closing Date and Time</h6>
-              <p className={styles["col-data"]}>Apr 15, 2024 12:00 AM</p>
+              <p className={styles["col-data"]}>
+                {dateTimeFormatter(bidDetails?.bid_end_date)}
+              </p>
             </div>
           </div>
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Product Quantity</h6>
-              <p className={styles["col-data"]}>10</p>
+              <p className={styles["col-data"]}>
+                {parseInt(bidDetails?.product_quantity)}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Delivery Timeline</h6>
-              <p className={styles["col-data"]}>May 18, 2024 2:00 AM</p>
+              <p className={styles["col-data"]}>
+                {dateTimeFormatter(bidDetails?.delivery_date, false)}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Unit</h6>
@@ -75,7 +92,34 @@ const Summary = () => {
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Description</h6>
+              <p
+                className={styles["col-data"]}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(bidDetails?.description),
+                }}
+              ></p>
+            </div>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+
+      {bidDetails?.amendment?.length > 0 && (
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography classes={{ root: "custom-accordion-heading" }}>
+              Amendments
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
               <p className={styles["col-data"]}>
+                <h6 className={styles["col-heading"]}>May 18, 2024 2:00 AM</h6>
                 <ul>
                   <li>
                     Objective: Procurement of cotton material to meet
@@ -85,51 +129,12 @@ const Summary = () => {
                     Invitation: Seeking proposals from qualified suppliers for
                     premium-grade cotton fabric.
                   </li>
-                  <li>
-                    Specifications: Suppliers must adhere to predefined
-                    specifications and industry standards.
-                  </li>
-                  <li>
-                    Partnership: Aim to establish a mutually beneficial
-                    partnership with the selected supplier.
-                  </li>
                 </ul>
               </p>
             </div>
-          </div>
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Amendments
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className="row">
-            <p className={styles["col-data"]}>
-              <h6 className={styles["col-heading"]}>May 18, 2024 2:00 AM</h6>
-              <ul>
-                <li>
-                  Objective: Procurement of cotton material to meet
-                  manufacturing needs.
-                </li>
-                <li>
-                  Invitation: Seeking proposals from qualified suppliers for
-                  premium-grade cotton fabric.
-                </li>
-              </ul>
-            </p>
-          </div>
-        </AccordionDetails>
-      </Accordion>
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       <Accordion
         defaultExpanded
@@ -145,31 +150,17 @@ const Summary = () => {
         </AccordionSummary>
         <AccordionDetails>
           <div className="row">
-            <p className={styles["col-data"]}>
-              <ul>
-                <li>
-                  Objective: Procurement of cotton material to meet
-                  manufacturing needs.
-                </li>
-                <li>
-                  Invitation: Seeking proposals from qualified suppliers for
-                  premium-grade cotton fabric.
-                </li>
-                <li>
-                  Specifications: Suppliers must adhere to predefined
-                  specifications and industry standards.
-                </li>
-                <li>
-                  Partnership: Aim to establish a mutually beneficial
-                  partnership with the selected supplier.
-                </li>
-              </ul>
-            </p>
+            <p
+              className={styles["col-data"]}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(bidDetails?.payment_terms),
+              }}
+            ></p>
           </div>
         </AccordionDetails>
       </Accordion>
 
-      <Accordion
+      {/* <Accordion
         defaultExpanded
         square={true}
         classes={{
@@ -209,9 +200,9 @@ const Summary = () => {
             </div>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
-      <Accordion
+      {/* <Accordion
         defaultExpanded
         square={true}
         classes={{
@@ -230,7 +221,7 @@ const Summary = () => {
             <Chip label="Women’s Apparel" />
           </Stack>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
       <Accordion
         defaultExpanded
@@ -246,27 +237,12 @@ const Summary = () => {
         </AccordionSummary>
         <AccordionDetails>
           <div className="row">
-            <p className={styles["col-data"]}>
-              <ul>
-                <li>
-                  Valid Business Registration: Suppliers must hold a current and
-                  valid business registration.
-                </li>
-                <li>
-                  Experience: Demonstrated experience in procuring and supplying
-                  cotton material, with evidence of successful past contracts.
-                </li>
-                <li>
-                  Financial Stability: Evidence of financial stability,
-                  including solvency and capacity to handle the proposed
-                  contract.
-                </li>
-                <li>
-                  Compliance: Compliance with all relevant legal and regulatory
-                  requirements.
-                </li>
-              </ul>
-            </p>
+            <p
+              className={styles["col-data"]}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(bidDetails?.eligiblity_criteria),
+              }}
+            ></p>
           </div>
         </AccordionDetails>
       </Accordion>
@@ -285,18 +261,12 @@ const Summary = () => {
         </AccordionSummary>
         <AccordionDetails>
           <div className="row">
-            <p className={styles["col-data"]}>
-              <ol>
-                <li>Material Composition: High-quality 100% cotton fabric.</li>
-                <li>
-                  Weight: Minimum weight of [insert weight] grams per square
-                  meter (GSM).
-                </li>
-                <li>Weave: Plain weave, ensuring durability and comfort.</li>
-                <li>Color: White or as per organization's requirements.</li>
-                <li>Width: Standard width of [insert width] inches.</li>
-              </ol>
-            </p>
+            <p
+              className={styles["col-data"]}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(bidDetails?.technical_specification),
+              }}
+            ></p>
           </div>
         </AccordionDetails>
       </Accordion>

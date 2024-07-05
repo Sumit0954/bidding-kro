@@ -47,11 +47,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 400px;
-      overflow-y: auto;
 
       img {
-        width: 100%;
+        width: auto;
+        height: auto;
+        max-width: none;
+        max-height: none;
+        display: block;
+        overflow-y: auto;
       }
     }
 
@@ -64,6 +67,6 @@
   }
 }
 
-.delete-btn{
+.delete-btn {
   padding: 0;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./BidDocuments.module.scss";
 import { Controller, useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
@@ -7,15 +7,23 @@ import { Box, IconButton, Input, TableCell } from "@mui/material";
 import cn from "classnames";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { documents_column } from "../../../elements/CustomDataTable/PortalColumnData";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { bidsRowData } from "../../../elements/CustomDataTable/TableRowData";
 import { Delete } from "@mui/icons-material";
+import _sendAPIRequest, { setErrors } from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { extractFileExtension } from "../../../helpers/common";
 
 const BidDocuments = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
-  const { control, handleSubmit, setValue, getValues } = useForm({
+  const { control, handleSubmit, setValue, watch, setError } = useForm({
     defaultValues: {
       document: null,
     },
@@ -43,17 +51,46 @@ const BidDocuments = () => {
     type: "file",
   });
 
-  useEffect(() => {
-    return () => {
-      const document = getValues("document");
-      if (document) {
-        URL.revokeObjectURL(document.preview);
-      }
-    };
-  }, [getValues]);
+  const onSubmit = async (data) => {
+    setLoading(true);
 
-  const onSubmit = (data) => {
-    console.log(data);
+    const { name, size } = data.document;
+
+    let formData = new FormData();
+    if (data) {
+      formData.append("name", name);
+      formData.append("type", extractFileExtension(name));
+      formData.append("size", size);
+      formData.append("file", data.document, name);
+
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          PortalApiUrls.UPLOAD_DOCUMENT + `${id}/`,
+          formData,
+          true
+        );
+        if (response.status === 201) {
+          window.location.reload();
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        const { data } = error.response;
+        if (data) {
+          setErrors(data, watch, setError);
+
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
+    }
   };
 
   const addAction = (cell) => {
@@ -151,14 +188,18 @@ const BidDocuments = () => {
                   <button
                     className={cn("btn", "button")}
                     type="button"
-                    onClick={() => navigate("/portal/bids/questions")}
+                    onClick={() => navigate(`/portal/bids/questions/${id}`)}
                   >
                     Back To Questions
                   </button>
 
-                  <button className={cn("btn", "button")} type="submit">
-                    Upload
-                  </button>
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <button className={cn("btn", "button")} type="submit">
+                      Upload
+                    </button>
+                  )}
                 </div>
               </form>
 

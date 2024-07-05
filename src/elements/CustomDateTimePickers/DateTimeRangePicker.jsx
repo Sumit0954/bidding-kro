@@ -42,7 +42,7 @@ const DateTimeRangePicker = ({
               <TextField
                 {...field}
                 {...textFieldProps}
-                value={field.value || ""}
+                value={field.value || "" }
                 onChange={(e) => {
                   handleChange && handleChange(e);
                   return field.onChange(e);

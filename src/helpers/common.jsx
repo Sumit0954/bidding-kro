@@ -9,3 +9,11 @@ export const getMinMaxDate = (fromToday, fromMin) => {
   maxDate.setDate(currentDate.getDate() + fromMin);
   return [minDate, maxDate];
 };
+
+export const extractFileExtension = (name) => {
+  const lastDotIndex = name.lastIndexOf(".");
+  if (lastDotIndex === -1) {
+    return ""; // No extension found
+  }
+  return name.substring(lastDotIndex + 1);
+};

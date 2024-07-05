@@ -1,46 +1,66 @@
 import { NavLink } from "react-router-dom";
 import styles from "./DataTable.module.scss";
+import { dateTimeFormatter } from "../../helpers/formatter";
 
 export const bids_column = [
   {
-    Header: "Company Name",
-    accessor: "company_name",
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/admin/companies/${data?.row?.original?.company_id}`}
+          to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
-          {data?.row?.original?.company_name}
+          {data?.row?.original?.title}
         </NavLink>
       );
     },
   },
   {
-    Header: "Buyer Name",
-    accessor: "buyer_name",
+    Header: "Opening Date",
+    accessor: "bid_start_date",
     align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.bid_start_date);
+    },
+  },
+  {
+    Header: "Closing Date",
+    accessor: "bid_end_date",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.bid_end_date);
+    },
+  },
+  {
+    Header: "Reserve Price",
+    accessor: "reserved_price",
+    align: "right",
     disablePadding: false,
   },
   {
-    Header: "Email",
-    accessor: "email",
-    align: "left",
+    Header: "Status",
+    accessor: "status",
+    align: "center",
     disablePadding: false,
-  },
-  {
-    Header: "Category",
-    accessor: "category",
-    align: "left",
-    disablePadding: false,
-  },
-  {
-    Header: "City",
-    accessor: "city",
-    align: "left",
-    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <div className={`status-cloumn ${data?.row?.original?.status}`}>
+          {data?.row?.original?.status}
+        </div>
+      );
+    },
   },
 ];
 
@@ -79,6 +99,6 @@ export const documents_column = [
     align: "center",
     disablePadding: false,
     width: 100,
-    hideSortIcon: true
+    hideSortIcon: true,
   },
 ];
