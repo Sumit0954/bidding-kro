@@ -15,6 +15,7 @@ const DateTimeRangePicker = ({
   control,
   handleChange,
   disableField = false,
+  type = "datetime-local",
   minDate,
   maxDate,
   minTime = "12:00",
@@ -42,7 +43,7 @@ const DateTimeRangePicker = ({
               <TextField
                 {...field}
                 {...textFieldProps}
-                value={field.value || "" }
+                value={field.value || ""}
                 onChange={(e) => {
                   handleChange && handleChange(e);
                   return field.onChange(e);
@@ -53,12 +54,12 @@ const DateTimeRangePicker = ({
                   styles["input-field"],
                   `${disableField && "disable-input-field"}`
                 )}
-                type="datetime-local"
+                type={type}
                 inputProps={{
                   "aria-label": "controlled",
                   placeholder: placeholder,
-                  min: `${minDate}T${minTime}`,
-                  max: `${maxDate}T${maxTime}`,
+                  min: type === "date" ? `${minDate}` : `${minDate}T${minTime}`,
+                  max: type === "date" ? `${maxDate}` : `${maxDate}T${maxTime}`,
                 }}
                 disabled={disableField}
               />

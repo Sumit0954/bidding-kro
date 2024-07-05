@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./BidDocuments.module.scss";
 import { Controller, useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
@@ -8,7 +8,6 @@ import cn from "classnames";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { documents_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { useNavigate, useParams } from "react-router-dom";
-import { bidsRowData } from "../../../elements/CustomDataTable/TableRowData";
 import { Delete } from "@mui/icons-material";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -22,6 +21,7 @@ const BidDocuments = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  const [documents, setDocuments] = useState([]);
 
   const { control, handleSubmit, setValue, watch, setError } = useForm({
     defaultValues: {
@@ -93,12 +93,45 @@ const BidDocuments = () => {
     }
   };
 
+  const handleDeleteDocument = async (data) => {
+    const { id, name } = data;
+    if (id) {
+      try {
+        const response = await _sendAPIRequest(
+          "DELETE",
+          PortalApiUrls.DELETE_DOCUMENT + `${id}/`,
+          "",
+          true
+        );
+        if (response.status === 204) {
+          setAlert({
+            isVisible: true,
+            message: `Document ${name} has been deleted.`,
+            severity: "success",
+          });
+          window.location.reload();
+        }
+      } catch (error) {
+        const { data } = error.response;
+        if (data) {
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
+    }
+  };
+
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <IconButton className={styles["delete-btn"]}>
-            <Delete onClick={() => console.log("delete")} />
+            <Delete onClick={() => handleDeleteDocument(cell.row.original)} />
           </IconButton>
         </TableCell>
       );
@@ -108,6 +141,28 @@ const BidDocuments = () => {
       );
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setDocuments(response.data.document);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id]);
 
   return (
     <>
@@ -205,7 +260,7 @@ const BidDocuments = () => {
 
               <DataTable
                 propsColumn={documents_column}
-                propsData={bidsRowData}
+                propsData={documents}
                 action={addAction}
                 customClassName="portal-data-table"
               />

@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Summary from "../../../components/portal/bids/Summary";
 import Documents from "../../../components/portal/bids/Documents";
-import Award from "../../../components/portal/bids/Award";
-import Bids from "../../../components/portal/bids/Bids";
+// import Award from "../../../components/portal/bids/Award";
+// import Bids from "../../../components/portal/bids/Bids";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
 import AmendmentModal from "../../../elements/CustomModal/AmendmentModal";
@@ -22,6 +22,7 @@ const BidDetailsPage = () => {
   const [activateBid, setActivateBid] = useState(false);
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
+  const [show, setShow] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -57,25 +58,41 @@ const BidDetailsPage = () => {
     </Typography>,
   ];
 
-  const retrieveBid = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.RETRIEVE_BID + `${id}/`,
-        "",
-        true
-      );
-      setBidDetails(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setBidDetails(response.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
       retrieveBid();
     }
   }, [id]);
+
+  useEffect(() => {
+    const createdDate = new Date(bidDetails?.created_at);
+    const currentDate = new Date();
+
+    const difference = currentDate.getTime() - createdDate.getTime();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+    if (difference > twentyFourHours) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [bidDetails?.created_at]);
 
   return (
     <>
@@ -91,20 +108,24 @@ const BidDetailsPage = () => {
           >
             Activate Bid
           </button>
-          <button
-            className={cn("btn", "button")}
-            type="button"
-            onClick={() => setAddAmendment(true)}
-          >
-            Amendments
-          </button>
-          <button
-            type="submit"
-            className={cn("btn", "button")}
-            onClick={() => navigate(`/portal/bids/update/${bidDetails.id}`)}
-          >
-            Edit Bid
-          </button>
+          {show ? (
+            <button
+              className={cn("btn", "button")}
+              type="button"
+              onClick={() => setAddAmendment(true)}
+            >
+              Amendments
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className={cn("btn", "button")}
+              onClick={() => navigate(`/portal/bids/update/${bidDetails.id}`)}
+            >
+              Edit Bid
+            </button>
+          )}
+
           <button
             type="submit"
             className={cn("btn", "button", "reject")}
@@ -130,8 +151,8 @@ const BidDetailsPage = () => {
         >
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Documents" {...a11yProps(1)} />
-          <Tab label="Bids" {...a11yProps(2)} />
-          <Tab label="Award" {...a11yProps(3)} />
+          {/* <Tab label="Bids" {...a11yProps(2)} />
+          <Tab label="Award" {...a11yProps(3)} /> */}
         </Tabs>
       </Box>
 
@@ -139,19 +160,20 @@ const BidDetailsPage = () => {
         <Summary bidDetails={bidDetails} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Documents />
+        <Documents bidDetails={bidDetails} />
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      {/* <TabPanel value={value} index={2}>
         <Award />
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Bids />
-      </TabPanel>
+      </TabPanel> */}
 
       {addAmendment && (
         <AmendmentModal
           addAmendment={addAmendment}
           setAddAmendment={setAddAmendment}
+          id={id}
         />
       )}
 

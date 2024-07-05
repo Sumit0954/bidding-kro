@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import styles from "./DataTable.module.scss";
 import { dateTimeFormatter } from "../../helpers/formatter";
+import { convertFileSize } from "../../helpers/common";
 
 export const bids_column = [
   {
@@ -67,31 +68,37 @@ export const bids_column = [
 export const documents_column = [
   {
     Header: "Document Name",
-    accessor: "document_name",
+    accessor: "name",
     align: "left",
     disablePadding: false,
     width: 160,
   },
   {
     Header: "Document Type",
-    accessor: "document_type",
+    accessor: "type",
     align: "left",
     disablePadding: false,
     width: 160,
   },
   {
     Header: "Document Size",
-    accessor: "document_size",
+    accessor: "size",
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell: (data) => {
+      return convertFileSize(data?.row?.original?.size);
+    },
   },
   {
     Header: "Document Date",
-    accessor: "document_date",
+    accessor: "created_at",
     align: "left",
     disablePadding: false,
-    width: 160,
+    width: 180,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
   },
   {
     Header: "Action",

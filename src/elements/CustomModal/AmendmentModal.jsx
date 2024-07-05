@@ -1,19 +1,57 @@
 import { Box, Modal, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext, useState } from "react";
 import cn from "classnames";
 import styles from "./Modal.module.scss";
 import { useForm } from "react-hook-form";
 import CustomCkEditor from "../CustomEditor/CustomCkEditor";
+import _sendAPIRequest, { setErrors } from "../../helpers/api";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../../contexts/AlertProvider";
+import { ButtonLoader } from "../CustomLoader/Loader";
 
-const AmendmentModal = ({ addAmendment, setAddAmendment }) => {
+const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
   const handleClose = () => {
     setAddAmendment(false);
   };
 
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, watch, setError } = useForm();
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
 
-  const submitForm = (data) => {
-    console.log(data);
+  const submitForm = async (data) => {
+    setLoading(true);
+
+    try {
+      const response = await _sendAPIRequest(
+        "POST",
+        PortalApiUrls.CREATE_AMENDMENT + `${id}/`,
+        { text: data.text },
+        true
+      );
+      if (response.status === 201) {
+        setLoading(false);
+        setAddAmendment(false);
+        setAlert({
+          isVisible: true,
+          message: "Amendment created successfully!",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      const { data } = error.response;
+      if (data) {
+        setErrors(data, watch, setError);
+
+        if (data.error) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
+        }
+      }
+    }
   };
 
   return (
@@ -41,7 +79,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment }) => {
                   <div className="col-lg-12 text-start">
                     <CustomCkEditor
                       control={control}
-                      name="amendment"
+                      name="text"
                       label="Amendment"
                       rules={{
                         required: "Amendment is required.",
@@ -52,9 +90,13 @@ const AmendmentModal = ({ addAmendment, setAddAmendment }) => {
 
                 <div className="row my-3">
                   <div className="col text-end">
-                    <button type="submit" className={cn("btn", "button")}>
-                      Submit
-                    </button>
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button type="submit" className={cn("btn", "button")}>
+                        Submit
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

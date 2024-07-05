@@ -12,9 +12,10 @@ import {
 import { ExpandMore } from "@mui/icons-material";
 import { dateTimeFormatter } from "../../../helpers/formatter";
 import DOMPurify from "dompurify";
+import { getLableByValue } from "../../../helpers/common";
+import cn from "classnames";
 
 const Summary = ({ bidDetails }) => {
-  console.log(bidDetails);
   return (
     <>
       <Accordion
@@ -85,7 +86,9 @@ const Summary = ({ bidDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Unit</h6>
-              <p className={styles["col-data"]}>Meters</p>
+              <p className={styles["col-data"]}>
+                {getLableByValue(bidDetails?.product_unit)}
+              </p>
             </div>
           </div>
           <Divider classes={{ root: "custom-divider" }} />
@@ -118,23 +121,52 @@ const Summary = ({ bidDetails }) => {
           </AccordionSummary>
           <AccordionDetails>
             <div className="row">
-              <p className={styles["col-data"]}>
-                <h6 className={styles["col-heading"]}>May 18, 2024 2:00 AM</h6>
-                <ul>
-                  <li>
-                    Objective: Procurement of cotton material to meet
-                    manufacturing needs.
-                  </li>
-                  <li>
-                    Invitation: Seeking proposals from qualified suppliers for
-                    premium-grade cotton fabric.
-                  </li>
-                </ul>
-              </p>
+              {bidDetails?.amendment?.map((amendment) => {
+                return (
+                  <>
+                    <h6 className={styles["col-heading"]}>
+                      {dateTimeFormatter(amendment?.created_at)}
+                    </h6>
+                    <p
+                      className={cn(
+                        styles["col-data"],
+                        styles["amendment-data"]
+                      )}
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(amendment?.text),
+                      }}
+                    ></p>
+                  </>
+                );
+              })}
             </div>
           </AccordionDetails>
         </Accordion>
       )}
+
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Delivery Term
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className="row">
+            <p
+              className={styles["col-data"]}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(bidDetails?.delivery_terms),
+              }}
+            ></p>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
       <Accordion
         defaultExpanded
@@ -202,7 +234,7 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion> */}
 
-      {/* <Accordion
+      <Accordion
         defaultExpanded
         square={true}
         classes={{
@@ -211,65 +243,71 @@ const Summary = ({ bidDetails }) => {
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
-            Categories (3)
+            Categories ({bidDetails?.category?.length})
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Stack direction="row" spacing={1}>
-            <Chip label="Men’s Apparel" />
-            <Chip label="Child’s Apparel" />
-            <Chip label="Women’s Apparel" />
+            {bidDetails?.category?.map((category) => {
+              return <Chip label={category?.name} />;
+            })}
           </Stack>
         </AccordionDetails>
-      </Accordion> */}
-
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Eligibility Criteria
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className="row">
-            <p
-              className={styles["col-data"]}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(bidDetails?.eligiblity_criteria),
-              }}
-            ></p>
-          </div>
-        </AccordionDetails>
       </Accordion>
 
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Technical Specification
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className="row">
-            <p
-              className={styles["col-data"]}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(bidDetails?.technical_specification),
-              }}
-            ></p>
-          </div>
-        </AccordionDetails>
-      </Accordion>
+      {bidDetails?.eligiblity_criteria && (
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography classes={{ root: "custom-accordion-heading" }}>
+              Eligibility Criteria
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <p
+                className={styles["col-data"]}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(bidDetails?.eligiblity_criteria),
+                }}
+              ></p>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+      )}
+
+      {bidDetails?.technical_specification && (
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography classes={{ root: "custom-accordion-heading" }}>
+              Technical Specification
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className="row">
+              <p
+                className={styles["col-data"]}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    bidDetails?.technical_specification
+                  ),
+                }}
+              ></p>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </>
   );
 };

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
+// import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
@@ -17,7 +17,7 @@ const BidCategories = () => {
   const [selectedCategories, setSelectedCategories] = useState({});
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const { companyDetails } = useContext(CompanyDetailsContext);
+  // const { companyDetails } = useContext(CompanyDetailsContext);
   const navigate = useNavigate();
   const { id } = useParams();
 

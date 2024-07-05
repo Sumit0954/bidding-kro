@@ -22,24 +22,24 @@ const BidQuestions = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([{ question: "" }]);
 
-  const retrieveBid = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.RETRIEVE_BID + `${id}/`,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        setQuestions(response.data.question);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setQuestions(response.data.question);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
       retrieveBid();
     }
   }, [id]);

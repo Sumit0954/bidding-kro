@@ -30,7 +30,7 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid }) => {
       }
 
       const options = {
-        key: import.meta.env.REACT_APP_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
         currency: "INR",
         name: "Bidding Karo",
         prefill: {

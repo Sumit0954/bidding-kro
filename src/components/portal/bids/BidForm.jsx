@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from "react";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTimeRangePicker";
-import { getMinMaxDate } from "../../../helpers/common";
+import { getMinMaxDate, getProductUnits } from "../../../helpers/common";
 import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -62,7 +62,6 @@ const BidForm = () => {
     setLoading(true);
     let updateFormData = new FormData();
     let createFormData = new FormData();
-
 
     /* Build FormData */
     if (data) {
@@ -173,33 +172,33 @@ const BidForm = () => {
     }
   };
 
-  const retrieveBid = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.RETRIEVE_BID + `${id}/`,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        reset({
-          ...response.data,
-          type: response.data.type_meta.id,
-          bid_start_date: retrieveDateFormat(response.data.bid_start_date),
-          bid_end_date: retrieveDateFormat(response.data.bid_end_date),
-          delivery_date: retrieveDateFormat(response.data.delivery_date),
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            reset({
+              ...response.data,
+              type: response.data.type_meta.id,
+              bid_start_date: retrieveDateFormat(response.data.bid_start_date),
+              bid_end_date: retrieveDateFormat(response.data.bid_end_date),
+              delivery_date: retrieveDateFormat(response.data.delivery_date),
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
       retrieveBid();
     }
-  }, [id]);
+  }, [id, reset]);
 
   return (
     <>
@@ -266,12 +265,12 @@ const BidForm = () => {
                     <CustomSelect
                       control={control}
                       label="Unit"
-                      name="unit"
-                      options={[{ lable: "Test", value: 1 }]}
+                      name="product_unit"
+                      options={getProductUnits()}
                       placeholder="Unit"
-                      // rules={{
-                      //   required: "Unit is required.",
-                      // }}
+                      rules={{
+                        required: "Unit is required.",
+                      }}
                     />
                   </div>
                 </div>
@@ -284,8 +283,8 @@ const BidForm = () => {
                       rules={{
                         required: "Opening Date & Time is required.",
                       }}
-                      // minDate={minDate}
-                      // maxDate={maxDate}
+                      minDate={minDate}
+                      maxDate={maxDate}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -296,8 +295,8 @@ const BidForm = () => {
                       rules={{
                         required: "Closing Date & Time is required.",
                       }}
-                      // minDate={minDate}
-                      // maxDate={maxDate}
+                      minDate={minDate}
+                      maxDate={maxDate}
                     />
                   </div>
                 </div>
@@ -307,11 +306,12 @@ const BidForm = () => {
                       control={control}
                       label="Delivery Timeline"
                       name="delivery_date"
+                      type="date"
                       rules={{
                         required: "Delivery Timeline is required.",
                       }}
-                      // minDate={minDate}
-                      // maxDate={maxDate}
+                      minDate={minDate}
+                      maxDate={maxDate}
                     />
                   </div>
                 </div>
@@ -375,7 +375,7 @@ const BidForm = () => {
                     <ButtonLoader size={60} />
                   ) : (
                     <button type="submit" className={cn("btn", "button")}>
-                      Add Categories
+                      {id ? 'Update Bid' : 'Create Bid'}
                     </button>
                   )}
                 </div>

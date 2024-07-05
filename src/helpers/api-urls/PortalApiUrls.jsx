@@ -23,6 +23,8 @@ export const PortalApiUrls = Object.freeze({
   ADD_QUESTION: "/bid/customer/question/",
   DELETE_QUESTION: "/bid/customer/question/",
   UPLOAD_DOCUMENT: "/bid/customer/document/",
+  DELETE_DOCUMENT: "/bid/customer/document/",
   RETRIEVE_BID: "/bid/customer/",
   UPDATE_BID: "/bid/customer/",
+  CREATE_AMENDMENT: "/bid/customer/amendment/",
 });
