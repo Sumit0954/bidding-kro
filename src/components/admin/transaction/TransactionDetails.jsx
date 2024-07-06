@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./TransactionDestils.module.scss";
+import styles from "./TransactionDetails.module.scss";
 import {
   Accordion,
   AccordionDetails,

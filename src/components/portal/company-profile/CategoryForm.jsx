@@ -203,11 +203,8 @@ const CategoryForm = () => {
 
   //       companyDetails?.category?.forEach((category) => {
   //         if (category.depth > 0) {
-  //           if (newSelectedCategories[category.depth]) {
-  //             newSelectedCategories[category.depth].push(category);
-  //           } else {
-  //             newSelectedCategories[category.depth] = [category];
-  //           }
+  //           newSelectedCategories[category.depth] = [];
+  //           newSelectedCategories[category.depth].push(category);
   //         } else {
   //           newSelectedCategories[category.depth] = category;
   //         }

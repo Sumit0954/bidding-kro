@@ -58,6 +58,21 @@ const Summary = ({ bidDetails }) => {
               </p>
             </div>
             <div className="col">
+              <h6 className={styles["col-heading"]}>Product Quantity</h6>
+              <p className={styles["col-data"]}>
+                {parseInt(bidDetails?.product_quantity)}
+              </p>
+            </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Unit</h6>
+              <p className={styles["col-data"]}>
+                {getLableByValue(bidDetails?.product_unit)}
+              </p>
+            </div>
+          </div>
+          <Divider classes={{ root: "custom-divider" }} />
+          <div className="row">
+            <div className="col">
               <h6 className={styles["col-heading"]}>Opening Date and Time</h6>
               <p className={styles["col-data"]}>
                 {dateTimeFormatter(bidDetails?.bid_start_date)}
@@ -69,25 +84,10 @@ const Summary = ({ bidDetails }) => {
                 {dateTimeFormatter(bidDetails?.bid_end_date)}
               </p>
             </div>
-          </div>
-          <Divider classes={{ root: "custom-divider" }} />
-          <div className="row">
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Product Quantity</h6>
-              <p className={styles["col-data"]}>
-                {parseInt(bidDetails?.product_quantity)}
-              </p>
-            </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Delivery Timeline</h6>
               <p className={styles["col-data"]}>
                 {dateTimeFormatter(bidDetails?.delivery_date, false)}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Unit</h6>
-              <p className={styles["col-data"]}>
-                {getLableByValue(bidDetails?.product_unit)}
               </p>
             </div>
           </div>

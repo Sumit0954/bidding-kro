@@ -27,4 +27,6 @@ export const PortalApiUrls = Object.freeze({
   RETRIEVE_BID: "/bid/customer/",
   UPDATE_BID: "/bid/customer/",
   CREATE_AMENDMENT: "/bid/customer/amendment/",
+  CREATE_ORDER: "/payment/customer/order/",
+  VERIFY_PAYMENT: "/payment/customer/verify/",
 });

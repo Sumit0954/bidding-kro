@@ -54,7 +54,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      Supply of Cotton Material
+      {bidDetails?.title}
     </Typography>,
   ];
 
@@ -189,6 +189,7 @@ const BidDetailsPage = () => {
         <RazorpayPaymentHandler
           userData={userDetails}
           setActivateBid={setActivateBid}
+          id={bidDetails?.id}
         />
       )}
     </>

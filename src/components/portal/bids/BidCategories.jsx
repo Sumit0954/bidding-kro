@@ -10,9 +10,10 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { isArray } from "lodash";
+import { getCategoryLevel } from "../../../helpers/common";
 
 const BidCategories = () => {
-  const { control, handleSubmit, watch, setError } = useForm();
+  const { control, handleSubmit, watch, setError, reset } = useForm();
   const [categories, setCategories] = useState({ 0: [] });
   const [selectedCategories, setSelectedCategories] = useState({});
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,6 @@ const BidCategories = () => {
 
   useEffect(() => {
     Object.entries(selectedCategories)?.forEach(([depth, categories]) => {
-      console.log(categories);
       let parent_categories = [];
       if (parseInt(depth) === 0) {
         parent_categories = [categories?.id];
@@ -109,31 +109,6 @@ const BidCategories = () => {
 
       return newCategories;
     });
-  };
-
-  const propsData = {
-    0: {
-      name: "industry",
-      label: "Industry",
-      placeholder: "Choose Industry",
-      rules: "Industry is required.",
-    },
-    1: {
-      name: "category",
-      label: "Category",
-      placeholder: "Choose Category",
-      rules: "Category is required.",
-    },
-    2: {
-      name: "sub_category",
-      label: "Sub Category",
-      placeholder: "Choose Sub Category",
-    },
-    3: {
-      name: "product",
-      label: "Product",
-      placeholder: "Choose Product",
-    },
   };
 
   const submitForm = async (data) => {
@@ -193,6 +168,53 @@ const BidCategories = () => {
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            if (response?.data?.category?.length > 0) {
+              setSelectedCategories((prevSelectedCategories) => {
+                let newSelectedCategories = { ...prevSelectedCategories };
+                let resetOjb = {};
+
+                response?.data?.category?.forEach((category) => {
+                  let name = getCategoryLevel()[category.depth].name;
+
+                  if (category.depth > 0) {
+                    if (newSelectedCategories[category.depth]) {
+                      newSelectedCategories[category.depth].push(category);
+                    } else {
+                      newSelectedCategories[category.depth] = [category];
+                    }
+                    resetOjb[name] = newSelectedCategories[category.depth];
+                  } else {
+                    newSelectedCategories[category.depth] = category;
+                    resetOjb[name] = category;
+                  }
+
+                  reset(resetOjb);
+                });
+
+                return newSelectedCategories;
+              });
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id, reset]);
+
   return (
     <>
       <div className="container">
@@ -202,6 +224,7 @@ const BidCategories = () => {
               <form onSubmit={handleSubmit(submitForm)}>
                 {Object.keys(categories).map((depth) => {
                   const categoryDepth = parseInt(depth);
+                  const propsData = getCategoryLevel();
 
                   if (categories[depth]?.length > 0) {
                     let availableOptions = [];

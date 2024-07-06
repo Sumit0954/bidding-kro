@@ -1,7 +1,11 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import _sendAPIRequest from "../helpers/api";
+import { PortalApiUrls } from "../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../contexts/AlertProvider";
 
-const RazorpayPaymentHandler = ({ userData, setActivateBid }) => {
+const RazorpayPaymentHandler = ({ userData, setActivateBid, id }) => {
   const { first_name, last_name, email, mobile_number } = userData.user;
+  const { setAlert } = useContext(AlertContext);
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -25,18 +29,60 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid }) => {
         "https://checkout.razorpay.com/v1/checkout.js"
       );
       if (!res) {
-        alert("Razorpay SDK failed to load. Are you online?");
+        setAlert({
+          isVisible: true,
+          message: "Razorpay SDK failed to load. Are you online?",
+          severity: "error",
+        });
         return;
       }
+
+      // creating a new order
+      const order = await _sendAPIRequest(
+        "POST",
+        PortalApiUrls.CREATE_ORDER,
+        { bid: id },
+        true
+      );
+
+      if (!order) {
+        setAlert({
+          isVisible: true,
+          message: "Server error. Are you online?",
+          severity: "error",
+        });
+        return;
+      }
+
+      // Getting the order details
+      const { razorpay_order_id } = order.data;
 
       const options = {
         key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
         currency: "INR",
         name: "Bidding Karo",
+        order_id: razorpay_order_id,
+        handler: async function (response) {
+          const data = {
+            bid: id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          };
+
+          await _sendAPIRequest(
+            "POST",
+            PortalApiUrls.VERIFY_PAYMENT,
+            data,
+            true
+          );
+        },
         prefill: {
           name: `${first_name} ${last_name}`,
           email: email,
           contact: mobile_number,
+        },
+        theme: {
+          color: "var(--primary-color)",
         },
       };
 
@@ -55,7 +101,15 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid }) => {
       rzp1.open();
     };
     handlePayment();
-  }, [first_name, last_name, email, mobile_number, setActivateBid]);
+  }, [
+    first_name,
+    last_name,
+    email,
+    mobile_number,
+    setActivateBid,
+    id,
+    setAlert,
+  ]);
 
   return null;
 };

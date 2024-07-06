@@ -210,7 +210,8 @@ em {
 .status-cloumn {
 	text-transform: capitalize;
 
-	&.pending {
+	&.pending,
+	&.active {
 		color: var(--pending);
 	}
 }

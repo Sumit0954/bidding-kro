@@ -66,3 +66,32 @@ export const convertFileSize = (size) => {
     return `${(size / 1024).toFixed(2)} KB`;
   }
 };
+
+export const getCategoryLevel = () => {
+  const propsData = {
+    0: {
+      name: "industry",
+      label: "Industry",
+      placeholder: "Choose Industry",
+      rules: "Industry is required.",
+    },
+    1: {
+      name: "category",
+      label: "Category",
+      placeholder: "Choose Category",
+      rules: "Category is required.",
+    },
+    2: {
+      name: "sub_category",
+      label: "Sub Category",
+      placeholder: "Choose Sub Category",
+    },
+    3: {
+      name: "product",
+      label: "Product",
+      placeholder: "Choose Product",
+    },
+  };
+
+  return propsData;
+};
