@@ -1,11 +1,11 @@
-import TransactionDetails from "../../components/admin/transaction/TransactionDetails"
+import TransactionDetails from "../../components/admin/transaction/TransactionDetails";
 
 const TransactionDetailsPage = () => {
   return (
     <>
       <TransactionDetails />
     </>
-  )
-}
+  );
+};
 
-export default TransactionDetailsPage
+export default TransactionDetailsPage;

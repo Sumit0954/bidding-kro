@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
-import styles from './BlogCreateUpdate.module.scss'
+import styles from "./BlogCreateUpdate.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import CustomCkEditor from '../../../elements/CustomEditor/CustomCkEditor';
+import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import { Breadcrumbs, Typography } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
-import { Button, } from "@mui/material";
-import { NavLink, } from "react-router-dom";
-
-
-
-
+import { Button } from "@mui/material";
+import { NavLink } from "react-router-dom";
 
 const BlogCreateUpdate = () => {
   const { control, handleSubmit } = useForm();
@@ -24,11 +20,12 @@ const BlogCreateUpdate = () => {
       to="/admin/blogs"
       style={{ textDecoration: "none" }}
     >
-      Home / Blog Management
+      Home
     </NavLink>,
 
     <Typography key="2" color="text.primary">
-    </Typography>
+      Blog Management
+    </Typography>,
   ];
 
   const {
@@ -41,8 +38,7 @@ const BlogCreateUpdate = () => {
   const [bannerImage, setBannerImage] = useState(DummyLogo);
 
   const all = watch();
-  const { cover_image, banner_image } = all
-
+  const { cover_image, banner_image } = all;
 
   useEffect(() => {
     // Update previews on file change
@@ -68,14 +64,11 @@ const BlogCreateUpdate = () => {
         setBannerImage(URL.createObjectURL(banner_image[0]));
       }
     }
-
-
   }, [getValues]);
 
   const submitForm = (data) => {
-    console.log(data)
-  }
-
+    console.log(data);
+  };
 
   return (
     <>
@@ -83,7 +76,7 @@ const BlogCreateUpdate = () => {
         <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
       </div>
 
-      <div className="container pt-5">
+      <div className="container mt-4">
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
@@ -93,7 +86,8 @@ const BlogCreateUpdate = () => {
                     <CustomInput
                       control={control}
                       label="Blog Name"
-                      name="blog-name"
+                      name="blog_name"
+                      placeholder="Blog Name"
                       rules={{
                         required: "Blog Name is required.",
                       }}
@@ -103,7 +97,8 @@ const BlogCreateUpdate = () => {
                     <CustomInput
                       control={control}
                       label="Blog Slug"
-                      name="blog-slug"
+                      name="blog_slug"
+                      placeholder="Blog Slug"
                       rules={{
                         required: "Blog Slug is required.",
                       }}
@@ -111,8 +106,8 @@ const BlogCreateUpdate = () => {
                   </div>
                 </div>
 
-                <div className="row">
-                  <div className="col-lg-6">
+                <div className="row mb-5">
+                  <div className={cn("col-lg-6", styles["image-section"])}>
                     <label>Cover Image</label>
                     <div className={styles["img-container"]}>
                       <div className={styles["img-box"]}>
@@ -129,7 +124,8 @@ const BlogCreateUpdate = () => {
                         tabIndex={-1}
                         startIcon={<CloudUpload />}
                         sx={{
-                          width: "15rem",
+                          width: "12.5rem",
+                          marginLeft: "10px",
                           backgroundColor: "var(--primary-color)",
                           "&:hover": {
                             backgroundColor: "var(--secondary-color)",
@@ -149,11 +145,10 @@ const BlogCreateUpdate = () => {
                           {errors?.Logo?.message || "Error"}
                         </span>
                       )}
-
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
+                  <div className={cn("col-lg-6", styles["image-section"])}>
                     <label>Banner Image</label>
                     <div className={styles["img-container"]}>
                       <div className={styles["img-box"]}>
@@ -170,7 +165,8 @@ const BlogCreateUpdate = () => {
                         tabIndex={-1}
                         startIcon={<CloudUpload />}
                         sx={{
-                          width: "15rem",
+                          width: "12.5rem",
+                          marginLeft: "10px",
                           backgroundColor: "var(--primary-color)",
                           "&:hover": {
                             backgroundColor: "var(--secondary-color)",
@@ -251,15 +247,13 @@ const BlogCreateUpdate = () => {
                     Save
                   </button>
                 </div>
-
               </form>
-
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BlogCreateUpdate
+export default BlogCreateUpdate;

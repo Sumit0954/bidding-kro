@@ -55,7 +55,7 @@ const CategoryForm = () => {
 
   useEffect(() => {
     Object.entries(selectedCategories)?.forEach(([depth, categories]) => {
-      console.log(categories)
+      console.log(categories);
       let parent_categories = [];
       if (parseInt(depth) === 0) {
         parent_categories = [categories?.id];
@@ -201,19 +201,15 @@ const CategoryForm = () => {
   //     setSelectedCategories((prevSelectedCategories) => {
   //       let newSelectedCategories = { ...prevSelectedCategories };
 
-  //       Object.keys(categories).forEach((depth) => {
-  //         let selectedValues = categories[depth]?.filter((category) =>
-  //           (companyDetails?.category || []).some(
-  //             (selected) => selected.id === category.id
-  //           )
-  //         );
-
-  //         if (selectedValues.length > 0) {
-  //           if (parseInt(depth) > 0) {
-  //             newSelectedCategories[depth] = selectedValues;
+  //       companyDetails?.category?.forEach((category) => {
+  //         if (category.depth > 0) {
+  //           if (newSelectedCategories[category.depth]) {
+  //             newSelectedCategories[category.depth].push(category);
   //           } else {
-  //             newSelectedCategories[depth] = selectedValues[depth];
+  //             newSelectedCategories[category.depth] = [category];
   //           }
+  //         } else {
+  //           newSelectedCategories[category.depth] = category;
   //         }
   //       });
 

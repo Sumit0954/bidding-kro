@@ -1,24 +1,16 @@
 import React, { useState } from "react";
-import styles from './TransactionDestils.module.scss'
+import styles from "./TransactionDestils.module.scss";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Chip,
-  Divider,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
-  Stack,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import DOMPurify from "dompurify";
 import { Breadcrumbs } from "@mui/material";
 
 const TransactionDetails = () => {
-
   const breadcrumbs = [
     <NavLink
       underline="hover"
@@ -27,11 +19,12 @@ const TransactionDetails = () => {
       to="/admin/blogs"
       style={{ textDecoration: "none" }}
     >
-      Transction / EB24000036
+      Transactions
     </NavLink>,
 
     <Typography key="2" color="text.primary">
-    </Typography>
+      EB24000036
+    </Typography>,
   ];
 
   const [expanded, setExpanded] = useState("Summary");
@@ -46,16 +39,15 @@ const TransactionDetails = () => {
         <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
       </div>
 
-
       <Accordion
-        expanded={expanded === "Summary"}
-        onChange={handleChange("Summary")}
+        expanded={expanded === "Bid Details"}
+        onChange={handleChange("Bid Details")}
         square={true}
         classes={{ root: "custom-accordion" }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
-            Summary
+            Bid Details
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -66,17 +58,9 @@ const TransactionDetails = () => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Owner Name</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
           </div>
-
         </AccordionDetails>
       </Accordion>
 
@@ -95,29 +79,21 @@ const TransactionDetails = () => {
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Owner Name</h6>
-
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Designation</h6>
-
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Mobile</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Email</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>WhatsApp</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
           </div>
         </AccordionDetails>
@@ -138,36 +114,23 @@ const TransactionDetails = () => {
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Transction Id</h6>
-
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Order Id</h6>
-
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Amount</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Status</h6>
-              <p className={styles["col-data"]}>
-
-              </p>
+              <p className={styles["col-data"]}></p>
             </div>
-
           </div>
         </AccordionDetails>
       </Accordion>
-
-
-
-
-
-
     </>
-  )
-}
+  );
+};
 
-export default TransactionDetails
+export default TransactionDetails;

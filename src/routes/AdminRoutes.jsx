@@ -33,19 +33,28 @@ const AdminRoutes = () => {
                 <Route
                   path="/companies/:company_id"
                   element={<LayoutPage Component={CompanyDetailPage} />}
-
                 />
-                <Route path="/blogs" element={<LayoutPage Component={BlogListPage} />} />
-
-                <Route path="/blogs/:blog_id" element={<LayoutPage Component={BlogCreateUpdatePage} />} />
-
-                <Route path="/transactions" element={<LayoutPage Component={TransactionListPage} />} />
-
-                <Route path="/transactions/:transaction_id" element={<LayoutPage Component={TransactionDetailsPage} />} />
-
-
+                <Route
+                  path="/transactions"
+                  element={<LayoutPage Component={TransactionListPage} />}
+                />
+                <Route
+                  path="/transactions/:transaction_id"
+                  element={<LayoutPage Component={TransactionDetailsPage} />}
+                />
+                <Route
+                  path="/blogs"
+                  element={<LayoutPage Component={BlogListPage} />}
+                />
+                <Route
+                  path="/blog/:action"
+                  element={<LayoutPage Component={BlogCreateUpdatePage} />}
+                />
+                <Route
+                  path="/blog/:action/:blog_id"
+                  element={<LayoutPage Component={BlogCreateUpdatePage} />}
+                />
               </Route>
-
             </Routes>
             <CallAlert />
           </main>
