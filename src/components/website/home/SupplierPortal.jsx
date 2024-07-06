@@ -12,9 +12,9 @@ const SupplierPortal = () => {
           </div>
           <div className="col-lg-6">
             <div className={styles["supplier-content"]}>
-              <h2>VENDX Supplier Portal</h2>
+              <h2>Bids Supplier Portal</h2>
               <h5>Comprehensive Supplier Directory</h5>
-              <p className={styles["pragrapg-content"]}>VENDX Supplier Portal is the state of art Supplier Information Management platform to determine capabilities & risks pertaining to each of the suppliers of the organization & also invite new suppliers specific to a category with relevant desired capabilities.</p>
+              <p className={styles["pragrapg-content"]}> Bids Supplier Portal is the state of art Supplier Information Management platform to determine capabilities & risks pertaining to each of the suppliers of the organization & also invite new suppliers specific to a category with relevant desired capabilities.</p>
             </div>
           </div>
         </div>

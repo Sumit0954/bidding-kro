@@ -6,6 +6,13 @@
 	padding-top: 50px;
 }
 
+@media screen and (max-width: 1200px) {
+	.bidding-img {
+		width: 100%;
+		height: auto;
+	}
+}
+
 @media screen and (max-width: 991px) {
 	.bidding-img {
 		width: 100%;

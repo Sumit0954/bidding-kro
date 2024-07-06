@@ -11,6 +11,8 @@ import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
 import BlogListPage from "../pages/admin/BlogListPage";
 import BlogCreateUpdatePage from "../pages/admin/BlogCreateUpdatePage";
+import TransactionListPage from "../pages/admin/TransactionListPage";
+import TransactionDetailsPage from "../pages/admin/TransactionDetailsPage";
 
 const AdminRoutes = () => {
   return (
@@ -36,6 +38,10 @@ const AdminRoutes = () => {
                 <Route path="/blogs" element={<LayoutPage Component={BlogListPage} />} />
 
                 <Route path="/blogs/:blog_id" element={<LayoutPage Component={BlogCreateUpdatePage} />} />
+
+                <Route path="/transactions" element={<LayoutPage Component={TransactionListPage} />} />
+
+                <Route path="/transactions/:transaction_id" element={<LayoutPage Component={TransactionDetailsPage} />} />
 
 
               </Route>

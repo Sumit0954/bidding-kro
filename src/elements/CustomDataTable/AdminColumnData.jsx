@@ -58,3 +58,44 @@ export const blogs_column = [
     disablePadding: false,
   },
 ];
+
+
+
+
+export const transactions_column = [
+  {
+    Header: "Transction Id",
+    accessor: "transction id",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/transactions/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Bid Title",
+    accessor: "bid title",
+    align: "left",
+    disablePadding: false,
+  },
+
+  {
+    Header: "Owner Name",
+    accessor: "owner name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Payment",
+    accessor: "payment",
+    align: "left",
+    disablePadding: false,
+  },
+];

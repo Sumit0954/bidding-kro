@@ -18,7 +18,7 @@ const HomePage = () => {
       <BiddingChallenges />
       <BiddingProcess />
       <OurGallery />
-      {/* <BrandSlider /> */}
+      <BrandSlider />
       < ProcurementManagement />
       <Contact />
 

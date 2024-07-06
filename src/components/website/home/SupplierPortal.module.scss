@@ -9,6 +9,14 @@
 		padding-top: 10px;
 	}
 }
+
+@media screen and (max-width: 1200px) {
+	.supplier-portal-img {
+		width: 100%;
+		height: auto;
+	}
+}
+
 @media screen and (max-width: 991px) {
 	.supplier-portal-img {
 		width: 100%;

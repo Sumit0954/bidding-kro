@@ -42,7 +42,18 @@ const sidebarMenu = [
 
   {
     icon: "/images/admin/layout/icons/blogging-icon.png",
+    title: "Transactions",
+    path: "/admin/transactions",
+  },
+
+
+
+  {
+    icon: "/images/admin/layout/icons/blogging-icon.png",
     title: "Blog Management",
     path: "/admin/blogs",
   },
+
+
+
 ];

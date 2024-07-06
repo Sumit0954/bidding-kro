@@ -20,6 +20,16 @@
 		display: flex;
 	}
 }
+
+@media screen and (max-width: 1200px) {
+	.img-card {
+		display: flex;
+	}
+	.card-img3 {
+		width: 105%;
+	}
+}
+
 @media screen and (max-width: 767px) {
 	.card-img3 {
 		width: 100%;

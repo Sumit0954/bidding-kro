@@ -52,7 +52,22 @@ const WebsiteHeader = () => {
                 >
                   Contact
                 </NavLink>
+
               </li>
+
+              <li className="nav-item">
+                <NavLink
+                  to={"/blogs"}
+                  className={cn(["nav-link", "px-3", styles["custom-navlink"]])}
+
+                >
+                  Blogs
+                </NavLink>
+              </li>
+
+
+
+
             </ul>
 
             {userDetails?.user ? (
