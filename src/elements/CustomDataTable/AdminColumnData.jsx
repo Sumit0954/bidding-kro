@@ -38,38 +38,59 @@ export const companies_column = [
 export const transactions_column = [
   {
     Header: "Transction Id",
-    accessor: "transction_id",
+    accessor: "formatted_number",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/admin/transactions/${data?.row?.original?.transction_id}`}
+          to={`/admin/transactions/${data?.row?.original?.id}`}
         >
-          {data?.row?.original?.transction_id}
+          {data?.row?.original?.formatted_number}
         </NavLink>
       );
     },
   },
   {
     Header: "Bid Title",
-    accessor: "bid title",
+    accessor: "bid.title",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      return data?.row?.original?.bid?.title;
+    },
   },
-
+  {
+    Header: "Bid Id",
+    accessor: "bid.formatted_number",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return data?.row?.original?.bid?.formatted_number;
+    },
+  },
   {
     Header: "Owner Name",
-    accessor: "owner name",
+    accessor: "customer.first_name",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      return `${data?.row?.original?.customer?.first_name} ${data?.row?.original?.customer?.last_name}`;
+    },
   },
   {
     Header: "Payment Status",
     accessor: "payment",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      return (
+        <div className={`status-cloumn ${data?.row?.original?.status}`}>
+          {data?.row?.original?.status}
+        </div>
+      );
+    },
   },
 ];
 

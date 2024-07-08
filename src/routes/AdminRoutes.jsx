@@ -13,6 +13,7 @@ import BlogListPage from "../pages/admin/BlogListPage";
 import BlogCreateUpdatePage from "../pages/admin/BlogCreateUpdatePage";
 import TransactionListPage from "../pages/admin/TransactionListPage";
 import TransactionDetailsPage from "../pages/admin/TransactionDetailsPage";
+import TransactionPaymentPage from "../pages/admin/TransactionPaymentPage";
 
 const AdminRoutes = () => {
   return (
@@ -41,6 +42,10 @@ const AdminRoutes = () => {
                 <Route
                   path="/transactions/:transaction_id"
                   element={<LayoutPage Component={TransactionDetailsPage} />}
+                />
+                <Route
+                  path="/transactions/payments/:order_id"
+                  element={<LayoutPage Component={TransactionPaymentPage} />}
                 />
                 <Route
                   path="/blogs"

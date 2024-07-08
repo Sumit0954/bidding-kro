@@ -10,9 +10,10 @@ import { isArray } from "lodash";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
+import { getCategoryLevel } from "../../../helpers/common";
 
 const CategoryForm = () => {
-  const { control, handleSubmit, watch, setError } = useForm();
+  const { control, handleSubmit, watch, setError, reset } = useForm();
   const [categories, setCategories] = useState({ 0: [] });
   const [selectedCategories, setSelectedCategories] = useState({});
   const [loading, setLoading] = useState(false);
@@ -113,31 +114,6 @@ const CategoryForm = () => {
     });
   };
 
-  const propsData = {
-    0: {
-      name: "industry",
-      label: "Industry",
-      placeholder: "Choose Industry",
-      rules: "Industry is required.",
-    },
-    1: {
-      name: "category",
-      label: "Category",
-      placeholder: "Choose Category",
-      rules: "Category is required.",
-    },
-    2: {
-      name: "sub_category",
-      label: "Sub Category",
-      placeholder: "Choose Sub Category",
-    },
-    3: {
-      name: "product",
-      label: "Product",
-      placeholder: "Choose Product",
-    },
-  };
-
   const submitForm = async (data) => {
     setLoading(true);
 
@@ -196,24 +172,33 @@ const CategoryForm = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (companyDetails?.category?.length > 0) {
-  //     setSelectedCategories((prevSelectedCategories) => {
-  //       let newSelectedCategories = { ...prevSelectedCategories };
+  useEffect(() => {
+    if (companyDetails?.category?.length > 0) {
+      setSelectedCategories((prevSelectedCategories) => {
+        let newSelectedCategories = { ...prevSelectedCategories };
+        let resetOjb = {};
 
-  //       companyDetails?.category?.forEach((category) => {
-  //         if (category.depth > 0) {
-  //           newSelectedCategories[category.depth] = [];
-  //           newSelectedCategories[category.depth].push(category);
-  //         } else {
-  //           newSelectedCategories[category.depth] = category;
-  //         }
-  //       });
+        companyDetails?.category?.forEach((category) => {
+          let name = getCategoryLevel()[category.depth].name;
+          if (category.depth > 0) {
+            if (newSelectedCategories[category.depth]) {
+              newSelectedCategories[category.depth].push(category);
+            } else {
+              newSelectedCategories[category.depth] = [category];
+            }
+            resetOjb[name] = newSelectedCategories[category.depth];
+          } else {
+            newSelectedCategories[category.depth] = category;
+            resetOjb[name] = category;
+          }
 
-  //       return newSelectedCategories;
-  //     });
-  //   }
-  // }, [companyDetails?.category]);
+          reset(resetOjb);
+        });
+
+        return newSelectedCategories;
+      });
+    }
+  }, [companyDetails?.category, reset]);
 
   return (
     <>
@@ -261,13 +246,13 @@ const CategoryForm = () => {
                         <div className="col-lg-12">
                           <CategoriesSelect
                             control={control}
-                            name={propsData[depth].name}
-                            label={propsData[depth].label}
-                            placeholder={propsData[depth].placeholder}
+                            name={getCategoryLevel()[depth].name}
+                            label={getCategoryLevel()[depth].label}
+                            placeholder={getCategoryLevel()[depth].placeholder}
                             options={availableOptions}
                             rules={
-                              propsData[depth].rules && {
-                                required: propsData[depth].rules,
+                              getCategoryLevel()[depth].rules && {
+                                required: getCategoryLevel()[depth].rules,
                               }
                             }
                             multiple={parseInt(depth) === 0 ? false : true}

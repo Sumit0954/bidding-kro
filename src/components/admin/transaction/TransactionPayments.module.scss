@@ -1,0 +1,17 @@
+.col-heading {
+  font-size: 15px;
+  color: var(--admin-text-color-2);
+}
+
+.col-data {
+  margin-bottom: 0;
+  font-size: 14px;
+
+  &.capitalize-data {
+    text-transform: capitalize;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

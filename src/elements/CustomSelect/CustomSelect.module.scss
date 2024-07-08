@@ -1,8 +1,9 @@
-.input-field-container{
-  .form-control{
+.input-field-container {
+  .form-control {
     margin: 10px 0;
 
-    .input-field, .search-input-field{
+    .input-field,
+    .search-input-field {
       width: 100%;
       box-shadow: var(--glow-shadow);
       background-color: var(--white);
@@ -11,33 +12,39 @@
       border-style: none;
       margin-bottom: 0.1rem;
 
-      &.search-input-field{
-        >div{
+      &.search-input-field {
+        >div {
           padding-right: 9px !important;
         }
       }
 
-      >div{
+      >div {
         min-height: 40px;
         padding: 2px;
         padding-left: 9px !important;
-        
+
 
         fieldset {
           border-color: var(--primary-color);
         }
 
-        &:hover{
+        &:hover {
           fieldset {
             border-color: var(--primary-color);
           }
         }
       }
 
-      &:focus-visible{
+      &:focus-visible {
         outline: 2px solid var(--primary-color);
         border: none;
       }
     }
   }
+}
+
+.sub-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

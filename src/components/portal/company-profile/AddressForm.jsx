@@ -17,8 +17,10 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { modifiedData } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { useNavigate } from "react-router-dom";
 
-const AddressForm = ({ addresses }) => {
+const AddressForm = ({ addresses, id }) => {
+  const navigate = useNavigate();
   const { control, reset } = useForm({
     defaultValues: {
       addresses: addresses,
@@ -87,19 +89,28 @@ const AddressForm = ({ addresses }) => {
   return (
     <>
       <div className={styles["address-section"]}>
-        <h4>Addresses ({formCount})</h4>
-        <button
-          type="button"
-          className={cn(
-            "btn",
-            "button",
-            `${formCount >= MAX_ADDRESS_COUNT ? "disable" : ""}`
-          )}
-          onClick={handleAddAddress}
-          disabled={formCount >= MAX_ADDRESS_COUNT ? true : false}
-        >
-          + Add Address
-        </button>
+        <h4 className="mb-0">Addresses ({formCount})</h4>
+        <div className={styles["btn-container"]}>
+          <button
+            type="button"
+            className={cn("btn", "button", styles["custom-btn"])}
+            onClick={() => navigate(`/portal/company-profile/category/${id}`)}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className={cn(
+              "btn",
+              "button",
+              `${formCount >= MAX_ADDRESS_COUNT ? "disable" : ""}`
+            )}
+            onClick={handleAddAddress}
+            disabled={formCount >= MAX_ADDRESS_COUNT ? true : false}
+          >
+            + Add Address
+          </button>
+        </div>
       </div>
 
       {fields.map((item, index) => (

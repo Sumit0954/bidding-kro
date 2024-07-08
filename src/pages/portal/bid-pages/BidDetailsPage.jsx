@@ -30,16 +30,31 @@ const BidDetailsPage = () => {
 
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
-    id: null,
     title: "",
     item: "",
   });
 
+  const handleDelete = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "DELETE",
+        PortalApiUrls.CANCEL_BID + `${id}/`,
+        "",
+        true
+      );
+      if (response.status === 204) {
+        setDeleteDetails({ open: false, title: "", item: "" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteConfirmation = (choice) => {
     if (choice) {
-      setDeleteDetails({ open: false, id: null, title: "", item: "" });
+      handleDelete();
     } else {
-      setDeleteDetails({ open: false, id: null, title: "", item: "" });
+      setDeleteDetails({ open: false, title: "", item: "" });
     }
   };
 
@@ -100,11 +115,13 @@ const BidDetailsPage = () => {
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
+
         <div className="d-flex align-items-center justify-content-end gap-3">
           <button
             className={cn("btn", "button")}
             type="button"
             onClick={() => setActivateBid(true)}
+            disabled={bidDetails?.status === "cancelled" ? true : false}
           >
             Activate Bid
           </button>
@@ -113,6 +130,7 @@ const BidDetailsPage = () => {
               className={cn("btn", "button")}
               type="button"
               onClick={() => setAddAmendment(true)}
+              disabled={bidDetails?.status === "cancelled" ? true : false}
             >
               Amendments
             </button>
@@ -121,6 +139,7 @@ const BidDetailsPage = () => {
               type="submit"
               className={cn("btn", "button")}
               onClick={() => navigate(`/portal/bids/update/${bidDetails.id}`)}
+              disabled={bidDetails?.status === "cancelled" ? true : false}
             >
               Edit Bid
             </button>
@@ -132,11 +151,11 @@ const BidDetailsPage = () => {
             onClick={() =>
               setDeleteDetails({
                 open: true,
-                id: null,
                 title: "Cancel Bid",
-                item: "Supply of Cotton Material",
+                item: bidDetails?.title,
               })
             }
+            disabled={bidDetails?.status === "cancelled" ? true : false}
           >
             Cancel Bid
           </button>

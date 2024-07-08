@@ -123,7 +123,7 @@ const CertificateForm = ({ certificates }) => {
   return (
     <>
       <div className={styles["certificate-section"]}>
-        <h4>Certificates</h4>
+        <h4 className="mb-0">Certificates</h4>
       </div>
 
       <form onSubmit={handleSubmit(submitForm)}>

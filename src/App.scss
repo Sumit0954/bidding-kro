@@ -214,4 +214,12 @@ em {
 	&.active {
 		color: var(--pending);
 	}
+
+	&.success {
+		color: var(--success);
+	}
+
+	&.cancelled {
+		color: var(--error);
+	}
 }

@@ -4,6 +4,7 @@ import CertificateForm from "../../../components/portal/company-profile/Certific
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import styles from "../../../components/portal/company-profile/CompanyProfile.module.scss";
 import cn from "classnames";
+import { useParams } from "react-router-dom";
 
 const CompanyAddressAndCertificatePage = () => {
   const { companyDetails } = useContext(CompanyDetailsContext);
@@ -11,6 +12,7 @@ const CompanyAddressAndCertificatePage = () => {
     { street: "", city: "", state: "", pincode: "" },
   ]);
   const [certificates, setCertificates] = useState([]);
+  const { id } = useParams();
 
   useEffect(() => {
     setAddresses(companyDetails?.address);
@@ -21,9 +23,14 @@ const CompanyAddressAndCertificatePage = () => {
     <>
       <div className="container">
         <div className="row">
-          <div className={styles["form-container"]}>
+          <div
+            className={cn(
+              styles["form-container"],
+              styles["cac-form-container"]
+            )}
+          >
             <div className={cn("row", styles["form-section"])}>
-              <AddressForm addresses={addresses} />
+              <AddressForm addresses={addresses} id={id} />
               <CertificateForm certificates={certificates} />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./BidPriceForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ const BidPriceForm = () => {
     formState: { errors },
     watch,
     setError,
+    reset,
   } = useForm();
 
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,28 @@ const BidPriceForm = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const getPaymentAmount = async () => {
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          AdminApiUrls.GET_PAYMENT_AMOUNT,
+          "",
+          true
+        );
+        if (response.status === 200) {
+          reset({
+            amount: response.data.amount,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getPaymentAmount();
+  }, [reset]);
 
   return (
     <>

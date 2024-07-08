@@ -17,6 +17,7 @@ import {
 } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 
 const BidForm = () => {
   const {
@@ -25,6 +26,7 @@ const BidForm = () => {
     watch,
     setError,
     reset,
+    setValue,
     formState: { dirtyFields },
   } = useForm();
   const navigate = useNavigate();
@@ -32,7 +34,8 @@ const BidForm = () => {
   const [bidType, setBidType] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-
+  const [searchedBids, setSearchedBids] = useState([]);
+  const [titleValue, setTitleValue] = useState(null);
   const minDate = getMinMaxDate(2, 10)[0].toISOString().split("T")[0];
   const maxDate = getMinMaxDate(1, 10)[1].toISOString().split("T")[0];
 
@@ -59,6 +62,7 @@ const BidForm = () => {
   }, []);
 
   const submitForm = async (data) => {
+    console.log(data);
     setLoading(true);
     let updateFormData = new FormData();
     let createFormData = new FormData();
@@ -84,6 +88,10 @@ const BidForm = () => {
         }
 
         if (action === "update") {
+          if (key === "title") {
+            updateFormData.append(key, value);
+          }
+
           Object.entries(dirtyFields).forEach((k) => {
             let changedKey = k[0];
             if (key === changedKey) {
@@ -183,12 +191,16 @@ const BidForm = () => {
             true
           );
           if (response.status === 200) {
+            setTitleValue(response.data.title);
             reset({
               ...response.data,
               type: response.data.type_meta.id,
               bid_start_date: retrieveDateFormat(response.data.bid_start_date),
               bid_end_date: retrieveDateFormat(response.data.bid_end_date),
-              delivery_date: retrieveDateFormat(response.data.delivery_date),
+              delivery_date: retrieveDateFormat(
+                response.data.delivery_date,
+                false
+              ),
             });
           }
         } catch (error) {
@@ -199,6 +211,64 @@ const BidForm = () => {
       retrieveBid();
     }
   }, [id, reset]);
+
+  const handleTitleInputChange = async (event, value) => {
+    if (value.length >= 4) {
+      setValue("title", value);
+      const params = { title: value };
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.SEARCH_BIDS,
+          params,
+          true
+        );
+        if (response.status === 200) {
+          setSearchedBids(response.data);
+        }
+      } catch (error) {
+        setError(
+          "title",
+          { message: "There is no bid related to this keyword." },
+          { shouldFocus: true }
+        );
+      }
+    } else {
+      setSearchedBids([]);
+    }
+  };
+
+  useEffect(() => {
+    if (titleValue) handleTitleInputChange("", titleValue);
+  }, [titleValue]);
+
+  const handleTitleChange = async (event, value) => {
+    if (value.id) {
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.RETRIEVE_BID + `${value.id}/`,
+          "",
+          true
+        );
+        if (response.status === 200) {
+          setTitleValue(response.data.title);
+          reset({
+            ...response.data,
+            type: response.data.type_meta.id,
+            bid_start_date: retrieveDateFormat(response.data.bid_start_date),
+            bid_end_date: retrieveDateFormat(response.data.bid_end_date),
+            delivery_date: retrieveDateFormat(
+              response.data.delivery_date,
+              false
+            ),
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <>
@@ -212,14 +282,19 @@ const BidForm = () => {
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className="col-lg-12">
-                    <CustomInput
+                    <SearchSelect
                       control={control}
+                      options={searchedBids}
                       label="Bid Title"
                       name="title"
                       placeholder="Bid Title"
                       rules={{
                         required: "Bid Title is required.",
                       }}
+                      handleInputChange={handleTitleInputChange}
+                      handleChange={handleTitleChange}
+                      setValue={setTitleValue}
+                      value={titleValue}
                     />
                   </div>
                 </div>
@@ -375,7 +450,7 @@ const BidForm = () => {
                     <ButtonLoader size={60} />
                   ) : (
                     <button type="submit" className={cn("btn", "button")}>
-                      {id ? 'Update Bid' : 'Create Bid'}
+                      {id ? "Update Bid" : "Create Bid"}
                     </button>
                   )}
                 </div>
