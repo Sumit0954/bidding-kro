@@ -35,23 +35,27 @@ export default AdminSidebar;
 
 const sidebarMenu = [
   {
-    icon: "/images/admin/layout/icons/companies.svg",
+    icon: "/images/admin/layout/icons/building.svg",
     title: "Companies",
     path: "/admin/companies",
   },
 
   {
-    icon: "/images/admin/layout/icons/blogging-icon.png",
+    icon: "/images/admin/layout/icons/credit-card.svg",
     title: "Transactions",
     path: "/admin/transactions",
   },
 
-
-
   {
-    icon: "/images/admin/layout/icons/blogging-icon.png",
+    icon: "/images/admin/layout/icons/blogging.svg",
     title: "Blog Management",
     path: "/admin/blogs",
+  },
+
+  {
+    icon: "/images/admin/layout/icons/list-view.svg",
+    title: "Template",
+    path: "/admin/template",
   },
 
 

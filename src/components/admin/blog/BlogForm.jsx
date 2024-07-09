@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "./BlogCreateUpdate.module.scss";
+import styles from './BlogForm.module.scss'
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import { CloudUpload } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
-const BlogCreateUpdate = () => {
+const BlogForm = () => {
   const { control, handleSubmit } = useForm();
   const breadcrumbs = [
     <NavLink
@@ -256,4 +256,4 @@ const BlogCreateUpdate = () => {
   );
 };
 
-export default BlogCreateUpdate;
+export default BlogForm;

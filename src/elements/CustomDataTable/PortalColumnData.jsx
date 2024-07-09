@@ -112,3 +112,93 @@ export const documents_column = [
     hideSortIcon: true,
   },
 ];
+
+export const companyList_column = [
+  {
+    Header: "Company Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Owner Name",
+    accessor: "owner name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return convertFileSize(data?.row?.original?.size);
+    },
+  },
+  {
+    Header: "Mobile",
+    accessor: "mobile",
+    align: "left",
+    disablePadding: false,
+    width: 180,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "City",
+    accessor: "city",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true,
+  },
+];
+
+export const PreviousBids_column = [
+  {
+    Header: "Product Name",
+    accessor: "product name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Quantity",
+    accessor: "quantity",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Unit",
+    accessor: "unit",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return convertFileSize(data?.row?.original?.size);
+    },
+  },
+  {
+    Header: "Closing Date",
+    accessor: "closing date",
+    align: "left",
+    disablePadding: false,
+    width: 180,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Buyer’s Rating",
+    accessor: "buyer’s rating",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true,
+  },
+];

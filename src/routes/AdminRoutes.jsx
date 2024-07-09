@@ -10,10 +10,12 @@ import AuthProvider, { AuthContext } from "../contexts/AuthProvider";
 import AlertProvider, { AlertContext } from "../contexts/AlertProvider";
 import CustomAlert from "../elements/CustomAlert/CustomAlert";
 import BlogListPage from "../pages/admin/BlogListPage";
-import BlogCreateUpdatePage from "../pages/admin/BlogCreateUpdatePage";
+import BlogFromPage from "../pages/admin/BlogFormPage";
 import TransactionListPage from "../pages/admin/TransactionListPage";
 import TransactionDetailsPage from "../pages/admin/TransactionDetailsPage";
 import TransactionPaymentPage from "../pages/admin/TransactionPaymentPage";
+import TemplateListPage from "../pages/admin/TemplateListPage";
+import TemplateCreatePage from "../pages/admin/TemplateCreatePage";
 
 const AdminRoutes = () => {
   return (
@@ -53,11 +55,19 @@ const AdminRoutes = () => {
                 />
                 <Route
                   path="/blog/:action"
-                  element={<LayoutPage Component={BlogCreateUpdatePage} />}
+                  element={<LayoutPage Component={BlogFromPage} />}
                 />
                 <Route
                   path="/blog/:action/:blog_id"
-                  element={<LayoutPage Component={BlogCreateUpdatePage} />}
+                  element={<LayoutPage Component={BlogFromPage} />}
+                />
+                <Route
+                  path="/template"
+                  element={<LayoutPage Component={TemplateListPage} />}
+                />
+                <Route
+                  path="/template/create"
+                  element={<LayoutPage Component={TemplateCreatePage} />}
                 />
               </Route>
             </Routes>

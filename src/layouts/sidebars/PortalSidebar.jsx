@@ -14,7 +14,7 @@ const PortalSidebar = () => {
               to={item.path}
               className={
                 current_url.includes(item.title.toLowerCase()) ||
-                current_url === item.path
+                  current_url === item.path
                   ? `${styles["item-link"]} ${styles["active"]}`
                   : styles["item-link"]
               }
@@ -48,5 +48,10 @@ const sidebarMenu = [
     icon: "/images/portal/layout/icons/bid-list-icon.svg",
     title: "Bids",
     path: "/portal/bids",
+  },
+  {
+    icon: "/images/portal/layout/icons/building.svg",
+    title: "Companies",
+    path: "/portal/companies",
   },
 ];

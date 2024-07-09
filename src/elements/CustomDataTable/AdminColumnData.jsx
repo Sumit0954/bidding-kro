@@ -124,3 +124,34 @@ export const blogs_column = [
     disablePadding: false,
   },
 ];
+
+export const templateList_column = [
+  {
+    Header: "Template Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/blogs/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Template Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Actions",
+    accessor: "action",
+    align: "left",
+    disablePadding: false,
+  },
+];
