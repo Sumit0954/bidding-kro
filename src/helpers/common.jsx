@@ -1,6 +1,6 @@
-export const getMinMaxDate = (fromToday, fromMin) => {
+export const getMinMaxDate = (fromToday, fromMin, createdAt) => {
   // Get current date
-  const currentDate = new Date();
+  const currentDate = createdAt === "" ? new Date() : new Date(createdAt);
   // Calculate minDate
   const minDate = new Date(currentDate);
   minDate.setDate(currentDate.getDate() + fromToday);

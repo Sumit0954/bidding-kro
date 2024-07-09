@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styles from "./DataTable.module.scss";
-import { dateTimeFormatter } from "../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { convertFileSize } from "../../helpers/common";
 
 export const bids_column = [
@@ -15,13 +15,14 @@ export const bids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
+    width: 300,
     Cell: (data) => {
       return (
         <NavLink
           className={styles["table-link"]}
           to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
-          {data?.row?.original?.title}
+          {truncateString(data?.row?.original?.title, 30)}
         </NavLink>
       );
     },
@@ -31,6 +32,7 @@ export const bids_column = [
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
+    width: 180,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid_start_date);
     },
@@ -40,6 +42,7 @@ export const bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
+    width: 180,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid_end_date);
     },

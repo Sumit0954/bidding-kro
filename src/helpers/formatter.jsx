@@ -30,7 +30,7 @@ export const formatUrl = (inputUrl) => {
 export const dateFormatter = (date) => {
   const newDate = new Date(date);
   const yyyy = newDate.getFullYear();
-  const mm = String(newDate.getMonth());
+  const mm = String(newDate.getMonth() + 1);
   const dd = String(newDate.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 };
@@ -80,5 +80,13 @@ export const retrieveDateFormat = (date, showTime = true) => {
   const formatted = showTime
     ? `${year}-${month}-${day}T${hours}:${minutes}`
     : `${year}-${month}-${day}`;
+
   return formatted;
+};
+
+export const truncateString = (str, num) => {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + "...";
 };

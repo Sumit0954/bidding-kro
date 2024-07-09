@@ -32,3 +32,13 @@ export const passwordValidator = async (password) => {
     return true;
   }
 };
+
+export const dateValidator = (value, minDate, maxDate) => {
+  const date = new Date(value);
+  const min = new Date(minDate);
+  const max = new Date(maxDate);
+  if (date < min || date > max) {
+    return `Date must be between ${minDate} and ${maxDate}`;
+  }
+  return true;
+};

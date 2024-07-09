@@ -18,6 +18,7 @@ import {
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
+import { dateValidator } from "../../../helpers/validation";
 
 const BidForm = () => {
   const {
@@ -27,6 +28,7 @@ const BidForm = () => {
     setError,
     reset,
     setValue,
+    clearErrors,
     formState: { dirtyFields },
   } = useForm();
   const navigate = useNavigate();
@@ -36,8 +38,9 @@ const BidForm = () => {
   const { setAlert } = useContext(AlertContext);
   const [searchedBids, setSearchedBids] = useState([]);
   const [titleValue, setTitleValue] = useState(null);
-  const minDate = getMinMaxDate(2, 10)[0].toISOString().split("T")[0];
-  const maxDate = getMinMaxDate(1, 10)[1].toISOString().split("T")[0];
+  const [createdAt, setCreatedAt] = useState("");
+  const minDate = getMinMaxDate(2, 10, createdAt)[0].toISOString().split("T")[0];
+  const maxDate = getMinMaxDate(1, 10, createdAt)[1].toISOString().split("T")[0];
 
   const getBidType = async () => {
     try {
@@ -62,7 +65,6 @@ const BidForm = () => {
   }, []);
 
   const submitForm = async (data) => {
-    console.log(data);
     setLoading(true);
     let updateFormData = new FormData();
     let createFormData = new FormData();
@@ -77,12 +79,7 @@ const BidForm = () => {
             createFormData.append(key, value);
           } else if (key === "delivery_date") {
             createFormData.append(key, dateFormatter(value));
-          } else if (
-            value !== undefined &&
-            value !== null &&
-            value[0] !== undefined &&
-            value[0] !== null
-          ) {
+          } else {
             createFormData.append(key, value);
           }
         }
@@ -191,6 +188,7 @@ const BidForm = () => {
             true
           );
           if (response.status === 200) {
+            setCreatedAt(response.data.created_at)
             setTitleValue(response.data.title);
             reset({
               ...response.data,
@@ -253,15 +251,24 @@ const BidForm = () => {
         );
         if (response.status === 200) {
           setTitleValue(response.data.title);
+          setValue(
+            "bid_start_date",
+            retrieveDateFormat(response.data.bid_start_date),
+            { shouldValidate: true }
+          );
+          setValue(
+            "bid_end_date",
+            retrieveDateFormat(response.data.bid_end_date),
+            { shouldValidate: true }
+          );
+          setValue(
+            "delivery_date",
+            retrieveDateFormat(response.data.delivery_date, false),
+            { shouldValidate: true }
+          );
           reset({
             ...response.data,
             type: response.data.type_meta.id,
-            bid_start_date: retrieveDateFormat(response.data.bid_start_date),
-            bid_end_date: retrieveDateFormat(response.data.bid_end_date),
-            delivery_date: retrieveDateFormat(
-              response.data.delivery_date,
-              false
-            ),
           });
         }
       } catch (error) {
@@ -357,9 +364,14 @@ const BidForm = () => {
                       name="bid_start_date"
                       rules={{
                         required: "Opening Date & Time is required.",
+                        validate: (value) =>
+                          dateValidator(value, minDate, maxDate),
                       }}
-                      minDate={minDate}
-                      maxDate={maxDate}
+                      textFieldProps={{
+                        min: `${minDate}T12:00`,
+                        max: `${maxDate}T17:00`,
+                      }}
+                      clearErrors={clearErrors}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -369,9 +381,14 @@ const BidForm = () => {
                       name="bid_end_date"
                       rules={{
                         required: "Closing Date & Time is required.",
+                        validate: (value) =>
+                          dateValidator(value, minDate, maxDate),
                       }}
-                      minDate={minDate}
-                      maxDate={maxDate}
+                      textFieldProps={{
+                        min: `${minDate}T12:00`,
+                        max: `${maxDate}T17:00`,
+                      }}
+                      clearErrors={clearErrors}
                     />
                   </div>
                 </div>
@@ -384,9 +401,14 @@ const BidForm = () => {
                       type="date"
                       rules={{
                         required: "Delivery Timeline is required.",
+                        validate: (value) =>
+                          dateValidator(value, minDate, maxDate),
                       }}
-                      minDate={minDate}
-                      maxDate={maxDate}
+                      textFieldProps={{
+                        min: minDate,
+                        max: maxDate,
+                      }}
+                      clearErrors={clearErrors}
                     />
                   </div>
                 </div>
