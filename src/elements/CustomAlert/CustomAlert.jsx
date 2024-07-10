@@ -23,7 +23,7 @@ const CustomAlert = ({ severity, message, snackPositon }) => {
     <>
       <Snackbar
         open={open}
-        autoHideDuration={4500}
+        autoHideDuration={3000}
         onClose={handleClose}
         anchorOrigin={snackPositon || { vertical: "top", horizontal: "center" }}
       >

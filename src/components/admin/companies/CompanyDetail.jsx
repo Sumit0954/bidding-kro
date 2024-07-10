@@ -186,9 +186,9 @@ const CompanyDetail = ({ companyDetails }) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Stack direction="row" spacing={1}>
-            {companyDetails?.category?.map((item) => {
-              return <Chip label={item?.name} />;
+          <Stack direction="row" flexWrap="wrap" gap="10px">
+            {companyDetails?.category?.map((category) => {
+              return <Chip label={category?.name} />;
             })}
           </Stack>
         </AccordionDetails>

@@ -19,3 +19,14 @@
 .bids-detail-accordion {
 	box-shadow: var(--glow-shadow) !important;
 }
+
+.printable-accordion {
+	box-shadow: unset !important;
+	margin-top: 0 !important;
+}
+
+@media print {
+	@page {
+		margin: 10mm;
+	}
+}

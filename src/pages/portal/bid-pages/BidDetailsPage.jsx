@@ -1,5 +1,14 @@
-import { Box, Breadcrumbs, Tab, Tabs, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Breadcrumbs,
+  Button,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import Summary from "../../../components/portal/bids/Summary";
 import Documents from "../../../components/portal/bids/Documents";
@@ -14,6 +23,9 @@ import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
+import { PrintOutlined } from "@mui/icons-material";
+import ReactToPrint from "react-to-print";
+import PrintableBidDetails from "../../../components/portal/bids/PrintableBidDetails";
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -25,6 +37,7 @@ const BidDetailsPage = () => {
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
   const [show, setShow] = useState(false);
+  const componentRef = useRef(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -119,6 +132,30 @@ const BidDetailsPage = () => {
         </div>
 
         <div className="d-flex align-items-center justify-content-end gap-3">
+          <ReactToPrint
+            content={() => componentRef.current}
+            documentTitle={bidDetails?.formatted_number}
+            trigger={() => (
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<PrintOutlined />}
+                sx={{
+                  width: "8rem",
+                  backgroundColor: "var(--primary-color)",
+                  "&:hover": {
+                    backgroundColor: "var(--secondary-color)",
+                  },
+                }}
+              >
+                Print
+              </Button>
+            )}
+            removeAfterPrint
+          />
+
           {bidDetails?.status === "active" ? (
             <button
               className={cn("btn", "button", "approve")}
@@ -174,6 +211,15 @@ const BidDetailsPage = () => {
           </button>
         </div>
       </div>
+
+      {bidDetails?.status !== "active" && (
+        <Alert severity="warning" className="my-3">
+          <AlertTitle sx={{ fontWeight: "bold" }}>
+            Warning: Bid Activation Required
+          </AlertTitle>
+          Your bid is not yet activated. Please activate your bid to proceed.
+        </Alert>
+      )}
 
       <Box sx={{ width: "100%" }}>
         <Tabs
@@ -235,6 +281,9 @@ const BidDetailsPage = () => {
           showLogin={false}
         />
       )}
+      <div className="print-only">
+        <PrintableBidDetails ref={componentRef} bidDetails={bidDetails} />
+      </div>
     </>
   );
 };
