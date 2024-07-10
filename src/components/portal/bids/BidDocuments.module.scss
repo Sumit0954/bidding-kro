@@ -1,5 +1,5 @@
 .form-container {
-  width: 80% !important;
+  width: 90% !important;
   margin: 0 auto !important;
 
   .form-section {
@@ -11,6 +11,10 @@
       border-bottom: 2px solid var(--primary-color);
       margin: 30px auto !important;
       margin-bottom: 0 !important;
+
+      h4{
+        margin-bottom: 0 !important;
+      }
     }
 
     .img-drop-section {

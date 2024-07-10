@@ -39,8 +39,12 @@ const BidForm = () => {
   const [searchedBids, setSearchedBids] = useState([]);
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
-  const minDate = getMinMaxDate(2, 10, createdAt)[0].toISOString().split("T")[0];
-  const maxDate = getMinMaxDate(1, 10, createdAt)[1].toISOString().split("T")[0];
+  const minDate = getMinMaxDate(2, 10, createdAt)[0]
+    .toISOString()
+    .split("T")[0];
+  const maxDate = getMinMaxDate(1, 10, createdAt)[1]
+    .toISOString()
+    .split("T")[0];
 
   const getBidType = async () => {
     try {
@@ -79,6 +83,8 @@ const BidForm = () => {
             createFormData.append(key, value);
           } else if (key === "delivery_date") {
             createFormData.append(key, dateFormatter(value));
+          } else if (key === "status") {
+            createFormData.append(key, "pending");
           } else {
             createFormData.append(key, value);
           }
@@ -188,7 +194,7 @@ const BidForm = () => {
             true
           );
           if (response.status === 200) {
-            setCreatedAt(response.data.created_at)
+            setCreatedAt(response.data.created_at);
             setTitleValue(response.data.title);
             reset({
               ...response.data,

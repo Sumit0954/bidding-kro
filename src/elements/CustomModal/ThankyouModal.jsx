@@ -5,7 +5,13 @@ import Check from "../../assets/images/common/check.svg";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
 
-const ThankyouModal = ({ showThankyou, setShowThankyou, description }) => {
+const ThankyouModal = ({
+  showThankyou,
+  setShowThankyou,
+  heading,
+  description,
+  showLogin = true,
+}) => {
   const handleClose = () => {
     setShowThankyou(false);
   };
@@ -27,7 +33,7 @@ const ThankyouModal = ({ showThankyou, setShowThankyou, description }) => {
                 variant="h3"
                 component="h3"
               >
-                Thank You!
+                {heading}
               </Typography>
               <Typography
                 className={cn("my-3", styles["modal-desc"])}
@@ -36,10 +42,11 @@ const ThankyouModal = ({ showThankyou, setShowThankyou, description }) => {
               >
                 {description}
               </Typography>
-
-              <NavLink to={"/login"} className={cn("btn", "button")}>
-                Login
-              </NavLink>
+              {showLogin && (
+                <NavLink to={"/login"} className={cn("btn", "button")}>
+                  Login
+                </NavLink>
+              )}
             </Box>
           </Box>
         </Box>

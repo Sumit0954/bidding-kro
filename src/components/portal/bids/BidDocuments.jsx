@@ -14,6 +14,9 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { extractFileExtension } from "../../../helpers/common";
+import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
+import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
+import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 
 const BidDocuments = () => {
   const { id } = useParams();
@@ -22,6 +25,10 @@ const BidDocuments = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [documents, setDocuments] = useState([]);
+  const [status, setStatus] = useState("");
+  const [activateBid, setActivateBid] = useState(false);
+  const [showThankyou, setShowThankyou] = useState(false);
+  const { userDetails } = useContext(UserDetailsContext);
 
   const { control, handleSubmit, setValue, watch, setError } = useForm({
     defaultValues: {
@@ -153,6 +160,7 @@ const BidDocuments = () => {
             true
           );
           if (response.status === 200) {
+            setStatus(response.data.status);
             setDocuments(response.data.document);
           }
         } catch (error) {
@@ -172,6 +180,24 @@ const BidDocuments = () => {
             <div className={cn("row", styles["form-section"])}>
               <div className={styles["documents-section"]}>
                 <h4>Upload Documents</h4>
+
+                {status === "active" ? (
+                  <button
+                    className={cn("btn", "button", "approve")}
+                    type="button"
+                    disabled
+                  >
+                    Activated
+                  </button>
+                ) : (
+                  <button
+                    className={cn("btn", "button")}
+                    type="button"
+                    onClick={() => setActivateBid(true)}
+                  >
+                    Activate Bid
+                  </button>
+                )}
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -268,6 +294,25 @@ const BidDocuments = () => {
           </div>
         </div>
       </div>
+
+      {activateBid && (
+        <RazorpayPaymentHandler
+          userData={userDetails}
+          setActivateBid={setActivateBid}
+          setShowThankyou={setShowThankyou}
+          id={id}
+        />
+      )}
+
+      {showThankyou && (
+        <ThankyouModal
+          showThankyou={showThankyou}
+          setShowThankyou={setShowThankyou}
+          heading={"Payment Successful!"}
+          description={`Your bid has been activated successfully!`}
+          showLogin={false}
+        />
+      )}
     </>
   );
 };
@@ -287,17 +332,6 @@ const FilePreview = ({ file }) => {
             <img src={file.preview} alt={file.name} />
           </div>
         </>
-      );
-    } else if (fileType === "application/pdf") {
-      // Preview for PDF files
-      return (
-        <embed
-          src={file.preview}
-          type="application/pdf"
-          width="100%"
-          height="500px"
-          title={file.name}
-        />
       );
     } else {
       // Default fallback for unsupported file types

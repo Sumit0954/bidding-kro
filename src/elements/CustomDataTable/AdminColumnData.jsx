@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styles from "./DataTable.module.scss";
+import { dateTimeFormatter } from "../../helpers/formatter";
 
 export const companies_column = [
   {
@@ -80,10 +81,21 @@ export const transactions_column = [
     },
   },
   {
-    Header: "Payment Status",
-    accessor: "payment",
+    Header: "Transaction Date",
+    accessor: "created_at",
     align: "left",
     disablePadding: false,
+    width: 180,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Payment Status",
+    accessor: "payment",
+    align: "center",
+    disablePadding: false,
+    hideSortIcon: true,
     Cell: (data) => {
       return (
         <div className={`status-cloumn ${data?.row?.original?.status}`}>

@@ -258,7 +258,7 @@ const IndividualQuestionForm = ({ question, index, id, onDelete }) => {
                     className={cn("btn", "button")}
                     onClick={handleSubmit((data) => submitForm(data, index))}
                   >
-                    Save Address
+                    Save Question
                   </button>
                 )}
               </div>

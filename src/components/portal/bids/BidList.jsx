@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
-import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
-import { useForm } from "react-hook-form";
+// import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
+// import { useForm } from "react-hook-form";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const BidList = ({ listType }) => {
-  const { control } = useForm();
+  // const { control } = useForm();
   const [bids, setBids] = useState([]);
 
   const getBidList = async () => {

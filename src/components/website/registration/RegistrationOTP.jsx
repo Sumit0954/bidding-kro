@@ -185,6 +185,7 @@ const RegistrationOTP = () => {
         <ThankyouModal
           showThankyou={showThankyou}
           setShowThankyou={setShowThankyou}
+          heading={"Thank You!"}
           description={`Your registration has been successful. Please check your ${registerData.email} to verify your account.`}
         />
       )}

@@ -19,8 +19,8 @@ import CompanyCategoryPage from "../pages/portal/company-profile-pages/CompanyCa
 import CompanyAddressAndCertificatePage from "../pages/portal/company-profile-pages/CompanyAddressAndCertificatePage";
 import BidFormPage from "../pages/portal/bid-pages/BidFormPage";
 import BidCategoriesPage from "../pages/portal/bid-pages/BidCategoriesPage";
-import CompanyListPage from "../pages/portal/companies-page/CompanyListPage";
-import CompanyDetailPage from "../pages/portal/companies-page/CompanyDetailPage";
+import CompanyListPage from "../pages/portal/company-page/CompanyListPage";
+import CompanyDetailPage from "../pages/portal/company-page/CompanyDetailPage";
 
 const PortalRoutes = () => {
   return (
@@ -106,7 +106,6 @@ const PortalRoutes = () => {
                       path="/companies/details/:id"
                       element={<LayoutPage Component={CompanyDetailPage} />}
                     />
-
                   </Route>
                 </Routes>
                 <CallAlert />

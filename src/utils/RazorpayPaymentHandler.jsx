@@ -3,7 +3,7 @@ import _sendAPIRequest from "../helpers/api";
 import { PortalApiUrls } from "../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../contexts/AlertProvider";
 
-const RazorpayPaymentHandler = ({ userData, setActivateBid, id }) => {
+const RazorpayPaymentHandler = ({ userData, setActivateBid, setShowThankyou, id }) => {
   const { first_name, last_name, email, mobile_number } = userData.user;
   const { setAlert } = useContext(AlertContext);
 
@@ -69,12 +69,17 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid, id }) => {
             razorpay_signature: response.razorpay_signature,
           };
 
-          await _sendAPIRequest(
+          const result = await _sendAPIRequest(
             "POST",
             PortalApiUrls.VERIFY_PAYMENT,
             data,
             true
           );
+
+          if(result.status === 204){
+            setShowThankyou(true)
+            window.location.reload();
+          }
         },
         prefill: {
           name: `${first_name} ${last_name}`,
@@ -107,6 +112,7 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid, id }) => {
     email,
     mobile_number,
     setActivateBid,
+    setShowThankyou,
     id,
     setAlert,
   ]);

@@ -58,6 +58,7 @@ export const bids_column = [
     accessor: "status",
     align: "center",
     disablePadding: false,
+    hideSortIcon: true,
     Cell: (data) => {
       return (
         <div className={`status-cloumn ${data?.row?.original?.status}`}>

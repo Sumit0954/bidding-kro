@@ -13,6 +13,7 @@ import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -20,6 +21,7 @@ const BidDetailsPage = () => {
   const navigate = useNavigate();
   const { userDetails } = useContext(UserDetailsContext);
   const [activateBid, setActivateBid] = useState(false);
+  const [showThankyou, setShowThankyou] = useState(false);
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
   const [show, setShow] = useState(false);
@@ -117,14 +119,25 @@ const BidDetailsPage = () => {
         </div>
 
         <div className="d-flex align-items-center justify-content-end gap-3">
-          <button
-            className={cn("btn", "button")}
-            type="button"
-            onClick={() => setActivateBid(true)}
-            disabled={bidDetails?.status === "cancelled" ? true : false}
-          >
-            Activate Bid
-          </button>
+          {bidDetails?.status === "active" ? (
+            <button
+              className={cn("btn", "button", "approve")}
+              type="button"
+              disabled
+            >
+              Activated
+            </button>
+          ) : (
+            <button
+              className={cn("btn", "button")}
+              type="button"
+              onClick={() => setActivateBid(true)}
+              disabled={bidDetails?.status === "cancelled" ? true : false}
+            >
+              Activate Bid
+            </button>
+          )}
+
           {show ? (
             <button
               className={cn("btn", "button")}
@@ -208,7 +221,18 @@ const BidDetailsPage = () => {
         <RazorpayPaymentHandler
           userData={userDetails}
           setActivateBid={setActivateBid}
+          setShowThankyou={setShowThankyou}
           id={bidDetails?.id}
+        />
+      )}
+
+      {showThankyou && (
+        <ThankyouModal
+          showThankyou={showThankyou}
+          setShowThankyou={setShowThankyou}
+          heading={"Payment Successful!"}
+          description={`Your bid has been activated successfully!`}
+          showLogin={false}
         />
       )}
     </>

@@ -10,7 +10,10 @@ const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
   const addAction = (cell) => {
     return (
-      <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
+      <TableCell {...cell.getCellProps()} align={cell.column.align}>
+        {" "}
+        {cell.render("Cell")}{" "}
+      </TableCell>
     );
   };
 
@@ -25,7 +28,6 @@ const TransactionList = () => {
         );
         if (response.status === 200) {
           setTransactions(response.data);
-          console.log(response.data);
         }
       } catch (error) {
         console.log(error);
