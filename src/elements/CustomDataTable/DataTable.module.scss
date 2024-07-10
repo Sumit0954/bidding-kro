@@ -1,5 +1,27 @@
 .paper-root {
   box-shadow: unset !important;
+
+  .data-table {
+    &::-webkit-scrollbar {
+      width: 0.5rem !important;
+      background-color: var(--portal-bg-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 10px;
+      border: 3px solid var(--white);
+    }
+
+    &::-webkit-scrollbar-thumb::after {
+      content: 'Scroll';
+      font-size: 12px;
+      color: var(--white);
+      text-align: center;
+      margin-top: 2px;
+      display: block;
+    }
+  }
 }
 
 .custom-table-pagination {
@@ -31,4 +53,15 @@
     min-height: 40px;
     padding: 0 10px !important;
   }
+}
+
+.document-type {
+  background-color: #00c8ff28;
+  width: 100px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 2px;
+  text-transform: uppercase;
+  color: var(--secondary-color);
+  font-weight: 600;
 }

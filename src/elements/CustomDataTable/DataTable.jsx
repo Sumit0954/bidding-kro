@@ -300,7 +300,7 @@ const DataTable = ({
             rowCount={rows.length}
             setSearchQuery={setSearchQuery}
           />
-          <TableContainer>
+          <TableContainer className={styles['data-table']}>
             <Table
               sx={{ minWidth: 750, width: "100%" }}
               aria-labelledby="tableTitle"

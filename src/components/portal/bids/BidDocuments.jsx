@@ -144,7 +144,10 @@ const BidDocuments = () => {
       );
     } else {
       return (
-        <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
+        <TableCell {...cell.getCellProps()} align={cell.column.align}>
+          {" "}
+          {cell.render("Cell")}{" "}
+        </TableCell>
       );
     }
   };

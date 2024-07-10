@@ -83,6 +83,13 @@ export const documents_column = [
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell : (data) => {
+      return (
+        <div className={styles['document-type']}>
+          {data?.row?.original?.type}
+        </div>
+      )
+    }
   },
   {
     Header: "Document Size",
