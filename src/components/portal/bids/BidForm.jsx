@@ -39,6 +39,7 @@ const BidForm = () => {
   const [searchedBids, setSearchedBids] = useState([]);
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
+  const [bidStatus, setBidStatus] = useState("");
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
@@ -196,6 +197,7 @@ const BidForm = () => {
           if (response.status === 200) {
             setCreatedAt(response.data.created_at);
             setTitleValue(response.data.title);
+            setBidStatus(response.data.status);
             reset({
               ...response.data,
               type: response.data.type_meta.id,
@@ -477,7 +479,11 @@ const BidForm = () => {
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-                    <button type="submit" className={cn("btn", "button")}>
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                    >
                       {id ? "Update Bid" : "Create Bid"}
                     </button>
                   )}

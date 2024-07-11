@@ -18,6 +18,7 @@ const BidCategories = () => {
   const [selectedCategories, setSelectedCategories] = useState({});
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  const [bidStatus, setBidStatus] = useState("");
   // const { companyDetails } = useContext(CompanyDetailsContext);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -179,6 +180,7 @@ const BidCategories = () => {
             true
           );
           if (response.status === 200) {
+            setBidStatus(response.data.status);
             if (response?.data?.category?.length > 0) {
               setSelectedCategories((prevSelectedCategories) => {
                 let newSelectedCategories = { ...prevSelectedCategories };
@@ -300,6 +302,7 @@ const BidCategories = () => {
                     <button
                       type="submit"
                       className={cn("btn", "button", styles["custom-btn"])}
+                      disabled={bidStatus === "cancelled" ? true : false}
                     >
                       Update Categories
                     </button>

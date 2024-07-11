@@ -21,6 +21,7 @@ const BidQuestions = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([{ question: "" }]);
+  const [bidStatus, setBidStatus] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -33,6 +34,7 @@ const BidQuestions = () => {
             true
           );
           if (response.status === 200) {
+            setBidStatus(response.data.status);
             setQuestions(response.data.question);
           }
         } catch (error) {
@@ -124,7 +126,11 @@ const BidQuestions = () => {
                     `${formCount >= MAX_QUESTION_COUNT ? "disable" : ""}`
                   )}
                   onClick={handleQuestions}
-                  disabled={formCount >= MAX_QUESTION_COUNT ? true : false}
+                  disabled={
+                    bidStatus === "cancelled" || formCount >= MAX_QUESTION_COUNT
+                      ? true
+                      : false
+                  }
                 >
                   + Add Question
                 </button>
@@ -152,6 +158,7 @@ const BidQuestions = () => {
                   type="submit"
                   className={cn("btn", "button")}
                   onClick={() => navigate(`/portal/bids/documents/${id}`)}
+                  disabled={bidStatus === "cancelled" ? true : false}
                 >
                   Upload Documents
                 </button>

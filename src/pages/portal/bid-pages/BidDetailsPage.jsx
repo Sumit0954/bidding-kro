@@ -59,6 +59,7 @@ const BidDetailsPage = () => {
       );
       if (response.status === 204) {
         setDeleteDetails({ open: false, title: "", item: "" });
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);

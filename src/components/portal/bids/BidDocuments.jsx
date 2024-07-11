@@ -197,6 +197,7 @@ const BidDocuments = () => {
                     className={cn("btn", "button")}
                     type="button"
                     onClick={() => setActivateBid(true)}
+                    disabled={status === "cancelled" ? true : false}
                   >
                     Activate Bid
                   </button>
@@ -251,7 +252,11 @@ const BidDocuments = () => {
                               Drag 'n' drop image/document here, or click to
                               select image/document
                             </p>
-                            <button className="btn button" type="button">
+                            <button
+                              className="btn button"
+                              type="button"
+                              disabled={status === "cancelled" ? true : false}
+                            >
                               Click To Browse
                             </button>
                           </label>
@@ -280,7 +285,11 @@ const BidDocuments = () => {
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-                    <button className={cn("btn", "button")} type="submit">
+                    <button
+                      className={cn("btn", "button")}
+                      type="submit"
+                      disabled={status === "cancelled" ? true : false}
+                    >
                       Upload
                     </button>
                   )}
