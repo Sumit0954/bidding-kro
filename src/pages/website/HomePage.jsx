@@ -4,10 +4,9 @@ import SupplierPortal from "../../components/website/home/SupplierPortal";
 import BiddingChallenges from "../../components/website/home/BiddingChallenges";
 import BiddingProcess from "../../components/website/home/BiddingProcess";
 import OurGallery from "../../components/website/home/OurGallery";
-import BrandSlider from "../../components/website/home/BrandSlider";
+// import BrandSlider from "../../components/website/home/BrandSlider";
 import ProcurementManagement from "../../components/website/home/ProcurementManagement";
 import Contact from "../../components/website/home/Contact";
-
 
 const HomePage = () => {
   return (
@@ -18,11 +17,9 @@ const HomePage = () => {
       <BiddingChallenges />
       <BiddingProcess />
       <OurGallery />
-      <BrandSlider />
-      < ProcurementManagement />
+      {/* <BrandSlider /> */}
+      <ProcurementManagement />
       <Contact />
-
-
     </>
   );
 };

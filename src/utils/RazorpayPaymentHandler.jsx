@@ -78,7 +78,6 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid, setShowThankyou, id 
 
           if(result.status === 204){
             setShowThankyou(true)
-            window.location.reload();
           }
         },
         prefill: {

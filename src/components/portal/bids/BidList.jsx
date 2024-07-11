@@ -9,7 +9,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const BidList = ({ listType }) => {
   // const { control } = useForm();
-  const [bids, setBids] = useState([]);
+  const [createdBids, setCreatedBids] = useState([]);
 
   const getBidList = async () => {
     try {
@@ -20,7 +20,7 @@ const BidList = ({ listType }) => {
         true
       );
       if (response.status === 200) {
-        setBids(response.data);
+        setCreatedBids(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -89,7 +89,7 @@ const BidList = ({ listType }) => {
       {listType === "created" ? (
         <DataTable
           propsColumn={bids_column}
-          propsData={bids}
+          propsData={createdBids}
           action={addAction}
           customClassName="portal-data-table"
         />

@@ -1,26 +1,36 @@
-import styles from './SupplierPortal.module.scss'
-import SupplierImg from '../../../assets/images/website/home/supplier-portal-01.png'
+import styles from "./SupplierPortal.module.scss";
+import SupplierImg from "../../../assets/images/website/home/supplier-portal-01.png";
+import cn from "classnames";
 
 const SupplierPortal = () => {
   return (
     <>
       <div className="container mt-5">
-        <div className="row">
+        <div className="row align-items-center">
           <div className="col-lg-6">
-            <img src={SupplierImg} alt="SupplierPortalImage" className={styles["supplier-portal-img"]} />
-
+            <img
+              src={SupplierImg}
+              alt="SupplierPortalImage"
+              className={styles["supplier-portal-img"]}
+            />
           </div>
-          <div className="col-lg-6">
-            <div className={styles["supplier-content"]}>
-              <h2>Bids Supplier Portal</h2>
+          <div className={cn("col-lg-6", styles["content-column"])}>
+            <div>
+              <h2>Bids Supplier Portal</h2>
               <h5>Comprehensive Supplier Directory</h5>
-              <p className={styles["pragrapg-content"]}> Bids Supplier Portal is the state of art Supplier Information Management platform to determine capabilities & risks pertaining to each of the suppliers of the organization & also invite new suppliers specific to a category with relevant desired capabilities.</p>
+              <p>
+                Bids Supplier Portal is the state of art Supplier Information
+                Management platform to determine capabilities & risks pertaining
+                to each of the suppliers of the organization & also invite new
+                suppliers specific to a category with relevant desired
+                capabilities.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SupplierPortal
+export default SupplierPortal;

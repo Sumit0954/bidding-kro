@@ -162,7 +162,7 @@ const BidDetailsPage = () => {
               type="button"
               disabled
             >
-              Activated
+              Active
             </button>
           ) : (
             <button
@@ -212,7 +212,7 @@ const BidDetailsPage = () => {
         </div>
       </div>
 
-      {bidDetails?.status !== "active" && (
+      {bidDetails?.status === "pending" && (
         <Alert severity="warning" className="my-3">
           <AlertTitle sx={{ fontWeight: "bold" }}>
             Warning: Bid Activation Required

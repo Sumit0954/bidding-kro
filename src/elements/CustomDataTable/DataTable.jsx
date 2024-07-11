@@ -1,7 +1,7 @@
 import {
   Box,
   Checkbox,
-  IconButton,
+  // IconButton,
   Paper,
   Table,
   TableBody,
@@ -13,13 +13,13 @@ import {
   TableSortLabel,
   TextField,
   Toolbar,
-  Tooltip,
+  // Tooltip,
   Typography,
   alpha,
 } from "@mui/material";
 
 import { useTable } from "react-table";
-import { Delete } from "@mui/icons-material";
+// import { Delete } from "@mui/icons-material";
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
@@ -151,7 +151,7 @@ function EnhancedTableToolbar(props) {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
+      {/* {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
             <Delete />
@@ -159,7 +159,9 @@ function EnhancedTableToolbar(props) {
         </Tooltip>
       ) : (
         <EnhancedTableSearchBar setSearchQuery={setSearchQuery} />
-      )}
+      )} */}
+
+      <EnhancedTableSearchBar setSearchQuery={setSearchQuery} />
     </Toolbar>
   );
 }
@@ -300,7 +302,7 @@ const DataTable = ({
             rowCount={rows.length}
             setSearchQuery={setSearchQuery}
           />
-          <TableContainer className={styles['data-table']}>
+          <TableContainer className={styles["data-table"]}>
             <Table
               sx={{ minWidth: 750, width: "100%" }}
               aria-labelledby="tableTitle"

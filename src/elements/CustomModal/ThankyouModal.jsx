@@ -1,9 +1,10 @@
 import React from "react";
-import { Typography, Modal, Box } from "@mui/material";
+import { Typography, Modal, Box, IconButton } from "@mui/material";
 import styles from "./Modal.module.scss";
 import Check from "../../assets/images/common/check.svg";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
+import { Close } from "@mui/icons-material";
 
 const ThankyouModal = ({
   showThankyou,
@@ -14,6 +15,7 @@ const ThankyouModal = ({
 }) => {
   const handleClose = () => {
     setShowThankyou(false);
+    window.location.reload();
   };
 
   return (
@@ -26,6 +28,18 @@ const ThankyouModal = ({
         <Box className={cn("container", styles["modal-container"])}>
           <Box className="row">
             <Box className={styles["modal-section"]}>
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  right: 180,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <Close />
+              </IconButton>
               <img src={Check} alt="Check" />
               <Typography
                 className={cn("my-3", styles["modal-title"])}

@@ -15,29 +15,7 @@
 }
 
 @media screen and (max-width: 991px) {
-	.card {
-		height: auto;
-		margin: 10px;
-	}
-}
-
-@media screen and (max-width: 767px) {
-	.card {
-		height: auto;
-		margin: 10px;
-	}
-}
-
-@media screen and (max-width: 575px) {
-	.card {
-		height: auto;
-		margin: 10px;
-	}
-}
-
-@media screen and (max-width: 324px) {
-	.card {
-		height: auto;
-		margin: 10px;
+	.services-row{
+		gap: 15px;
 	}
 }

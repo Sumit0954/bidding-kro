@@ -190,7 +190,7 @@ const BidDocuments = () => {
                     type="button"
                     disabled
                   >
-                    Activated
+                    Active
                   </button>
                 ) : (
                   <button
