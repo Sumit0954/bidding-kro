@@ -12,6 +12,7 @@ import { Breadcrumbs } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
 import cn from "classnames";
+import { dateTimeFormatter } from "../../../helpers/formatter";
 
 const TransactionDetails = () => {
   const { transaction_id } = useParams();
@@ -165,6 +166,12 @@ const TransactionDetails = () => {
               <h6 className={styles["col-heading"]}>Amount</h6>
               <p className={styles["col-data"]}>
                 Rs. {transactionDetails?.amount}
+              </p>
+            </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Transaction Date</h6>
+              <p className={styles["col-data"]}>
+                {dateTimeFormatter(transactionDetails?.created_at)}
               </p>
             </div>
             <div className="col">
