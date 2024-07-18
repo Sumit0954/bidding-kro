@@ -46,30 +46,24 @@
         border: 1px solid var(--primary-color);
         border-radius: 5px;
 
-        &:focus-visible{
+        &:focus-visible {
           outline: 2px solid var(--primary-color);
           border: none;
         }
       }
     }
 
-    .otp-message{
+    .otp-message {
       text-align: center;
       padding: 1rem 0;
       color: var(--gray);
       margin-bottom: 0;
     }
 
-    .btn-timer-box{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 25px;
-    }
-
-    .otp-submit-btn{
-      width: 100%;
-      margin-top: 2rem;
+    .btn-container {
+      button {
+        width: 100%;
+      }
     }
   }
 }

@@ -143,36 +143,41 @@ const ForgotPasswordOTP = () => {
 
                 <p className={styles["otp-message"]}>Enter 4-digit OTP</p>
 
-                <div className={styles["btn-timer-box"]}>
-                  {initialCount > 0 && (
-                    <div className={styles["timer"]}>Wait {initialCount}s</div>
-                  )}
-                  <button
-                    type="button"
-                    className={cn(
-                      "btn",
-                      "button",
-                      `${initialCount >= 0 && "disable"}`
+                <div className={cn('row', styles['btn-container'])}>
+                  <div className="col">
+                    {initialCount > 0 ? (
+                      <button
+                        className={cn(
+                          "btn",
+                          "button",
+                          `${initialCount >= 0 && "disable"}`
+                        )}
+                        disabled={initialCount > 0 ? true : false}
+                      >
+                        Wait {initialCount}s
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className={cn("btn", "button")}
+                        onClick={() => resendOTP()}
+                      >
+                        Resend OTP
+                      </button>
                     )}
-                    onClick={() => resendOTP()}
-                    disabled={initialCount > 0 ? true : false}
-                  >
-                    Resend OTP
-                  </button>
-                </div>
-
-                {loading ? (
-                  <div className="text-center mt-2">
-                    <ButtonLoader size={60} />
                   </div>
-                ) : (
-                  <button
-                    type="submit"
-                    className={cn("btn", "button", styles["otp-submit-btn"])}
-                  >
-                    Submit
-                  </button>
-                )}
+                  <div className="col">
+                    {loading ? (
+                      <div className="text-center mt-2">
+                        <ButtonLoader size={60} />
+                      </div>
+                    ) : (
+                      <button type="submit" className={cn("btn", "button")}>
+                        Submit
+                      </button>
+                    )}
+                  </div>
+                </div>
               </form>
             </div>
           </div>
