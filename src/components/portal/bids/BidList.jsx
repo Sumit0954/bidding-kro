@@ -92,6 +92,7 @@ const BidList = ({ listType }) => {
           propsData={createdBids}
           action={addAction}
           customClassName="portal-data-table"
+          isSingleSelection={true}
         />
       ) : (
         listType === "invited" && (

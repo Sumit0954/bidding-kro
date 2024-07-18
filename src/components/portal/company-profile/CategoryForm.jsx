@@ -11,6 +11,8 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { getCategoryLevel } from "../../../helpers/common";
+import { Alert } from "@mui/material";
+import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
 
 const CategoryForm = () => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
@@ -23,6 +25,7 @@ const CategoryForm = () => {
   );
   const navigate = useNavigate();
   const { id } = useParams();
+  const [showQueryForm, setShowQueryForm] = useState(false);
 
   const getCategories = async (parent_categories, depth) => {
     const params = new URLSearchParams();
@@ -204,6 +207,18 @@ const CategoryForm = () => {
     <>
       <div className="container">
         <div className="row">
+          <Alert severity="info" className="my-3">
+            If you find that your business related category is not in the list.
+            Please{" "}
+            <span
+              className="query-form-button"
+              onClick={() => setShowQueryForm(true)}
+            >
+              Click here
+            </span>{" "}
+            to send request to Admin.
+          </Alert>
+
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
@@ -294,6 +309,14 @@ const CategoryForm = () => {
           </div>
         </div>
       </div>
+
+      {showQueryForm && (
+        <QueryFormModal
+          showQueryForm={showQueryForm}
+          setShowQueryForm={setShowQueryForm}
+          formHeading="Category Suggestion Query"
+        />
+      )}
     </>
   );
 };

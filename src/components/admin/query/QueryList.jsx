@@ -1,9 +1,9 @@
-// import styles from './TemplateList.module.scss'
+import React from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
+import { queries_column } from "../../../elements/CustomDataTable/AdminColumnData";
 import { TableCell } from "@mui/material";
-import { templateList_column } from '../../../elements/CustomDataTable/AdminColumnData'
 
-const TemplateList = () => {
+const QueryList = () => {
   const addAction = (cell) => {
     return (
       <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
@@ -12,13 +12,13 @@ const TemplateList = () => {
   return (
     <>
       <DataTable
-        propsColumn={templateList_column}
+        propsColumn={queries_column}
         propsData={[]}
         action={addAction}
         customClassName="admin-data-table"
       />
     </>
-  )
-}
+  );
+};
 
-export default TemplateList
+export default QueryList;

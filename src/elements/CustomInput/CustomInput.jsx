@@ -18,6 +18,7 @@ const CustomInput = ({
   handleChange,
   disableField = false,
   showPasswordMsg = true,
+  multiline = false,
 }) => {
   const text = useRef();
   const [showPassword, setShowPassword] = useState(false);
@@ -66,6 +67,8 @@ const CustomInput = ({
                   handleChange && handleChange(e);
                   return field.onChange(e);
                 }}
+                multiline={multiline}
+                rows={multiline && 5}
                 error={!!error}
                 size="small"
                 className={cn(

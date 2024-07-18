@@ -106,6 +106,33 @@ export const transactions_column = [
   },
 ];
 
+export const queries_column = [
+  {
+    Header: "Query No.",
+    accessor: "query_id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "User Name",
+    accessor: "user_name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Query Type",
+    accessor: "query_type",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Query Date",
+    accessor: "query_date",
+    align: "left",
+    disablePadding: false,
+  },
+]
+
 export const blogs_column = [
   {
     Header: "Blog Id",
@@ -137,33 +164,4 @@ export const blogs_column = [
   },
 ];
 
-export const templateList_column = [
-  {
-    Header: "Template Name",
-    accessor: "name",
-    align: "left",
-    disablePadding: false,
-    Cell: (data) => {
-      return (
-        <NavLink
-          className={styles["table-link"]}
-          to={`/admin/blogs/${data?.row?.original?.id}`}
-        >
-          {data?.row?.original?.name}
-        </NavLink>
-      );
-    },
-  },
-  {
-    Header: "Template Type",
-    accessor: "type",
-    align: "left",
-    disablePadding: false,
-  },
-  {
-    Header: "Actions",
-    accessor: "action",
-    align: "left",
-    disablePadding: false,
-  },
-];
+

@@ -14,8 +14,8 @@ import BlogFromPage from "../pages/admin/BlogFormPage";
 import TransactionListPage from "../pages/admin/TransactionListPage";
 import TransactionDetailsPage from "../pages/admin/TransactionDetailsPage";
 import TransactionPaymentPage from "../pages/admin/TransactionPaymentPage";
-import TemplateListPage from "../pages/admin/TemplateListPage";
-import TemplateCreatePage from "../pages/admin/TemplateCreatePage";
+import QueryListPage from "../pages/admin/QueryListPage";
+import QueryDetailPage from "../pages/admin/QueryDetailPage";
 
 const AdminRoutes = () => {
   return (
@@ -50,6 +50,14 @@ const AdminRoutes = () => {
                   element={<LayoutPage Component={TransactionPaymentPage} />}
                 />
                 <Route
+                  path="/queries"
+                  element={<LayoutPage Component={QueryListPage} />}
+                />
+                <Route
+                  path="/queries/:query_id"
+                  element={<LayoutPage Component={QueryDetailPage} />}
+                />
+                <Route
                   path="/blogs"
                   element={<LayoutPage Component={BlogListPage} />}
                 />
@@ -60,14 +68,6 @@ const AdminRoutes = () => {
                 <Route
                   path="/blog/:action/:blog_id"
                   element={<LayoutPage Component={BlogFromPage} />}
-                />
-                <Route
-                  path="/template"
-                  element={<LayoutPage Component={TemplateListPage} />}
-                />
-                <Route
-                  path="/template/create"
-                  element={<LayoutPage Component={TemplateCreatePage} />}
                 />
               </Route>
             </Routes>

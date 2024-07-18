@@ -1,9 +1,8 @@
-import styles from './CompanyList.module.scss'
+import styles from "./CompanyList.module.scss";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { TableCell } from "@mui/material";
-import { companyList_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import cn from "classnames";
-
 
 const CompanyList = () => {
   const addAction = (cell) => {
@@ -13,17 +12,14 @@ const CompanyList = () => {
   };
   return (
     <>
-
-
       <DataTable
-        propsColumn={companyList_column}
+        propsColumn={companies_column}
         propsData={[]}
         action={addAction}
         customClassName="admin-data-table"
       />
-
     </>
-  )
-}
+  );
+};
 
-export default CompanyList
+export default CompanyList;

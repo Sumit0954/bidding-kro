@@ -121,7 +121,7 @@ export const documents_column = [
   },
 ];
 
-export const companyList_column = [
+export const companies_column = [
   {
     Header: "Company Name",
     accessor: "name",

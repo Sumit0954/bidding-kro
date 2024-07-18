@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from "./CertificateForm.module.scss";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
-import { Button, ImageList, ImageListItem } from "@mui/material";
+import { Alert, Button, ImageList, ImageListItem } from "@mui/material";
 import { Cancel, CloudUpload } from "@mui/icons-material";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
@@ -10,6 +10,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { modifiedData } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
 
 const CertificateForm = ({ certificates }) => {
   const [certificateTypes, setCertificateTypes] = useState([]);
@@ -24,6 +25,7 @@ const CertificateForm = ({ certificates }) => {
   } = useForm();
   const { setAlert } = useContext(AlertContext);
   const [loading, setLoading] = useState(false);
+  const [showQueryForm, setShowQueryForm] = useState(false);
 
   const certificate = watch("file");
   useEffect(() => {
@@ -125,6 +127,18 @@ const CertificateForm = ({ certificates }) => {
       <div className={styles["certificate-section"]}>
         <h4 className="mb-0">Certificates</h4>
       </div>
+
+      <Alert severity="info" className="my-3">
+        If you find that your business related certificate type is not in the list.
+        Please{" "}
+        <span
+          className="query-form-button"
+          onClick={() => setShowQueryForm(true)}
+        >
+          Click here
+        </span>{" "}
+        to send request to Admin.
+      </Alert>
 
       <form onSubmit={handleSubmit(submitForm)}>
         <div className="row d-flex align-items-center my-4">
@@ -237,6 +251,14 @@ const CertificateForm = ({ certificates }) => {
           </>
         ))}
       </ImageList>
+
+      {showQueryForm && (
+        <QueryFormModal
+          showQueryForm={showQueryForm}
+          setShowQueryForm={setShowQueryForm}
+          formHeading="Certificate Type Suggestion Query"
+        />
+      )}
     </>
   );
 };

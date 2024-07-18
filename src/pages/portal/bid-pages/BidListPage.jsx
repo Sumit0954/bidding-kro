@@ -31,9 +31,22 @@ const BidListPage = () => {
             <Tab label="Invited Bids" {...a11yProps(1)} />
           </Tabs>
 
-          <Box>
-            <NavLink to={'/portal/bids/create'} className={cn("btn", "button")}>+ Create Bid</NavLink>
-          </Box>
+          {value === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <NavLink
+                to={"/portal/bids/create"}
+                className={cn("btn", "button")}
+              >
+                + Create Bid
+              </NavLink>
+            </Box>
+          )}
         </Box>
 
         <TabPanel value={value} index={0}>

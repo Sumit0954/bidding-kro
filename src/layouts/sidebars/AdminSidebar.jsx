@@ -11,7 +11,9 @@ const AdminSidebar = () => {
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                isActive ? `${styles["item-link"]} ${styles['active']}` : styles["item-link"]
+                isActive
+                  ? `${styles["item-link"]} ${styles["active"]}`
+                  : styles["item-link"]
               }
               key={index}
             >
@@ -39,25 +41,19 @@ const sidebarMenu = [
     title: "Companies",
     path: "/admin/companies",
   },
-
   {
     icon: "/images/admin/layout/icons/credit-card.svg",
     title: "Transactions",
     path: "/admin/transactions",
   },
-
+  {
+    icon: "/images/admin/layout/icons/queries.svg",
+    title: "Queries",
+    path: "/admin/queries",
+  },
   {
     icon: "/images/admin/layout/icons/blogging.svg",
     title: "Blog Management",
     path: "/admin/blogs",
   },
-
-  {
-    icon: "/images/admin/layout/icons/list-view.svg",
-    title: "Template",
-    path: "/admin/template",
-  },
-
-
-
 ];
