@@ -41,5 +41,17 @@
     .modal-desc{
       color: gray;
     }
+
+    .amendment-info{
+      margin-bottom: 0;
+      
+      span{
+        font-weight: bold;
+      }
+
+      strong{
+        color: var(--error);
+      }
+    }
   }
 }

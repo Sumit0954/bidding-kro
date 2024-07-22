@@ -18,6 +18,10 @@
 
 .bids-detail-accordion {
 	box-shadow: var(--glow-shadow) !important;
+	
+	&.nested-accordion-heading{
+		margin-top: 0px !important;
+	}
 }
 
 .printable-accordion {

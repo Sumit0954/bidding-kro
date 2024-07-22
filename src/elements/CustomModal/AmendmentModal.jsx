@@ -1,4 +1,4 @@
-import { Box, Modal, Typography } from "@mui/material";
+import { Alert, Box, Modal, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import cn from "classnames";
 import styles from "./Modal.module.scss";
@@ -8,6 +8,7 @@ import _sendAPIRequest, { setErrors } from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../contexts/AlertProvider";
 import { ButtonLoader } from "../CustomLoader/Loader";
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
   const handleClose = () => {
@@ -25,7 +26,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       const response = await _sendAPIRequest(
         "POST",
         PortalApiUrls.CREATE_AMENDMENT + `${id}/`,
-        { text: data.text },
+        { text: data.text, type: data.type },
         true
       );
       if (response.status === 201) {
@@ -73,9 +74,41 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
               >
                 Procurement System Amendments
               </Typography>
+              <Alert severity="info" sx={{ marginBottom: "10px" }}>
+                <p className={styles["amendment-info"]}>
+                  <span> Note : </span>
+                  Please be aware that you are allowed to make only{" "}
+                  <strong>two</strong> amendments for a Single Bid.
+                </p>
+              </Alert>
 
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
+                  <div className="col-lg-12">
+                    <CustomSelect
+                      control={control}
+                      showLabel={false}
+                      name="type"
+                      options={[
+                        { lable: "Description", value: "description" },
+                        { lable: "Delivery Terms", value: "delivery_terms" },
+                        {
+                          lable: "Eligiblity Criteria",
+                          value: "eligiblity_criteria",
+                        },
+                        { lable: "Payment Terms", value: "payment_terms" },
+                        {
+                          lable: "Technical Specification",
+                          value: "technical_specification",
+                        },
+                      ]}
+                      placeholder="Select Field"
+                      rules={{
+                        required: "Unit is required.",
+                      }}
+                    />
+                  </div>
+
                   <div className="col-lg-12 text-start">
                     <CustomCkEditor
                       control={control}
