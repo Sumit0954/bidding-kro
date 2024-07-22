@@ -5,12 +5,12 @@
     position: fixed;
     top: 70px;
     left: 0;
-    width: 250px;
+    width: 20%;
   }
 
   .right-section {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    margin-left: 20%;
+    width: 80%;
     padding: 20px;
     background-color: var(--portal-bg-color);
     // height: 100vh;
