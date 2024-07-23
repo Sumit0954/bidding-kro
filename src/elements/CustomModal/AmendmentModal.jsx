@@ -1,5 +1,5 @@
 import { Alert, Box, Modal, Typography } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./Modal.module.scss";
 import { useForm } from "react-hook-form";
@@ -9,15 +9,17 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../contexts/AlertProvider";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import CustomSelect from "../CustomSelect/CustomSelect";
+import { CloseFullscreen } from "@mui/icons-material";
 
 const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
   const handleClose = () => {
     setAddAmendment(false);
   };
 
-  const { control, handleSubmit, watch, setError } = useForm();
+  const { control, handleSubmit, watch, setError, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  const [bidDetails, setBidDetails] = useState({});
 
   const submitForm = async (data) => {
     setLoading(true);
@@ -55,6 +57,50 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
     }
   };
 
+  const handleFieldChange = (value) => {
+    if (value) {
+      const selectedTypeAmendments = bidDetails?.amendment.filter(
+        (object) => object.type === value.value
+      );
+      if (selectedTypeAmendments.length > 0) {
+        const latestAmendment = selectedTypeAmendments?.reduce(
+          (prev, current) => (prev.id > current.id ? prev : current)
+        );
+        reset({
+          text: latestAmendment.text,
+          type: latestAmendment.type,
+        });
+      } else {
+        reset({
+          text: bidDetails[`${value.value}`],
+          type: value.value,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setBidDetails(response.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id]);
+
   return (
     <>
       <Modal
@@ -84,7 +130,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
 
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12 text-start">
                     <CustomSelect
                       control={control}
                       showLabel={false}
@@ -104,8 +150,9 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
                       ]}
                       placeholder="Select Field"
                       rules={{
-                        required: "Unit is required.",
+                        required: "Field is required.",
                       }}
+                      handleChange={handleFieldChange}
                     />
                   </div>
 

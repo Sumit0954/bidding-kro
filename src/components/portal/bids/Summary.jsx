@@ -194,7 +194,7 @@ const Summary = ({ bidDetails }) => {
                             className={styles["col-data"]}
                             dangerouslySetInnerHTML={{
                               __html: DOMPurify.sanitize(
-                                bidDetails?.delivery_terms
+                                amendment.text
                               ),
                             }}
                           ></p>
@@ -256,7 +256,7 @@ const Summary = ({ bidDetails }) => {
                             className={styles["col-data"]}
                             dangerouslySetInnerHTML={{
                               __html: DOMPurify.sanitize(
-                                bidDetails?.payment_terms
+                                amendment.text
                               ),
                             }}
                           ></p>
@@ -341,7 +341,7 @@ const Summary = ({ bidDetails }) => {
                               className={styles["col-data"]}
                               dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
-                                  bidDetails?.eligiblity_criteria
+                                  amendment?.text
                                 ),
                               }}
                             ></p>
@@ -405,7 +405,7 @@ const Summary = ({ bidDetails }) => {
                               className={styles["col-data"]}
                               dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
-                                  bidDetails?.technical_specification
+                                  amendment?.text
                                 ),
                               }}
                             ></p>
