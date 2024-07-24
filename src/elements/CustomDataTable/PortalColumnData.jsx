@@ -131,7 +131,7 @@ export const companies_column = [
   },
   {
     Header: "Owner Name",
-    accessor: "owner name",
+    accessor: "owner_name",
     align: "left",
     disablePadding: false,
     width: 160,
@@ -142,9 +142,6 @@ export const companies_column = [
     align: "left",
     disablePadding: false,
     width: 160,
-    Cell: (data) => {
-      return convertFileSize(data?.row?.original?.size);
-    },
   },
   {
     Header: "Mobile",
@@ -152,13 +149,17 @@ export const companies_column = [
     align: "left",
     disablePadding: false,
     width: 180,
-    Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.created_at);
-    },
   },
   {
     Header: "City",
     accessor: "city",
+    align: "left",
+    disablePadding: false,
+    width: 100,
+  },
+  {
+    Header: "Action",
+    accessor: "action",
     align: "center",
     disablePadding: false,
     width: 100,

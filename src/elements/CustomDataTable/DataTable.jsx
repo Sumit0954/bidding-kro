@@ -209,6 +209,7 @@ const DataTable = ({
   ),
   customClassName = "",
   isSingleSelection = false,
+  setSelectedRow
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
@@ -347,7 +348,10 @@ const DataTable = ({
                           inputProps={{
                             "aria-labelledby": labelId,
                           }}
-                          onClick={(event) => handleClick(event, row.id)}
+                          onClick={(event) => {
+                            handleClick(event, row.id);
+                            setSelectedRow(row);
+                          }}
                         />
                       </TableCell>
                       {row.cells.map((cell) => {

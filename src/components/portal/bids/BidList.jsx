@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
-// import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
-// import { useForm } from "react-hook-form";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
-const BidList = ({ listType }) => {
-  // const { control } = useForm();
+const BidList = ({ listType, setSelectedRow }) => {
   const [createdBids, setCreatedBids] = useState([]);
+  const [inviteBids, setInviteBids] = useState([]);
 
-  const getBidList = async () => {
+  // To Created Bid List
+  const getCreatedBidList = async () => {
     try {
       const response = await _sendAPIRequest(
         "GET",
-        PortalApiUrls.LIST_BIDS,
+        PortalApiUrls.CREATED_LIST_BIDS,
         "",
         true
       );
@@ -27,11 +26,38 @@ const BidList = ({ listType }) => {
     }
   };
 
+  // To Invited Bid List
+  const getInvitedBidList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.INVITED_BID_LIST,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setInviteBids(response.data)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    getBidList();
+    getCreatedBidList();
+    getInvitedBidList()
   }, []);
 
-  const addAction = (cell) => {
+  const addCreatedAction = (cell) => {
+    return (
+      <TableCell {...cell.getCellProps()} align={cell.column.align}>
+        {" "}
+        {cell.render("Cell")}{" "}
+      </TableCell>
+    );
+  };
+
+  const addInvitedAction = (cell) => {
     return (
       <TableCell {...cell.getCellProps()} align={cell.column.align}>
         {" "}
@@ -41,65 +67,21 @@ const BidList = ({ listType }) => {
   };
   return (
     <>
-      {/* <form>
-        <div className="row">
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              showLabel={false}
-              placeholder="Category"
-              multiple={true}
-              options={[]}
-              name="category"
-            />
-          </div>
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              showLabel={false}
-              placeholder="Sub Category"
-              multiple={true}
-              options={[]}
-              name="sub-category"
-            />
-          </div>
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              showLabel={false}
-              placeholder="City"
-              multiple={true}
-              options={[]}
-              name="city"
-            />
-          </div>
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              showLabel={false}
-              placeholder="State"
-              multiple={true}
-              options={[]}
-              name="state"
-            />
-          </div>
-        </div>
-      </form> */}
-
       {listType === "created" ? (
         <DataTable
           propsColumn={bids_column}
           propsData={createdBids}
-          action={addAction}
+          action={addCreatedAction}
           customClassName="portal-data-table"
           isSingleSelection={true}
+          setSelectedRow={setSelectedRow}
         />
       ) : (
         listType === "invited" && (
           <DataTable
             propsColumn={bids_column}
-            propsData={[]}
-            action={addAction}
+            propsData={inviteBids}
+            action={addInvitedAction}
             customClassName="portal-data-table"
           />
         )

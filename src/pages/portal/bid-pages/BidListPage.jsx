@@ -2,11 +2,13 @@ import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import BidList from "../../../components/portal/bids/BidList";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import cn from "classnames";
 
 const BidListPage = () => {
   const [value, setValue] = useState(0);
+  const [selectedRow, setSelectedRow] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -39,6 +41,17 @@ const BidListPage = () => {
                 gap: "10px",
               }}
             >
+              <button
+                className={cn("btn", "button")}
+                disabled={selectedRow?.original?.id ? false : true}
+                onClick={() =>
+                  navigate(
+                    `/portal/companies/?bid=${selectedRow?.original?.id}`
+                  )
+                }
+              >
+                + Invite Company
+              </button>
               <NavLink
                 to={"/portal/bids/create"}
                 className={cn("btn", "button")}
@@ -50,7 +63,7 @@ const BidListPage = () => {
         </Box>
 
         <TabPanel value={value} index={0}>
-          <BidList listType={"created"} />
+          <BidList listType={"created"} setSelectedRow={setSelectedRow} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />
