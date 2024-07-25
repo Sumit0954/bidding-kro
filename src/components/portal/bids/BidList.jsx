@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import { created_bids_column, invited_bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -36,7 +36,7 @@ const BidList = ({ listType, setSelectedRow }) => {
         true
       );
       if (response.status === 200) {
-        setInviteBids(response.data)
+        setInviteBids(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ const BidList = ({ listType, setSelectedRow }) => {
 
   useEffect(() => {
     getCreatedBidList();
-    getInvitedBidList()
+    getInvitedBidList();
   }, []);
 
   const addCreatedAction = (cell) => {
@@ -69,7 +69,7 @@ const BidList = ({ listType, setSelectedRow }) => {
     <>
       {listType === "created" ? (
         <DataTable
-          propsColumn={bids_column}
+          propsColumn={created_bids_column}
           propsData={createdBids}
           action={addCreatedAction}
           customClassName="portal-data-table"
@@ -79,7 +79,7 @@ const BidList = ({ listType, setSelectedRow }) => {
       ) : (
         listType === "invited" && (
           <DataTable
-            propsColumn={bids_column}
+            propsColumn={invited_bids_column}
             propsData={inviteBids}
             action={addInvitedAction}
             customClassName="portal-data-table"

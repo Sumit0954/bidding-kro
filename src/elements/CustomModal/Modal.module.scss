@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
 
 .modal-container {
   position: absolute;
@@ -12,49 +12,49 @@
     outline: none !important;
   }
 
-  .modal-section{
+  .modal-section {
     background-color: var(--white);
     width: 800px;
     text-align: center;
     padding: 1rem;
     border-radius: 8px;
 
-    .search-company-head{
+    .search-company-head {
       padding-bottom: 5px;
       border-bottom: 1px solid var(--secondary-color);
       text-align: left;
       color: var(--primary-color);
     }
 
-    .search-company-table{
+    .search-company-table {
       text-align: left;
     }
 
-    img{
+    img {
       width: 80px;
     }
 
-    .modal-title{
+    .modal-title {
       font-family: "Bubblegum Sans", sans-serif;
     }
 
-    .modal-desc{
+    .modal-desc {
       color: gray;
     }
 
-    .amendment-info{
+    .amendment-info {
       margin-bottom: 0;
-      
-      span{
+
+      span {
         font-weight: bold;
       }
 
-      strong{
+      strong {
         color: var(--error);
       }
     }
 
-    .modal-header{
+    .modal-header {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -62,19 +62,18 @@
       border-bottom: 1px solid var(--primary-color);
       padding: 5px;
 
-      .invite-modal-title{
+      .invite-modal-title {
         color: var(--primary-color);
         font-weight: bold;
         font-size: 30px;
       }
     }
 
-    .title{
+    .title {
       font-size: 20px;
       color: var(--primary-color);
       font-weight: 600;
       margin: 1rem 0;
     }
-
   }
 }

@@ -1,6 +1,6 @@
 export const company_data = [
     {
-        id: 2,
+        id: 18,
         name: 'Test',
         owner_name: 'Sumit Singh',
         email: 'test@gmail.com',

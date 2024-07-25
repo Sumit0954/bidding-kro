@@ -23,7 +23,7 @@ const CompanyList = ({ bidDetails, id }) => {
           <button
             className={cn(styles["invite-btn"], !id && styles['disable'])}
             onClick={() => handleInvite(cell)}
-            disabled={id ? false : true}
+            disabled={id ? false : true }
           >
             Invite
           </button>

@@ -1,8 +1,12 @@
 import { Box, Modal, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext, useState } from "react";
 import styles from "./Modal.module.scss";
 import cn from "classnames";
 import { dateTimeFormatter } from "../../helpers/formatter";
+import _sendAPIRequest from "../../helpers/api";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import { ButtonLoader } from "../CustomLoader/Loader";
+import { AlertContext } from "../../contexts/AlertProvider";
 
 const InvitationModal = ({
   addInvitaion,
@@ -10,10 +14,45 @@ const InvitationModal = ({
   bidDetails,
   comapnyDetail,
 }) => {
-    
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertContext);
+
   const handleClose = () => {
     setInvitation(false);
   };
+
+  const sendInvite = async () => {
+    setLoading(true);
+    try {
+      let formData = new FormData();
+      formData.append("company", comapnyDetail?.id);
+
+      const response = await _sendAPIRequest(
+        "POST",
+        PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
+        formData,
+        true
+      );
+      if (response.status === 204) {
+        setLoading(false);
+        setInvitation(false);
+        setAlert({
+          isVisible: true,
+          message: "Bid  Invited",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response.data.error_code === 9999)
+        setAlert({
+          isVisible: true,
+          message: error.response.data.error,
+          severity: "error",
+        });
+    }
+  };
+
   return (
     <>
       <Modal
@@ -22,7 +61,6 @@ const InvitationModal = ({
         aria-labelledby="modal-modal-title"
       >
         <Box className={cn("container", styles["modal-container"])}>
-
           <Box className="row">
             <Box className={styles["modal-section"]}>
               <Box className={styles["modal-header"]}>
@@ -34,7 +72,18 @@ const InvitationModal = ({
                 >
                   Invitation
                 </Typography>
-                <button className="btn button">Send Message</button>
+
+                {loading ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <button
+                    type="button"
+                    className="btn button"
+                    onClick={sendInvite}
+                  >
+                    Send Message
+                  </button>
+                )}
               </Box>
 
               <Box className="row">
