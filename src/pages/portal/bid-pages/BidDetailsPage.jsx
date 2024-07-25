@@ -14,7 +14,7 @@ import Summary from "../../../components/portal/bids/Summary";
 import Documents from "../../../components/portal/bids/Documents";
 // import Award from "../../../components/portal/bids/Award";
 // import Bids from "../../../components/portal/bids/Bids";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
 import AmendmentModal from "../../../elements/CustomModal/AmendmentModal";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
@@ -38,6 +38,8 @@ const BidDetailsPage = () => {
   const [bidDetails, setBidDetails] = useState({});
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
+
+  const type = new URLSearchParams(useLocation().search).get("type");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -91,11 +93,16 @@ const BidDetailsPage = () => {
 
   useEffect(() => {
     if (id) {
+      let url =
+        type === "invited"
+          ? PortalApiUrls.RETRIEVE_INVITED_BID
+          : PortalApiUrls.RETRIEVE_CREATED_BID;
+
       const retrieveBid = async () => {
         try {
           const response = await _sendAPIRequest(
             "GET",
-            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            url + `${id}/`,
             "",
             true
           );
@@ -109,7 +116,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id]);
+  }, [id, type]);
 
   useEffect(() => {
     const createdDate = new Date(bidDetails?.created_at);
@@ -157,59 +164,65 @@ const BidDetailsPage = () => {
             removeAfterPrint
           />
 
-          {bidDetails?.status === "active" ? (
-            <button
-              className={cn("btn", "button", "approve")}
-              type="button"
-              disabled
-            >
-              Active
-            </button>
-          ) : (
-            <button
-              className={cn("btn", "button")}
-              type="button"
-              onClick={() => setActivateBid(true)}
-              disabled={bidDetails?.status === "cancelled" ? true : false}
-            >
-              Activate Bid
-            </button>
-          )}
+          {type !== "invited" && (
+            <>
+              {bidDetails?.status === "active" ? (
+                <button
+                  className={cn("btn", "button", "approve")}
+                  type="button"
+                  disabled
+                >
+                  Active
+                </button>
+              ) : (
+                <button
+                  className={cn("btn", "button")}
+                  type="button"
+                  onClick={() => setActivateBid(true)}
+                  disabled={bidDetails?.status === "cancelled" ? true : false}
+                >
+                  Activate Bid
+                </button>
+              )}
 
-          {show ? (
-            <button
-              className={cn("btn", "button")}
-              type="button"
-              onClick={() => setAddAmendment(true)}
-              disabled={bidDetails?.status === "cancelled" ? true : false}
-            >
-              Amendments
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className={cn("btn", "button")}
-              onClick={() => navigate(`/portal/bids/update/${bidDetails.id}`)}
-              disabled={bidDetails?.status === "cancelled" ? true : false}
-            >
-              Edit Bid
-            </button>
-          )}
+              {show ? (
+                <button
+                  className={cn("btn", "button")}
+                  type="button"
+                  onClick={() => setAddAmendment(true)}
+                  disabled={bidDetails?.status === "cancelled" ? true : false}
+                >
+                  Amendments
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className={cn("btn", "button")}
+                  onClick={() =>
+                    navigate(`/portal/bids/update/${bidDetails.id}`)
+                  }
+                  disabled={bidDetails?.status === "cancelled" ? true : false}
+                >
+                  Edit Bid
+                </button>
+              )}
 
-          <button
-            type="submit"
-            className={cn("btn", "button", "reject")}
-            onClick={() =>
-              setDeleteDetails({
-                open: true,
-                title: "Cancel Bid",
-                item: bidDetails?.title,
-              })
-            }
-            disabled={bidDetails?.status === "cancelled" ? true : false}
-          >
-            Cancel Bid
-          </button>
+              <button
+                type="submit"
+                className={cn("btn", "button", "reject")}
+                onClick={() =>
+                  setDeleteDetails({
+                    open: true,
+                    title: "Cancel Bid",
+                    item: bidDetails?.title,
+                  })
+                }
+                disabled={bidDetails?.status === "cancelled" ? true : false}
+              >
+                Cancel Bid
+              </button>
+            </>
+          )}
         </div>
       </div>
 

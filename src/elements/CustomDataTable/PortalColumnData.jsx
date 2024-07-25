@@ -92,7 +92,7 @@ export const invited_bids_column = [
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}`}
+          to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
         >
           {truncateString(data?.row?.original?.bid?.title, 30)}
         </NavLink>
@@ -136,8 +136,8 @@ export const invited_bids_column = [
     hideSortIcon: true,
     Cell: (data) => {
       return (
-        <div className={`status-cloumn ${data?.row?.original?.status}`}>
-          {data?.row?.original?.status}
+        <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
+          {data?.row?.original?.bid?.status}
         </div>
       );
     },

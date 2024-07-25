@@ -158,7 +158,7 @@ const BidDocuments = () => {
         try {
           const response = await _sendAPIRequest(
             "GET",
-            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
             "",
             true
           );

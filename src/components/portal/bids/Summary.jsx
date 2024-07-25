@@ -54,7 +54,7 @@ const Summary = ({ bidDetails }) => {
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>
-                {bidDetails?.type_meta?.name}
+                {bidDetails?.type_meta?.name || bidDetails?.type?.name}
               </p>
             </div>
             <div className="col">
@@ -141,6 +141,8 @@ const Summary = ({ bidDetails }) => {
                     </Accordion>
                   );
                 }
+
+                return null;
               })}
 
           <div className="row">
@@ -193,9 +195,7 @@ const Summary = ({ bidDetails }) => {
                           <p
                             className={styles["col-data"]}
                             dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(
-                                amendment.text
-                              ),
+                              __html: DOMPurify.sanitize(amendment.text),
                             }}
                           ></p>
                         </div>
@@ -203,6 +203,8 @@ const Summary = ({ bidDetails }) => {
                     </Accordion>
                   );
                 }
+
+                return null;
               })}
 
           <div className="row">
@@ -255,9 +257,7 @@ const Summary = ({ bidDetails }) => {
                           <p
                             className={styles["col-data"]}
                             dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(
-                                amendment.text
-                              ),
+                              __html: DOMPurify.sanitize(amendment.text),
                             }}
                           ></p>
                         </div>
@@ -265,6 +265,8 @@ const Summary = ({ bidDetails }) => {
                     </Accordion>
                   );
                 }
+
+                return null;
               })}
           <div className="row">
             <p
@@ -340,9 +342,7 @@ const Summary = ({ bidDetails }) => {
                             <p
                               className={styles["col-data"]}
                               dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(
-                                  amendment?.text
-                                ),
+                                __html: DOMPurify.sanitize(amendment?.text),
                               }}
                             ></p>
                           </div>
@@ -350,6 +350,8 @@ const Summary = ({ bidDetails }) => {
                       </Accordion>
                     );
                   }
+
+                  return null;
                 })}
             <div className="row">
               <p
@@ -404,9 +406,7 @@ const Summary = ({ bidDetails }) => {
                             <p
                               className={styles["col-data"]}
                               dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(
-                                  amendment?.text
-                                ),
+                                __html: DOMPurify.sanitize(amendment?.text),
                               }}
                             ></p>
                           </div>
@@ -414,6 +414,8 @@ const Summary = ({ bidDetails }) => {
                       </Accordion>
                     );
                   }
+
+                  return null;
                 })}
 
             <div className="row">

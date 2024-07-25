@@ -190,7 +190,7 @@ const BidForm = () => {
         try {
           const response = await _sendAPIRequest(
             "GET",
-            PortalApiUrls.RETRIEVE_BID + `${id}/`,
+            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
             "",
             true
           );
@@ -253,7 +253,7 @@ const BidForm = () => {
       try {
         const response = await _sendAPIRequest(
           "GET",
-          PortalApiUrls.RETRIEVE_BID + `${value.id}/`,
+          PortalApiUrls.RETRIEVE_CREATED_BID + `${value.id}/`,
           "",
           true
         );
