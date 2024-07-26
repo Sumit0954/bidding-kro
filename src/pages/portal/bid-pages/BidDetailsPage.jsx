@@ -243,6 +243,7 @@ const BidDetailsPage = () => {
         >
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Documents" {...a11yProps(1)} />
+          {bidDetails?.participant?.status === "accepted" && <Tab label="Questions" {...a11yProps(2)} />}
           {/* <Tab label="Bids" {...a11yProps(2)} />
           <Tab label="Award" {...a11yProps(3)} /> */}
         </Tabs>
@@ -252,8 +253,10 @@ const BidDetailsPage = () => {
         <Summary bidDetails={bidDetails} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Documents bidDetails={bidDetails} />
+        <Documents bidDetails={bidDetails} type={type}/>
       </TabPanel>
+      
+
       {/* <TabPanel value={value} index={2}>
         <Award />
       </TabPanel>

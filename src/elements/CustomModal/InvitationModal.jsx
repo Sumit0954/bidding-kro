@@ -38,7 +38,7 @@ const InvitationModal = ({
         setInvitation(false);
         setAlert({
           isVisible: true,
-          message: "Bid  Invited",
+          message: "Invitation successfully sent to the supplier.",
           severity: "success",
         });
       }

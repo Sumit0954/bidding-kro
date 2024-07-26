@@ -33,5 +33,6 @@ export const PortalApiUrls = Object.freeze({
   VERIFY_PAYMENT: "/payment/customer/verify/",
   CANCEL_BID: "/bid/customer/cancel/",
   SEARCH_BIDS: "/bid/customer/search/",
-  SEND_INVITE : "/bid/customer/invite/"
+  SEND_INVITE : "/bid/customer/invite/",
+  INVITE_ACTION : "/bid/customer/invited/action/"
 });
