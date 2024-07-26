@@ -49,7 +49,7 @@ const BidDetailsPage = () => {
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
-    item: "",
+    message: "",
   });
 
   const handleDelete = async () => {
@@ -61,7 +61,7 @@ const BidDetailsPage = () => {
         true
       );
       if (response.status === 204) {
-        setDeleteDetails({ open: false, title: "", item: "" });
+        setDeleteDetails({ open: false, title: "", message: "" });
         window.location.reload();
       }
     } catch (error) {
@@ -73,7 +73,7 @@ const BidDetailsPage = () => {
     if (choice) {
       handleDelete();
     } else {
-      setDeleteDetails({ open: false, title: "", item: "" });
+      setDeleteDetails({ open: false, title: "", message: "" });
     }
   };
 
@@ -215,7 +215,7 @@ const BidDetailsPage = () => {
                   setDeleteDetails({
                     open: true,
                     title: "Cancel Bid",
-                    item: bidDetails?.title,
+                    message: `Are you sure you want to cancel this ${bidDetails?.title} ? This action cannot be undone.`,
                   })
                 }
                 disabled={bidDetails?.status === "cancelled" ? true : false}
@@ -279,7 +279,7 @@ const BidDetailsPage = () => {
       {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}
-          item={deleteDetails.item}
+          message={deleteDetails.message}
           handleClick={handleDeleteConfirmation}
         />
       )}

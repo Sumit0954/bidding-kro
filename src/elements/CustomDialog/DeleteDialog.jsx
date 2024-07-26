@@ -11,7 +11,7 @@ import { useTheme } from "@mui/material/styles";
 import styles from "./DeleteDialog.module.scss";
 import warning from "../../assets/images/portal/bids/warning.png";
 
-const DeleteDialog = ({ title, item, handleClick }) => {
+const DeleteDialog = ({ title, message, handleClick }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -30,10 +30,7 @@ const DeleteDialog = ({ title, item, handleClick }) => {
           </div>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to cancel this {<strong>{item}</strong>}? This
-            action cannot be undone.
-          </DialogContentText>
+          <DialogContentText>{message}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button

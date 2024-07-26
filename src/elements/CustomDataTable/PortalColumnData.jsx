@@ -242,6 +242,62 @@ export const companies_column = [
   },
 ];
 
+export const l1_participants_column = [
+  {
+    Header: "Company Name",
+    accessor: "company.name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data.row.original.company.name
+    }
+  },
+  {
+    Header: "Company Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Company Mobile",
+    accessor: "mobile",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Company Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "center",
+    disablePadding: false,
+    hideSortIcon: true,
+    Cell: (data) => {
+      return (
+        <div className={`status-cloumn ${data?.row?.original?.status === 'accepted' ? 'success' : 'cancelled'}`}>
+          {data?.row?.original?.status}
+        </div>
+      );
+    },
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true,
+  },
+]
+
 export const PreviousBids_column = [
   {
     Header: "Product Name",
