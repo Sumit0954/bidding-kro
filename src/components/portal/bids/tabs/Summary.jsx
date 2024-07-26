@@ -10,9 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { dateTimeFormatter } from "../../../helpers/formatter";
+import { dateTimeFormatter } from "../../../../helpers/formatter";
 import DOMPurify from "dompurify";
-import { getLableByValue } from "../../../helpers/common";
+import { getLableByValue } from "../../../../helpers/common";
 
 const Summary = ({ bidDetails }) => {
   return (

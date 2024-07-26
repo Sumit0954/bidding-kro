@@ -1,7 +1,6 @@
 import { Box, Modal, Typography } from "@mui/material";
 import styles from "./Modal.module.scss";
 import cn from "classnames";
-import CustomCkEditor from "../CustomEditor/CustomCkEditor";
 import CustomInput from "../CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import { useState } from "react";

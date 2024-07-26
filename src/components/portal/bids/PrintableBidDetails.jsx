@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import styles from "./Summary.module.scss";
+import styles from "./tabs/Summary.module.scss";
 import {
   Accordion,
   AccordionDetails,

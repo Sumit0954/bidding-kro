@@ -1,13 +1,13 @@
 import React, { useContext, useState } from "react";
-import { documents_column } from "../../../elements/CustomDataTable/PortalColumnData";
-import DataTable from "../../../elements/CustomDataTable/DataTable";
+import { documents_column } from "../../../../elements/CustomDataTable/PortalColumnData";
+import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import { Box, IconButton, TableCell } from "@mui/material";
 import { Download } from "@mui/icons-material";
-import { AlertContext } from "../../../contexts/AlertProvider";
+import { AlertContext } from "../../../../contexts/AlertProvider";
 import styles from "./Documents.module.scss";
-import _sendAPIRequest from "../../../helpers/api";
-import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import _sendAPIRequest from "../../../../helpers/api";
+import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
+import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 
 const Documents = ({ bidDetails, type }) => {
   const { setAlert } = useContext(AlertContext);
