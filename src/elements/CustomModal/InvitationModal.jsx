@@ -12,7 +12,7 @@ const InvitationModal = ({
   addInvitaion,
   setInvitation,
   bidDetails,
-  comapnyDetail,
+  companyDetail,
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -25,7 +25,7 @@ const InvitationModal = ({
     setLoading(true);
     try {
       let formData = new FormData();
-      formData.append("company", comapnyDetail?.id);
+      formData.append("company", companyDetail?.id);
 
       const response = await _sendAPIRequest(
         "POST",
@@ -130,13 +130,19 @@ const InvitationModal = ({
 
               <Box className="row mb-2">
                 <Box
-                  className="col-lg-6 text-start"
+                  className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {comapnyDetail?.name}
+                  {companyDetail?.name}
                 </Box>
-                <Box className="col-lg-6 text-start">
-                  {comapnyDetail?.owner_name}
+                <Box
+                  className="col-lg-4 text-start"
+                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                >
+                  {companyDetail?.business_email}
+                </Box>
+                <Box className="col-lg-4 text-start">
+                  {companyDetail?.business_mobile}
                 </Box>
               </Box>
             </Box>

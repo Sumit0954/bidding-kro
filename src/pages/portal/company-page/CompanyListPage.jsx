@@ -1,7 +1,5 @@
 import CompanyList from "../../../components/portal/companies/CompanyList";
-import { Box } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
-import cn from "classnames";
+import {useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -34,20 +32,6 @@ const CompanyListPage = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "10px",
-          margin: '15px 0'
-        }}
-      >
-        <NavLink to={"/portal/companies"} className={cn("btn", "button")}>
-          My Company
-        </NavLink>
-      </Box>
-
       <CompanyList bidDetails={bidDetails} id={id} />
     </>
   );

@@ -196,6 +196,7 @@ export const documents_column = [
   },
 ];
 
+
 export const companies_column = [
   {
     Header: "Company Name",
@@ -205,32 +206,18 @@ export const companies_column = [
     width: 160,
   },
   {
-    Header: "Owner Name",
-    accessor: "owner_name",
+    Header: "Company Email",
+    accessor: "business_email",
     align: "left",
     disablePadding: false,
     width: 160,
   },
   {
-    Header: "Email",
-    accessor: "email",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Mobile",
-    accessor: "mobile",
+    Header: "Company Mobile",
+    accessor: "business_mobile",
     align: "left",
     disablePadding: false,
     width: 180,
-  },
-  {
-    Header: "City",
-    accessor: "city",
-    align: "left",
-    disablePadding: false,
-    width: 100,
   },
   {
     Header: "Action",

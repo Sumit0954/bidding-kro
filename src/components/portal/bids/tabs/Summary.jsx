@@ -32,6 +32,8 @@ const Summary = ({ bidDetails }) => {
     id: null,
   });
   const type = new URLSearchParams(useLocation().search).get("type");
+
+  
   useEffect(() => {
     if (bidDetails?.id) {
       const getParticipants = async () => {
@@ -377,9 +379,9 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {type === "invited" ? null : (
+      {/* Participants list */}
+      {type !== "invited" && (
         <>
-          {/* Participants list */}
           <Accordion
             defaultExpanded
             square={true}
