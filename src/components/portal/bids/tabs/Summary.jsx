@@ -20,18 +20,18 @@ import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { l1_participants_column } from "../../../../elements/CustomDataTable/PortalColumnData";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
+import { useLocation } from "react-router-dom";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
   const { setAlert } = useContext(AlertContext);
-
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
     id: null,
   });
-
+  const type = new URLSearchParams(useLocation().search).get("type");
   useEffect(() => {
     if (bidDetails?.id) {
       const getParticipants = async () => {
@@ -377,27 +377,31 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Participants list */}
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Participants
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <DataTable
-            propsColumn={l1_participants_column}
-            propsData={participantDetail?.participants || []}
-            action={addAction}
-          />
-        </AccordionDetails>
-      </Accordion>
+      {type === "invited" ? null : (
+        <>
+          {/* Participants list */}
+          <Accordion
+            defaultExpanded
+            square={true}
+            classes={{
+              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography classes={{ root: "custom-accordion-heading" }}>
+                Participants
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <DataTable
+                propsColumn={l1_participants_column}
+                propsData={participantDetail?.participants || []}
+                action={addAction}
+              />
+            </AccordionDetails>
+          </Accordion>
+        </>
+      )}
 
       {/* Categories */}
       <Accordion

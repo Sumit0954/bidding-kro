@@ -250,29 +250,32 @@ export const l1_participants_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return data.row.original.company.name
-    }
+      return data.row.original.company.name;
+    },
   },
   {
     Header: "Company Email",
-    accessor: "email",
+    accessor: "company.business_email",
     align: "left",
     disablePadding: false,
     width: 160,
   },
   {
     Header: "Company Mobile",
-    accessor: "mobile",
+    accessor: "company.business_mobile",
     align: "left",
     disablePadding: false,
     width: 160,
   },
   {
     Header: "Company Type",
-    accessor: "type",
+    accessor: "company.organization_type",
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell : (data) =>{
+      return data?.row.original.company.organization_type || "--" 
+    }
   },
   {
     Header: "Status",
@@ -282,9 +285,19 @@ export const l1_participants_column = [
     hideSortIcon: true,
     Cell: (data) => {
       return (
-        <div className={`status-cloumn ${data?.row?.original?.status === 'accepted' ? 'success' : 'cancelled'}`}>
-          {data?.row?.original?.status}
-        </div>
+        <>
+          <div
+            className={`status-cloumn ${
+              data?.row?.original?.status === "accepted"
+                ? "success"
+                : data?.row?.original?.status === "pending"
+                ? "pending"
+                : "cancelled"
+            }`}
+          >
+            {data?.row?.original?.status}
+          </div>
+        </>
       );
     },
   },
@@ -296,7 +309,7 @@ export const l1_participants_column = [
     width: 100,
     hideSortIcon: true,
   },
-]
+];
 
 export const PreviousBids_column = [
   {

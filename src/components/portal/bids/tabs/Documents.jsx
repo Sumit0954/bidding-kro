@@ -8,11 +8,18 @@ import styles from "./Documents.module.scss";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
+import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 
 const Documents = ({ bidDetails, type }) => {
   const { setAlert } = useContext(AlertContext);
   const [loading, setLoading] = useState(false);
   const [loadingAction, setLoadingAction] = useState(null);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: "",
+  });
 
   const handleAction = async (action) => {
     setLoadingAction(action);
@@ -25,6 +32,7 @@ const Documents = ({ bidDetails, type }) => {
         true
       );
       if (response.status === 204) {
+        window.location.reload();
         setLoading(false);
 
         setAlert({
@@ -71,6 +79,14 @@ const Documents = ({ bidDetails, type }) => {
       });
   };
 
+  const handleDeleteConfirmation = (choice) => {
+    if (choice) {
+      handleAction(deleteDetails.action);
+    } else {
+      setDeleteDetails({ open: false, title: "", message: "", action: "" });
+    }
+  };
+
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       return (
@@ -103,10 +119,15 @@ const Documents = ({ bidDetails, type }) => {
 
       {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
-          {bidDetails?.participant?.status === "accepted" || "declined" ? (
+          {bidDetails?.participant?.status === "accepted" ||
+          bidDetails?.participant?.status === "declined" ? (
             <button
               type="button"
-              className={`btn button ${bidDetails?.participant?.status === "accepted" ? 'approve': 'reject'}`}
+              className={`btn button ${
+                bidDetails?.participant?.status === "accepted"
+                  ? "approve"
+                  : "reject"
+              }`}
               disabled={true}
             >
               {bidDetails?.participant?.status}
@@ -119,7 +140,14 @@ const Documents = ({ bidDetails, type }) => {
                 <button
                   type="button"
                   className="btn button reject"
-                  onClick={() => handleAction("decline")}
+                  onClick={() =>
+                    setDeleteDetails({
+                      open: true,
+                      title: "Decline Bid Invite",
+                      message: `Are you sure you want to decline this invite bid ? This action cannot be undone.`,
+                      action: "decline",
+                    })
+                  }
                 >
                   Decline
                 </button>
@@ -131,12 +159,27 @@ const Documents = ({ bidDetails, type }) => {
                 <button
                   type="button"
                   className="btn button approve"
-                  onClick={() => handleAction("accept")}
+                  onClick={() =>
+                    setDeleteDetails({
+                      open: true,
+                      title: "Accept Bid Invite",
+                      message: `Are you sure you want to accept this invite bid ?.`,
+                      action: "accept",
+                    })
+                  }
                 >
                   Accept
                 </button>
               )}
             </>
+          )}
+
+          {deleteDetails?.open && (
+            <DeleteDialog
+              title={deleteDetails.title}
+              message={deleteDetails.message}
+              handleClick={handleDeleteConfirmation}
+            />
           )}
         </Box>
       )}
