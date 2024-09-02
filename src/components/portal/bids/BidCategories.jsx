@@ -13,6 +13,7 @@ import { isArray } from "lodash";
 import { getCategoryLevel } from "../../../helpers/common";
 import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
 import { Alert } from "@mui/material";
+import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 
 const BidCategories = () => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
@@ -42,6 +43,7 @@ const BidCategories = () => {
         true
       );
       if (response.status === 200) {
+        console.log(response.data, "catData");
         setCategories((prevCategories) => ({
           ...prevCategories,
           [depth]: response.data,
@@ -123,7 +125,6 @@ const BidCategories = () => {
     if (data) {
       Object.entries(data).map((item) => {
         const [, value] = item;
-
         if (value !== undefined) {
           if (isArray(value)) {
             value?.map((category) =>
@@ -132,6 +133,18 @@ const BidCategories = () => {
           } else {
             formData.push({ category: value.id, depth: value.depth });
           }
+          //////
+
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Category has been updated successfully.",
+            severity: "success",
+          });
+          console.log(formData, "formDataformData");
+          // navigate(`/portal/bids/create`);
+          navigate("/portal/bids/create", { state: { formData } });
+          //////
         }
 
         return null;
@@ -139,37 +152,38 @@ const BidCategories = () => {
     }
     /* -- */
 
-    try {
-      const response = await _sendAPIRequest(
-        "PUT",
-        PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
-        formData,
-        true
-      );
-      if (response.status === 200) {
-        setLoading(false);
-        setAlert({
-          isVisible: true,
-          message: "Category has been updated successfully.",
-          severity: "success",
-        });
-        navigate(`/portal/bids/questions/${id}`);
-      }
-    } catch (error) {
-      setLoading(false);
-      const { data } = error.response;
-      if (data) {
-        setErrors(data, watch, setError);
+    // try {
+    //   const response = await _sendAPIRequest(
+    //     "PUT",
+    //     PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
+    //     formData,
+    //     true
+    //   );
+    //   if (response.status === 200) {
+    //     setLoading(false);
+    //     setAlert({
+    //       isVisible: true,
+    //       message: "Category has been updated successfully.",
+    //       severity: "success",
+    //     });
+    //     // navigate(`/portal/bids/questions/${id}`);
+    //     navigate(`/portal/bids/create`);
+    //   }
+    // } catch (error) {
+    //   setLoading(false);
+    //   const { data } = error.response;
+    //   if (data) {
+    //     setErrors(data, watch, setError);
 
-        if (data.error) {
-          setAlert({
-            isVisible: true,
-            message: data.error,
-            severity: "error",
-          });
-        }
-      }
-    }
+    //     if (data.error) {
+    //       setAlert({
+    //         isVisible: true,
+    //         message: data.error,
+    //         severity: "error",
+    //       });
+    //     }
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -239,6 +253,20 @@ const BidCategories = () => {
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
+                {/* <div className="col-lg-12">
+                  <SearchSelect
+                    control={control}
+                    // options={searchedBids}
+                    // label="Bid Title"
+                    name="product_search"
+                    placeholder="Search Your Product"
+                    // handleInputChange={handleTitleInputChange}
+                    // handleChange={handleTitleChange}
+                    // setValue={setTitleValue}
+                    // value={titleValue}
+                  />
+                </div> */}
+
                 {Object.keys(categories).map((depth) => {
                   const categoryDepth = parseInt(depth);
                   const propsData = getCategoryLevel();
@@ -273,10 +301,23 @@ const BidCategories = () => {
                             (selectedCategories[depth]?.id || null)
                         ) || null;
                     }
-
+                    // console.log(depth, "depth");
                     return (
                       <div className="row" key={parseInt(depth)}>
                         <div className="col-lg-12">
+                          {categoryDepth === 1 && (
+                            <SearchSelect
+                              control={control}
+                              name="product_search"
+                              placeholder="Search Your Product"
+                              // options={searchedBids}
+                              // handleInputChange={handleTitleInputChange}
+                              // handleChange={handleTitleChange}
+                              // setValue={setTitleValue}
+                              // value={titleValue}
+                            />
+                          )}
+
                           <CategoriesSelect
                             control={control}
                             name={propsData[depth].name}

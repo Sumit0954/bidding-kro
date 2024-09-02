@@ -13,6 +13,7 @@ import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider"
 import { getCategoryLevel } from "../../../helpers/common";
 import { Alert } from "@mui/material";
 import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
+import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 
 const CategoryForm = () => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
@@ -259,6 +260,19 @@ const CategoryForm = () => {
                     return (
                       <div className="row" key={parseInt(depth)}>
                         <div className="col-lg-12">
+                          {categoryDepth === 1 && (
+                            <SearchSelect
+                              control={control}
+                              name="product_search"
+                              placeholder="Search Your Product"
+                              // options={searchedBids}
+                              // handleInputChange={handleTitleInputChange}
+                              // handleChange={handleTitleChange}
+                              // setValue={setTitleValue}
+                              // value={titleValue}
+                            />
+                          )}
+
                           <CategoriesSelect
                             control={control}
                             name={getCategoryLevel()[depth].name}

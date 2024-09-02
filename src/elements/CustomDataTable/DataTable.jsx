@@ -209,7 +209,7 @@ const DataTable = ({
   ),
   customClassName = "",
   isSingleSelection = false,
-  setSelectedRow
+  setSelectedRow,
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");

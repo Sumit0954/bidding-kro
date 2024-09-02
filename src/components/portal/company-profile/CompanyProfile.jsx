@@ -48,7 +48,7 @@ const CompanyProfile = () => {
   const [organizationTypes, setOrganizationType] = useState([]);
   const [loading, setLoading] = useState(false);
   const { action } = useParams();
-  
+
   const navigate = useNavigate();
   const [gstRegistered, setGstRegistered] = useState("No");
 
@@ -378,7 +378,7 @@ const CompanyProfile = () => {
 
                 <div className="row">
                   <div className="col-lg-6">
-                    {gstRegistered === "No" ? (
+                    {/* {gstRegistered === "No" ? (
                       <>
                         <Box>
                           <label>GST Registered</label>
@@ -398,18 +398,18 @@ const CompanyProfile = () => {
                           />
                         </RadioGroup>
                       </>
-                    ) : (
-                      <CustomInput
-                        control={control}
-                        label="GST"
-                        name="gstin"
-                        placeholder="GST"
-                        inputType="text"
-                        rules={{
-                          required: "GST is required.",
-                        }}
-                      />
-                    )}
+                    ) : ( */}
+                    <CustomInput
+                      control={control}
+                      label="GST"
+                      name="gstin"
+                      placeholder="GST"
+                      inputType="text"
+                      rules={{
+                        required: "GST is required.",
+                      }}
+                    />
+                    {/* )}  */}
                   </div>
                   <div className="col-lg-6">
                     <CustomInput

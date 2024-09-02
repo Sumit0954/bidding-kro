@@ -15,7 +15,7 @@ export const created_bids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 300,
+    width: 200,
     Cell: (data) => {
       return (
         <NavLink
@@ -32,7 +32,7 @@ export const created_bids_column = [
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
-    width: 180,
+    width: 190,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid_start_date);
     },
@@ -42,20 +42,20 @@ export const created_bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 180,
+    width: 190,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid_end_date);
     },
   },
-  {
-    Header: "Reserve Price",
-    accessor: "reserved_price",
-    align: "right",
-    disablePadding: false,
-    Cell: (data) => {
-      return `₹ ${data.row.original.reserved_price}`;
-    },
-  },
+  // {
+  //   Header: "Reserve Price",
+  //   accessor: "reserved_price",
+  //   align: "right",
+  //   disablePadding: false,
+  //   Cell: (data) => {
+  //     return `₹ ${data.row.original.reserved_price}`;
+  //   },
+  // },
   {
     Header: "Status",
     accessor: "status",
@@ -67,6 +67,23 @@ export const created_bids_column = [
         <div className={`status-cloumn ${data?.row?.original?.status}`}>
           {data?.row?.original?.status}
         </div>
+      );
+    },
+  },
+  {
+    Header: "Action",
+    accessor: "clone_bid",
+    align: "left",
+    disablePadding: false,
+    // width: 300,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/bids/update/${data?.row?.original?.id}`}
+        >
+          Clone Bid
+        </NavLink>
       );
     },
   },
@@ -196,7 +213,6 @@ export const documents_column = [
   },
 ];
 
-
 export const companies_column = [
   {
     Header: "Company Name",
@@ -260,9 +276,9 @@ export const l1_participants_column = [
     align: "left",
     disablePadding: false,
     width: 160,
-    Cell : (data) =>{
-      return data?.row.original.company.organization_type || "--" 
-    }
+    Cell: (data) => {
+      return data?.row.original.company.organization_type || "--";
+    },
   },
   {
     Header: "Status",
