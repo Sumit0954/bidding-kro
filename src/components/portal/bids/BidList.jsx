@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { created_bids_column, invited_bids_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import {
+  created_bids_column,
+  invited_bids_column,
+} from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";

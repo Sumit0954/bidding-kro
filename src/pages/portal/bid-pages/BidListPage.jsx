@@ -1,7 +1,9 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import BidList from "../../../components/portal/bids/BidList";
+import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { NavLink, useNavigate } from "react-router-dom";
 import cn from "classnames";
 
@@ -13,6 +15,9 @@ const BidListPage = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const { control } = useForm();
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -31,6 +36,7 @@ const BidListPage = () => {
           >
             <Tab label="Created Bids" {...a11yProps(0)} />
             <Tab label="Invited Bids" {...a11yProps(1)} />
+            <Tab label="Related Bids" {...a11yProps(2)} />
           </Tabs>
 
           {value === 0 && (
@@ -53,7 +59,8 @@ const BidListPage = () => {
                 + Invite Company
               </button>
               <NavLink
-                to={"/portal/bids/create"}
+                // to={"/portal/bids/create"}
+                to={"/portal/bids/categories"}
                 className={cn("btn", "button")}
               >
                 + Create Bid
@@ -61,6 +68,51 @@ const BidListPage = () => {
             </Box>
           )}
         </Box>
+
+        <div className="row">
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Industry"
+              placeholder="Industry"
+              // options={organizationTypes}
+              // label="Organization Type"
+              multiple={false}
+            />
+          </div>
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Categories"
+              placeholder="Categories"
+              // options={organizationTypes}
+              // label="Organization Type"
+              multiple={false}
+            />
+          </div>
+
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Sub Categories"
+              placeholder="Sub Categories"
+              // options={organizationTypes}
+              // label="Organization Type"
+              multiple={false}
+            />
+          </div>
+
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Product"
+              placeholder="Product"
+              // options={organizationTypes}
+              // label="Organization Type"
+              multiple={false}
+            />
+          </div>
+        </div>
 
         <TabPanel value={value} index={0}>
           <BidList listType={"created"} setSelectedRow={setSelectedRow} />

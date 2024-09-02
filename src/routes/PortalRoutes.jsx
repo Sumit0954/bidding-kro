@@ -21,6 +21,7 @@ import BidFormPage from "../pages/portal/bid-pages/BidFormPage";
 import BidCategoriesPage from "../pages/portal/bid-pages/BidCategoriesPage";
 import CompanyListPage from "../pages/portal/company-page/CompanyListPage";
 import CompanyDetailPage from "../pages/portal/company-page/CompanyDetailPage";
+import BidProducts from "../components/portal/bids/BidProducts";
 
 const PortalRoutes = () => {
   return (
@@ -81,8 +82,14 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidFormPage} />}
                     />
                     <Route
-                      path="/bids/categories/:id"
+                      // path="/bids/categories/:id"
+                      path="/bids/categories"
                       element={<LayoutPage Component={BidCategoriesPage} />}
+                    />
+                    <Route
+                      // path="/bids/categories/:id"
+                      path="/bids/products"
+                      element={<LayoutPage Component={BidProducts} />}
                     />
                     <Route
                       path="/bids/questions/:id"

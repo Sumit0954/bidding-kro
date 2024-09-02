@@ -19,6 +19,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 import { dateValidator } from "../../../helpers/validation";
+import { useLocation } from "react-router-dom";
 
 const BidForm = () => {
   const {
@@ -32,6 +33,7 @@ const BidForm = () => {
     formState: { dirtyFields },
   } = useForm();
   const navigate = useNavigate();
+  const location = useLocation();
   const { action, id } = useParams();
   const [bidType, setBidType] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,6 +48,8 @@ const BidForm = () => {
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
+  const { formData } = location.state || {};
+  console.log(formData, "formdata");
 
   const getBidType = async () => {
     try {
@@ -314,7 +318,7 @@ const BidForm = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-12">
                     <CustomSelect
                       control={control}
                       label="Bid Type"
@@ -425,13 +429,14 @@ const BidForm = () => {
                     <CustomCkEditor
                       control={control}
                       name="description"
-                      label="Description"
+                      label="Bid Description"
                       rules={{
                         required: "Description is required.",
                       }}
                     />
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -479,13 +484,26 @@ const BidForm = () => {
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-                    <button
-                      type="submit"
-                      className={cn("btn", "button")}
-                      disabled={bidStatus === "cancelled" ? true : false}
-                    >
-                      {id ? "Update Bid" : "Create Bid"}
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className={cn("btn", "button")}
+                        disabled={bidStatus === "cancelled" ? true : false}
+                      >
+                        Back
+                      </button>
+
+                      <button
+                        // type="submit"
+                        type="button"
+                        className={cn("btn", "button")}
+                        disabled={bidStatus === "cancelled" ? true : false}
+                        onClick={() => navigate(`/portal/bids/products`)}
+                      >
+                        {/* {id ? "Update Bid" : "Create Bid"} */}
+                        Save & Next
+                      </button>
+                    </>
                   )}
                 </div>
               </form>
