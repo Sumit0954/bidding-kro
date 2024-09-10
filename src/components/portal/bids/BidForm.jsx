@@ -6,7 +6,12 @@ import React, { useContext, useEffect, useState } from "react";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTimeRangePicker";
-import { getMinMaxDate, getProductUnits } from "../../../helpers/common";
+import {
+  getMinMaxDate,
+  getProductUnits,
+  bidType,
+  getBidTypes,
+} from "../../../helpers/common";
 import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -51,27 +56,27 @@ const BidForm = () => {
   const { formData } = location.state || {};
   console.log(formData, "formdata");
 
-  const getBidType = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.GET_BID_TYPE,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        const data = modifiedData(response.data);
-        setBidType(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getBidType = async () => {
+  //   try {
+  //     const response = await _sendAPIRequest(
+  //       "GET",
+  //       PortalApiUrls.GET_BID_TYPE,
+  //       "",
+  //       true
+  //     );
+  //     if (response.status === 200) {
+  //       const data = modifiedData(response.data);
+  //       setBidType(data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // Fetch Dropdown's List Data
-  useEffect(() => {
-    getBidType();
-  }, []);
+  // useEffect(() => {
+  //   getBidType();
+  // }, []);
 
   const submitForm = async (data) => {
     setLoading(true);
@@ -134,6 +139,7 @@ const BidForm = () => {
             message: "Bid has been created successfully.",
             severity: "success",
           });
+          console.log(response)
           navigate(`/portal/bids/categories/${response.data.id}`);
         }
       } catch (error) {
@@ -168,7 +174,7 @@ const BidForm = () => {
             message: "Bid has been updated successfully.",
             severity: "success",
           });
-          navigate(`/portal/bids/categories/${id}`);
+          navigate(`/portal/bids/products/${id}`);
         }
       } catch (error) {
         setLoading(false);
@@ -322,7 +328,7 @@ const BidForm = () => {
                     <CustomSelect
                       control={control}
                       label="Bid Type"
-                      options={bidType}
+                      options={getBidTypes()}
                       name="type"
                       placeholder="Bid Type"
                       rules={{
@@ -494,11 +500,10 @@ const BidForm = () => {
                       </button>
 
                       <button
-                        // type="submit"
                         type="button"
                         className={cn("btn", "button")}
                         disabled={bidStatus === "cancelled" ? true : false}
-                        onClick={() => navigate(`/portal/bids/products`)}
+                        onClick={submitForm}
                       >
                         {/* {id ? "Update Bid" : "Create Bid"} */}
                         Save & Next

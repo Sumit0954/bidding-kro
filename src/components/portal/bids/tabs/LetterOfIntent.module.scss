@@ -1,3 +1,15 @@
+.bid-Letter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
 .heading {
   display: flex;
   justify-content: space-between;
@@ -6,14 +18,9 @@
   background-color: var(--primary-color);
   color: white;
 }
-.award-button {
-  background-color: var(--primary-color) !important;
+.print-icon {
+  cursor: pointer;
 }
-
-.award-button:hover {
-  background-color: var(--secondary-color) !important;
-}
-
 .loi-content {
   padding: 20px;
   border: 1px solid #ccc;
@@ -27,13 +34,17 @@
 }
 .loi-table th,
 .loi-table td {
-  border: 1px solid #d6d1d1;
+  border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
 .loi-table th {
   background-color: #f5f5f5;
 }
-.loi-table thead {
-  background-color: var(--primary-color);
+
+.bid-letter-contnet{
+    padding-bottom: 8px;
+    border-bottom: 2px;
+    display: inline-block;
+    border-bottom:  4px solid black;
 }
