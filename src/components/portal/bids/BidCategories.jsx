@@ -13,7 +13,6 @@ import { isArray } from "lodash";
 import { getCategoryLevel } from "../../../helpers/common";
 import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
 import { Alert } from "@mui/material";
-import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 
 const BidCategories = () => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
@@ -26,6 +25,9 @@ const BidCategories = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [showQueryForm, setShowQueryForm] = useState(false);
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [selectedAncestors, setSelectedAncestors] = useState([]);
+  const [currentDepth, setCurrentDepth] = useState(0);
 
   const getCategories = async (parent_categories, depth) => {
     const params = new URLSearchParams();
@@ -43,7 +45,6 @@ const BidCategories = () => {
         true
       );
       if (response.status === 200) {
-        console.log(response.data, "catData");
         setCategories((prevCategories) => ({
           ...prevCategories,
           [depth]: response.data,
@@ -73,6 +74,16 @@ const BidCategories = () => {
   }, [selectedCategories]);
 
   const handleCategoryChange = (depth, selectedCategory, fieldOnChange) => {
+    if (depth === 0) {
+      setSelectedIndustry(selectedCategory.id);
+      setSelectedCategories({});
+
+      setCategories((prevCategories) => {
+        let newCategories = { 0: prevCategories[0] };
+        return newCategories;
+      });
+    }
+
     setSelectedCategories((prevSelectedCategories) => {
       let newSelectedCategories = { ...prevSelectedCategories };
 
@@ -119,72 +130,121 @@ const BidCategories = () => {
 
   const submitForm = async (data) => {
     setLoading(true);
+    console.log(data, "gogo");
 
-    /* Build FormData */
     let formData = [];
+
     if (data) {
-      Object.entries(data).map((item) => {
-        const [, value] = item;
+      // Use a Set to track unique category entries
+      const uniqueCategories = new Set();
+
+      Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined) {
           if (isArray(value)) {
-            value?.map((category) =>
-              formData.push({ category: category.id, depth: category.depth })
-            );
+            value.forEach((category) => {
+              // Create a unique key for each category based on id and depth
+              const uniqueKey = `${category.id}-${category.depth}`;
+
+              if (!uniqueCategories.has(uniqueKey)) {
+                uniqueCategories.add(uniqueKey);
+                formData.push({ category: category.id, depth: category.depth });
+              }
+            });
           } else {
-            formData.push({ category: value.id, depth: value.depth });
+            const uniqueKey = `${value.id}-${value.depth}`;
+
+            if (!uniqueCategories.has(uniqueKey)) {
+              uniqueCategories.add(uniqueKey);
+              formData.push({ category: value.id, depth: value.depth });
+            }
           }
-          //////
-
-          setLoading(false);
-          setAlert({
-            isVisible: true,
-            message: "Category has been updated successfully.",
-            severity: "success",
-          });
-          console.log(formData, "formDataformData");
-          // navigate(`/portal/bids/create`);
-          navigate("/portal/bids/create", { state: { formData } });
-          //////
         }
-
-        return null;
       });
+
+      // Now that we have filtered duplicates, log and proceed
+      setLoading(false);
+      setAlert({
+        isVisible: true,
+        message: "Category has been updated successfully.",
+        severity: "success",
+      });
+
+      console.log(formData, "formDataformData");
+
+      navigate("/portal/bids/create", { state: { formData } });
     }
-    /* -- */
-
-    // try {
-    //   const response = await _sendAPIRequest(
-    //     "PUT",
-    //     PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
-    //     formData,
-    //     true
-    //   );
-    //   if (response.status === 200) {
-    //     setLoading(false);
-    //     setAlert({
-    //       isVisible: true,
-    //       message: "Category has been updated successfully.",
-    //       severity: "success",
-    //     });
-    //     // navigate(`/portal/bids/questions/${id}`);
-    //     navigate(`/portal/bids/create`);
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
-    //   const { data } = error.response;
-    //   if (data) {
-    //     setErrors(data, watch, setError);
-
-    //     if (data.error) {
-    //       setAlert({
-    //         isVisible: true,
-    //         message: data.error,
-    //         severity: "error",
-    //       });
-    //     }
-    //   }
-    // }
   };
+
+  // const submitForm = async (data) => {
+  //   setLoading(true);
+  //   console.log(data, "gogo");
+  //   /* Build FormData */
+  //   let formData = [];
+  //   if (data) {
+
+  //     const uniqueCategories = new Set();
+
+  //     Object.entries(data).map((item) => {
+  //       const [, value] = item;
+
+  //       if (value !== undefined) {
+  //         if (isArray(value)) {
+  //           value?.map((category) =>
+  //             formData.push({ category: category.id, depth: category.depth })
+  //           );
+  //         } else {
+  //           formData.push({ category: value.id, depth: value.depth });
+  //         }
+
+  //         setLoading(false);
+  //         setAlert({
+  //           isVisible: true,
+  //           message: "Category has been updated successfully.",
+  //           severity: "success",
+  //         });
+  //         console.log(formData, "formDataformData");
+  //         // navigate(`/portal/bids/create`);
+  //         navigate("/portal/bids/create", { state: { formData } });
+  //         //////
+  //       }
+
+  //       return null;
+  //     });
+  //   }
+  //   /* -- */
+
+  //   // try {
+  //   //   const response = await _sendAPIRequest(
+  //   //     "PUT",
+  //   //     PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
+  //   //     formData,
+  //   //     true
+  //   //   );
+  //   //   if (response.status === 200) {
+  //   //     setLoading(false);
+  //   //     setAlert({
+  //   //       isVisible: true,
+  //   //       message: "Category has been updated successfully.",
+  //   //       severity: "success",
+  //   //     });
+  //   //     navigate(`/portal/bids/questions/${id}`);
+  //   //   }
+  //   // } catch (error) {
+  //   //   setLoading(false);
+  //   //   const { data } = error.response;
+  //   //   if (data) {
+  //   //     setErrors(data, watch, setError);
+
+  //   //     if (data.error) {
+  //   //       setAlert({
+  //   //         isVisible: true,
+  //   //         message: data.error,
+  //   //         severity: "error",
+  //   //       });
+  //   //     }
+  //   //   }
+  //   // }
+  // };
 
   useEffect(() => {
     if (id) {
@@ -234,6 +294,71 @@ const BidCategories = () => {
     }
   }, [id, reset]);
 
+  const handleOptionChange = (ancestors) => {
+    console.log(ancestors, "ancestorsancestors");
+    setSelectedAncestors(ancestors);
+    setCurrentDepth(0);
+  };
+
+  useEffect(() => {
+    if (
+      selectedAncestors.length > 0 &&
+      currentDepth < selectedAncestors.length
+    ) {
+      setSelectedCategories((prevSelectedCategories) => {
+        let newSelectedCategories = { ...prevSelectedCategories };
+        let resetOjb = {};
+
+        // Iterate over selectedAncestors and match each with the category at the same depth level
+        selectedAncestors.forEach((ancestor) => {
+          let matchingCategory = categories[ancestor.depth]?.find(
+            (category) => category.name === ancestor.name
+          );
+
+          // If a matching category is found, update selectedCategories
+          if (matchingCategory) {
+            let name = getCategoryLevel()[ancestor.depth].name;
+            setCurrentDepth(ancestor.depth);
+            if (ancestor.depth > 0) {
+              if (newSelectedCategories[ancestor.depth]) {
+                newSelectedCategories[ancestor.depth].push({
+                  name: matchingCategory.name,
+                  depth: matchingCategory.depth,
+                  id: matchingCategory.id,
+                });
+              } else {
+                newSelectedCategories[ancestor.depth] = [
+                  {
+                    name: matchingCategory.name,
+                    depth: matchingCategory.depth,
+                    id: matchingCategory.id,
+                  },
+                ];
+              }
+              resetOjb[name] = newSelectedCategories[ancestor.depth];
+            } else {
+              newSelectedCategories[ancestor.depth] = {
+                name: matchingCategory.name,
+                depth: matchingCategory.depth,
+                id: matchingCategory.id,
+              };
+              resetOjb[name] = newSelectedCategories[ancestor.depth];
+            }
+
+            reset(resetOjb); // Update the form state
+            setCurrentDepth((prevDepth) => prevDepth + 1);
+          } else {
+            console.warn(
+              `No matching category found for: ${ancestor.name} at depth ${ancestor.depth}`
+            );
+          }
+        });
+
+        return newSelectedCategories;
+      });
+    }
+  }, [selectedAncestors, categories]);
+
   return (
     <>
       <div className="container">
@@ -253,20 +378,6 @@ const BidCategories = () => {
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
-                {/* <div className="col-lg-12">
-                  <SearchSelect
-                    control={control}
-                    // options={searchedBids}
-                    // label="Bid Title"
-                    name="product_search"
-                    placeholder="Search Your Product"
-                    // handleInputChange={handleTitleInputChange}
-                    // handleChange={handleTitleChange}
-                    // setValue={setTitleValue}
-                    // value={titleValue}
-                  />
-                </div> */}
-
                 {Object.keys(categories).map((depth) => {
                   const categoryDepth = parseInt(depth);
                   const propsData = getCategoryLevel();
@@ -301,24 +412,36 @@ const BidCategories = () => {
                             (selectedCategories[depth]?.id || null)
                         ) || null;
                     }
-                    // console.log(depth, "depth");
+
+                    const commonProps = {
+                      control,
+                      name: propsData[depth].name,
+                      label: propsData[depth].label,
+                      placeholder: propsData[depth].placeholder,
+                      options: availableOptions,
+                      rules: propsData[depth].rules && {
+                        required: propsData[depth].rules,
+                      },
+                      multiple: parseInt(depth) === 0 ? false : true,
+                      handleCategoryChange,
+                      selectedCategories: selectedValues,
+                      handleChange: (newValue) => {
+                        handleChange(depth, newValue);
+                      },
+                    };
+
+                    const searchProps =
+                      categoryDepth === 1
+                        ? {
+                            searchEnabled: true,
+                            rootCategory: selectedIndustry,
+                          }
+                        : {};
+
                     return (
                       <div className="row" key={parseInt(depth)}>
                         <div className="col-lg-12">
-                          {categoryDepth === 1 && (
-                            <SearchSelect
-                              control={control}
-                              name="product_search"
-                              placeholder="Search Your Product"
-                              // options={searchedBids}
-                              // handleInputChange={handleTitleInputChange}
-                              // handleChange={handleTitleChange}
-                              // setValue={setTitleValue}
-                              // value={titleValue}
-                            />
-                          )}
-
-                          <CategoriesSelect
+                          {/* <CategoriesSelect
                             control={control}
                             name={propsData[depth].name}
                             label={propsData[depth].label}
@@ -335,6 +458,11 @@ const BidCategories = () => {
                             handleChange={(newValue) => {
                               handleChange(depth, newValue);
                             }}
+                          /> */}
+                          <CategoriesSelect
+                            {...commonProps}
+                            {...searchProps}
+                            handleOptionChange={handleOptionChange}
                           />
                         </div>
                       </div>

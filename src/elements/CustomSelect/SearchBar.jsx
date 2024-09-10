@@ -1,0 +1,154 @@
+import React, { useState, useEffect, useRef } from "react";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import { Controller } from "react-hook-form";
+import _sendAPIRequest from "../../helpers/api";
+import styles from "./CustomSelect.module.scss";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+
+const SearchBar = ({
+  control,
+  name,
+  label = "",
+  showLabel = true,
+  placeholder = "",
+  customClassName = "",
+  rules = {},
+  rootCategory, // Root category ID
+  value,
+  // handleChange,
+  onAncestorsChange,
+}) => {
+  const [inputValue, setInputValue] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const debounceTimeout = useRef(null);
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (inputValue) {
+        try {
+          const params = {
+            keyword: inputValue,
+            root_category: rootCategory,
+          };
+
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.SEARCH_CATEGORIES,
+            params,
+            true
+          );
+
+          if (response.status === 200) {
+            setSearchResults(response.data);
+          }
+        } catch (error) {
+          console.error("Search error:", error);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    };
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      fetchSearchResults();
+    }, 500); // Delay of 500ms
+
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [inputValue, rootCategory]);
+
+  const formatLabelWithAncestors = (option) => {
+    if (!option || !option.name || !option.ancestors) return "Unknown Option";
+
+    const ancestorNames = option.ancestors.map((ancestor) => ancestor.name);
+    const formattedLabel = ancestorNames.slice(0, -1).join(" > ");
+
+    return `${option.name}`;
+  };
+
+  const handleOptionChange = (option) => {
+    if (option && onAncestorsChange) {
+      onAncestorsChange(option.ancestors || []);
+    }
+  };
+
+  return (
+    <Box className={styles["input-field-container"]}>
+      {showLabel && (
+        <label>
+          {label} {rules?.required && <em className="em">*</em>}
+        </label>
+      )}
+
+      <Controller
+        control={control}
+        name={name}
+        rules={rules}
+        render={({ field, fieldState: { error } }) => (
+          <Box className={styles["form-control"]}>
+            <Autocomplete
+              {...field}
+              freeSolo
+              options={searchResults}
+              inputValue={inputValue}
+              value={value}
+              onInputChange={(event, newInputValue) => {
+                setInputValue(newInputValue);
+              }}
+              onChange={(event, newValue) => {
+                field.onChange(newValue);
+                setInputValue("");
+                handleOptionChange(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={placeholder}
+                  variant="standard"
+                  InputProps={{
+                    ...params.InputProps,
+                    type: "search",
+                  }}
+                  classes={{ root: styles["search-input-field"] }}
+                />
+              )}
+              getOptionLabel={(option) => {
+                if (typeof option === "string") return option;
+                return formatLabelWithAncestors(option); // Fallback handles missing values
+              }}
+              renderOption={(props, option) => {
+                const ancestorNames = option.ancestors.map(
+                  (ancestor) => ancestor.name
+                );
+                const formattedLabel = ancestorNames.slice(0, -1).join(" > ");
+
+                return (
+                  <Box component="li" {...props} style={{ display: "block" }}>
+                    <Typography variant="body1" style={{ color: "#0dcaf0" }}>
+                      {option.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {formattedLabel}
+                    </Typography>
+                  </Box>
+                );
+              }}
+            />
+            {error && (
+              <span className="error">{error.message || "Error"} </span>
+            )}
+          </Box>
+        )}
+      />
+    </Box>
+  );
+};
+
+export default SearchBar;

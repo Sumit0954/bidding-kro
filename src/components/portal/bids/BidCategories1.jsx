@@ -1,35 +1,34 @@
 import React, { useContext, useEffect, useState } from "react";
-import styles from "./CategoryForm.module.scss";
+import styles from "./BidCategories.module.scss";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
+import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import CategoriesSelect from "../../../elements/CustomSelect/CategoriesSelect";
-import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
-import { isArray } from "lodash";
+// import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { useNavigate, useParams } from "react-router-dom";
-import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { isArray } from "lodash";
 import { getCategoryLevel } from "../../../helpers/common";
-import { Alert } from "@mui/material";
 import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
+import { Alert } from "@mui/material";
 import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 
-const CategoryForm = () => {
+const BidCategories = () => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
   const [categories, setCategories] = useState({ 0: [] });
-  const [selectedCategories, setSelectedCategories] = useState({});
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const { companyDetails, setCompanyDetails } = useContext(
-    CompanyDetailsContext
-  );
+  const [bidStatus, setBidStatus] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState(null);
+  const [selectedAncestors, setSelectedAncestors] = useState([]);
+
+  // const { companyDetails } = useContext(CompanyDetailsContext);
   const navigate = useNavigate();
   const { id } = useParams();
   const [showQueryForm, setShowQueryForm] = useState(false);
-  const [selectedIndustry, setSelectedIndustry] = useState(null);
-  const [selectedAncestors, setSelectedAncestors] = useState([]);
-  const [currentDepth, setCurrentDepth] = useState(0);
 
   const getCategories = async (parent_categories, depth) => {
     const params = new URLSearchParams();
@@ -47,6 +46,7 @@ const CategoryForm = () => {
         true
       );
       if (response.status === 200) {
+        console.log(response.data, "catData");
         setCategories((prevCategories) => ({
           ...prevCategories,
           [depth]: response.data,
@@ -59,11 +59,11 @@ const CategoryForm = () => {
 
   useEffect(() => {
     getCategories([], 0);
+    console.log(selectedCategories, "sse");
   }, []);
 
   useEffect(() => {
     Object.entries(selectedCategories)?.forEach(([depth, categories]) => {
-      console.log(categories);
       let parent_categories = [];
       if (parseInt(depth) === 0) {
         parent_categories = [categories?.id];
@@ -79,12 +79,6 @@ const CategoryForm = () => {
   const handleCategoryChange = (depth, selectedCategory, fieldOnChange) => {
     if (depth === 0) {
       setSelectedIndustry(selectedCategory.id);
-      setSelectedCategories({});
-
-      setCategories((prevCategories) => {
-        let newCategories = { 0: prevCategories[0] };
-        return newCategories;
-      });
     }
 
     setSelectedCategories((prevSelectedCategories) => {
@@ -104,6 +98,7 @@ const CategoryForm = () => {
   };
 
   const handleChange = (depth, newValue) => {
+    console.log(depth, "ddddd");
     setSelectedCategories((prevSelectedCategories) => {
       let newSelectedCategories = { ...prevSelectedCategories };
       console.log(newSelectedCategories);
@@ -136,177 +131,155 @@ const CategoryForm = () => {
 
     /* Build FormData */
     let formData = [];
-
     if (data) {
-      const uniqueCategories = new Set();
-
-      Object.entries(data).forEach(([key, value]) => {
+      Object.entries(data).map((item) => {
+        const [, value] = item;
         if (value !== undefined) {
           if (isArray(value)) {
-            value.forEach((category) => {
-              // Create a unique key for each category based on id and depth
-              const uniqueKey = `${category.id}-${category.depth}`;
-
-              if (!uniqueCategories.has(uniqueKey)) {
-                uniqueCategories.add(uniqueKey);
-                formData.push({ category: category.id, depth: category.depth });
-              }
-            });
+            value?.map((category) =>
+              formData.push({ category: category.id, depth: category.depth })
+            );
           } else {
-            const uniqueKey = `${value.id}-${value.depth}`;
-
-            if (!uniqueCategories.has(uniqueKey)) {
-              uniqueCategories.add(uniqueKey);
-              formData.push({ category: value.id, depth: value.depth });
-            }
+            formData.push({ category: value.id, depth: value.depth });
           }
+          //////
+
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Category has been updated successfully.",
+            severity: "success",
+          });
+          console.log(formData, "formDataformData");
+          // navigate(`/portal/bids/create`);
+          navigate("/portal/bids/create", { state: { formData } });
+          //////
         }
+
+        return null;
       });
-
-      // Object.entries(data).map((item) => {
-      //   const [, value] = item;
-
-      //   if (value !== undefined) {
-      //     if (isArray(value)) {
-      //       value?.map((category) =>
-      //         formData.push({ category: category.id, depth: category.depth })
-      //       );
-      //     } else {
-      //       formData.push({ category: value.id, depth: value.depth });
-      //     }
-      //   }
-
-      //   return null;
-      // });
     }
     /* -- */
 
-    try {
-      const response = await _sendAPIRequest(
-        "PUT",
-        PortalApiUrls.UPDATE_COMPANY_CATEGORIES,
-        formData,
-        true
-      );
-      if (response.status === 200) {
-        setLoading(false);
-        setCompanyDetails(response.data);
-        setAlert({
-          isVisible: true,
-          message: "Category has been updated successfully.",
-          severity: "success",
-        });
-        navigate(`/portal/company-profile/address-certificate/${id}`);
-      }
-    } catch (error) {
-      setLoading(false);
-      const { data } = error.response;
-      if (data) {
-        setErrors(data, watch, setError);
+    // try {
+    //   const response = await _sendAPIRequest(
+    //     "PUT",
+    //     PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
+    //     formData,
+    //     true
+    //   );
+    //   if (response.status === 200) {
+    //     setLoading(false);
+    //     setAlert({
+    //       isVisible: true,
+    //       message: "Category has been updated successfully.",
+    //       severity: "success",
+    //     });
+    //     // navigate(`/portal/bids/questions/${id}`);
+    //     navigate(`/portal/bids/create`);
+    //   }
+    // } catch (error) {
+    //   setLoading(false);
+    //   const { data } = error.response;
+    //   if (data) {
+    //     setErrors(data, watch, setError);
 
-        if (data.error) {
-          setAlert({
-            isVisible: true,
-            message: data.error,
-            severity: "error",
-          });
-        }
-      }
-    }
+    //     if (data.error) {
+    //       setAlert({
+    //         isVisible: true,
+    //         message: data.error,
+    //         severity: "error",
+    //       });
+    //     }
+    //   }
+    // }
   };
 
   useEffect(() => {
-    if (companyDetails?.category?.length > 0) {
-      setSelectedCategories((prevSelectedCategories) => {
-        let newSelectedCategories = { ...prevSelectedCategories };
-        let resetOjb = {};
+    if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setBidStatus(response.data.status);
+            if (response?.data?.category?.length > 0) {
+              setSelectedCategories((prevSelectedCategories) => {
+                let newSelectedCategories = { ...prevSelectedCategories };
+                let resetOjb = {};
 
-        companyDetails?.category?.forEach((category) => {
-          let name = getCategoryLevel()[category.depth].name;
-          if (category.depth > 0) {
-            if (newSelectedCategories[category.depth]) {
-              newSelectedCategories[category.depth].push(category);
-            } else {
-              newSelectedCategories[category.depth] = [category];
+                response?.data?.category?.forEach((category) => {
+                  let name = getCategoryLevel()[category.depth].name;
+
+                  if (category.depth > 0) {
+                    if (newSelectedCategories[category.depth]) {
+                      newSelectedCategories[category.depth].push(category);
+                    } else {
+                      newSelectedCategories[category.depth] = [category];
+                    }
+                    resetOjb[name] = newSelectedCategories[category.depth];
+                  } else {
+                    newSelectedCategories[category.depth] = category;
+                    resetOjb[name] = category;
+                  }
+
+                  reset(resetOjb);
+                });
+
+                return newSelectedCategories;
+              });
             }
-            resetOjb[name] = newSelectedCategories[category.depth];
-          } else {
-            newSelectedCategories[category.depth] = category;
-            resetOjb[name] = category;
           }
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
-          reset(resetOjb);
-        });
-
-        return newSelectedCategories;
-      });
+      retrieveBid();
     }
-  }, [companyDetails?.category, reset]);
+  }, [id, reset]);
+
+  // const updateSelectedCategoriesFromAncestors = (ancestors) => {
+  //   setSelectedCategories((prevSelectedCategories) => {
+  //     let newSelectedCategories = { ...prevSelectedCategories };
+  //     let resetObj = {};
+
+  //     ancestors.forEach((ancestor) => {
+  //       const { depth, id, name } = ancestor;
+
+  //       if (depth > 0) {
+  //         if (newSelectedCategories[depth]) {
+  //           newSelectedCategories[depth].push({ id, name, depth });
+  //         } else {
+  //           newSelectedCategories[depth] = [{ id, name, depth }];
+  //         }
+  //         resetObj[name] = newSelectedCategories[depth];
+  //       } else {
+  //         newSelectedCategories[depth] = { id, name, depth };
+  //         resetObj[name] = newSelectedCategories[depth];
+  //       }
+  //     });
+
+  //     reset(resetObj);
+  //     return newSelectedCategories;
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   // if (selectedAncestors?.length) {
+  //   //   updateSelectedCategoriesFromAncestors(selectedAncestors);
+  //   // }
+  //   console.log(selectedAncestors, "selectedAncestorsselectedAncestors");
+  // }, [selectedAncestors]);
 
   const handleOptionChange = (ancestors) => {
     console.log(ancestors, "ancestorsancestors");
-    setSelectedAncestors(ancestors);
-    setCurrentDepth(0);
+    // setSelectedAncestors(ancestors);
   };
-
-  useEffect(() => {
-    if (
-      selectedAncestors.length > 0 &&
-      currentDepth < selectedAncestors.length
-    ) {
-      setSelectedCategories((prevSelectedCategories) => {
-        let newSelectedCategories = { ...prevSelectedCategories };
-        let resetOjb = {};
-
-        // Iterate over selectedAncestors and match each with the category at the same depth level
-        selectedAncestors.forEach((ancestor) => {
-          let matchingCategory = categories[ancestor.depth]?.find(
-            (category) => category.name === ancestor.name
-          );
-
-          // If a matching category is found, update selectedCategories
-          if (matchingCategory) {
-            let name = getCategoryLevel()[ancestor.depth].name;
-            setCurrentDepth(ancestor.depth);
-            if (ancestor.depth > 0) {
-              if (newSelectedCategories[ancestor.depth]) {
-                newSelectedCategories[ancestor.depth].push({
-                  name: matchingCategory.name,
-                  depth: matchingCategory.depth,
-                  id: matchingCategory.id,
-                });
-              } else {
-                newSelectedCategories[ancestor.depth] = [
-                  {
-                    name: matchingCategory.name,
-                    depth: matchingCategory.depth,
-                    id: matchingCategory.id,
-                  },
-                ];
-              }
-              resetOjb[name] = newSelectedCategories[ancestor.depth];
-            } else {
-              newSelectedCategories[ancestor.depth] = {
-                name: matchingCategory.name,
-                depth: matchingCategory.depth,
-                id: matchingCategory.id,
-              };
-              resetOjb[name] = newSelectedCategories[ancestor.depth];
-            }
-
-            reset(resetOjb); // Update the form state
-            setCurrentDepth((prevDepth) => prevDepth + 1);
-          } else {
-            console.warn(
-              `No matching category found for: ${ancestor.name} at depth ${ancestor.depth}`
-            );
-          }
-        });
-
-        return newSelectedCategories;
-      });
-    }
-  }, [selectedAncestors, categories]);
 
   return (
     <>
@@ -361,6 +334,7 @@ const CategoryForm = () => {
                             (selectedCategories[depth]?.id || null)
                         ) || null;
                     }
+                    // console.log(depth, "depth");
 
                     const commonProps = {
                       control,
@@ -383,6 +357,8 @@ const CategoryForm = () => {
                       categoryDepth === 1
                         ? {
                             searchEnabled: true,
+                            searchApiUrl: PortalApiUrls.SEARCH_CATEGORIES,
+                            // rootCategory: selectedCategories[0]?.id,
                             rootCategory: selectedIndustry,
                           }
                         : {};
@@ -390,25 +366,6 @@ const CategoryForm = () => {
                     return (
                       <div className="row" key={parseInt(depth)}>
                         <div className="col-lg-12">
-                          {/* <CategoriesSelect
-                            control={control}
-                            name={propsData[depth].name}
-                            label={propsData[depth].label}
-                            placeholder={propsData[depth].placeholder}
-                            options={availableOptions}
-                            rules={
-                              propsData[depth].rules && {
-                                required: propsData[depth].rules,
-                              }
-                            }
-                            multiple={parseInt(depth) === 0 ? false : true}
-                            handleCategoryChange={handleCategoryChange}
-                            selectedCategories={selectedValues}
-                            handleChange={(newValue) => {
-                              handleChange(depth, newValue);
-                            }}
-                          /> */}
-
                           <CategoriesSelect
                             {...commonProps}
                             {...searchProps}
@@ -425,7 +382,7 @@ const CategoryForm = () => {
                   <button
                     type="button"
                     className={cn("btn", "button", styles["custom-btn"])}
-                    onClick={() => navigate("/portal/company-profile/update")}
+                    onClick={() => navigate(`/portal/bids/update/${id}`)}
                   >
                     Back
                   </button>
@@ -436,6 +393,7 @@ const CategoryForm = () => {
                     <button
                       type="submit"
                       className={cn("btn", "button", styles["custom-btn"])}
+                      disabled={bidStatus === "cancelled" ? true : false}
                     >
                       Update Categories
                     </button>
@@ -458,4 +416,4 @@ const CategoryForm = () => {
   );
 };
 
-export default CategoryForm;
+export default BidCategories;
