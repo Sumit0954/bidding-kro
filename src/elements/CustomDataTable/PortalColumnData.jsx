@@ -314,6 +314,44 @@ export const l1_participants_column = [
   },
 ];
 
+export const products_Column = [
+  {
+    Header: "Product Title",
+    accessor: "company.name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data.row.original.company.name;
+    },
+  },
+  {
+    Header: "Quantity",
+    accessor: "company.business_email",
+    align: "center",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Reserve Price",
+    accessor: "company.business_mobile",
+    align: "center",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Specification",
+    accessor: "company.organization_type",
+    align: "right",
+    disablePadding: false,
+    width: 160,
+    Cell : (data) =>{
+      return data?.row.original.company.organization_type || "--" 
+    }
+  }
+];
+
+
 export const PreviousBids_column = [
   {
     Header: "Product Name",

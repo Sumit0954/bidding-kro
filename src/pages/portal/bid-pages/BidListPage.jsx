@@ -6,6 +6,7 @@ import BidList from "../../../components/portal/bids/BidList";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { NavLink, useNavigate } from "react-router-dom";
 import cn from "classnames";
+import CustomInput from "../../../elements/CustomInput/CustomInput";
 
 const BidListPage = () => {
   const [value, setValue] = useState(0);
@@ -47,17 +48,6 @@ const BidListPage = () => {
                 gap: "10px",
               }}
             >
-              <button
-                className={cn("btn", "button")}
-                disabled={selectedRow?.original?.id ? false : true}
-                onClick={() =>
-                  navigate(
-                    `/portal/companies/?bid=${selectedRow?.original?.id}`
-                  )
-                }
-              >
-                + Invite Company
-              </button>
               <NavLink
                 // to={"/portal/bids/create"}
                 to={"/portal/bids/categories"}
@@ -80,36 +70,11 @@ const BidListPage = () => {
               multiple={false}
             />
           </div>
-          <div className="col-lg-3">
-            <CustomSelect
+          <div className="col-lg-9">
+            <CustomInput
               control={control}
-              name="Categories"
-              placeholder="Categories"
-              // options={organizationTypes}
-              // label="Organization Type"
-              multiple={false}
-            />
-          </div>
-
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              name="Sub Categories"
-              placeholder="Sub Categories"
-              // options={organizationTypes}
-              // label="Organization Type"
-              multiple={false}
-            />
-          </div>
-
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              name="Product"
-              placeholder="Product"
-              // options={organizationTypes}
-              // label="Organization Type"
-              multiple={false}
+              name="product"
+              placeholder="Search Your Bids"
             />
           </div>
         </div>

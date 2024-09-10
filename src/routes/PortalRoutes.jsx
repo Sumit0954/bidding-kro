@@ -22,6 +22,8 @@ import BidCategoriesPage from "../pages/portal/bid-pages/BidCategoriesPage";
 import CompanyListPage from "../pages/portal/company-page/CompanyListPage";
 import CompanyDetailPage from "../pages/portal/company-page/CompanyDetailPage";
 import BidProducts from "../components/portal/bids/BidProducts";
+import BidCreateDetails from "../components/portal/bids/BidCreateDetails";
+import InvitedSuppliers from "../components/portal/bids/tabs/InvitedSuppliers";
 
 const PortalRoutes = () => {
   return (
@@ -87,9 +89,14 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidCategoriesPage} />}
                     />
                     <Route
-                      // path="/bids/categories/:id"
-                      path="/bids/products"
+                      path="/bids/products/:id"
+                      // path="/bids/products"
                       element={<LayoutPage Component={BidProducts} />}
+                    />
+                    <Route
+                      path="/bids/deatils/:id"
+                      // path="/bids/deatils"
+                      element={<LayoutPage Component={BidCreateDetails} />}
                     />
                     <Route
                       path="/bids/questions/:id"
@@ -97,6 +104,7 @@ const PortalRoutes = () => {
                     />
                     <Route
                       path="/bids/documents/:id"
+                      // path="/bids/documents"
                       element={<LayoutPage Component={BidDocumentsPage} />}
                     />
 
@@ -109,6 +117,12 @@ const PortalRoutes = () => {
                       path="/companies"
                       element={<LayoutPage Component={CompanyListPage} />}
                     />
+
+                    <Route
+                      path="/invitesuppliers/:id"
+                      element={<LayoutPage Component={InvitedSuppliers} />}
+                    />
+
                     <Route
                       path="/companies/details/:id"
                       element={<LayoutPage Component={CompanyDetailPage} />}

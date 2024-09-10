@@ -1,0 +1,40 @@
+.form-container {
+  width: 80% !important;
+  margin: 0 auto !important;
+  
+  .bid-form-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--primary-color);
+    margin: 30px auto !important;
+  }
+
+  .form-section {
+    .btn-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  }
+}
+
+.bids-detail-accordion {
+  box-shadow: var(--glow-shadow) !important;
+
+  &.nested-accordion-heading {
+    margin-top: 0px !important;
+  }
+}
+
+.form-button {
+	width: 200px !important;
+	background-color: var(--primary-color) !important;
+  }
+  
+  .form-button:hover {
+	background-color: var(--secondary-color) !important;
+  }
+
+

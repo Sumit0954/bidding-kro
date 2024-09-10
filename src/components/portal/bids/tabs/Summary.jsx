@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./Summary.module.scss";
+import cn from "classnames";
 import {
   Accordion,
   AccordionDetails,
@@ -17,23 +18,30 @@ import { getLableByValue } from "../../../../helpers/common";
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
-import { l1_participants_column } from "../../../../elements/CustomDataTable/PortalColumnData";
+import {
+  l1_participants_column,
+  products_Column,
+} from "../../../../elements/CustomDataTable/PortalColumnData";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { useLocation } from "react-router-dom";
+import ProductSpecification from "../../../../elements/CustomModal/ProductSpecificationModal";
+import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
   const { setAlert } = useContext(AlertContext);
+  const [showSpecification, setShowSpecification] = useState(false);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
     id: null,
   });
+
+  console.log()
   const type = new URLSearchParams(useLocation().search).get("type");
 
-  
   useEffect(() => {
     if (bidDetails?.id) {
       const getParticipants = async () => {
@@ -101,7 +109,7 @@ const Summary = ({ bidDetails }) => {
               })
             }
           >
-            Revoke
+            Link
           </button>
         </TableCell>
       );
@@ -379,31 +387,28 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Participants list */}
-      {type !== "invited" && (
-        <>
-          <Accordion
-            defaultExpanded
-            square={true}
-            classes={{
-              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-            }}
-          >
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography classes={{ root: "custom-accordion-heading" }}>
-                Participants
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <DataTable
-                propsColumn={l1_participants_column}
-                propsData={participantDetail?.participants || []}
-                action={addAction}
-              />
-            </AccordionDetails>
-          </Accordion>
-        </>
-      )}
+      {/* Products list */}
+
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Products
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <DataTable
+            propsColumn={products_Column}
+            propsData={participantDetail?.participants || []}
+            action={addAction}
+          />
+        </AccordionDetails>
+      </Accordion>
 
       {/* Categories */}
       <Accordion
@@ -558,6 +563,43 @@ const Summary = ({ bidDetails }) => {
         </Accordion>
       )}
 
+      {/* Note Tagsline for user started */}
+      <div className="container-fluid">
+        <div className={styles["blue-container"]}>
+          <div className={styles["note-header"]}>
+            Note: Flexibility at Your Fingertips
+          </div>
+          <div className={styles["note-description"]}>
+            At Bidding Kro, we understand that circumstances can change. That's
+            why we've made it easy for you to manage your bids with complete
+            flexibility:
+          </div>
+          <div className={cn("mt-3", styles["note-list"])}>
+            <ul>
+              <li>
+                <strong>Edit Bids:</strong> After creating a bid, you have a
+                24-hour window to make any necessary edits. Whether it's
+                adjusting the amount or changing the terms, ensure your bid is
+                just right within this time frame.
+              </li>
+              <li>
+                <strong>Make Amendments:</strong> Once the initial 24-hour edit
+                period is over, you can still make amendments for another 24
+                hours. This allows you to fine-tune your bid even further before
+                it becomes final.
+              </li>
+              <li>
+                <strong>Cancel Bids:</strong> If you need to withdraw your bid,
+                you can cancel it anytime before it goes live. You have up to 24
+                hours to cancel the bid, giving you the flexibility to
+                reconsider your decisions.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      {/* Note Tagsline for user ended */}
+
       {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}
@@ -565,6 +607,15 @@ const Summary = ({ bidDetails }) => {
           handleClick={handleDeleteConfirmation}
         />
       )}
+
+      {showSpecification && (
+        <ProductSpecificationModal
+          showSpecification={showSpecification}
+          setShowSpecification={setShowSpecification}
+        />
+      )}
+
+      {/* <button onClick={() => setShowSpecification(true)}>Open Product</button> */}
     </>
   );
 };

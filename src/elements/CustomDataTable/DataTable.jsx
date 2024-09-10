@@ -71,7 +71,7 @@ function EnhancedTableHead(props) {
     <TableHead>
       {headerGroups.map((headerGroup) => (
         <TableRow {...headerGroup.getHeaderGroupProps()}>
-          <TableCell padding="checkbox">
+          {/* <TableCell padding="checkbox">
             <Checkbox
               color="primary"
               indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -81,7 +81,7 @@ function EnhancedTableHead(props) {
                 "aria-label": "select all desserts",
               }}
             />
-          </TableCell>
+          </TableCell> */}
           {headerGroup.headers.map((column) => (
             <TableCell
               sx={{ minWidth: column.width }}
@@ -213,7 +213,6 @@ const DataTable = ({
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
-  const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -233,38 +232,6 @@ const DataTable = ({
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked && !isSingleSelection) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
-    if (isSingleSelection) {
-      setSelected([id]);
-    } else {
-      const selectedIndex = selected.indexOf(id);
-      let newSelected = [];
-
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, id);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-      } else if (selectedIndex === selected.length - 1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selected.slice(0, selectedIndex),
-          selected.slice(selectedIndex + 1)
-        );
-      }
-      setSelected(newSelected);
-    }
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -273,8 +240,6 @@ const DataTable = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -304,7 +269,7 @@ const DataTable = ({
       <Box className={styles[customClassName]}>
         <Paper className={styles["paper-root"]}>
           <EnhancedTableToolbar
-            numSelected={selected.length}
+            numSelected={0}
             rowCount={rows.length}
             setSearchQuery={setSearchQuery}
           />
@@ -315,10 +280,8 @@ const DataTable = ({
               {...getTableProps()}
             >
               <EnhancedTableHead
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={rows.length}
                 headerGroups={headerGroups}
@@ -326,34 +289,16 @@ const DataTable = ({
 
               <TableBody {...getTableBodyProps()}>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
                   prepareRow(row);
 
                   return (
                     <TableRow
                       {...row.getRowProps()}
                       hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
-                      selected={isItemSelected}
                       sx={{ cursor: "pointer" }}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                          onClick={(event) => {
-                            handleClick(event, row.id);
-                            setSelectedRow(row);
-                          }}
-                        />
-                      </TableCell>
                       {row.cells.map((cell) => {
                         return action(cell);
                       })}

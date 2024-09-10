@@ -27,6 +27,12 @@ import { PrintOutlined } from "@mui/icons-material";
 import ReactToPrint from "react-to-print";
 import PrintableBidDetails from "../../../components/portal/bids/PrintableBidDetails";
 import Questions from "../../../components/portal/bids/tabs/Questions";
+import InvitedSuppliers from "../../../components/portal/bids/tabs/InvitedSuppliers";
+import SampleReceiving from "../../../components/portal/bids/tabs/SampleReceiving";
+import Feedback from "../../../components/portal/bids/tabs/Feedback";
+import LetterOfIntent from "../../../components/portal/bids/tabs/LetterOfIntent";
+import Bids from "../../../components/portal/bids/tabs/Bids";
+import Award from "../../../components/portal/bids/tabs/Award";
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -39,7 +45,6 @@ const BidDetailsPage = () => {
   const [bidDetails, setBidDetails] = useState({});
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
-
   const type = new URLSearchParams(useLocation().search).get("type");
 
   const handleChange = (event, newValue) => {
@@ -244,9 +249,15 @@ const BidDetailsPage = () => {
         >
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Documents" {...a11yProps(1)} />
-          {bidDetails?.participant?.status === "accepted" && <Tab label="Questions" {...a11yProps(2)} />}
-          {/* <Tab label="Bids" {...a11yProps(2)} />
-          <Tab label="Award" {...a11yProps(3)} /> */}
+          {bidDetails?.participant?.status === "accepted" && (
+            <Tab label="Questions" {...a11yProps(2)} />
+          )}
+          <Tab label="Invite Suppliers" {...a11yProps(2)} />
+          <Tab label="Sample Receiving" {...a11yProps(3)} />
+          <Tab label="Letter Of intent" {...a11yProps(4)} />
+          <Tab label="Feedback" {...a11yProps(5)} />
+          <Tab label="Bids" {...a11yProps(6)} />
+          <Tab label="Analysis" {...a11yProps(7)} />
         </Tabs>
       </Box>
 
@@ -254,19 +265,31 @@ const BidDetailsPage = () => {
         <Summary bidDetails={bidDetails} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Documents bidDetails={bidDetails} type={type}/>
+        <Documents bidDetails={bidDetails} type={type} />
       </TabPanel>
+      {bidDetails?.participant?.status === "accepted" && (
+        <TabPanel value={value} index={2}>
+          <Questions bidDetails={bidDetails} />
+        </TabPanel>
+      )}
       <TabPanel value={value} index={2}>
-        <Questions bidDetails={bidDetails}/>
-      </TabPanel>
-      
-
-      {/* <TabPanel value={value} index={2}>
-        <Award />
+        <InvitedSuppliers bidDetails={bidDetails} />
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <SampleReceiving />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <LetterOfIntent />
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        <Feedback />
+      </TabPanel>
+      <TabPanel value={value} index={6}>
         <Bids />
-      </TabPanel> */}
+      </TabPanel>
+      <TabPanel value={value} index={7}>
+        <Award />
+      </TabPanel>
 
       {addAmendment && (
         <AmendmentModal

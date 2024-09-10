@@ -95,3 +95,12 @@ export const getCategoryLevel = () => {
 
   return propsData;
 };
+
+export const getBidTypes = () => {
+  const type = [
+    { lable: "L1", value: "L1" },
+    { lable: "QCBS - Quality & Cost-Based Selection", value: "QCBS" },
+  ];
+
+  return type;
+};
