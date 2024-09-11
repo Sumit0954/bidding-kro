@@ -139,8 +139,8 @@ const BidForm = () => {
             message: "Bid has been created successfully.",
             severity: "success",
           });
-          console.log(response)
-          navigate(`/portal/bids/categories/${response.data.id}`);
+          console.log(response);
+          // navigate(`/portal/bids/categories/${response.data.id}`);
         }
       } catch (error) {
         setLoading(false);
@@ -307,7 +307,32 @@ const BidForm = () => {
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
                   <div className="col-lg-12">
-                    <SearchSelect
+                    <CustomSelect
+                      control={control}
+                      label="Bid Type"
+                      options={getBidTypes()}
+                      name="type"
+                      placeholder="Bid Type"
+                      rules={{
+                        required: "Bid Type is required.",
+                      }}
+                    />
+                  </div>
+                  {/* <div className="col-lg-6">
+                    <CustomInput
+                      control={control}
+                      label="Reserve Bid Price"
+                      name="reserved_price"
+                      placeholder="Reserve Bid Price"
+                      rules={{
+                        required: "ReserveBid Price is required.",
+                      }}
+                    />
+                  </div> */}
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    {/* <SearchSelect
                       control={control}
                       options={searchedBids}
                       label="Bid Title"
@@ -320,35 +345,20 @@ const BidForm = () => {
                       handleChange={handleTitleChange}
                       setValue={setTitleValue}
                       value={titleValue}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CustomSelect
-                      control={control}
-                      label="Bid Type"
-                      options={getBidTypes()}
-                      name="type"
-                      placeholder="Bid Type"
-                      rules={{
-                        required: "Bid Type is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
+                    /> */}
                     <CustomInput
                       control={control}
-                      label="Reserve Bid Price"
-                      name="reserved_price"
-                      placeholder="Reserve Bid Price"
+                      label="Bid Title"
+                      name="title"
+                      placeholder="Bid Title"
                       rules={{
-                        required: "ReserveBid Price is required.",
+                        required: "Bid Title is required.",
                       }}
+                      inputType="text"
                     />
                   </div>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
@@ -429,7 +439,7 @@ const BidForm = () => {
                       clearErrors={clearErrors}
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -443,7 +453,7 @@ const BidForm = () => {
                   </div>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
                       control={control}
@@ -484,7 +494,7 @@ const BidForm = () => {
                       label="Technical Specification"
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div className={cn("my-3", styles["btn-container"])}>
                   {loading ? (
@@ -500,13 +510,13 @@ const BidForm = () => {
                       </button>
 
                       <button
-                        type="button"
+                        type="submit"
                         className={cn("btn", "button")}
                         disabled={bidStatus === "cancelled" ? true : false}
-                        onClick={submitForm}
+                        // onClick={submitForm}
                       >
-                        {/* {id ? "Update Bid" : "Create Bid"} */}
-                        Save & Next
+                        {id ? "Update Bid" : "Create Bid"}
+                        {/* Save & Next */}
                       </button>
                     </>
                   )}
