@@ -78,9 +78,14 @@ const BidProducts = () => {
   const [expanded, setExpanded] = useState("Summary");
 
   const handleAddProduct = () => {
-
     if (formCount < MAX_ADDRESS_COUNT) {
-      append({ title: "", quantity: "", unit: "", bid_Price: "", specification: "" });
+      append({
+        title: "",
+        quantity: "",
+        unit: "",
+        bid_Price: "",
+        specification: "",
+      });
       setFormCount(formCount + 1);
     }
   };
@@ -88,8 +93,6 @@ const BidProducts = () => {
   const handleClose = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-
-
 
   const submitForm = (data, index) => {
     setLoading(true);
@@ -103,12 +106,8 @@ const BidProducts = () => {
       formData.append("unit", data.product_unit.label);
       formData.append("bid_price", data.reserved_price.label);
       formData.append("specification", data.Product_specification.label);
-
-      setLoading(false);
     }
-
   };
-
 
   return (
     <>
@@ -119,7 +118,11 @@ const BidProducts = () => {
               <h4>Products ({formCount})</h4>
               <button
                 type="button"
-                className={cn("btn", "button", `${formCount >= MAX_ADDRESS_COUNT ? "disable" : ""}`)}
+                className={cn(
+                  "btn",
+                  "button",
+                  `${formCount >= MAX_ADDRESS_COUNT ? "disable" : ""}`
+                )}
                 disabled={bidStatus === "cancelled" ? true : false}
                 style={{ marginBottom: "5px" }}
                 onClick={handleAddProduct}
@@ -128,130 +131,133 @@ const BidProducts = () => {
               </button>
             </div>
             <div className={cn("row", styles["form-section"])}>
-
-
-              {
-                fields.map((item, index) => {
-                  return (
-                    <form onSubmit={handleSubmit((data) => submitForm(data, index))}>
-                      <Accordion
-                        expanded={expanded === "Summary"}
-                        onChange={handleClose("Summary")}
-                        square={true}
-                        classes={{ root: "custom-accordion" }}
-                      >
-                        <AccordionSummary expandIcon={<ExpandMore />}>
-                          <Typography classes={{ root: "custom-accordion-heading" }}>
-                            Product {item.id && ""} {index + 1}
-                          </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <div className="row">
-                            <div className="col-lg-12">
-                              <CustomInput
-                                control={control}
-                                label="Product title"
-                                name="product_title"
-                                placeholder="Product Title"
-                                inputType="text"
-                                rules={{
-                                  required: "Product Title is required.",
-                                }}
-                              />
-                            </div>
+              {fields.map((item, index) => {
+                return (
+                  <form
+                    onSubmit={handleSubmit((data) => submitForm(data, index))}
+                  >
+                    <Accordion
+                      expanded={expanded === "Summary"}
+                      onChange={handleClose("Summary")}
+                      square={true}
+                      classes={{ root: "custom-accordion" }}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMore />}>
+                        <Typography
+                          classes={{ root: "custom-accordion-heading" }}
+                        >
+                          Product {item.id && ""} {index + 1}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div className="row">
+                          <div className="col-lg-12">
+                            <CustomInput
+                              control={control}
+                              label="Product title"
+                              name="product_title"
+                              placeholder="Product Title"
+                              inputType="text"
+                              rules={{
+                                required: "Product Title is required.",
+                              }}
+                            />
                           </div>
+                        </div>
 
-                          <div className="row">
-                            <div className="col-lg-4">
-                              <CustomInput
-                                control={control}
-                                label="Product Quantity"
-                                name="product_quantity"
-                                placeholder="Product Quantity"
-                                inputType="text"
-                                rules={{
-                                  required: "Product Quantity is required.",
-                                }}
-                              />
-                            </div>
-                            <div className="col-lg-4">
-                              <CustomSelect
-                                control={control}
-                                label="Unit"
-                                name="product_unit"
-                                options={getProductUnits()}
-                                placeholder="Unit"
-                                rules={{
-                                  required: "Unit is required.",
-                                }}
-                              />
-                            </div>
-                            <div className="col-lg-4">
-                              <CustomInput
-                                control={control}
-                                label="Reserve Bid Price"
-                                name="reserved_price"
-                                placeholder="Reserve Bid Price"
-                                rules={{
-                                  required: "ReserveBid Price is required.",
-                                }}
-                              />
-                            </div>
+                        <div className="row">
+                          <div className="col-lg-4">
+                            <CustomInput
+                              control={control}
+                              label="Product Quantity"
+                              name="product_quantity"
+                              placeholder="Product Quantity"
+                              inputType="text"
+                              rules={{
+                                required: "Product Quantity is required.",
+                              }}
+                            />
                           </div>
-
-                          <div className="row">
-                            <div className="col-lg-12">
-                              <CustomCkEditor
-                                control={control}
-                                name="Product_specification"
-                                label="Product Specification"
-                              />
-                            </div>
+                          <div className="col-lg-4">
+                            <CustomSelect
+                              control={control}
+                              label="Unit"
+                              name="product_unit"
+                              options={getProductUnits()}
+                              placeholder="Unit"
+                              rules={{
+                                required: "Unit is required.",
+                              }}
+                            />
                           </div>
-
-                          <div className={cn("my-3", styles["btn-container"])}>
-                            {
-                              loading ? (<ButtonLoader size={60} />) : (
-                                <button type="button" className={cn("btn", "button")}
-                                  onClick={handleSubmit((data) => submitForm(data, index))}
-                                >
-                                  Submit
-                                </button>
-                              )
-                            }
-
+                          <div className="col-lg-4">
+                            <CustomInput
+                              control={control}
+                              label="Reserve Bid Price"
+                              name="reserved_price"
+                              placeholder="Reserve Bid Price"
+                              rules={{
+                                required: "ReserveBid Price is required.",
+                              }}
+                            />
                           </div>
-                        </AccordionDetails>
-                      </Accordion>
-                    </form>)
-                })
-              }
+                        </div>
+
+                        <div className="row">
+                          <div className="col-lg-12">
+                            <CustomCkEditor
+                              control={control}
+                              name="Product_specification"
+                              label="Product Specification"
+                            />
+                          </div>
+                        </div>
+
+                        <div className={cn("my-3", styles["btn-container"])}>
+                          {loading ? (
+                            <ButtonLoader size={60} />
+                          ) : (
+                            <button
+                              type="button"
+                              className={cn("btn", "button")}
+                              onClick={handleSubmit((data) =>
+                                submitForm(data, index)
+                              )}
+                            >
+                              Submit
+                            </button>
+                          )}
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>
+                  </form>
+                );
+              })}
 
               <div className={cn("my-3", styles["btn-container"])}>
-                {
-                  submitLoader ? (<ButtonLoader size={60} />) : (
-                    <>
-                      <button
-                        type="button"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                        
-                      >
-                        Back
-                      </button>
+                {submitLoader ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                    >
+                      Back
+                    </button>
 
-                      <button
-                        type="submit"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                        onClick={() => navigate(`/portal/bids/questions/${id}`)}
-                      >
-                        {/* {id ? "Update Bid" : "Create Bid"} */}
-                        Save & Next
-                      </button>
-                    </>
-                  )
-                }
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                      onClick={() => navigate(`/portal/bids/questions/${id}`)}
+                    >
+                      {/* {id ? "Update Bid" : "Create Bid"} */}
+                      Save & Next
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
