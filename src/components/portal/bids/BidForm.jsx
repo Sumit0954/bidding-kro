@@ -47,6 +47,7 @@ const BidForm = () => {
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
+  // const [bidId, setBidId] = useState("");
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
@@ -78,6 +79,44 @@ const BidForm = () => {
   //   getBidType();
   // }, []);
 
+  const updateBidCategories = async (id) => {
+    console.log(id, formData, "bidid");
+    const categoryIds = formData.map((item) => item.category);
+    setLoading(true);
+    try {
+      const response1 = await _sendAPIRequest(
+        "PUT",
+        PortalApiUrls.UPDATE_BID_CATEGORIES + `${id}/`,
+        categoryIds,
+        true
+      );
+      if (response1.status === 200) {
+        console.log(response1, "res11");
+        setLoading(false);
+        navigate(`/portal/bids/products/${id}`);
+        // setAlert({
+        //   isVisible: true,
+        //   message: "Category has been updated successfully.",
+        //   severity: "success",
+        // });
+      }
+    } catch (error) {
+      setLoading(false);
+      const { data } = error.response;
+      if (data) {
+        setErrors(data, watch, setError);
+
+        if (data.error) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
+        }
+      }
+    }
+  };
+
   const submitForm = async (data) => {
     setLoading(true);
     let updateFormData = new FormData();
@@ -89,6 +128,11 @@ const BidForm = () => {
         const [key, value] = item;
 
         if (action === "create") {
+          // formData.forEach((categoryItem, index) => {
+          //   createFormData.append(`category[${index}][category]`, categoryItem.category);
+          //   createFormData.append(`category[${index}][depth]`, categoryItem.depth);
+          // });
+
           if (key === "type") {
             createFormData.append(key, value);
           } else if (key === "delivery_date") {
@@ -121,6 +165,16 @@ const BidForm = () => {
 
         return null;
       });
+
+      // if (action === "create" && formData && formData.length > 0) {
+      //   const categoryArray = formData.map((categoryItem) => ({
+      //     id: categoryItem.category,
+      //     depth: categoryItem.depth,
+      //   }));
+
+      //   // Convert the array to a JSON string and append it to the form data
+      //   createFormData.append("category", JSON.stringify(categoryArray));
+      // }
     }
     /* -- */
 
@@ -140,7 +194,8 @@ const BidForm = () => {
             severity: "success",
           });
           console.log(response);
-          // navigate(`/portal/bids/categories/${response.data.id}`);
+          // setBidId(response.data.id);
+          updateBidCategories(response.data.id);
         }
       } catch (error) {
         setLoading(false);
@@ -174,7 +229,8 @@ const BidForm = () => {
             message: "Bid has been updated successfully.",
             severity: "success",
           });
-          navigate(`/portal/bids/products/${id}`);
+          updateBidCategories(id);
+          // navigate(`/portal/bids/products/${id}`);
         }
       } catch (error) {
         setLoading(false);
