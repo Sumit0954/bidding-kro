@@ -29,22 +29,27 @@ export const created_bids_column = [
   },
   {
     Header: "Opening Date",
-    accessor: "bid_start_date",
+    accessor: "bid_open_date",
     align: "left",
     disablePadding: false,
     width: 190,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.bid_start_date);
+      // return dateTimeFormatter(data?.row?.original?.bid_open_date);
+      return data?.row?.original?.bid_open_date
+        ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
+        : " - ";
     },
   },
   {
     Header: "Closing Date",
-    accessor: "bid_end_date",
+    accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
     width: 190,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.bid_end_date);
+      return data?.row?.original?.bid_close_date
+      ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
+      : " - ";
     },
   },
   // {
@@ -345,12 +350,11 @@ export const products_Column = [
     align: "right",
     disablePadding: false,
     width: 160,
-    Cell : (data) =>{
-      return data?.row.original.company.organization_type || "--" 
-    }
-  }
+    Cell: (data) => {
+      return data?.row.original.company.organization_type || "--";
+    },
+  },
 ];
-
 
 export const PreviousBids_column = [
   {

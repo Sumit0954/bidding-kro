@@ -39,7 +39,6 @@ const Summary = ({ bidDetails }) => {
     id: null,
   });
 
-  console.log()
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -122,7 +121,7 @@ const Summary = ({ bidDetails }) => {
       );
     }
   };
-
+console.log(bidDetails)
   return (
     <>
       {/* Summury */}
@@ -151,20 +150,18 @@ const Summary = ({ bidDetails }) => {
               <p className={styles["col-data"]}>{bidDetails?.title}</p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Reserve Bid Price</h6>
-              <p className={styles["col-data"]}>
-                ₹ {bidDetails?.reserved_price}
-              </p>
+              <h6 className={styles["col-heading"]}>Bid Type</h6>
+              <p className={styles["col-data"]}>{bidDetails?.type}</p>
             </div>
           </div>
-          <Divider classes={{ root: "custom-divider" }} />
+          {/* <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>
-                {bidDetails?.type_meta?.name || bidDetails?.type?.name}
+                {bidDetails?.type}
               </p>
-            </div>
+            </div> 
             <div className="col">
               <h6 className={styles["col-heading"]}>Product Quantity</h6>
               <p className={styles["col-data"]}>
@@ -177,25 +174,23 @@ const Summary = ({ bidDetails }) => {
                 {getLableByValue(bidDetails?.product_unit)}
               </p>
             </div>
-          </div>
+          </div> */}
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Opening Date and Time</h6>
               <p className={styles["col-data"]}>
-                {dateTimeFormatter(bidDetails?.bid_start_date)}
+                {bidDetails?.bid_close_date
+                  ? dateTimeFormatter(bidDetails?.bid_open_date)
+                  : " -"}
               </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Closing Date and Time</h6>
               <p className={styles["col-data"]}>
-                {dateTimeFormatter(bidDetails?.bid_end_date)}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Delivery Timeline</h6>
-              <p className={styles["col-data"]}>
-                {dateTimeFormatter(bidDetails?.delivery_date, false)}
+                {bidDetails?.bid_close_date
+                  ? dateTimeFormatter(bidDetails?.bid_close_date)
+                  : " -"}
               </p>
             </div>
           </div>
@@ -220,7 +215,7 @@ const Summary = ({ bidDetails }) => {
             bidDetails?.amendment
               ?.sort((latest, previous) => previous.id - latest.id)
               .map((amendment) => {
-                if (amendment.type === "description") {
+                if (amendment.field_name === "description") {
                   return (
                     <Accordion
                       defaultExpanded
@@ -282,7 +277,7 @@ const Summary = ({ bidDetails }) => {
             bidDetails?.amendment
               ?.sort((latest, previous) => previous.id - latest.id)
               .map((amendment) => {
-                if (amendment.type === "delivery_terms") {
+                if (amendment.field_name === "delivery_terms") {
                   return (
                     <Accordion
                       defaultExpanded
@@ -344,7 +339,7 @@ const Summary = ({ bidDetails }) => {
             bidDetails?.amendment
               ?.sort((latest, previous) => previous.id - latest.id)
               .map((amendment) => {
-                if (amendment.type === "payment_terms") {
+                if (amendment.field_name === "payment_terms") {
                   return (
                     <Accordion
                       defaultExpanded
@@ -451,7 +446,7 @@ const Summary = ({ bidDetails }) => {
               bidDetails?.amendment
                 ?.sort((latest, previous) => previous.id - latest.id)
                 .map((amendment) => {
-                  if (amendment.type === "eligiblity_criteria ") {
+                  if (amendment.field_name === "eligiblity_criteria ") {
                     return (
                       <Accordion
                         defaultExpanded
@@ -515,7 +510,7 @@ const Summary = ({ bidDetails }) => {
               bidDetails?.amendment
                 ?.sort((latest, previous) => previous.id - latest.id)
                 .map((amendment) => {
-                  if (amendment.type === "technical_specification") {
+                  if (amendment.field_name === "technical_specification") {
                     return (
                       <Accordion
                         defaultExpanded

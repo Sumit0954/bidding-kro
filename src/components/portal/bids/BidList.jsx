@@ -11,8 +11,6 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 const BidList = ({ listType, setSelectedRow }) => {
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
-
-  // To Created Bid List
   const getCreatedBidList = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -42,7 +40,7 @@ const BidList = ({ listType, setSelectedRow }) => {
         setInviteBids(response.data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
