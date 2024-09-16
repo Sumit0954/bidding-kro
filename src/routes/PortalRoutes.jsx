@@ -84,6 +84,11 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidFormPage} />}
                     />
                     <Route
+                      path="/bids/categories/:id"
+                      // path="/bids/categories"
+                      element={<LayoutPage Component={BidCategoriesPage} />}
+                    />
+                    <Route
                       // path="/bids/categories/:id"
                       path="/bids/categories"
                       element={<LayoutPage Component={BidCategoriesPage} />}

@@ -46,7 +46,6 @@ const BidDetailsPage = () => {
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -196,7 +195,12 @@ const BidDetailsPage = () => {
                   className={cn("btn", "button")}
                   type="button"
                   onClick={() => setAddAmendment(true)}
-                  disabled={bidDetails?.status === "cancelled" ? true : false}
+                  disabled={
+                    bidDetails?.status === "cancelled" ||
+                    bidDetails?.amendment?.length === 3
+                      ? true
+                      : false
+                  }
                 >
                   Amendments
                 </button>
@@ -205,7 +209,7 @@ const BidDetailsPage = () => {
                   type="submit"
                   className={cn("btn", "button")}
                   onClick={() =>
-                    navigate(`/portal/bids/update/${bidDetails.id}`)
+                    navigate(`/portal/bids/categories/${bidDetails.id}`)
                   }
                   disabled={bidDetails?.status === "cancelled" ? true : false}
                 >

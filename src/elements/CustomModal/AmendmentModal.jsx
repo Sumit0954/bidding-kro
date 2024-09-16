@@ -10,6 +10,7 @@ import { AlertContext } from "../../contexts/AlertProvider";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { CloseFullscreen } from "@mui/icons-material";
+import axios from "axios";
 
 const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
   const handleClose = () => {
@@ -28,7 +29,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       const response = await _sendAPIRequest(
         "POST",
         PortalApiUrls.CREATE_AMENDMENT + `${id}/`,
-        { text: data.text, type: data.type },
+        { text: data.text, field_name: data.type },
         true
       );
       if (response.status === 201) {
@@ -42,6 +43,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       }
     } catch (error) {
       setLoading(false);
+      console.log(error);
       const { data } = error.response;
       if (data) {
         setErrors(data, watch, setError);
@@ -55,6 +57,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
         }
       }
     }
+    window.location.reload()
   };
 
   const handleFieldChange = (value) => {
@@ -124,7 +127,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
                 <p className={styles["amendment-info"]}>
                   <span> Note : </span>
                   Please be aware that you are allowed to make only{" "}
-                  <strong>two</strong> amendments for a Single Bid.
+                  <strong>Three</strong> amendments for a Single Bid.
                 </p>
               </Alert>
 

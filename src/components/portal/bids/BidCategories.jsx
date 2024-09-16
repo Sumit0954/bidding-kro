@@ -165,7 +165,7 @@ const BidCategories = () => {
       setLoading(false);
       setAlert({
         isVisible: true,
-        message: "Category has been updated successfully.",
+        message: `Category has been ${id ? "updated" : "submitted"} successfully.`,
         severity: "success",
       });
 
@@ -463,6 +463,8 @@ const BidCategories = () => {
                             {...commonProps}
                             {...searchProps}
                             handleOptionChange={handleOptionChange}
+                            categories={categories}
+
                           />
                         </div>
                       </div>
@@ -488,7 +490,7 @@ const BidCategories = () => {
                       className={cn("btn", "button", styles["custom-btn"])}
                       disabled={bidStatus === "cancelled" ? true : false}
                     >
-                      Update Categories
+                       {id ? "Update" : "Submit"} Categories
                     </button>
                   )}
                 </div>
