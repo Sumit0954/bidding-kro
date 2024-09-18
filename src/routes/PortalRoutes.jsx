@@ -99,16 +99,16 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidProducts} />}
                     />
                     <Route
-                      path="/bids/deatils/:id"
+                      path="/bids/create/deatils/:id"
                       // path="/bids/deatils"
                       element={<LayoutPage Component={BidCreateDetails} />}
                     />
                     <Route
-                      path="/bids/questions/:id"
+                      path="/bids/create/questions/:id"
                       element={<LayoutPage Component={BidQuestionsPage} />}
                     />
                     <Route
-                      path="/bids/documents/:id"
+                      path="/bids/create/documents/:id"
                       // path="/bids/documents"
                       element={<LayoutPage Component={BidDocumentsPage} />}
                     />

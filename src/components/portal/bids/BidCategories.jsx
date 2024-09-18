@@ -165,11 +165,11 @@ const BidCategories = () => {
       setLoading(false);
       setAlert({
         isVisible: true,
-        message: `Category has been ${id ? "updated" : "submitted"} successfully.`,
+        message: `Category has been ${
+          id ? "updated" : "submitted"
+        } successfully.`,
         severity: "success",
       });
-
-
 
       if (id) {
         navigate(`/portal/bids/update/${id}`, { state: { formData } });
@@ -468,7 +468,6 @@ const BidCategories = () => {
                             {...searchProps}
                             handleOptionChange={handleOptionChange}
                             categories={categories}
-
                           />
                         </div>
                       </div>
@@ -494,7 +493,7 @@ const BidCategories = () => {
                       className={cn("btn", "button", styles["custom-btn"])}
                       disabled={bidStatus === "cancelled" ? true : false}
                     >
-                       {id ? "Update" : "Submit"} Categories
+                      {id ? "Update" : "Submit"} Categories
                     </button>
                   )}
                 </div>
