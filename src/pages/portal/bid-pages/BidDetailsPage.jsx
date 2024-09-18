@@ -46,6 +46,7 @@ const BidDetailsPage = () => {
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
+  console.log(bidDetails?.type);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -256,12 +257,27 @@ const BidDetailsPage = () => {
           {bidDetails?.participant?.status === "accepted" && (
             <Tab label="Questions" {...a11yProps(2)} />
           )}
-          <Tab label="Invite Suppliers" {...a11yProps(2)} />
-          <Tab label="Sample Receiving" {...a11yProps(3)} />
+          {bidDetails?.type === "L1" ? (
+            <Tab label="Invite Suppliers" {...a11yProps(3)} />
+          ) : (
+            [
+              <Tab
+                label="Invite Suppliers"
+                {...a11yProps(3)}
+                key="invite-suppliers"
+              />,
+              <Tab
+                label="Sample Receiving"
+                {...a11yProps(4)}
+                key="sample-receiving"
+              />,
+            ]
+          )}
+          {/* <Tab label="Sample Receiving" {...a11yProps(3)} />
           <Tab label="Letter Of intent" {...a11yProps(4)} />
           <Tab label="Feedback" {...a11yProps(5)} />
           <Tab label="Bids" {...a11yProps(6)} />
-          <Tab label="Analysis" {...a11yProps(7)} />
+          <Tab label="Analysis" {...a11yProps(7)} /> */}
         </Tabs>
       </Box>
 
@@ -282,7 +298,8 @@ const BidDetailsPage = () => {
       <TabPanel value={value} index={3}>
         <SampleReceiving />
       </TabPanel>
-      <TabPanel value={value} index={4}>
+
+      {/* <TabPanel value={value} index={4}>
         <LetterOfIntent />
       </TabPanel>
       <TabPanel value={value} index={5}>
@@ -293,7 +310,7 @@ const BidDetailsPage = () => {
       </TabPanel>
       <TabPanel value={value} index={7}>
         <Award />
-      </TabPanel>
+      </TabPanel> */}
 
       {addAmendment && (
         <AmendmentModal

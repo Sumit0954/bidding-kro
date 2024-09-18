@@ -121,7 +121,6 @@ const Summary = ({ bidDetails }) => {
       );
     }
   };
-console.log(bidDetails)
   return (
     <>
       {/* Summury */}
@@ -182,7 +181,7 @@ console.log(bidDetails)
               <p className={styles["col-data"]}>
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_open_date)
-                  : " -"}
+                  : "-"}
               </p>
             </div>
             <div className="col">
@@ -190,7 +189,7 @@ console.log(bidDetails)
               <p className={styles["col-data"]}>
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
-                  : " -"}
+                  : "-"}
               </p>
             </div>
           </div>

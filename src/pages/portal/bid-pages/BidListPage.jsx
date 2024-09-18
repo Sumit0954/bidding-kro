@@ -85,6 +85,9 @@ const BidListPage = () => {
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />
         </TabPanel>
+        <TabPanel value={value} index={2}>
+          <BidList listType={"related"} />
+        </TabPanel>
       </Box>
     </>
   );
