@@ -169,9 +169,13 @@ const BidCategories = () => {
         severity: "success",
       });
 
-      console.log(formData, "formDataformData");
 
-      navigate("/portal/bids/create", { state: { formData } });
+
+      if (id) {
+        navigate(`/portal/bids/update/${id}`, { state: { formData } });
+      } else {
+        navigate("/portal/bids/create", { state: { formData } });
+      }
     }
   };
 

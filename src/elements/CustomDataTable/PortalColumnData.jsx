@@ -78,7 +78,7 @@ export const created_bids_column = [
   {
     Header: "Action",
     accessor: "clone_bid",
-    align: "left",
+    align: "right",
     disablePadding: false,
     // width: 300,
     Cell: (data) => {
@@ -161,6 +161,97 @@ export const invited_bids_column = [
         <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
           {data?.row?.original?.bid?.status}
         </div>
+      );
+    },
+  },
+];
+
+export const related_bids_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 200,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/bids/details/${data?.row?.original?.id}`}
+        >
+          {truncateString(data?.row?.original?.title, 30)}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Opening Date",
+    accessor: "bid_open_date",
+    align: "left",
+    disablePadding: false,
+    width: 190,
+    Cell: (data) => {
+      // return dateTimeFormatter(data?.row?.original?.bid_open_date);
+      return data?.row?.original?.bid_open_date
+        ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
+        : " - ";
+    },
+  },
+  {
+    Header: "Closing Date",
+    accessor: "bid_close_date",
+    align: "left",
+    disablePadding: false,
+    width: 190,
+    Cell: (data) => {
+      return data?.row?.original?.bid_close_date
+      ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
+      : " - ";
+    },
+  },
+  // {
+  //   Header: "Reserve Price",
+  //   accessor: "reserved_price",
+  //   align: "right",
+  //   disablePadding: false,
+  //   Cell: (data) => {
+  //     return `₹ ${data.row.original.reserved_price}`;
+  //   },
+  // },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "center",
+    disablePadding: false,
+    hideSortIcon: true,
+    Cell: (data) => {
+      return (
+        <div className={`status-cloumn ${data?.row?.original?.status}`}>
+          {data?.row?.original?.status}
+        </div>
+      );
+    },
+  },
+  {
+    Header: "Action",
+    accessor: "clone_bid",
+    align: "right",
+    disablePadding: false,
+    // width: 300,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/bids/update/${data?.row?.original?.id}`}
+        >
+          Clone Bid
+        </NavLink>
       );
     },
   },
@@ -400,3 +491,7 @@ export const PreviousBids_column = [
     hideSortIcon: true,
   },
 ];
+
+
+
+

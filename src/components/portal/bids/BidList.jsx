@@ -3,6 +3,7 @@ import DataTable from "../../../elements/CustomDataTable/DataTable";
 import {
   created_bids_column,
   invited_bids_column,
+  related_bids_column,
 } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
@@ -77,10 +78,17 @@ const BidList = ({ listType, setSelectedRow }) => {
           isSingleSelection={true}
           setSelectedRow={setSelectedRow}
         />
+      ) : listType === "invited" ? (
+        <DataTable
+          propsColumn={invited_bids_column}
+          propsData={inviteBids}
+          action={addInvitedAction}
+          customClassName="portal-data-table"
+        />
       ) : (
-        listType === "invited" && (
+        listType === "related" && (
           <DataTable
-            propsColumn={invited_bids_column}
+            propsColumn={related_bids_column}
             propsData={inviteBids}
             action={addInvitedAction}
             customClassName="portal-data-table"

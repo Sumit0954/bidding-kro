@@ -55,8 +55,6 @@ const BidForm = () => {
     .toISOString()
     .split("T")[0];
   const { formData } = location.state || {};
-  console.log(formData, "formdata");
-
   // const getBidType = async () => {
   //   try {
   //     const response = await _sendAPIRequest(
@@ -78,7 +76,6 @@ const BidForm = () => {
   // useEffect(() => {
   //   getBidType();
   // }, []);
-
   const updateBidCategories = async (id) => {
     console.log(id, formData, "bidid");
     const categoryIds = formData.map((item) => item.category);
@@ -351,6 +348,32 @@ const BidForm = () => {
     }
   };
 
+  const handleFormdata = async (id) => {
+
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
+          "",
+          true
+        );
+
+        if (response.status === 200) {
+        reset({
+          type: response.data.type || "",
+          title: response.data.title || "",
+          description: response.data.description || ""
+        });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    
+  };
+
+  useEffect(() => {
+    handleFormdata(id);
+  }, [id]);
   return (
     <>
       <div className="container">
