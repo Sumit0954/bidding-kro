@@ -48,8 +48,8 @@ export const created_bids_column = [
     width: 190,
     Cell: (data) => {
       return data?.row?.original?.bid_close_date
-      ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
-      : " - ";
+        ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
+        : " - ";
     },
   },
   // {
@@ -211,8 +211,8 @@ export const related_bids_column = [
     width: 190,
     Cell: (data) => {
       return data?.row?.original?.bid_close_date
-      ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
-      : " - ";
+        ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
+        : " - ";
     },
   },
   // {
@@ -410,39 +410,53 @@ export const l1_participants_column = [
   },
 ];
 
-export const products_Column = [
+export const products_Column = ({
+  setShowSpecification,
+  setSelectedProduct,
+}) => [
   {
     Header: "Product Title",
-    accessor: "company.name",
+    accessor: "title",
     align: "left",
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return data.row.original.company.name;
+      return data.row.original.title;
     },
   },
   {
     Header: "Quantity",
-    accessor: "company.business_email",
-    align: "center",
-    disablePadding: false,
+    accessor: "quantity",
+    align: "left",
+    disablePadding: true,
     width: 160,
   },
   {
     Header: "Reserve Price",
-    accessor: "company.business_mobile",
-    align: "center",
+    accessor: "reserved_price",
+    align: "left",
     disablePadding: false,
     width: 160,
   },
   {
     Header: "Specification",
-    accessor: "company.organization_type",
-    align: "right",
+    accessor: "specification",
+    align: "left",
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return data?.row.original.company.organization_type || "--";
+      console.log(data);
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          onClick={() => {
+            setSelectedProduct(data.row.original);
+            setShowSpecification(true);
+          }}
+        >
+          View Speciication
+        </NavLink>
+      );
     },
   },
 ];
@@ -491,7 +505,3 @@ export const PreviousBids_column = [
     hideSortIcon: true,
   },
 ];
-
-
-
-
