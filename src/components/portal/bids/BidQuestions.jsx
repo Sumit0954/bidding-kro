@@ -150,14 +150,16 @@ const BidQuestions = () => {
                 <button
                   className={cn("btn", "button")}
                   type="button"
-                  onClick={() => navigate(`/portal/bids/categories/${id}`)}
+                  // onClick={() => navigate(`/portal/bids/categories/${id}`)}
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   className={cn("btn", "button")}
-                  onClick={() => navigate(`/portal/bids/deatils/${id}`)}
+                  onClick={() =>
+                    navigate(`/portal/bids/create/documents/${id}`)
+                  }
                   disabled={bidStatus === "cancelled" ? true : false}
                 >
                   Upload Documents

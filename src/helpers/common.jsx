@@ -85,11 +85,13 @@ export const getCategoryLevel = () => {
       name: "sub_category",
       label: "Sub Category",
       placeholder: "Choose Sub Category",
+      rules: "Sub Category is required.",
     },
     3: {
       name: "product",
       label: "Product",
       placeholder: "Choose Product",
+      rules: "Product is required.",
     },
   };
 

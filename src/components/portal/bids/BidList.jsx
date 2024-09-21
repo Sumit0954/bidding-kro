@@ -9,15 +9,20 @@ import { TableCell } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
-const BidList = ({ listType, setSelectedRow }) => {
+const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
+
+  console.log("");
   const getCreatedBidList = async () => {
     try {
+      const params = {
+        category: selectedCategory,
+      };
       const response = await _sendAPIRequest(
         "GET",
         PortalApiUrls.CREATED_LIST_BIDS,
-        "",
+        params,
         true
       );
       if (response.status === 200) {
@@ -44,6 +49,10 @@ const BidList = ({ listType, setSelectedRow }) => {
       // console.log(error);
     }
   };
+
+  useEffect(() => {
+    getCreatedBidList();
+  }, [selectedCategory]);
 
   useEffect(() => {
     getCreatedBidList();

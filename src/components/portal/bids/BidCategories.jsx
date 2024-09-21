@@ -133,6 +133,7 @@ const BidCategories = () => {
     console.log(data, "gogo");
 
     let formData = [];
+    let productData = [];
 
     if (data) {
       // Use a Set to track unique category entries
@@ -161,6 +162,14 @@ const BidCategories = () => {
         }
       });
 
+      if (isArray(data.product)) {
+        productData = data.product.map((product) => ({
+          id: product.id,
+          name: product.name,
+          depth: product.depth,
+        }));
+      }
+
       // Now that we have filtered duplicates, log and proceed
       setLoading(false);
       setAlert({
@@ -172,9 +181,11 @@ const BidCategories = () => {
       });
 
       if (id) {
-        navigate(`/portal/bids/update/${id}`, { state: { formData } });
+        navigate(`/portal/bids/update/${id}`, {
+          state: { formData, productData },
+        });
       } else {
-        navigate("/portal/bids/create", { state: { formData } });
+        navigate("/portal/bids/create", { state: { formData, productData } });
       }
     }
   };

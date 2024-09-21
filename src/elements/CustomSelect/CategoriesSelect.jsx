@@ -88,6 +88,7 @@ const CategoriesSelect = ({
             control={control}
             rootCategory={rootCategory}
             value={undefined}
+            ancestors={true}
             onAncestorsChange={handleOptionChange}
           />
         )}

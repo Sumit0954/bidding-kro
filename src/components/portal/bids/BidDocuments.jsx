@@ -65,7 +65,7 @@ const BidDocuments = () => {
 
     let formData = new FormData();
     if (data) {
-      formData.append("name", name);
+      formData.append("file_name", name);
       formData.append("type", extractFileExtension(name));
       formData.append("size", size);
       formData.append("file", data.document, name);
@@ -277,7 +277,7 @@ const BidDocuments = () => {
                   <button
                     className={cn("btn", "button")}
                     type="button"
-                    onClick={() => navigate(`/portal/bids/deatils`)}
+                    onClick={() => navigate(`/portal/bids/`)}
                   >
                     Back
                   </button>

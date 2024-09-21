@@ -1,16 +1,22 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import BidList from "../../../components/portal/bids/BidList";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import { NavLink, useNavigate } from "react-router-dom";
 import cn from "classnames";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import SearchBar from "../../../elements/CustomSelect/SearchBar";
 
 const BidListPage = () => {
   const [value, setValue] = useState(0);
   const [selectedRow, setSelectedRow] = useState({});
+  const [categories, setCategories] = useState({ 0: [] });
+  const [rootCategory, setRootCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
@@ -18,6 +24,63 @@ const BidListPage = () => {
   };
 
   const { control } = useForm();
+
+  const handleCategorySelection = (selected) => {
+    console.log(selected, "Selected category");
+    if (selected && selected.value) {
+      setRootCategory(selected.value);
+    } else {
+      setRootCategory(null);
+    }
+  };
+
+  const getCategories = async (parent_categories, depth) => {
+    const params = new URLSearchParams();
+    parent_categories.forEach((value) => {
+      if (value !== undefined) {
+        params.append("parent_category", value);
+      }
+    });
+
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        params,
+        true
+      );
+      if (response.status === 200) {
+        const mappedCategories = response.data.map((category) => ({
+          lable: category.name, // 'label' is used by Autocomplete to display
+          value: category.id, // 'value' is used for internal management
+          depth: category.depth,
+        }));
+        setCategories((prevCategories) => ({
+          ...prevCategories,
+          [depth]: mappedCategories,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories([], 0);
+  }, []);
+
+  useEffect(() => {
+    setSelectedCategory(rootCategory);
+  }, [rootCategory]);
+
+  const handleOptionChange = (ancestors) => {
+    console.log(ancestors, "ancestorsancestors");
+    setSelectedCategory(ancestors);
+  };
+
+  useEffect(() => {
+    console.log(rootCategory, "rootCategory updated");
+  }, [rootCategory]);
 
   return (
     <>
@@ -65,22 +128,30 @@ const BidListPage = () => {
               control={control}
               name="Industry"
               placeholder="Industry"
-              // options={organizationTypes}
-              // label="Organization Type"
+              options={categories[0]}
+              handleChange={handleCategorySelection}
               multiple={false}
             />
           </div>
           <div className="col-lg-9">
-            <CustomInput
+            <SearchBar
+              name="product_search"
+              placeholder="Search Your Category"
               control={control}
-              name="product"
-              placeholder="Search Your Bids"
+              rootCategory={rootCategory}
+              value={undefined}
+              ancestors={false}
+              onAncestorsChange={handleOptionChange}
             />
           </div>
         </div>
 
         <TabPanel value={value} index={0}>
-          <BidList listType={"created"} setSelectedRow={setSelectedRow} />
+          <BidList
+            listType={"created"}
+            setSelectedRow={setSelectedRow}
+            selectedCategory={selectedCategory}
+          />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />

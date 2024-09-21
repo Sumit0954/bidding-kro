@@ -15,6 +15,7 @@ const SearchBar = ({
   rules = {},
   rootCategory, // Root category ID
   value,
+  ancestors,
   // handleChange,
   onAncestorsChange,
 }) => {
@@ -23,12 +24,18 @@ const SearchBar = ({
   const debounceTimeout = useRef(null);
 
   useEffect(() => {
+    setInputValue("");
+  }, [rootCategory]);
+
+  useEffect(() => {
     const fetchSearchResults = async () => {
+      console.log(rootCategory, "hyhyh");
       if (inputValue) {
         try {
           const params = {
             keyword: inputValue,
             root_category: rootCategory,
+            ancestors: ancestors,
           };
 
           const response = await _sendAPIRequest(
@@ -73,9 +80,19 @@ const SearchBar = ({
     return `${option.name}`;
   };
 
+  // const handleOptionChange = (option) => {
+  //   if (option && onAncestorsChange) {
+  //     onAncestorsChange(option.ancestors || []);
+  //   }
+  // };
+
   const handleOptionChange = (option) => {
     if (option && onAncestorsChange) {
-      onAncestorsChange(option.ancestors || []);
+      if (ancestors === false) {
+        onAncestorsChange(option.id); // Pass selected option ID when no ancestors
+      } else {
+        onAncestorsChange(option.ancestors || []); // Otherwise pass ancestors
+      }
     }
   };
 
@@ -119,11 +136,25 @@ const SearchBar = ({
                   classes={{ root: styles["search-input-field"] }}
                 />
               )}
+              // getOptionLabel={(option) => {
+              //   if (typeof option === "string") return option;
+              //   return formatLabelWithAncestors(option); // Fallback handles missing values
+              // }}
               getOptionLabel={(option) => {
                 if (typeof option === "string") return option;
-                return formatLabelWithAncestors(option); // Fallback handles missing values
+                // Show only the name if ancestors is false
+                return ancestors === false
+                  ? option.name
+                  : formatLabelWithAncestors(option);
               }}
               renderOption={(props, option) => {
+                if (ancestors === false) {
+                  return (
+                    <Box component="li" {...props} style={{ display: "block" }}>
+                      <Typography variant="body1">{option.name}</Typography>
+                    </Box>
+                  );
+                }
                 const ancestorNames = option.ancestors.map(
                   (ancestor) => ancestor.name
                 );

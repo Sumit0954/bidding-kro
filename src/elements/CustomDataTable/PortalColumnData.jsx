@@ -1,7 +1,26 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./DataTable.module.scss";
 import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { convertFileSize } from "../../helpers/common";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import _sendAPIRequest from "../../helpers/api";
+
+const onCloneBidClick = async (id, navigate) => {
+  try {
+    const response = await _sendAPIRequest(
+      "POST",
+      `${PortalApiUrls.CLONE_BID}${id}/`,
+      null,
+      true
+    );
+    if (response?.status === 201) {
+      console.log(response);
+      navigate(`/portal/bids/categories/${response.data.id}`);
+    }
+  } catch (error) {
+    console.log("Error fetching product list", error);
+  }
+};
 
 export const created_bids_column = [
   {
@@ -82,13 +101,15 @@ export const created_bids_column = [
     disablePadding: false,
     // width: 300,
     Cell: (data) => {
+      const navigate = useNavigate();
       return (
-        <NavLink
+        <p
           className={styles["table-link"]}
-          to={`/portal/bids/update/${data?.row?.original?.id}`}
+          onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
+          // to={`/portal/bids/update/${data?.row?.original?.id}`}
         >
           Clone Bid
-        </NavLink>
+        </p>
       );
     },
   },
@@ -260,7 +281,7 @@ export const related_bids_column = [
 export const documents_column = [
   {
     Header: "Document Name",
-    accessor: "name",
+    accessor: "file_name",
     align: "left",
     disablePadding: false,
     width: 160,
