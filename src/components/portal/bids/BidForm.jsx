@@ -54,28 +54,22 @@ const BidForm = () => {
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
-  const { formData } = location.state || {};
-  // const getBidType = async () => {
-  //   try {
-  //     const response = await _sendAPIRequest(
-  //       "GET",
-  //       PortalApiUrls.GET_BID_TYPE,
-  //       "",
-  //       true
-  //     );
-  //     if (response.status === 200) {
-  //       const data = modifiedData(response.data);
-  //       setBidType(data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const { formData, productData } = location.state || {};
+  console.log(productData, "productData");
+  console.log(formData, "formData");
 
-  // Fetch Dropdown's List Data
-  // useEffect(() => {
-  //   getBidType();
-  // }, []);
+  useEffect(() => {
+    if (!id && productData && productData.length > 0) {
+      // If there's no `id`, concatenate all product names into a single string
+      const concatenatedProductNames = productData
+        .map((product) => product.name)
+        .join(", ");
+
+      // Set the 'title' field with the concatenated product names
+      setValue("title", concatenatedProductNames);
+    }
+  }, [id, productData, setValue]);
+
   const updateBidCategories = async (id) => {
     console.log(id, formData, "bidid");
     const categoryIds = formData.map((item) => item.category);
@@ -91,11 +85,6 @@ const BidForm = () => {
         console.log(response1, "res11");
         setLoading(false);
         navigate(`/portal/bids/products/${id}`);
-        // setAlert({
-        //   isVisible: true,
-        //   message: "Category has been updated successfully.",
-        //   severity: "success",
-        // });
       }
     } catch (error) {
       setLoading(false);
@@ -307,9 +296,9 @@ const BidForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (titleValue) handleTitleInputChange("", titleValue);
-  }, [titleValue]);
+  // useEffect(() => {
+  //   if (titleValue) handleTitleInputChange("", titleValue);
+  // }, [titleValue]);
 
   const handleTitleChange = async (event, value) => {
     if (value.id) {
@@ -349,26 +338,24 @@ const BidForm = () => {
   };
 
   const handleFormdata = async (id) => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
+        "",
+        true
+      );
 
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
-          "",
-          true
-        );
-
-        if (response.status === 200) {
+      if (response.status === 200) {
         reset({
           type: response.data.type || "",
           title: response.data.title || "",
-          description: response.data.description || ""
+          description: response.data.description || "",
         });
-        }
-      } catch (error) {
-        console.log(error);
       }
-    
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -397,34 +384,9 @@ const BidForm = () => {
                       }}
                     />
                   </div>
-                  {/* <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Reserve Bid Price"
-                      name="reserved_price"
-                      placeholder="Reserve Bid Price"
-                      rules={{
-                        required: "ReserveBid Price is required.",
-                      }}
-                    />
-                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col-lg-12">
-                    {/* <SearchSelect
-                      control={control}
-                      options={searchedBids}
-                      label="Bid Title"
-                      name="title"
-                      placeholder="Bid Title"
-                      rules={{
-                        required: "Bid Title is required.",
-                      }}
-                      handleInputChange={handleTitleInputChange}
-                      handleChange={handleTitleChange}
-                      setValue={setTitleValue}
-                      value={titleValue}
-                    /> */}
                     <CustomInput
                       control={control}
                       label="Bid Title"
@@ -437,88 +399,7 @@ const BidForm = () => {
                     />
                   </div>
                 </div>
-                {/* <div className="row">
-                  <div className="col-lg-6">
-                    <CustomInput
-                      control={control}
-                      label="Product Quantity"
-                      name="product_quantity"
-                      placeholder="Product Quantity"
-                      inputType="text"
-                      rules={{
-                        required: "Product Quantity is required.",
-                      }}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <CustomSelect
-                      control={control}
-                      label="Unit"
-                      name="product_unit"
-                      options={getProductUnits()}
-                      placeholder="Unit"
-                      rules={{
-                        required: "Unit is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <DateTimeRangePicker
-                      control={control}
-                      label="Opening Date & Time"
-                      name="bid_start_date"
-                      rules={{
-                        required: "Opening Date & Time is required.",
-                        validate: (value) =>
-                          dateValidator(value, minDate, maxDate),
-                      }}
-                      textFieldProps={{
-                        min: `${minDate}T12:00`,
-                        max: `${maxDate}T17:00`,
-                      }}
-                      clearErrors={clearErrors}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <DateTimeRangePicker
-                      control={control}
-                      label="Closing Date & Time"
-                      name="bid_end_date"
-                      rules={{
-                        required: "Closing Date & Time is required.",
-                        validate: (value) =>
-                          dateValidator(value, minDate, maxDate),
-                      }}
-                      textFieldProps={{
-                        min: `${minDate}T12:00`,
-                        max: `${maxDate}T17:00`,
-                      }}
-                      clearErrors={clearErrors}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-6">
-                    <DateTimeRangePicker
-                      control={control}
-                      label="Delivery Timeline"
-                      name="delivery_date"
-                      type="date"
-                      rules={{
-                        required: "Delivery Timeline is required.",
-                        validate: (value) =>
-                          dateValidator(value, minDate, maxDate),
-                      }}
-                      textFieldProps={{
-                        min: minDate,
-                        max: maxDate,
-                      }}
-                      clearErrors={clearErrors}
-                    />
-                  </div>
-                </div> */}
+
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -531,49 +412,6 @@ const BidForm = () => {
                     />
                   </div>
                 </div>
-
-                {/* <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="delivery_terms"
-                      label="Delivery Term"
-                      rules={{
-                        required: "Delivery Term is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="payment_terms"
-                      label="Payment Term"
-                      rules={{
-                        required: "Payment Term is required.",
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="eligiblity_criteria"
-                      label="Eligiblity Criteria"
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="technical_specification"
-                      label="Technical Specification"
-                    />
-                  </div>
-                </div> */}
 
                 <div className={cn("my-3", styles["btn-container"])}>
                   {loading ? (

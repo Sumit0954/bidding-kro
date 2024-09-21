@@ -20,6 +20,7 @@ export const PortalApiUrls = Object.freeze({
   CHANGE_PASSWORD: "/user/change_password/",
   GET_BID_TYPE: "/bid/choices/",
   CREATE_BID: "/bid/customer/",
+  CLONE_BID: "bid/customer/clone/",
   BID_ADD_PRODUCT: "bid/customer/product/",
   BID_PRODUCTS_LIST: "bid/customer/product/",
   BID_EDIT_PRODUCT: "bid/customer/product/",
