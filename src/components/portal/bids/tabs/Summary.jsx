@@ -32,13 +32,13 @@ const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
   const { setAlert } = useContext(AlertContext);
   const [showSpecification, setShowSpecification] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
     id: null,
   });
-
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -62,7 +62,6 @@ const Summary = ({ bidDetails }) => {
       getParticipants();
     }
   }, [bidDetails]);
-
   const revokeParticipant = async (company_id) => {
     try {
       const response = await _sendAPIRequest(
@@ -93,34 +92,11 @@ const Summary = ({ bidDetails }) => {
     }
   };
 
-  const addAction = (cell) => {
-    if (cell.column.id === "action") {
-      return (
-        <TableCell {...cell.getCellProps()} align="center" padding="none">
-          <button
-            className={styles["revoke-btn"]}
-            onClick={() =>
-              setDeleteDetails({
-                open: true,
-                title: "Revoke Participant",
-                message: `Are you sure you want to revoke this ${cell.row.original.company.name} ? This action cannot be undone.`,
-                id: cell.row.original.company.id,
-              })
-            }
-          >
-            Link
-          </button>
-        </TableCell>
-      );
-    } else {
-      return (
-        <TableCell {...cell.getCellProps()} align={cell.column.align}>
-          {" "}
-          {cell.render("Cell")}{" "}
-        </TableCell>
-      );
-    }
-  };
+  const productsColumns = products_Column({
+    setShowSpecification,
+    setSelectedProduct,
+  });
+
   return (
     <>
       {/* Summury */}
@@ -397,9 +373,8 @@ const Summary = ({ bidDetails }) => {
         </AccordionSummary>
         <AccordionDetails>
           <DataTable
-            propsColumn={products_Column}
-            propsData={participantDetail?.participants || []}
-            action={addAction}
+            propsColumn={productsColumns}
+            propsData={bidDetails?.product || []}
           />
         </AccordionDetails>
       </Accordion>
@@ -594,22 +569,22 @@ const Summary = ({ bidDetails }) => {
       </div>
       {/* Note Tagsline for user ended */}
 
-      {deleteDetails?.open && (
+      {/* {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}
           message={deleteDetails.message}
           handleClick={handleDeleteConfirmation}
+          action={addAction}
         />
-      )}
+      )} */}
 
       {showSpecification && (
         <ProductSpecificationModal
           showSpecification={showSpecification}
           setShowSpecification={setShowSpecification}
+          selectedProduct={selectedProduct}
         />
       )}
-
-      {/* <button onClick={() => setShowSpecification(true)}>Open Product</button> */}
     </>
   );
 };

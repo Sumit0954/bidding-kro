@@ -15,11 +15,12 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 const ProductSpecificationModal = ({
   showSpecification,
   setShowSpecification,
+  selectedProduct
 }) => {
   const handleClose = () => {
     setShowSpecification(false);
   };
-
+console.log(selectedProduct)
   return (
     <>
       <Modal
@@ -47,7 +48,7 @@ const ProductSpecificationModal = ({
               </Box>
               <span>
                 <Box className="row mb-2">
-                  <Box className="col text-start">Product Name</Box>
+                  <Box className="col text-start">{selectedProduct.title}</Box>
                 </Box>
               </span>
 
@@ -62,67 +63,13 @@ const ProductSpecificationModal = ({
                       sx={{
                         display: "list-item",
                         listStyleType: "disc",
-                        pl: "20px", // Indentation for list items
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <span>
-                            <strong>Objective :</strong> Procurement of cotton
-                            material to meet manufacturing needs.
-                          </span>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{
-                        display: "list-item",
-                        listStyleType: "disc",
                         pl: "20px",
                       }}
                     >
                       <ListItemText
                         primary={
                           <span>
-                            <strong>Invitation :</strong> Seeking proposals from
-                            qualified suppliers for premium-grade cotton fabric.
-                          </span>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{
-                        display: "list-item",
-                        listStyleType: "disc",
-                        pl: "20px",
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <span>
-                            <strong>Specifications :</strong> Suppliers must
-                            adhere to predefined specifications and industry
-                            standards.
-                          </span>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{
-                        display: "list-item",
-                        listStyleType: "disc",
-                        pl: "20px",
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <span>
-                            <strong>Partnership :</strong> Aim to establish a
-                            mutually beneficial partnership with the selected
-                            supplier.
+                            <strong>Specifications :</strong> {selectedProduct.specification.replace(/<\/?p>/g, '')}
                           </span>
                         }
                       />

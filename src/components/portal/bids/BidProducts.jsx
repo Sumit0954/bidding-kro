@@ -1,4 +1,4 @@
-import styles from "./BidForm.module.scss";
+import styles from "./BidProduct.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
@@ -34,6 +34,7 @@ const BidProducts = () => {
   const [expanded, setExpanded] = useState(null); // Track which form is open
 
   // Fetch products list on component load
+
   useEffect(() => {
     fetchProductList();
   }, []);
@@ -49,10 +50,19 @@ const BidProducts = () => {
       );
       if (response?.status === 200) {
         setProductList(response.data);
+        response.data.forEach((product, index) => prefillForm(product, index));
       }
     } catch (error) {
       console.log("Error fetching product list", error);
     }
+  };
+
+  const prefillForm = (product, index) => {
+    setValue(`product_title${index}`, product.title);
+    setValue(`product_quantity${index}`, product.quantity);
+    setValue(`product_unit${index}`, product.unit);
+    setValue(`reserved_price${index}`, product.reserved_price);
+    setValue(`Product_specification${index}`, product.specification);
   };
 
   // Handle form submission for adding a product
@@ -99,16 +109,15 @@ const BidProducts = () => {
   };
 
   // Handle editing product
-  const editProduct = async (data, product_id) => {
+  const editProduct = async (data, product_id , index) => {
     setLoading(true);
-
+    console.log("Form Data : ", data);
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("quantity", data.quantity);
-    formData.append("unit", data.unit);
-    formData.append("reserved_price", data.reserved_price);
-    formData.append("specification", data.specification);
-
+    formData.append("title", data[`product_title_${index}`]);
+    formData.append("quantity", data[`product_quantity_${index}`]);
+    formData.append("unit", data[`product_unit_${index}`]);
+    formData.append("reserved_price", data[`reserved_price_${index}`]);
+    formData.append("specification", data[`Product_specification_${index}`]);
     try {
       const response = await _sendAPIRequest(
         "PATCH",
@@ -118,6 +127,7 @@ const BidProducts = () => {
       );
       if (response?.status === 200) {
         fetchProductList(); // Refetch list after edit
+        console.log("product Updated successfully");
       }
     } catch (error) {
       console.log("Error editing product", error);
@@ -168,7 +178,7 @@ const BidProducts = () => {
             {productList.length > 0 && (
               <div>
                 <h5>Existing Products</h5>
-                {productList.map((item) => (
+                {productList.map((item, index) => (
                   <Accordion
                     key={item.id}
                     expanded={expanded === item.id}
@@ -191,7 +201,7 @@ const BidProducts = () => {
                             <CustomInput
                               control={control}
                               label="Product Title"
-                              name="product_title"
+                              name={`product_title${index}`}
                               placeholder="Product Title"
                               rules={{ required: "Product Title is required." }}
                             />
@@ -203,7 +213,7 @@ const BidProducts = () => {
                             <CustomInput
                               control={control}
                               label="Product Quantity"
-                              name="product_quantity"
+                              name={`product_quantity${index}`}
                               placeholder="Product Quantity"
                               rules={{
                                 required: "Product Quantity is required.",
@@ -214,7 +224,7 @@ const BidProducts = () => {
                             <CustomSelect
                               control={control}
                               label="Unit"
-                              name="product_unit"
+                              name={`product_unit${index}`}
                               options={getProductUnits()}
                               placeholder="Unit"
                               rules={{ required: "Unit is required." }}
@@ -224,7 +234,7 @@ const BidProducts = () => {
                             <CustomInput
                               control={control}
                               label="Reserve Bid Price"
-                              name="reserved_price"
+                              name={`reserved_price${index}`}
                               placeholder="Reserve Bid Price"
                               rules={{
                                 required: "Reserve Bid Price is required.",
@@ -237,7 +247,7 @@ const BidProducts = () => {
                           <div className="col-lg-12">
                             <CustomCkEditor
                               control={control}
-                              name="Product_specification"
+                              name={`Product_specification${index}`}
                               label="Product Specification"
                             />
                           </div>
