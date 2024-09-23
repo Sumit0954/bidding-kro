@@ -18,6 +18,7 @@ const SearchBar = ({
   ancestors,
   // handleChange,
   onAncestorsChange,
+  disabled,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -116,6 +117,9 @@ const SearchBar = ({
               options={searchResults}
               inputValue={inputValue}
               value={value}
+              disableClearable
+              clearOnEscape={false}
+              disabled={disabled}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
@@ -128,10 +132,17 @@ const SearchBar = ({
                 <TextField
                   {...params}
                   placeholder={placeholder}
+                  disabled={disabled}
                   variant="standard"
                   InputProps={{
                     ...params.InputProps,
                     type: "search",
+                    endAdornment: (
+                      <>
+                        {params.InputProps.endAdornment}
+                        {/* Hide additional clear button */}
+                      </>
+                    ),
                   }}
                   classes={{ root: styles["search-input-field"] }}
                 />

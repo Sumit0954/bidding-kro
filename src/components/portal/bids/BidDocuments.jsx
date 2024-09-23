@@ -17,6 +17,7 @@ import { extractFileExtension } from "../../../helpers/common";
 import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
+import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 
 const BidDocuments = () => {
   const { id } = useParams();
@@ -60,6 +61,7 @@ const BidDocuments = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    setErrors(false);
 
     const { name, size } = data.document;
 
@@ -100,8 +102,22 @@ const BidDocuments = () => {
     }
   };
 
-  const handleDeleteDocument = async (data) => {
-    const { id, name } = data;
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    document: null,
+    message: "",
+  });
+
+  const handleDeleteDocument = (data) => {
+    setDeleteDetails({
+      open: true,
+      document: data, // Store the document to be deleted
+      message: `Are you sure you want to delete the document? This action cannot be undone.`,
+    });
+  };
+
+  const confirmDeleteDocument = async () => {
+    const { id, name } = deleteDetails.document;
     if (id) {
       try {
         const response = await _sendAPIRequest(
@@ -116,22 +132,54 @@ const BidDocuments = () => {
             message: `Document ${name} has been deleted.`,
             severity: "success",
           });
-          window.location.reload();
+          window.location.reload(); // Reload after successful deletion
         }
       } catch (error) {
         const { data } = error.response;
-        if (data) {
-          if (data.error) {
-            setAlert({
-              isVisible: true,
-              message: data.error,
-              severity: "error",
-            });
-          }
+        if (data && data.error) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
         }
       }
     }
+    setDeleteDetails({ open: false, document: null, message: "" }); // Close the popup after delete
   };
+
+  // const handleDeleteDocument = async (data) => {
+  //   const { id, name } = data;
+  //   if (id) {
+  //     try {
+  //       const response = await _sendAPIRequest(
+  //         "DELETE",
+  //         PortalApiUrls.DELETE_DOCUMENT + `${id}/`,
+  //         "",
+  //         true
+  //       );
+  //       if (response.status === 204) {
+  //         setAlert({
+  //           isVisible: true,
+  //           message: `Document ${name} has been deleted.`,
+  //           severity: "success",
+  //         });
+  //         window.location.reload();
+  //       }
+  //     } catch (error) {
+  //       const { data } = error.response;
+  //       if (data) {
+  //         if (data.error) {
+  //           setAlert({
+  //             isVisible: true,
+  //             message: data.error,
+  //             severity: "error",
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   const addAction = (cell) => {
     if (cell.column.id === "action") {
@@ -227,6 +275,10 @@ const BidDocuments = () => {
                               }}
                               onChange={(e) => {
                                 const newFile = e.target.files[0];
+                                setError("document", {
+                                  type: "manual",
+                                  message: "",
+                                });
                                 if (newFile) {
                                   const reader = new FileReader();
                                   reader.onloadend = () => {
@@ -271,7 +323,11 @@ const BidDocuments = () => {
                   )}
                 />
 
-                {file && <FilePreview file={file} />}
+                {file && (
+                  <div>
+                    <h5>{file.name}</h5>
+                  </div>
+                )}
 
                 <div className={cn("my-3", styles["btn-container"])}>
                   <button
@@ -303,6 +359,24 @@ const BidDocuments = () => {
                 customClassName="portal-data-table"
               />
             </div>
+
+            {deleteDetails.open && (
+              <DeleteDialog
+                title="Delete Document"
+                message={deleteDetails.message}
+                handleClick={(confirmed) => {
+                  if (confirmed) {
+                    confirmDeleteDocument(); // Perform delete if confirmed
+                  } else {
+                    setDeleteDetails({
+                      open: false,
+                      document: null,
+                      message: "",
+                    }); // Close without deleting
+                  }
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
