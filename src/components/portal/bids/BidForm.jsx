@@ -61,9 +61,8 @@ const BidForm = () => {
   useEffect(() => {
     if (!id && productData && productData.length > 0) {
       // If there's no `id`, concatenate all product names into a single string
-      const concatenatedProductNames = productData
-        .map((product) => product.name)
-        .join(", ");
+      const concatenatedProductNames =
+        "Bid for " + productData.map((product) => product.name).join(", ");
 
       // Set the 'title' field with the concatenated product names
       setValue("title", concatenatedProductNames);

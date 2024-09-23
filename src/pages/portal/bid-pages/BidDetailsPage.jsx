@@ -125,18 +125,45 @@ const BidDetailsPage = () => {
   }, [id, type]);
 
   useEffect(() => {
-    const createdDate = new Date(bidDetails?.created_at);
-    const currentDate = new Date();
+    if (bidDetails?.id) {
+      const getParticipants = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.PARTICIPANTS_LIST + `${bidDetails?.id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            const participants = response.data.participants;
+            if (participants && participants.length === 0) {
+              setShow(true); // If participants array is empty, set show to true
+            } else {
+              setShow(false); // Otherwise, set show to false
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
-    const difference = currentDate.getTime() - createdDate.getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-
-    if (difference > twentyFourHours) {
-      setShow(true);
-    } else {
-      setShow(false);
+      getParticipants();
     }
-  }, [bidDetails?.created_at]);
+  }, []);
+
+  // useEffect(() => {
+  //   const createdDate = new Date(bidDetails?.created_at);
+  //   const currentDate = new Date();
+
+  //   const difference = currentDate.getTime() - createdDate.getTime();
+  //   const twentyFourHours = 24 * 60 * 60 * 1000;
+
+  //   if (difference > twentyFourHours) {
+  //     setShow(true);
+  //   } else {
+  //     setShow(false);
+  //   }
+  // }, [bidDetails?.created_at]);
 
   return (
     <>

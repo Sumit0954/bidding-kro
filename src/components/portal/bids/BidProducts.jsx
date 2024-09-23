@@ -19,6 +19,7 @@ import {
   Divider,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 
 const BidProducts = () => {
   const { control, handleSubmit, setError, setValue, reset } = useForm();
@@ -109,15 +110,22 @@ const BidProducts = () => {
   };
 
   // Handle editing product
-  const editProduct = async (data, product_id , index) => {
+  const editProduct = async (data, product_id, index) => {
     setLoading(true);
     console.log("Form Data : ", data);
+    console.log("index : ", index);
+
     const formData = new FormData();
-    formData.append("title", data[`product_title_${index}`]);
-    formData.append("quantity", data[`product_quantity_${index}`]);
-    formData.append("unit", data[`product_unit_${index}`]);
-    formData.append("reserved_price", data[`reserved_price_${index}`]);
-    formData.append("specification", data[`Product_specification_${index}`]);
+    formData.append("title", data[`product_title${index}`]);
+    formData.append("quantity", data[`product_quantity${index}`]);
+    formData.append("unit", data[`product_unit${index}`]);
+    formData.append("reserved_price", data[`reserved_price${index}`]);
+    formData.append("specification", data[`Product_specification${index}`]);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+
     try {
       const response = await _sendAPIRequest(
         "PATCH",
@@ -151,6 +159,44 @@ const BidProducts = () => {
     } catch (error) {
       console.log("Error deleting product", error);
     }
+  };
+
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    productId: null,
+  });
+
+  const handleDeleteConfirmation = async (choice) => {
+    if (choice && deleteDetails.productId) {
+      // If the user confirms, call the delete function with the stored productId
+      await deleteProduct(deleteDetails.productId);
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        productId: null,
+      });
+    } else {
+      // If the user cancels, just close the dialog
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        productId: null,
+      });
+    }
+  };
+
+  const openDeleteDialog = (productId) => {
+    setDeleteDetails({
+      open: true,
+      title: "Delete Product",
+      message:
+        "Are you sure you want to delete this product? This action cannot be undone.",
+      productId, // Store the productId in state
+    });
   };
 
   return (
@@ -193,7 +239,7 @@ const BidProducts = () => {
                       {/* Form with pre-filled data */}
                       <form
                         onSubmit={handleSubmit((data) =>
-                          editProduct(data, item.id)
+                          editProduct(data, item.id, index)
                         )}
                       >
                         <div className="row">
@@ -235,7 +281,7 @@ const BidProducts = () => {
                               control={control}
                               label="Reserve Bid Price"
                               name={`reserved_price${index}`}
-                              placeholder="Reserve Bid Price"
+                              placeholder="₹ 20,000"
                               rules={{
                                 required: "Reserve Bid Price is required.",
                               }}
@@ -267,7 +313,8 @@ const BidProducts = () => {
                               <button
                                 type="button"
                                 className="btn btn-danger"
-                                onClick={() => deleteProduct(item.id)}
+                                // onClick={() => deleteProduct(item.id)}
+                                onClick={() => openDeleteDialog(item.id)}
                               >
                                 Delete Product
                               </button>
@@ -278,6 +325,14 @@ const BidProducts = () => {
                     </AccordionDetails>
                   </Accordion>
                 ))}
+
+                {deleteDetails?.open && (
+                  <DeleteDialog
+                    title={deleteDetails.title}
+                    message={deleteDetails.message}
+                    handleClick={handleDeleteConfirmation}
+                  />
+                )}
               </div>
             )}
 
@@ -330,7 +385,7 @@ const BidProducts = () => {
                           control={control}
                           label="Reserve Bid Price"
                           name="reserved_price"
-                          placeholder="Reserve Bid Price"
+                          placeholder="₹ 20,000"
                           rules={{
                             required: "Reserve Bid Price is required.",
                           }}
