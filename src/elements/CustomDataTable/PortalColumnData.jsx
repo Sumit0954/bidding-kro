@@ -184,6 +184,7 @@ export const invited_bids_column = [
       return `₹ ${data.row.original.bid.reserved_price}`;
     },
   },
+  
   {
     Header: "Status",
     accessor: "status",

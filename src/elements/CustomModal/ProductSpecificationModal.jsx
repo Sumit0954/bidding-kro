@@ -12,6 +12,7 @@ import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 
+
 const ProductSpecificationModal = ({
   showSpecification,
   setShowSpecification,
