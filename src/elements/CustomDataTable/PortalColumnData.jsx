@@ -4,6 +4,7 @@ import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { convertFileSize } from "../../helpers/common";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
+import classNames from "classnames";
 
 const onCloneBidClick = async (id, navigate) => {
   try {
@@ -28,13 +29,14 @@ export const created_bids_column = [
     accessor: "formatted_number",
     align: "left",
     disablePadding: false,
+    width: 150, // Add a uniform width
   },
   {
     Header: "Bid Title",
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 200,
+    width: 150, // Change to uniform width
     Cell: (data) => {
       return (
         <NavLink
@@ -51,9 +53,8 @@ export const created_bids_column = [
     accessor: "bid_open_date",
     align: "left",
     disablePadding: false,
-    width: 190,
+    width: 150, // Change to uniform width
     Cell: (data) => {
-      // return dateTimeFormatter(data?.row?.original?.bid_open_date);
       return data?.row?.original?.bid_open_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
         : " - ";
@@ -64,31 +65,32 @@ export const created_bids_column = [
     accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
-    width: 190,
+    width: 150, // Change to uniform width
     Cell: (data) => {
       return data?.row?.original?.bid_close_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
         : " - ";
     },
   },
-  // {
-  //   Header: "Reserve Price",
-  //   accessor: "reserved_price",
-  //   align: "right",
-  //   disablePadding: false,
-  //   Cell: (data) => {
-  //     return `₹ ${data.row.original.reserved_price}`;
-  //   },
-  // },
   {
     Header: "Status",
     accessor: "status",
     align: "center",
+    width: 150, // Change to uniform width
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
       return (
-        <div className={`status-cloumn ${data?.row?.original?.status}`}>
+        <div
+          className={`status-cloumn ${data?.row?.original?.status}`}
+          style={{
+            color: `${
+              data?.row?.original?.status === "active"
+                ? "#22bb33"
+                : "darkyellow"
+            }`,
+          }}
+        >
           {data?.row?.original?.status}
         </div>
       );
@@ -99,18 +101,28 @@ export const created_bids_column = [
     accessor: "clone_bid",
     align: "right",
     disablePadding: false,
-    // width: 300,
+    width: 150, // Change to uniform width
     Cell: (data) => {
       const navigate = useNavigate();
       return (
         <p
           className={styles["table-link"]}
+          style={{ color: "#0d6efd" }}
           onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
-          // to={`/portal/bids/update/${data?.row?.original?.id}`}
         >
           Clone Bid
         </p>
       );
+    },
+  },
+  {
+    Header: "Invite",
+    accessor: "reserved_price",
+    align: "right",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+    Cell: (data) => {
+      return <NavLink className={styles["table-link"]}>Invite</NavLink>;
     },
   },
 ];
@@ -130,7 +142,7 @@ export const invited_bids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 300,
+    width: 150,
     Cell: (data) => {
       return (
         <NavLink
@@ -147,7 +159,7 @@ export const invited_bids_column = [
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
-    width: 180,
+    width: 150,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid?.bid_start_date);
     },
@@ -157,7 +169,7 @@ export const invited_bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 180,
+    width: 150,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.bid?.bid_end_date);
     },
@@ -167,6 +179,7 @@ export const invited_bids_column = [
     accessor: "reserved_price",
     align: "right",
     disablePadding: false,
+    width: 150,
     Cell: (data) => {
       return `₹ ${data.row.original.bid.reserved_price}`;
     },
@@ -177,6 +190,7 @@ export const invited_bids_column = [
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
+    width: 150,
     Cell: (data) => {
       return (
         <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>

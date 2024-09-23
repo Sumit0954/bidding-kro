@@ -15,12 +15,12 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 const ProductSpecificationModal = ({
   showSpecification,
   setShowSpecification,
-  selectedProduct
+  selectedProduct,
 }) => {
   const handleClose = () => {
     setShowSpecification(false);
   };
-console.log(selectedProduct)
+  console.log(selectedProduct);
   return (
     <>
       <Modal
@@ -51,32 +51,18 @@ console.log(selectedProduct)
                   <Box className="col text-start">{selectedProduct.title}</Box>
                 </Box>
               </span>
-
               <Box className="row">
-                <Box className="row">
-                  <Box className={cn("col text-start", styles["title"])}>
-                    Specification :
-                  </Box>
-                  <List sx={{ pl: 4.5 }}>
-                    <ListItem
-                      disablePadding
-                      sx={{
-                        display: "list-item",
-                        listStyleType: "disc",
-                        pl: "20px",
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <span>
-                            <strong>Specifications :</strong> {selectedProduct.specification.replace(/<\/?p>/g, '')}
-                          </span>
-                        }
-                      />
-                    </ListItem>
-                  </List>
+                <Box className={cn("col text-start ", styles["title"])}>
+                  Specification :
                 </Box>
               </Box>
+              <span>
+                <Box className="row mb-2">
+                  <Box className="col text-start">
+                    {selectedProduct.specification.replace(/<\/?p>/g, "")}
+                  </Box>
+                </Box>
+              </span>
             </Box>
           </Box>
         </Box>
