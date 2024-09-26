@@ -1,13 +1,13 @@
 import CompanyList from "../../../components/portal/companies/CompanyList";
-import {useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const CompanyListPage = () => {
   const [bidDetails, setBidDetails] = useState({});
-  const id = new URLSearchParams(useLocation().search).get("bid");
-
+  // const id = new URLSearchParams(useLocation().search).get("bid");
+  const {id} = useParams()
   useEffect(() => {
     if (id) {
       const retrieveBid = async () => {

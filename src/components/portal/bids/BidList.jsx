@@ -13,7 +13,6 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
 
-  console.log("");
   const getCreatedBidList = async () => {
     try {
       const params = {

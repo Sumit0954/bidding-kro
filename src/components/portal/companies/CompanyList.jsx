@@ -1,6 +1,6 @@
 import styles from "./CompanyList.module.scss";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { TableCell } from "@mui/material";
+import { Box, Tab, TableCell, Tabs } from "@mui/material";
 import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
@@ -13,6 +13,11 @@ const CompanyList = ({ bidDetails, id }) => {
   const [companyDetail, setCompanyDetail] = useState({});
   const [otherSuppliers, setOtherSuppliers] = useState([]);
   const [participants, setParticipants] = useState([]);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleInvite = (data) => {
     setInvitation(true);
@@ -71,11 +76,12 @@ const CompanyList = ({ bidDetails, id }) => {
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
             className={cn(
-              styles["invite-btn"],
-              (!id || found) && styles["disable"]
+              styles["invite-btn"]
+              // (!id || found) && styles["disable"]
             )}
             onClick={() => handleInvite(cell)}
-            disabled={id && !found ? false : true}
+            // disabled={id && !found ? true : false}
+            disabled={!id && true}
           >
             {found ? "Invited" : "Invite"}
           </button>
@@ -93,7 +99,25 @@ const CompanyList = ({ bidDetails, id }) => {
 
   return (
     <>
-      {}
+      <Box sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            marginBottom: "1rem",
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+          }}
+        >
+          <Tabs
+            value={value}
+            onChange={handleInvite}
+            aria-label="companies-list-tabs"
+          >
+            <Tab label="ALL COMPANIES" {...a11yProps(0)} />
+            <Tab label="INVITE REQUESTS" {...a11yProps(1)} />
+          </Tabs>
+        </Box>      
+      </Box>
       <DataTable
         propsColumn={companies_column}
         propsData={otherSuppliers}
@@ -114,3 +138,10 @@ const CompanyList = ({ bidDetails, id }) => {
 };
 
 export default CompanyList;
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}

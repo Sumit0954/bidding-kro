@@ -113,6 +113,7 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
+            console.log(" bid details ", response.data);
             setBidDetails(response.data);
           }
         } catch (error) {

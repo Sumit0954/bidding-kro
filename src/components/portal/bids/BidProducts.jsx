@@ -418,30 +418,29 @@ const BidProducts = () => {
             )}
 
             <div className={cn("my-3", styles["btn-container"])}>
+              <button
+                type="button"
+                className={cn("btn", "button")}
+                // disabled={bidStatus === "cancelled" ? true : false}
+                onClick={() => navigate(`/portal/bids/:action/${id}`)}
+              >
+                Back
+              </button>
               {submitLoader ? (
                 <ButtonLoader size={60} />
               ) : (
-                <>
-                  <button
-                    type="button"
-                    className={cn("btn", "button")}
-                    // disabled={bidStatus === "cancelled" ? true : false}
-                  >
-                    Back
-                  </button>
-
-                  <button
-                    type="submit"
-                    className={cn("btn", "button")}
-                    // disabled={bidStatus === "cancelled" ? true : false}
-                    onClick={() =>
-                      navigate(`/portal/bids/create/deatils/${id}`)
-                    }
-                  >
-                    {/* {id ? "Update Bid" : "Create Bid"} */}
-                    Save & Next
-                  </button>
-                </>
+                <button
+                  type="submit"
+                  className={cn("btn", "button")}
+                  // disabled={bidStatus === "cancelled" ? true : false}
+                  onClick={() => {
+                    setSubmitLoader(true);
+                    navigate(`/portal/bids/create/deatils/${id}`);
+                  }}
+                >
+                  {/* {id ? "Update Bid" : "Create Bid"} */}
+                  Save & Next
+                </button>
               )}
             </div>
           </div>

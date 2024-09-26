@@ -178,7 +178,6 @@ const BidForm = () => {
             message: "Bid has been created successfully.",
             severity: "success",
           });
-          console.log(response);
           // setBidId(response.data.id);
           updateBidCategories(response.data.id);
         }
@@ -413,28 +412,31 @@ const BidForm = () => {
                 </div>
 
                 <div className={cn("my-3", styles["btn-container"])}>
+                  <button
+                    type="button"
+                    className={cn("btn", "button")}
+                    disabled={bidStatus === "cancelled" ? true : false}
+                    onClick={() => {
+                      
+                      id
+                        ? navigate(`/portal/bids/categories${id}`)
+                        : navigate(`/portal/bids/categories`);
+                    }}
+                  >
+                    Back
+                  </button>
+
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-                    <>
-                      <button
-                        type="button"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                      >
-                        Back
-                      </button>
-
-                      <button
-                        type="submit"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                        // onClick={submitForm}
-                      >
-                        {id ? "Update Bid" : "Create Bid"}
-                        {/* Save & Next */}
-                      </button>
-                    </>
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                      // onClick={submitForm}
+                    >
+                      {id ? "Update Bid" : "Create Bid"}
+                    </button>
                   )}
                 </div>
               </form>

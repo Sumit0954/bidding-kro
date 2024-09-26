@@ -99,19 +99,34 @@ export const created_bids_column = [
   {
     Header: "Action",
     accessor: "clone_bid",
-    align: "right",
+    align: "center", // Center alignment to make it consistent
+    width: 150,
     disablePadding: false,
-    width: 150, // Change to uniform width
+    hideSortIcon: true,
     Cell: (data) => {
       const navigate = useNavigate();
       return (
-        <p
-          className={styles["table-link"]}
-          style={{ color: "#0d6efd" }}
-          onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center", // Ensure vertical alignment
+            height: "100%", // Make sure it fills the cell height
+            padding: "8px", // Apply uniform padding
+          }}
         >
-          Clone Bid
-        </p>
+          <p
+            className={styles["table-link"]}
+            style={{
+              color: "#0d6efd",
+              cursor: "pointer",
+              margin: 0, // Remove extra margin that may cause misalignment
+            }}
+            onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
+          >
+            Clone Bid
+          </p>
+        </div>
       );
     },
   },
@@ -122,7 +137,15 @@ export const created_bids_column = [
     disablePadding: false,
     width: 150, // Change to uniform width
     Cell: (data) => {
-      return <NavLink className={styles["table-link"]}>Invite</NavLink>;
+      console.log(data);
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/companies/${data?.cell?.row?.original.id}`}
+        >
+          Invite
+        </NavLink>
+      );
     },
   },
 ];
@@ -184,7 +207,7 @@ export const invited_bids_column = [
       return `₹ ${data.row.original.bid.reserved_price}`;
     },
   },
-  
+
   {
     Header: "Status",
     accessor: "status",
@@ -403,37 +426,27 @@ export const l1_participants_column = [
     width: 160,
   },
   {
-    Header: "Company Type",
-    accessor: "company.organization_type",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-    Cell: (data) => {
-      return data?.row.original.company.organization_type || "--";
-    },
-  },
-  {
     Header: "Status",
     accessor: "status",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
-      return (
-        <>
-          <div
-            className={`status-cloumn ${
-              data?.row?.original?.status === "accepted"
-                ? "success"
-                : data?.row?.original?.status === "pending"
-                ? "pending"
-                : "cancelled"
-            }`}
-          >
-            {data?.row?.original?.status}
-          </div>
-        </>
-      );
+      // return (
+      //   <>
+      //     <div
+      //       className={`status-cloumn ${
+      //         data?.row?.original?.status === "accepted"
+      //           ? "success"
+      //           : data?.row?.original?.status === "pending"
+      //           ? "pending"
+      //           : "cancelled"
+      //       }`}
+      //     >
+      //       {data?.row?.original?.status}
+      //     </div>
+      //   </>
+      // );
     },
   },
   {
@@ -539,5 +552,53 @@ export const PreviousBids_column = [
     disablePadding: false,
     width: 100,
     hideSortIcon: true,
+  },
+];
+
+export const Sample_Bid_Invitations_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_Name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Company Email",
+    accessor: "company_email",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Company Mobile",
+    accessor: "mobile_number",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "center",
+    width: 150, // Change to uniform width
+    disablePadding: false,
+    hideSortIcon: true,
+    // Cell: (data) => {
+    //   return (
+    //     <div
+    //       className={`status-cloumn ${data?.row?.original?.status}`}
+    //       style={{
+    //         color: `${
+    //           data?.row?.original?.status === "active"
+    //             ? "#22bb33"
+    //             : "darkyellow"
+    //         }`,
+    //       }}
+    //     >
+    //       {data?.row?.original?.status}
+    //     </div>
+    //   );
+    // },
   },
 ];
