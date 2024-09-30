@@ -168,6 +168,14 @@ const Summary = ({ bidDetails }) => {
                   : "-"}
               </p>
             </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>
+                Bid Created Date and Time
+              </h6>
+              <p className={styles["col-data"]}>
+                {dateTimeFormatter(bidDetails?.created_at)}
+              </p>
+            </div>
           </div>
         </AccordionDetails>
       </Accordion>

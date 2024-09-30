@@ -51,6 +51,12 @@ const BidDetailsPage = () => {
     setValue(newValue);
   };
 
+  const truncatelength = (title, maxlength) => {
+    return title?.length > maxlength
+      ? title.substring(0, maxlength) + "..."
+      : title;
+  };
+
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -93,7 +99,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {bidDetails?.title}
+      {truncatelength(bidDetails?.title, 50)}
     </Typography>,
   ];
 

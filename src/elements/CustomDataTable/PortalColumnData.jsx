@@ -5,6 +5,68 @@ import { convertFileSize } from "../../helpers/common";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
+import DeleteDialog from "../CustomDialog/DeleteDialog";
+import { useState } from "react";
+
+// const onCloneBidClick = async (id, navigate) => {
+//   try {
+//     const response = await _sendAPIRequest(
+//       "POST",
+//       `${PortalApiUrls.CLONE_BID}${id}/`,
+//       null,
+//       true
+//     );
+//     if (response?.status === 201) {
+//       console.log(response);
+//       navigate(`/portal/bids/categories/${response.data.id}`);
+//     }
+//   } catch (error) {
+//     console.log("Error fetching product list", error);
+//   }
+// };
+
+const CloneConfirmation = ({ id, onCloneConfirm }) => {
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleCloneClick = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = async (confirm) => {
+    setOpenDialog(false);
+    if (confirm) {
+      await onCloneConfirm(id);
+    }
+  };
+
+  return (
+    <>
+      <p
+        className={styles["table-link"]}
+        // style={{ color: "#0d6efd" }}
+        style={{
+          color: "#0d6efd",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center", // Ensure vertical alignment
+          height: "100%", // Make sure it fills the cell height
+          padding: "8px", // Apply uniform padding
+          marginBottom: "0",
+        }}
+        onClick={handleCloneClick}
+      >
+        Clone Bid
+      </p>
+      {openDialog && (
+        <DeleteDialog
+          title="Clone Bid"
+          message="Are you sure you want to clone this bid?"
+          handleClick={handleDialogClose}
+        />
+      )}
+    </>
+  );
+};
 
 const onCloneBidClick = async (id, navigate) => {
   try {
@@ -19,7 +81,7 @@ const onCloneBidClick = async (id, navigate) => {
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
-    console.log("Error fetching product list", error);
+    console.log("Error cloning bid", error);
   }
 };
 
@@ -76,7 +138,7 @@ export const created_bids_column = [
     Header: "Status",
     accessor: "status",
     align: "center",
-    width: 150, // Change to uniform width
+    width: 100, // Change to uniform width
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -100,46 +162,39 @@ export const created_bids_column = [
     Header: "Action",
     accessor: "clone_bid",
     align: "center", // Center alignment to make it consistent
-    width: 150,
+    width: 100,
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
       const navigate = useNavigate();
       return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center", // Ensure vertical alignment
-            height: "100%", // Make sure it fills the cell height
-            padding: "8px", // Apply uniform padding
-          }}
-        >
-          <p
-            className={styles["table-link"]}
-            style={{
-              color: "#0d6efd",
-              cursor: "pointer",
-              margin: 0, // Remove extra margin that may cause misalignment
-            }}
-            onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
-          >
-            Clone Bid
-          </p>
-        </div>
+        <CloneConfirmation
+          id={data?.row?.original?.id}
+          onCloneConfirm={(id) => onCloneBidClick(id, navigate)}
+        />
+
+        // <p
+        //   className={styles["table-link"]}
+        //   style={{ color: "#0d6efd" }}
+        //   onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
+        // >
+        //   Clone Bid
+        // </p>
       );
     },
   },
   {
     Header: "Invite",
     accessor: "reserved_price",
-    align: "right",
+    align: "left",
     disablePadding: false,
-    width: 150, // Change to uniform width
+    paddingLeft: "2rem",
+    width: 100, // Change to uniform width
     Cell: (data) => {
       console.log(data);
       return (
         <NavLink
+          style={{ textAlign: "center" }}
           className={styles["table-link"]}
           to={`/portal/companies/${data?.cell?.row?.original.id}`}
         >
@@ -331,8 +386,20 @@ export const documents_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
+      const handleDownloadDocument = (data) => {
+        const { file, name } = data;
+        const link = document.createElement("a");
+        link.href = file;
+        link.setAttribute("download", name);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      };
       return (
-        <div className={styles["document-type"]}>
+        <div
+          className={styles["document-type"]}
+          onClick={() => handleDownloadDocument(data.row.original)}
+        >
           {data?.row?.original?.type}
         </div>
       );

@@ -14,10 +14,32 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
   const [inviteBids, setInviteBids] = useState([]);
 
   const getCreatedBidList = async () => {
+    console.log(
+      selectedCategory,
+      "selectedCategoryselectedCategoryselectedCategory"
+    );
+    const categoryArray = Array.isArray(selectedCategory)
+      ? selectedCategory
+      : [selectedCategory];
+
+    // Create URLSearchParams instance
+    const params = new URLSearchParams();
+
+    // // Append each category value to the params object
+    // categoryArray.forEach((category) => {
+    //   if (category !== undefined) {
+    //     params.append("category", category); // This will format as category=7553&category=8262
+    //   }
+    // });
+    categoryArray.forEach((category) => {
+      if (category !== undefined) {
+        params.append("category", category); // This will append without the []
+      }
+    });
     try {
-      const params = {
-        category: selectedCategory,
-      };
+      // const params = {
+      //   category: selectedCategory,
+      // };
       const response = await _sendAPIRequest(
         "GET",
         PortalApiUrls.CREATED_LIST_BIDS,

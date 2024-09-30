@@ -83,7 +83,7 @@ const BidForm = () => {
       if (response1.status === 200) {
         console.log(response1, "res11");
         setLoading(false);
-        navigate(`/portal/bids/products/${id}`);
+        navigate(`/portal/bids/products/${id}`, { state: { productData } });
       }
     } catch (error) {
       setLoading(false);
