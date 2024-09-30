@@ -5,6 +5,9 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
+  Box,
+  Button,
   Chip,
   Divider,
   Stack,
@@ -166,6 +169,14 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
                   : "-"}
+
+              </p>
+            </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Bid Created Date and Time</h6>
+              <p className={styles["col-data"]}>
+                {`${dateTimeFormatter(bidDetails?.created_at)}`}
+
               </p>
             </div>
           </div>
@@ -400,6 +411,40 @@ const Summary = ({ bidDetails }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
+
+      {/* Buyer */}
+      {/* <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Buyer
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails className={styles["accordion-details"]}>
+          <Box display="flex" alignItems="center">
+            <Avatar
+              className={styles["buyer-avatar"]}
+              alt="Buyer Image"
+              src="/path_to_your_image.png" // Add correct path to your buyer image
+            />
+            <Typography
+              component="a"
+              href="#"
+              className={styles["company-name"]}
+            >
+              Bombay Dyeing and Manufacturing
+            </Typography>
+          </Box>
+          <Button variant="contained" className={styles["chat-button"]}>
+            Chat with Buyer
+          </Button>
+        </AccordionDetails>
+      </Accordion> */}
 
       {/* Eligibility Criteria */}
       {bidDetails?.eligiblity_criteria && (

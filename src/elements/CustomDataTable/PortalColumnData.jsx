@@ -6,6 +6,10 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 
+import DeleteDialog from "../CustomDialog/DeleteDialog";
+import { useState } from "react";
+
+
 const onCloneBidClick = async (id, navigate) => {
   try {
     const response = await _sendAPIRequest(
@@ -19,9 +23,56 @@ const onCloneBidClick = async (id, navigate) => {
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
-    console.log("Error fetching product list", error);
+
+    console.log("Error cloning bid", error);
   }
 };
+
+
+
+const CloneConfirmation = ({ id, onCloneConfirm }) => {
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleCloneClick = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = async (confirm) => {
+    setOpenDialog(false);
+    if (confirm) {
+      await onCloneConfirm(id);
+    }
+  };
+
+  return (
+    <>
+      <p
+        className={styles["table-link"]}
+        // style={{ color: "#0d6efd" }}
+        style={{
+          color: "#0d6efd",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center", // Ensure vertical alignment
+          height: "100%", // Make sure it fills the cell height
+          padding: "8px", // Apply uniform padding
+          marginBottom: "0",
+        }}
+        onClick={handleCloneClick}
+      >
+        Clone Bid
+      </p>
+      {openDialog && (
+        <DeleteDialog
+          title="Clone Bid"
+          message="Are you sure you want to clone this bid?"
+          handleClick={handleDialogClose}
+        />
+      )}
+    </>
+  );
+};
+
 
 export const created_bids_column = [
   {
@@ -76,7 +127,8 @@ export const created_bids_column = [
     Header: "Status",
     accessor: "status",
     align: "center",
-    width: 150, // Change to uniform width
+    width: 100, // Change to uniform width
+
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -99,30 +151,48 @@ export const created_bids_column = [
   {
     Header: "Action",
     accessor: "clone_bid",
-    align: "right",
+    align: "center", // Center alignment to make it consistent
+    width: 100,
     disablePadding: false,
-    width: 150, // Change to uniform width
+    hideSortIcon: true,
     Cell: (data) => {
       const navigate = useNavigate();
       return (
-        <p
-          className={styles["table-link"]}
-          style={{ color: "#0d6efd" }}
-          onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
-        >
-          Clone Bid
-        </p>
+        <CloneConfirmation
+          id={data?.row?.original?.id}
+          onCloneConfirm={(id) => onCloneBidClick(id, navigate)}
+        />
+
+        // <p
+        //   className={styles["table-link"]}
+        //   style={{ color: "#0d6efd" }}
+        //   onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
+        // >
+        //   Clone Bid
+        // </p>
+
       );
     },
   },
   {
     Header: "Invite",
     accessor: "reserved_price",
-    align: "right",
+    align: "left",
     disablePadding: false,
-    width: 150, // Change to uniform width
+    paddingLeft: "2rem",
+    width: 100, // Change to uniform width
     Cell: (data) => {
-      return <NavLink className={styles["table-link"]}>Invite</NavLink>;
+      console.log(data);
+      return (
+        <NavLink
+          style={{ textAlign: "center" }}
+          className={styles["table-link"]}
+          to={`/portal/companies/${data?.cell?.row?.original.id}`}
+        >
+          Invite
+        </NavLink>
+      );
+
     },
   },
 ];
@@ -184,7 +254,7 @@ export const invited_bids_column = [
       return `₹ ${data.row.original.bid.reserved_price}`;
     },
   },
-  
+
   {
     Header: "Status",
     accessor: "status",
@@ -308,8 +378,20 @@ export const documents_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
+      const handleDownloadDocument = (data) => {
+        const { file, name } = data;
+        const link = document.createElement("a");
+        link.href = file;
+        link.setAttribute("download", name);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      };
       return (
-        <div className={styles["document-type"]}>
+        <div
+          className={styles["document-type"]}
+          onClick={() => handleDownloadDocument(data.row.original)}
+        >
           {data?.row?.original?.type}
         </div>
       );
@@ -403,37 +485,28 @@ export const l1_participants_column = [
     width: 160,
   },
   {
-    Header: "Company Type",
-    accessor: "company.organization_type",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-    Cell: (data) => {
-      return data?.row.original.company.organization_type || "--";
-    },
-  },
-  {
+
     Header: "Status",
     accessor: "status",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
-      return (
-        <>
-          <div
-            className={`status-cloumn ${
-              data?.row?.original?.status === "accepted"
-                ? "success"
-                : data?.row?.original?.status === "pending"
-                ? "pending"
-                : "cancelled"
-            }`}
-          >
-            {data?.row?.original?.status}
-          </div>
-        </>
-      );
+      // return (
+      //   <>
+      //     <div
+      //       className={`status-cloumn ${
+      //         data?.row?.original?.status === "accepted"
+      //           ? "success"
+      //           : data?.row?.original?.status === "pending"
+      //           ? "pending"
+      //           : "cancelled"
+      //       }`}
+      //     >
+      //       {data?.row?.original?.status}
+      //     </div>
+      //   </>
+      // );
     },
   },
   {
@@ -539,5 +612,53 @@ export const PreviousBids_column = [
     disablePadding: false,
     width: 100,
     hideSortIcon: true,
+  },
+];
+
+export const Sample_Bid_Invitations_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_Name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Company Email",
+    accessor: "company_email",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Company Mobile",
+    accessor: "mobile_number",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "center",
+    width: 150, // Change to uniform width
+    disablePadding: false,
+    hideSortIcon: true,
+    // Cell: (data) => {
+    //   return (
+    //     <div
+    //       className={`status-cloumn ${data?.row?.original?.status}`}
+    //       style={{
+    //         color: `${
+    //           data?.row?.original?.status === "active"
+    //             ? "#22bb33"
+    //             : "darkyellow"
+    //         }`,
+    //       }}
+    //     >
+    //       {data?.row?.original?.status}
+    //     </div>
+    //   );
+    // },
   },
 ];

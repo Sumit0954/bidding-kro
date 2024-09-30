@@ -1,76 +1,110 @@
 .col-heading {
-	font-size: 15px;
-	color: var(--admin-text-color-2);
+  font-size: 15px;
+  color: var(--admin-text-color-2);
 }
 
 .col-data {
-	margin-bottom: 0;
-	font-size: 14px;
+  margin-bottom: 0;
+  font-size: 14px;
 
-	&.amendment-data {
-		margin-left: 20px;
-	}
+  &.amendment-data {
+    margin-left: 20px;
+  }
 
-	a {
-		text-decoration: none;
-	}
+  a {
+    text-decoration: none;
+  }
 }
 
 .bids-detail-accordion {
-	box-shadow: var(--glow-shadow) !important;
-	
-	&.nested-accordion-heading{
-		margin-top: 0px !important;
-	}
+  box-shadow: var(--glow-shadow) !important;
+
+  &.nested-accordion-heading {
+    margin-top: 0px !important;
+  }
 }
 
 .printable-accordion {
-	box-shadow: unset !important;
-	margin-top: 0 !important;
+  box-shadow: unset !important;
+  margin-top: 0 !important;
 }
 
-
-.revoke-btn{
-    background-color: #ff080028;
-    width: 100px;
-    text-align: center;
-    border-radius: 5px;
-    padding: 2px;
-    text-transform: uppercase;
-    color: var(--error);
-    font-weight: 600;
-    border: none;
+.revoke-btn {
+  background-color: #ff080028;
+  width: 100px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 2px;
+  text-transform: uppercase;
+  color: var(--error);
+  font-weight: 600;
+  border: none;
 }
 
 @media print {
-	@page {
-		margin: 10mm;
-	}
+
+  @page {
+    margin: 10mm;
+  }
 }
 
 .blue-container {
-	border-left: 9px solid #1695D2;
-	padding: 20px;
-	border-radius: 10px;
-	background-color: #CFF4FC;
-	max-width: 100%;
+  border-left: 9px solid #1695d2;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #cff4fc;
+  max-width: 100%;
 }
 .note-header {
-	font-weight: bold;
-	color: #1695D2;
-	font-size: 1.5rem;
+  font-weight: bold;
+  color: #1695d2;
+  font-size: 1.5rem;
 }
 .note-description {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 .note-list {
-	background-color: #bbd2df;
-	border-radius: 8px;
-	padding: 15px;
+  background-color: #bbd2df;
+  border-radius: 8px;
+  padding: 15px;
 }
 .note-list ul {
-	padding-left: 20px;
+  padding-left: 20px;
 }
 .note-list li {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
+
+.accordion-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.buyer-avatar {
+  margin-right: 16px;
+  width: 110px !important; /* Increase the size of the avatar */
+  height: 110px !important; /* Increase the size of the avatar */
+}
+
+.company-name {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.chat-button {
+  background-color: var(--primary-color) !important;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-transform: none; /* Prevents uppercase text */
+  font-weight: 500;
+}
+
+.chat-button:hover {
+  background-color: var(--secondary-color) !important;
+}
+

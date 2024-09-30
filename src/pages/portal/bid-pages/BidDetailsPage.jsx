@@ -51,6 +51,14 @@ const BidDetailsPage = () => {
     setValue(newValue);
   };
 
+  const truncatelength = (title, maxlength) => {
+    return title?.length > maxlength
+      ? title.substring(0, maxlength) + "..."
+      : title;
+  };
+
+
+
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -93,7 +101,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {bidDetails?.title}
+      {truncatelength(bidDetails?.title, 50)}
     </Typography>,
   ];
 
@@ -113,6 +121,7 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
+            console.log(" bid details ", response.data);
             setBidDetails(response.data);
           }
         } catch (error) {
@@ -171,7 +180,6 @@ const BidDetailsPage = () => {
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
-
         <div className="d-flex align-items-center justify-content-end gap-3">
           <ReactToPrint
             content={() => componentRef.current}

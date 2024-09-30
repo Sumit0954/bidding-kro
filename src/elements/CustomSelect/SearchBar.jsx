@@ -19,6 +19,8 @@ const SearchBar = ({
   // handleChange,
   onAncestorsChange,
   disabled,
+  multiple,
+
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -89,10 +91,13 @@ const SearchBar = ({
 
   const handleOptionChange = (option) => {
     if (option && onAncestorsChange) {
-      if (ancestors === false) {
-        onAncestorsChange(option.id); // Pass selected option ID when no ancestors
+      if (ancestors === false && Array.isArray(option)) {
+        const ids = option.map((item) => item.id);
+        console.log(ids, "option.ids");
+        onAncestorsChange(ids);
       } else {
-        onAncestorsChange(option.ancestors || []); // Otherwise pass ancestors
+        onAncestorsChange(option.ancestors || []); // Pass ancestors when present
+
       }
     }
   };
@@ -114,6 +119,8 @@ const SearchBar = ({
             <Autocomplete
               {...field}
               freeSolo
+              multiple={multiple}
+
               options={searchResults}
               inputValue={inputValue}
               value={value}

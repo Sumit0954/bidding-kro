@@ -3,7 +3,7 @@ import styles from "./BidDocuments.module.scss";
 import { Controller, useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import UploadIcon from "../../../assets/images/portal/bids/upload-icon.png";
-import { Box, IconButton, Input, TableCell } from "@mui/material";
+import { Alert, Box, IconButton, Input, TableCell } from "@mui/material";
 import cn from "classnames";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { documents_column } from "../../../elements/CustomDataTable/PortalColumnData";
@@ -304,6 +304,10 @@ const BidDocuments = () => {
                               Drag 'n' drop image/document here, or click to
                               select image/document
                             </p>
+                            <p>
+                              Please note: You can upload files up to a maximum
+                              size of 2MB.
+                            </p>
                             <button
                               className="btn button"
                               type="button"
@@ -351,7 +355,13 @@ const BidDocuments = () => {
                   )}
                 </div>
               </form>
-
+              <Alert severity="info" sx={{ marginBottom: "15px" }}>
+                <p className={styles["alert-message"]}>
+                  <span> Note : </span>
+                  Uploaded documents will be automatically deleted from the
+                  platform after 6 months.
+                </p>
+              </Alert>
               <DataTable
                 propsColumn={documents_column}
                 propsData={documents}

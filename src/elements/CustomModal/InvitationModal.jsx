@@ -16,6 +16,7 @@ const InvitationModal = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  console.log("InvitationModal", bidDetails);
 
   const handleClose = () => {
     setInvitation(false);
@@ -92,9 +93,9 @@ const InvitationModal = ({
                 </Box>
               </Box>
 
-              <Box className="row mb-2">
+              {/* <Box className="row mb-2">
                 <Box className="col text-start">{bidDetails?.title}</Box>
-              </Box>
+              </Box> */}
 
               <Box className="row mb-2">
                 <Box
@@ -104,19 +105,24 @@ const InvitationModal = ({
                   {bidDetails?.formatted_number}
                 </Box>
                 <Box
-                  className="col-lg-3 text-start"
+                  className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {bidDetails?.product_quantity} {bidDetails?.product_unit}{" "}
+                  {bidDetails?.title}{" "}
                 </Box>
-                <Box
+                {/* <Box
                   className="col-lg-3 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
                   ₹ {bidDetails?.reserved_price}
-                </Box>
-                <Box className="col-lg-3 text-start">
-                  {dateTimeFormatter(bidDetails?.bid_start_date)}
+                </Box> */}
+                <Box className="col-lg-3 text-start"> 
+                  {bidDetails?.bid_open_date === null &&
+                  bidDetails?.bid_close_date === null
+                    ? "- -"
+                    : `${dateTimeFormatter(
+                        bidDetails?.bid_start_date
+                      )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
                 </Box>
               </Box>
 

@@ -30,7 +30,7 @@ const BidCreateDetails = () => {
   const { action, id } = useParams();
 
   const submitForm = async (data) => {
-    console.log(data);
+
     setLoading(true);
     let updateFormData = new FormData();
 
@@ -58,7 +58,7 @@ const BidCreateDetails = () => {
             message: "Bid Details has been created successfully.",
             severity: "success",
           });
-          console.log(response);
+
 
           navigate(`/portal/bids/create/questions/${id}`);
         }
@@ -175,21 +175,31 @@ const BidCreateDetails = () => {
                   <button
                     type="button"
                     className={cn("btn", "button")}
-                    // disabled={bidStatus === "cancelled" ? true : false}
-                    // onClick={() => navigate(`/portal/bids/products`)}
+
+                    disabled={bidStatus === "cancelled" ? true : false}
+                    onClick={() => {
+                      navigate(`/portal/bids/products${id}`);
+                    }}
+
                   >
                     Back
                   </button>
 
-                  <button
-                    // type="submit"
-                    type="submit"
-                    className={cn("btn", "button")}
-                    // disabled={bidStatus === "cancelled" ? true : false}
-                    // onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
-                  >
-                    Save & Next
-                  </button>
+
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <button
+                      // type="submit"
+                      type="submit"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                      // onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
+                    >
+                      Save & Next
+                    </button>
+                  )}
+
                 </div>
               </form>
             </div>

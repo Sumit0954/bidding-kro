@@ -1,6 +1,6 @@
 import styles from "./CompanyList.module.scss";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { TableCell } from "@mui/material";
+import { Alert, Box, Button, TableCell } from "@mui/material";
 import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
@@ -62,6 +62,7 @@ const CompanyList = ({ bidDetails, id }) => {
   }, [id]);
 
   const addAction = (cell) => {
+    console.log(participants);
     if (cell.column.id === "action") {
       const found = participants.some(
         (participant) => participant.company.id === cell.row.original.id
@@ -70,12 +71,11 @@ const CompanyList = ({ bidDetails, id }) => {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
-            className={cn(
-              styles["invite-btn"],
-              (!id || found) && styles["disable"]
-            )}
+            className={`${styles["invite-btn"]} ${
+              !id ? styles["disable"] : styles["invite-btn"]
+            }`}
             onClick={() => handleInvite(cell)}
-            disabled={id && !found ? false : true}
+            disabled={!id && true}
           >
             {found ? "Invited" : "Invite"}
           </button>
@@ -93,13 +93,42 @@ const CompanyList = ({ bidDetails, id }) => {
 
   return (
     <>
-      {}
-      <DataTable
-        propsColumn={companies_column}
-        propsData={otherSuppliers}
-        action={addAction}
-        customClassName="admin-data-table"
-      />
+      <div className="container">
+        <Alert
+          severity="info"
+          sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
+          className={styles["alert-container"]}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <p className={styles["amendment-info"]} style={{ margin: 0 }}>
+              <span>
+                You can extend the sample submission dates if needed. Adjust
+                accordingly to meet requirements.
+              </span>
+            </p>
+            <Button
+              type="submit"
+              variant="contained"
+              className={styles["note-button"]}
+            >
+              Show All Companies
+            </Button>
+          </Box>
+        </Alert>
+        <DataTable
+          propsColumn={companies_column}
+          propsData={otherSuppliers}
+          action={addAction}
+          customClassName="admin-data-table"
+        />
+      </div>
 
       {addInvitaion && (
         <InvitationModal

@@ -118,10 +118,19 @@ const PortalRoutes = () => {
                       element={<LayoutPage Component={BidDetailsPage} />}
                     />
                     {/* Bids Routes End */}
+
+                    {/* comapanies list route with id */}
                     <Route
                       path="/companies"
                       element={<LayoutPage Component={CompanyListPage} />}
                     />
+
+                    {/* comapanies list route with id */}
+                    <Route
+                      path="/companies/:id"
+                      element={<LayoutPage Component={CompanyListPage} />}
+                    />
+
 
                     <Route
                       path="/invitesuppliers/:id"

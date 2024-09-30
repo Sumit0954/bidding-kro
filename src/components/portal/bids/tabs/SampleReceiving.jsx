@@ -10,6 +10,9 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import {
   l1_participants_column,
   products_Column,
+
+  Sample_Bid_Invitations_column,
+
 } from "../../../../elements/CustomDataTable/PortalColumnData";
 import {
   Accordion,
@@ -152,55 +155,13 @@ const SampleReceiving = () => {
               Invited Suppliers
             </Typography>
           </AccordionSummary>
-          <Box display="flex" gap={10} mb={2} justifyContent="center">
-            <Button
-              variant="contained"
-              sx={{
-                minWidth: "190px",
-                backgroundColor: "#6c757d",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#5a6268" },
-              }}
-            >
-              Invited : 20 {""}
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                minWidth: "190px",
-                backgroundColor: "#007bff",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#0069d9" },
-              }}
-            >
-              Accepted : 08 {""}
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                minWidth: "190px",
-                backgroundColor: "#28a745",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#218838" },
-              }}
-            >
-              Participated : 05 {""}
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                minWidth: "190px",
-                backgroundColor: "#dc3545",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#c82333" },
-              }}
-            >
-              Declined : 02 {""}
-            </Button>
-          </Box>
 
           <AccordionDetails>
-            {/* <DataTable propsColumn={l1_participants_column} /> */}
+            <DataTable
+              propsColumn={Sample_Bid_Invitations_column}
+              propsData={[]}
+            />
+
           </AccordionDetails>
         </Accordion>
       </div>

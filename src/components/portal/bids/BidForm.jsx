@@ -83,7 +83,9 @@ const BidForm = () => {
       if (response1.status === 200) {
         console.log(response1, "res11");
         setLoading(false);
-        navigate(`/portal/bids/products/${id}`);
+
+        navigate(`/portal/bids/products/${id}`, { state: { productData } });
+
       }
     } catch (error) {
       setLoading(false);
@@ -178,7 +180,7 @@ const BidForm = () => {
             message: "Bid has been created successfully.",
             severity: "success",
           });
-          console.log(response);
+
           // setBidId(response.data.id);
           updateBidCategories(response.data.id);
         }
@@ -413,28 +415,33 @@ const BidForm = () => {
                 </div>
 
                 <div className={cn("my-3", styles["btn-container"])}>
+                  <button
+                    type="button"
+                    className={cn("btn", "button")}
+                    disabled={bidStatus === "cancelled" ? true : false}
+                    onClick={() => {
+                      
+                      id
+                        ? navigate(`/portal/bids/categories${id}`)
+                        : navigate(`/portal/bids/categories`);
+                    }}
+                  >
+                    Back
+                  </button>
+
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-                    <>
-                      <button
-                        type="button"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                      >
-                        Back
-                      </button>
 
-                      <button
-                        type="submit"
-                        className={cn("btn", "button")}
-                        disabled={bidStatus === "cancelled" ? true : false}
-                        // onClick={submitForm}
-                      >
-                        {id ? "Update Bid" : "Create Bid"}
-                        {/* Save & Next */}
-                      </button>
-                    </>
+                    <button
+                      type="submit"
+                      className={cn("btn", "button")}
+                      disabled={bidStatus === "cancelled" ? true : false}
+                      // onClick={submitForm}
+                    >
+                      {id ? "Update Bid" : "Create Bid"}
+                    </button>
+
                   )}
                 </div>
               </form>
