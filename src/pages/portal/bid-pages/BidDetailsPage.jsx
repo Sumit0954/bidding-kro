@@ -57,6 +57,8 @@ const BidDetailsPage = () => {
       : title;
   };
 
+
+
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -178,7 +180,6 @@ const BidDetailsPage = () => {
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
-
         <div className="d-flex align-items-center justify-content-end gap-3">
           <ReactToPrint
             content={() => componentRef.current}

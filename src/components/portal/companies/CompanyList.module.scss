@@ -14,8 +14,45 @@
     background-color: var(--disable);
   }
 }
-
 .Tabs {
   display: flex;
   justify-content: end;
+}
+.alert-message {
+  margin: 0;
+}
+
+.note-button {
+  width: 200px !important;
+  background-color: var(--primary-color) !important;
+  margin-left: 171px !important;
+  padding: 6px 12px;
+}
+
+.note-button:hover {
+  background-color: var(--secondary-color) !important;
+}
+
+.alert-container {
+  margin-bottom: 10px;
+  background-color: white !important; /* Background color white */
+  border: 1px solid #d3d3d3; /* Light gray border */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  transition: box-shadow 0.3s ease; /* Smooth shadow transition */
+}
+
+.alert-container:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+}
+
+.amendment-info {
+  margin-bottom: 0;
+
+  span {
+    font-weight: bold;
+  }
+
+  strong {
+    color: var(--error);
+  }
 }

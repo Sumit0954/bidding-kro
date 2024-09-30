@@ -53,31 +53,32 @@ const Documents = ({ bidDetails, type }) => {
       });
     }
   };
-
   const handleDownloadDocument = (data) => {
     const { file, name } = data;
-
+  
     fetch(file)
-      .then((response) => response.blob())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.blob();
+      })
       .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", name);
+        link.setAttribute("download", name); // Set the downloaded file name
         document.body.appendChild(link);
         link.click();
-        link.parentNode.removeChild(link);
+        link.parentNode.removeChild(link); // Clean up after download
+        window.URL.revokeObjectURL(url); // Release memory for the object URL
       })
       .catch((error) => {
-        if (error) {
-          setAlert({
-            isVisible: true,
-            message: "Error while downloading file!",
-            severity: "error",
-          });
-        }
+      
+        console.error("There was an error downloading the file:", error);
       });
   };
+  
 
   const handleDeleteConfirmation = (choice) => {
     if (choice) {

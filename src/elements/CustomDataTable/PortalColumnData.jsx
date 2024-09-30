@@ -8,22 +8,24 @@ import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useState } from "react";
 
-// const onCloneBidClick = async (id, navigate) => {
-//   try {
-//     const response = await _sendAPIRequest(
-//       "POST",
-//       `${PortalApiUrls.CLONE_BID}${id}/`,
-//       null,
-//       true
-//     );
-//     if (response?.status === 201) {
-//       console.log(response);
-//       navigate(`/portal/bids/categories/${response.data.id}`);
-//     }
-//   } catch (error) {
-//     console.log("Error fetching product list", error);
-//   }
-// };
+const onCloneBidClick = async (id, navigate) => {
+  try {
+    const response = await _sendAPIRequest(
+      "POST",
+      `${PortalApiUrls.CLONE_BID}${id}/`,
+      null,
+      true
+    );
+    if (response?.status === 201) {
+      console.log(response);
+      navigate(`/portal/bids/categories/${response.data.id}`);
+    }
+  } catch (error) {
+    console.log("Error cloning bid", error);
+  }
+};
+
+
 
 const CloneConfirmation = ({ id, onCloneConfirm }) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -66,23 +68,6 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
       )}
     </>
   );
-};
-
-const onCloneBidClick = async (id, navigate) => {
-  try {
-    const response = await _sendAPIRequest(
-      "POST",
-      `${PortalApiUrls.CLONE_BID}${id}/`,
-      null,
-      true
-    );
-    if (response?.status === 201) {
-      console.log(response);
-      navigate(`/portal/bids/categories/${response.data.id}`);
-    }
-  } catch (error) {
-    console.log("Error cloning bid", error);
-  }
 };
 
 export const created_bids_column = [
@@ -138,6 +123,7 @@ export const created_bids_column = [
     Header: "Status",
     accessor: "status",
     align: "center",
+    width: 100, // Change to uniform width
     width: 100, // Change to uniform width
     disablePadding: false,
     hideSortIcon: true,

@@ -1,6 +1,6 @@
 import styles from "./CompanyList.module.scss";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { Box, Tab, TableCell, Tabs } from "@mui/material";
+import { Alert, Box, Button, TableCell } from "@mui/material";
 import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
@@ -13,11 +13,6 @@ const CompanyList = ({ bidDetails, id }) => {
   const [companyDetail, setCompanyDetail] = useState({});
   const [otherSuppliers, setOtherSuppliers] = useState([]);
   const [participants, setParticipants] = useState([]);
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const handleInvite = (data) => {
     setInvitation(true);
@@ -67,6 +62,7 @@ const CompanyList = ({ bidDetails, id }) => {
   }, [id]);
 
   const addAction = (cell) => {
+    console.log(participants);
     if (cell.column.id === "action") {
       const found = participants.some(
         (participant) => participant.company.id === cell.row.original.id
@@ -75,12 +71,10 @@ const CompanyList = ({ bidDetails, id }) => {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
-            className={cn(
-              styles["invite-btn"]
-              // (!id || found) && styles["disable"]
-            )}
+            className={`${styles["invite-btn"]} ${
+              !id ? styles["disable"] : styles["invite-btn"]
+            }`}
             onClick={() => handleInvite(cell)}
-            // disabled={id && !found ? true : false}
             disabled={!id && true}
           >
             {found ? "Invited" : "Invite"}
@@ -99,31 +93,42 @@ const CompanyList = ({ bidDetails, id }) => {
 
   return (
     <>
-      <Box sx={{ width: "100%" }}>
-        <Box
-          sx={{
-            marginBottom: "1rem",
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "center",
-          }}
+      <div className="container">
+        <Alert
+          severity="info"
+          sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
+          className={styles["alert-container"]}
         >
-          <Tabs
-            value={value}
-            onChange={handleInvite}
-            aria-label="companies-list-tabs"
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
           >
-            <Tab label="ALL COMPANIES" {...a11yProps(0)} />
-            <Tab label="INVITE REQUESTS" {...a11yProps(1)} />
-          </Tabs>
-        </Box>      
-      </Box>
-      <DataTable
-        propsColumn={companies_column}
-        propsData={otherSuppliers}
-        action={addAction}
-        customClassName="admin-data-table"
-      />
+            <p className={styles["amendment-info"]} style={{ margin: 0 }}>
+              <span>
+                You can extend the sample submission dates if needed. Adjust
+                accordingly to meet requirements.
+              </span>
+            </p>
+            <Button
+              type="submit"
+              variant="contained"
+              className={styles["note-button"]}
+            >
+              Show All Companies
+            </Button>
+          </Box>
+        </Alert>
+        <DataTable
+          propsColumn={companies_column}
+          propsData={otherSuppliers}
+          action={addAction}
+          customClassName="admin-data-table"
+        />
+      </div>
 
       {addInvitaion && (
         <InvitationModal
@@ -138,10 +143,3 @@ const CompanyList = ({ bidDetails, id }) => {
 };
 
 export default CompanyList;
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
