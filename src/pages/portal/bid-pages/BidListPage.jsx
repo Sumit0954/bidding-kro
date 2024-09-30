@@ -144,6 +144,7 @@ const BidListPage = () => {
               onAncestorsChange={handleOptionChange}
               disabled={!rootCategory}
               multiple={true}
+
             />
           </div>
         </div>

@@ -83,7 +83,9 @@ const BidForm = () => {
       if (response1.status === 200) {
         console.log(response1, "res11");
         setLoading(false);
+
         navigate(`/portal/bids/products/${id}`, { state: { productData } });
+
       }
     } catch (error) {
       setLoading(false);
@@ -178,6 +180,7 @@ const BidForm = () => {
             message: "Bid has been created successfully.",
             severity: "success",
           });
+
           // setBidId(response.data.id);
           updateBidCategories(response.data.id);
         }
@@ -429,6 +432,7 @@ const BidForm = () => {
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
+
                     <button
                       type="submit"
                       className={cn("btn", "button")}
@@ -437,6 +441,7 @@ const BidForm = () => {
                     >
                       {id ? "Update Bid" : "Create Bid"}
                     </button>
+
                   )}
                 </div>
               </form>

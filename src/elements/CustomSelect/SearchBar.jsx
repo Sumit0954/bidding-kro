@@ -20,6 +20,7 @@ const SearchBar = ({
   onAncestorsChange,
   disabled,
   multiple,
+
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -96,6 +97,7 @@ const SearchBar = ({
         onAncestorsChange(ids);
       } else {
         onAncestorsChange(option.ancestors || []); // Pass ancestors when present
+
       }
     }
   };
@@ -118,6 +120,7 @@ const SearchBar = ({
               {...field}
               freeSolo
               multiple={multiple}
+
               options={searchResults}
               inputValue={inputValue}
               value={value}

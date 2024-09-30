@@ -13,6 +13,7 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
 
+
   const getCreatedBidList = async () => {
     console.log(
       selectedCategory,
@@ -37,9 +38,11 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
       }
     });
     try {
+
       // const params = {
       //   category: selectedCategory,
       // };
+
       const response = await _sendAPIRequest(
         "GET",
         PortalApiUrls.CREATED_LIST_BIDS,

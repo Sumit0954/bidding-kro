@@ -5,8 +5,10 @@ import { convertFileSize } from "../../helpers/common";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
+
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useState } from "react";
+
 
 const onCloneBidClick = async (id, navigate) => {
   try {
@@ -21,6 +23,7 @@ const onCloneBidClick = async (id, navigate) => {
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
+
     console.log("Error cloning bid", error);
   }
 };
@@ -69,6 +72,7 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
     </>
   );
 };
+
 
 export const created_bids_column = [
   {
@@ -124,7 +128,7 @@ export const created_bids_column = [
     accessor: "status",
     align: "center",
     width: 100, // Change to uniform width
-    width: 100, // Change to uniform width
+
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -166,6 +170,7 @@ export const created_bids_column = [
         // >
         //   Clone Bid
         // </p>
+
       );
     },
   },
@@ -187,6 +192,7 @@ export const created_bids_column = [
           Invite
         </NavLink>
       );
+
     },
   },
 ];
@@ -479,6 +485,7 @@ export const l1_participants_column = [
     width: 160,
   },
   {
+
     Header: "Status",
     accessor: "status",
     align: "center",

@@ -44,7 +44,9 @@ const InvitedSuppliers = () => {
     id: null,
   });
 
+
   const handleDeleteConfirmation = () => {};
+
 
   return (
     <>
@@ -88,7 +90,9 @@ const InvitedSuppliers = () => {
             <div className="row mt-3">
               <div className="col-12">
                 <Button
+
                   type="submit"
+
                   variant="contained"
                   className={styles["form-button"]}
                 >
@@ -110,6 +114,7 @@ const InvitedSuppliers = () => {
               Invited Suppliers
             </Typography>
           </AccordionSummary>
+
           <Box
             display="flex"
             gap={2} // Reduce gap for smaller screens
@@ -117,6 +122,7 @@ const InvitedSuppliers = () => {
             justifyContent="center"
             flexWrap="wrap" // Make the buttons wrap to the next line on smaller screens
           >
+
             <Button
               variant="contained"
               sx={{
@@ -124,7 +130,9 @@ const InvitedSuppliers = () => {
                 backgroundColor: "#6c757d",
                 color: "#fff",
                 "&:hover": { backgroundColor: "#5a6268" },
+
                 marginBottom: "10px", // Add some space between rows on wrap
+
               }}
             >
               Invited : 20 {""}
@@ -136,7 +144,9 @@ const InvitedSuppliers = () => {
                 backgroundColor: "#007bff",
                 color: "#fff",
                 "&:hover": { backgroundColor: "#0069d9" },
+
                 marginBottom: "10px", // Add some space between rows on wrap
+
               }}
             >
               Accepted : 08 {""}
@@ -148,7 +158,9 @@ const InvitedSuppliers = () => {
                 backgroundColor: "#28a745",
                 color: "#fff",
                 "&:hover": { backgroundColor: "#218838" },
+
                 marginBottom: "10px", // Add some space between rows on wrap
+
               }}
             >
               Participated : 05 {""}
@@ -160,7 +172,9 @@ const InvitedSuppliers = () => {
                 backgroundColor: "#dc3545",
                 color: "#fff",
                 "&:hover": { backgroundColor: "#c82333" },
+
                 marginBottom: "10px", // Add some space between rows on wrap
+
               }}
             >
               Declined : 02 {""}
@@ -168,7 +182,9 @@ const InvitedSuppliers = () => {
           </Box>
 
           <AccordionDetails>
+
             <DataTable propsColumn={l1_participants_column} propsData={[]} />
+
           </AccordionDetails>
         </Accordion>
       </div>
