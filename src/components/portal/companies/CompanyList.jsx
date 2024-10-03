@@ -7,12 +7,20 @@ import { useEffect, useState } from "react";
 import cn from "classnames";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
+import SearchBar from "../../../elements/CustomSelect/SearchBar";
+import { useForm } from "react-hook-form";
 
-const CompanyList = ({ bidDetails, id }) => {
+const CompanyList = ({ bidDetails, id, tab }) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
   const [otherSuppliers, setOtherSuppliers] = useState([]);
   const [participants, setParticipants] = useState([]);
+  const [categories, setCategories] = useState({ 0: [] });
+  const [rootCategory, setRootCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState([]);
+
+  const { control } = useForm();
 
   const handleInvite = (data) => {
     setInvitation(true);
@@ -91,37 +99,122 @@ const CompanyList = ({ bidDetails, id }) => {
     }
   };
 
+  const handleCategorySelection = (selected) => {
+    console.log(selected, "Selected category");
+    if (selected && selected.value) {
+      setRootCategory(selected.value);
+    } else {
+      setRootCategory(null);
+    }
+  };
+
+  const getCategories = async (parent_categories, depth) => {
+    const params = new URLSearchParams();
+    parent_categories.forEach((value) => {
+      if (value !== undefined) {
+        params.append("parent_category", value);
+      }
+    });
+
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        params,
+        true
+      );
+      if (response.status === 200) {
+        const mappedCategories = response.data.map((category) => ({
+          lable: category.name, // 'label' is used by Autocomplete to display
+          value: category.id, // 'value' is used for internal management
+          depth: category.depth,
+        }));
+        setCategories((prevCategories) => ({
+          ...prevCategories,
+          [depth]: mappedCategories,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories([], 0);
+  }, []);
+
+  useEffect(() => {
+    setSelectedCategory(rootCategory);
+  }, [rootCategory]);
+
+  const handleOptionChange = (ancestors) => {
+    console.log(ancestors, "ancestorsancestors");
+    setSelectedCategory(ancestors);
+  };
+
+  useEffect(() => {
+    console.log(rootCategory, "rootCategory updated");
+  }, [rootCategory]);
+
   return (
     <>
       <div className="container">
-        <Alert
-          severity="info"
-          sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
-          className={styles["alert-container"]}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
+        <div className="row">
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Industry"
+              placeholder="Industry"
+              options={categories[0]}
+              handleChange={handleCategorySelection}
+              multiple={false}
+            />
+          </div>
+          <div className="col-lg-9">
+            <SearchBar
+              name="product_search"
+              placeholder="Search Your Category"
+              control={control}
+              rootCategory={rootCategory}
+              value={undefined}
+              ancestors={false}
+              onAncestorsChange={handleOptionChange}
+              disabled={!rootCategory}
+              multiple={true}
+            />
+          </div>
+        </div>
+        {tab === 0 && (
+          <Alert
+            severity="info"
+            sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
+            className={styles["alert-container"]}
           >
-            <p className={styles["amendment-info"]} style={{ margin: 0 }}>
-              <span>
-                You can extend the sample submission dates if needed. Adjust
-                accordingly to meet requirements.
-              </span>
-            </p>
-            <Button
-              type="submit"
-              variant="contained"
-              className={styles["note-button"]}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
             >
-              Show All Companies
-            </Button>
-          </Box>
-        </Alert>
+              <p className={styles["amendment-info"]} style={{ margin: 0 }}>
+                <span>
+                  You can extend the sample submission dates if needed. Adjust
+                  accordingly to meet requirements.
+                </span>
+              </p>
+              <Button
+                type="submit"
+                variant="contained"
+                className={styles["note-button"]}
+              >
+                Show All Companies
+              </Button>
+            </Box>
+          </Alert>
+        )}
+
         <DataTable
           propsColumn={companies_column}
           propsData={otherSuppliers}

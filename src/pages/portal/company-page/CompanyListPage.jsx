@@ -58,7 +58,7 @@ const CompanyListPage = () => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <CompanyList bidDetails={bidDetails} id={id} />
+          <CompanyList bidDetails={bidDetails} id={id} tab={value} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <CompanyList bidDetails={bidDetails} id={id} />

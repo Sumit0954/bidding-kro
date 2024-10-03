@@ -25,8 +25,6 @@ const onCloneBidClick = async (id, navigate) => {
   }
 };
 
-
-
 const CloneConfirmation = ({ id, onCloneConfirm }) => {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -177,11 +175,15 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
-      console.log(data);
+      console.log()
       return (
         <NavLink
           style={{ textAlign: "center" }}
-          className={styles["table-link"]}
+          className={
+            data?.row?.original?.status === "cancelled" || data?.row?.original?.status === "pending"
+              ? styles["disabled-link"]
+              : styles["table-link"]
+          }
           to={`/portal/companies/${data?.cell?.row?.original.id}`}
         >
           Invite
@@ -219,13 +221,29 @@ export const invited_bids_column = [
     },
   },
   {
+    Header: "Company Name",
+    accessor: "Company_Name",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+    Cell: (data) => {
+      return data?.row?.original?.bid?.company?.name;
+    },
+  },
+  {
     Header: "Opening Date",
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.bid?.bid_start_date);
+      return (
+        <>
+          {data?.row?.original?.bid?.bid_open_date === null
+            ? "-"
+            : dateTimeFormatter(data?.row?.original?.bid?.bid_start_date)}
+        </>
+      );
     },
   },
   {
@@ -235,20 +253,15 @@ export const invited_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.bid?.bid_end_date);
+      return (
+        <>
+          {data?.row?.original?.bid?.bid_close_date === null
+            ? "-"
+            : dateTimeFormatter(data?.row?.original?.bid?.bid_close_date)}
+        </>
+      );
     },
   },
-  {
-    Header: "Reserve Price",
-    accessor: "reserved_price",
-    align: "right",
-    disablePadding: false,
-    width: 150,
-    Cell: (data) => {
-      return `₹ ${data.row.original.bid.reserved_price}`;
-    },
-  },
-
   {
     Header: "Status",
     accessor: "status",
@@ -262,6 +275,21 @@ export const invited_bids_column = [
           {data?.row?.original?.bid?.status}
         </div>
       );
+    },
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    align: "center",
+    disablePadding: false,
+    hideSortIcon: true,
+    width: 150,
+    Cell: (data) => {
+      // return (
+      //   <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
+      //     {data?.row?.original?.bid?.status}
+      //   </div>
+      // );
     },
   },
 ];

@@ -65,3 +65,10 @@
   color: var(--secondary-color);
   font-weight: 600;
 }
+
+.disabled-link {
+  pointer-events: none;   /* Disable clicking */
+  color: grey;
+  cursor: not-allowed;
+  text-decoration: none;
+}

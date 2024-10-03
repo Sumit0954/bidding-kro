@@ -33,6 +33,8 @@ import Feedback from "../../../components/portal/bids/tabs/Feedback";
 import LetterOfIntent from "../../../components/portal/bids/tabs/LetterOfIntent";
 import Bids from "../../../components/portal/bids/tabs/Bids";
 import Award from "../../../components/portal/bids/tabs/Award";
+import Remark from "../../../components/portal/bids/tabs/Remark";
+import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -46,7 +48,7 @@ const BidDetailsPage = () => {
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
-  console.log(bidDetails?.type);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -56,8 +58,6 @@ const BidDetailsPage = () => {
       ? title.substring(0, maxlength) + "..."
       : title;
   };
-
-
 
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
@@ -101,7 +101,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {truncatelength(bidDetails?.title, 50)}
+      {truncatelength(bidDetails?.title, 61)}
     </Typography>,
   ];
 
@@ -121,7 +121,6 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
-            console.log(" bid details ", response.data);
             setBidDetails(response.data);
           }
         } catch (error) {
@@ -145,6 +144,7 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             const participants = response.data.participants;
+            console.log("participants data : " , participants)
             if (participants && participants.length === 0) {
               setShow(true); // If participants array is empty, set show to true
             } else {
@@ -287,65 +287,113 @@ const BidDetailsPage = () => {
           onChange={handleChange}
           aria-label="bid-detail-tabs"
         >
-          <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Documents" {...a11yProps(1)} />
-          {bidDetails?.participant?.status === "accepted" && (
-            <Tab label="Questions" {...a11yProps(2)} />
-          )}
-          {bidDetails?.type === "L1" ? (
-            <Tab label="Invite Suppliers" {...a11yProps(3)} />
-          ) : (
-            [
-              <Tab
-                label="Invite Suppliers"
-                {...a11yProps(3)}
-                key="invite-suppliers"
-              />,
-              <Tab
-                label="Sample Receiving"
-                {...a11yProps(4)}
-                key="sample-receiving"
-              />,
-            ]
-          )}
-          {/* <Tab label="Sample Receiving" {...a11yProps(3)} />
-          <Tab label="Letter Of intent" {...a11yProps(4)} />
-          <Tab label="Feedback" {...a11yProps(5)} />
-          <Tab label="Bids" {...a11yProps(6)} />
-          <Tab label="Analysis" {...a11yProps(7)} /> */}
+          {type === "invited"
+            ? [
+                <Tab label="Summary" {...a11yProps(0)} key={0} />,
+                <Tab label="Documents" {...a11yProps(1)} key={1} />,
+                <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                <Tab label="Questions" {...a11yProps(3)} key={3} />,
+                <Tab label="Remark" {...a11yProps(4)} key={4} />,
+              ]
+            : [
+                <Tab label="Summary" {...a11yProps(0)} key={0} />,
+                <Tab label="Documents" {...a11yProps(1)} key={1} />,
+                <Tab label="Invite Suppliers" {...a11yProps(2)} key={2} />,
+                bidDetails?.type === "L1"
+                  ? [
+                      <Tab label="Bids" {...a11yProps(3)} key={3} />,
+                      <Tab label="Analysis" {...a11yProps(4)} key={4} />,
+                      <Tab
+                        label="Letter Of Intent"
+                        {...a11yProps(5)}
+                        key={5}
+                      />,
+                      <Tab label="Feedback" {...a11yProps(6)} key={6} />,
+                    ]
+                  : [
+                      <Tab
+                        label="Sample Receiving"
+                        {...a11yProps(3)}
+                        key={3}
+                      />,
+                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
+                      <Tab label="Analysis" {...a11yProps(5)} key={5} />,
+                      <Tab
+                        label="Letter Of Intent"
+                        {...a11yProps(6)}
+                        key={6}
+                      />,
+                      <Tab label="Feedback" {...a11yProps(7)} key={7} />,
+                    ],
+              ]}
         </Tabs>
       </Box>
 
-      <TabPanel value={value} index={0}>
-        <Summary bidDetails={bidDetails} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Documents bidDetails={bidDetails} type={type} />
-      </TabPanel>
-      {bidDetails?.participant?.status === "accepted" && (
-        <TabPanel value={value} index={2}>
-          <Questions bidDetails={bidDetails} />
-        </TabPanel>
+      {type === "invited" ? (
+        <>
+          <TabPanel value={value} index={0}>
+            <Summary bidDetails={bidDetails} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Documents bidDetails={bidDetails} type={type} />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <AcceptanceStatus bidDetails={bidDetails} type={type} />
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <Questions bidDetails={bidDetails} />
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            <Remark />
+          </TabPanel>
+        </>
+      ) : (
+        <>
+          <TabPanel value={value} index={0}>
+            <Summary bidDetails={bidDetails} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Documents bidDetails={bidDetails} type={type} />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <InvitedSuppliers bidDetails={bidDetails} />
+          </TabPanel>
+          {bidDetails?.type === "L1" ? (
+            <>
+              <TabPanel value={value} index={3}>
+                <Bids />
+              </TabPanel>
+              <TabPanel value={value} index={4}>
+                <Award />
+              </TabPanel>
+              <TabPanel value={value} index={5}>
+                <LetterOfIntent />
+              </TabPanel>
+              <TabPanel value={value} index={6}>
+                <Feedback />
+              </TabPanel>
+            </>
+          ) : (
+            <>
+              <TabPanel value={value} index={3}>
+                <SampleReceiving bidDetails={bidDetails} />
+              </TabPanel>
+              <TabPanel value={value} index={4}>
+                <Bids />
+              </TabPanel>
+              <TabPanel value={value} index={5}>
+                <Award />
+              </TabPanel>
+              <TabPanel value={value} index={6}>
+                <LetterOfIntent />
+              </TabPanel>
+              <TabPanel value={value} index={7}>
+                <Feedback />
+              </TabPanel>
+            </>
+          )}
+        </>
       )}
-      <TabPanel value={value} index={2}>
-        <InvitedSuppliers bidDetails={bidDetails} />
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <SampleReceiving />
-      </TabPanel>
-
-      {/* <TabPanel value={value} index={4}>
-        <LetterOfIntent />
-      </TabPanel>
-      <TabPanel value={value} index={5}>
-        <Feedback />
-      </TabPanel>
-      <TabPanel value={value} index={6}>
-        <Bids />
-      </TabPanel>
-      <TabPanel value={value} index={7}>
-        <Award />
-      </TabPanel> */}
 
       {addAmendment && (
         <AmendmentModal
