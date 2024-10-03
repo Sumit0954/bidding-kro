@@ -332,6 +332,7 @@ const BidDocuments = () => {
                     <h5>{file.name}</h5>
                   </div>
                 )}
+
                 <div className={cn("my-3", styles["btn-container"])}>
                   <button
                     className={cn("btn", "button")}

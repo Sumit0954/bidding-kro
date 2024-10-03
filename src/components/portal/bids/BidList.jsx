@@ -24,6 +24,7 @@ const BidList = ({ listType }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
 
+
   const getCreatedBidList = async () => {
     // console.log(
     //   selectedCategory,
@@ -48,9 +49,11 @@ const BidList = ({ listType }) => {
       }
     });
     try {
+
       // const params = {
       //   category: selectedCategory,
       // };
+
       const response = await _sendAPIRequest(
         "GET",
         PortalApiUrls.CREATED_LIST_BIDS,

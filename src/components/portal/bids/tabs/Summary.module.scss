@@ -42,6 +42,7 @@
 }
 
 @media print {
+
   @page {
     margin: 10mm;
   }
@@ -106,3 +107,4 @@
 .chat-button:hover {
   background-color: var(--secondary-color) !important;
 }
+

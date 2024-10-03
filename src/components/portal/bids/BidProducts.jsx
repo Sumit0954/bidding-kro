@@ -6,7 +6,9 @@ import React, { useContext, useEffect, useState } from "react";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import { getProductUnits } from "../../../helpers/common";
+
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
@@ -29,14 +31,18 @@ const BidProducts = () => {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const MAX_PRODUCTS = 5;
+
   const location = useLocation();
   console.log(location.state, "location.state");
+
   const [addFormOpen, setAddFormOpen] = useState(false); // To track if add product form is open
   const [productList, setProductList] = useState([]); // For fetched products
   const [expanded, setExpanded] = useState(null); // Track which form is open
 
+
   const { productData } = location.state || {};
   console.log(productData, "productData");
+
   // Fetch products list on component load
 
   useEffect(() => {
@@ -202,10 +208,12 @@ const BidProducts = () => {
     });
   };
 
+
   const transformedProductData = productData.map((product) => ({
     lable: product.name, // use 'lable' instead of 'label'
     value: product.name, // keep 'value' as expected
   }));
+
 
   return (
     <>
@@ -216,7 +224,9 @@ const BidProducts = () => {
               <h4>Products ({productList.length})</h4>
               <button
                 type="button"
+
                 style={{ marginBottom: "5px" }}
+
                 className={cn(
                   "btn",
                   "button",
@@ -253,6 +263,7 @@ const BidProducts = () => {
                       >
                         <div className="row">
                           <div className="col-lg-12">
+
                             <CustomSelect
                               control={control}
                               label="Product Title"
@@ -264,12 +275,15 @@ const BidProducts = () => {
                               }}
                             />
                             {/* <CustomInput
+
                               control={control}
                               label="Product Title"
                               name={`product_title${index}`}
                               placeholder="Product Title"
                               rules={{ required: "Product Title is required." }}
+
                             /> */}
+
                           </div>
                         </div>
 
@@ -367,6 +381,7 @@ const BidProducts = () => {
                   <form onSubmit={handleSubmit(submitForm)}>
                     <div className="row">
                       <div className="col-lg-12">
+
                         <CustomSelect
                           control={control}
                           label="Product Title"
@@ -378,13 +393,16 @@ const BidProducts = () => {
                           }}
                         />
                         {/* <CustomInput
+
                           control={control}
                           label="Product title"
                           name="product_title"
                           placeholder="Product Title"
                           inputType="text"
                           rules={{ required: "Product Title is required." }}
+
                         /> */}
+
                       </div>
                     </div>
 
@@ -447,6 +465,7 @@ const BidProducts = () => {
             )}
 
             <div className={cn("my-3", styles["btn-container"])}>
+
               <button
                 type="button"
                 className={cn("btn", "button")}

@@ -10,7 +10,9 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import {
   l1_participants_column,
   products_Column,
+
   Sample_Bid_Invitations_column,
+
 } from "../../../../elements/CustomDataTable/PortalColumnData";
 import {
   Accordion,
@@ -132,6 +134,7 @@ const SampleReceiving = () => {
                   type="submit"
                   variant="contained"
                   className={styles["form-button"]}
+
                 >
                   Submit
                 </Button>
@@ -152,11 +155,13 @@ const SampleReceiving = () => {
               Invited Suppliers
             </Typography>
           </AccordionSummary>
+
           <AccordionDetails>
             <DataTable
               propsColumn={Sample_Bid_Invitations_column}
               propsData={[]}
             />
+
           </AccordionDetails>
         </Accordion>
       </div>

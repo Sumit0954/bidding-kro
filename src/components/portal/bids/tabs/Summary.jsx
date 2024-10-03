@@ -45,6 +45,7 @@ const Summary = ({ bidDetails }) => {
   });
 
   const type = new URLSearchParams(useLocation().search).get("type");
+
   useEffect(() => {
     if (bidDetails?.id) {
       const getParticipants = async () => {
@@ -176,6 +177,7 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
                   : "-"}
+
               </p>
             </div>
             <div className="col">
@@ -184,6 +186,7 @@ const Summary = ({ bidDetails }) => {
               </h6>
               <p className={styles["col-data"]}>
                 {`${dateTimeFormatter(bidDetails?.created_at)}`}
+
               </p>
             </div>
           </div>
