@@ -516,25 +516,25 @@ export const l1_participants_column = [
 
     Header: "Status",
     accessor: "status",
-    align: "center",
+    align: "left",
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
-      // return (
-      //   <>
-      //     <div
-      //       className={`status-cloumn ${
-      //         data?.row?.original?.status === "accepted"
-      //           ? "success"
-      //           : data?.row?.original?.status === "pending"
-      //           ? "pending"
-      //           : "cancelled"
-      //       }`}
-      //     >
-      //       {data?.row?.original?.status}
-      //     </div>
-      //   </>
-      // );
+      return (
+        <>
+          <div
+            className={`status-cloumn ${
+              data?.row?.original?.status === "accepted"
+                ? "success"
+                : data?.row?.original?.status === "pending"
+                ? "pending"
+                : "cancelled"
+            }`}
+          >
+            {data?.row?.original?.status}
+          </div>
+        </>
+      );
     },
   },
   {
@@ -582,7 +582,6 @@ export const products_Column = ({
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      console.log(data);
       return (
         <NavLink
           className={styles["table-link"]}

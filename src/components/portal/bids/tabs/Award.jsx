@@ -44,7 +44,7 @@ const Award = () => {
       <div className={styles["heading"]}>
         <Typography variant="h6">Product Name</Typography>
       </div>
-      <Accordion>
+      <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Cotton Design Fabric</Typography>
         </AccordionSummary>

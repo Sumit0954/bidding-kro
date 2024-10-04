@@ -32,7 +32,6 @@ const SearchBar = ({
 
   useEffect(() => {
     const fetchSearchResults = async () => {
-      console.log(rootCategory, "hyhyh");
       if (inputValue) {
         try {
           const params = {

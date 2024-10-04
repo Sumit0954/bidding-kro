@@ -28,7 +28,10 @@ const Documents = ({ bidDetails, type }) => {
       const response = await _sendAPIRequest(
         "PUT",
         PortalApiUrls.INVITE_ACTION + `${bidDetails?.id}/`,
-        { action: action },
+        { 
+          action: "accept",
+          is_sample_invite: false
+         },
         true
       );
       if (response.status === 204) {

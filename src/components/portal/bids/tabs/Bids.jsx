@@ -33,7 +33,7 @@ const Bids = () => {
       <div className={styles["heading"]}>
         <Typography variant="h6">Company Name</Typography>
       </div>
-      <Accordion>
+      <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Arvind Limited</Typography>
         </AccordionSummary>
