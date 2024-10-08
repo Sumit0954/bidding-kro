@@ -27,6 +27,7 @@ import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
+import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 
 const SampleReceiving = ({ bidDetails }) => {
   const {
@@ -62,9 +63,6 @@ const SampleReceiving = ({ bidDetails }) => {
   const formData = new URLSearchParams();
   formData.append("sample_receive_start_date", sampleStartDate);
   formData.append("sample_receive_end_date", sampleEndDate);
-
-  console.log("Start : " , sampleStartDate)
-  console.log("End : " , sampleEndDate)
 
   const submitSampledates = async () => {
     setLoading(true);
@@ -150,7 +148,7 @@ const SampleReceiving = ({ bidDetails }) => {
           <form onSubmit={handleSubmit(submitSampledates)}>
             <div className="row">
               <div className="col-lg-6">
-                <DateTimeRangePicker
+                <DatePicker
                   disableField={
                     bidDetails?.sample_receive_start_date === null
                       ? false
@@ -171,7 +169,7 @@ const SampleReceiving = ({ bidDetails }) => {
                 />
               </div>
               <div className="col-lg-6">
-                <DateTimeRangePicker
+                <DatePicker
                   control={control}
                   label="Sample Receiving Closing Date"
                   name="sample_receive_end_date"

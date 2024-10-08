@@ -29,7 +29,6 @@ const CompanyList = ({ bidDetails, id, tab }) => {
 
   const { control } = useForm();
 
-
   const handleInvite = (data) => {
     setInvitation(true);
     setCompanyDetail(data.row.original);
@@ -78,7 +77,6 @@ const CompanyList = ({ bidDetails, id, tab }) => {
     }
   }, [id]);
 
-
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       const found = participants.some(
@@ -89,10 +87,10 @@ const CompanyList = ({ bidDetails, id, tab }) => {
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
             className={`${styles["invite-btn"]} ${
-              !id ? styles["disable"] : styles["invite-btn"]
+              !id || found ? styles["disable"] : styles["invite-btn"]
             }`}
             onClick={() => handleInvite(cell)}
-            disabled={!id && true}
+            disabled={!id || found && true}
           >
             {found ? "Invited" : "Invite"}
           </button>
@@ -161,8 +159,7 @@ const CompanyList = ({ bidDetails, id, tab }) => {
     setSelectedCategory(ancestors);
   };
 
-  useEffect(() => {
-  }, [rootCategory]);
+  useEffect(() => {}, [rootCategory]);
 
   return (
     <>

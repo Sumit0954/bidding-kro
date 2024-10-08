@@ -246,7 +246,7 @@ export const invited_bids_column = [
         <>
           {data?.row?.original?.bid?.bid_open_date === null
             ? "-"
-            : dateTimeFormatter(data?.row?.original?.bid?.bid_start_date)}
+            : dateTimeFormatter(data?.row?.original?.bid?.bid_open_date)}
         </>
       );
     },
@@ -275,35 +275,32 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
+      {console.log(data)}
       return (
         <div
-          className={`status-cloumn ${data?.row?.original?.bid?.status}`}
-          style={{
-            color: `${data?.row?.original?.status === "accepted"}`
-              ? "#22bb33"
-              : "green",
-          }}
+          className={`status-cloumn ${data?.row?.original?.status}`}
+          style={{color : `${data?.row?.original?.status === "accepted" ? "#22bb33" : "red"}`}}
         >
           {data?.row?.original?.status}
         </div>
       );
     },
   },
-  {
-    Header: "Action",
-    accessor: "action",
-    align: "center",
-    disablePadding: false,
-    hideSortIcon: true,
-    width: 150,
-    Cell: (data) => {
-      // return (
-      //   <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
-      //     {data?.row?.original?.bid?.status}
-      //   </div>
-      // );
-    },
-  },
+  // {
+  //   Header: "Action",
+  //   accessor: "action",
+  //   align: "center",
+  //   disablePadding: false,
+  //   hideSortIcon: true,
+  //   width: 150,
+  //   Cell: (data) => {
+  //     // return (
+  //     //   <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
+  //     //     {data?.row?.original?.bid?.status}
+  //     //   </div>
+  //     // );
+  //   },
+  // },
 ];
 
 export const related_bids_column = [

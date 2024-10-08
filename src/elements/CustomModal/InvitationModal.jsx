@@ -121,7 +121,7 @@ const InvitationModal = ({
                   bidDetails?.bid_close_date === null
                     ? "- -"
                     : `${dateTimeFormatter(
-                        bidDetails?.bid_start_date
+                        bidDetails?.bid_open_date
                       )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
                 </Box>
               </Box>
