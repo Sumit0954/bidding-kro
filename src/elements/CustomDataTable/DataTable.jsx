@@ -24,6 +24,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
 import { debounce } from "lodash";
+import cn from "classnames"
 
 function descendingComparator(a, b, orderBy) {
   if (b.values[orderBy] < a.values[orderBy]) {
@@ -147,7 +148,9 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Showing {rowCount} results
+          <button className={cn("btn", "button")}>
+            Showing {rowCount} results
+          </button>
         </Typography>
       )}
 

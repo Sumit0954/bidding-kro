@@ -24,32 +24,40 @@ import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 
 const InvitedSuppliers = ({ participant, bidDetails }) => {
   const {
     control,
     handleSubmit,
     clearErrors,
+    watch,
     formState: { dirtyFields },
   } = useForm();
   const [createdAt, setCreatedAt] = useState("");
   const [revokesupplier, setRevokeSupplier] = useState(false);
+  const [loading, setLoading] = useState(false);
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
+
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
+
+  const bidStartDate = watch("bid_start_date");
+  const bidEndDate = watch("bid_end_date");
+
   const { setAlert } = useContext(AlertContext);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
-    alertmessage : "",
+    alertmessage: "",
     id: null,
   });
 
-  const handleAction = async (id , alertmessage) => {
+  const handleAction = async (id, alertmessage) => {
     try {
       const response = await _sendAPIRequest(
         "PUT",
@@ -82,14 +90,13 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
 
   const handleDeleteConfirmation = (choice) => {
     if (choice) {
-      handleAction(deleteDetails.id , deleteDetails.alertmessage);
+      handleAction(deleteDetails.id, deleteDetails.alertmessage);
     } else {
       setDeleteDetails({ open: false, title: "", message: "", action: "" });
     }
   };
 
   const addAction = (cell) => {
-    console.log(cell.row.original.company.name)
     if (cell.column.id === "action") {
       // const found = participants.some(
       //   (participant) => participant.company.id === cell.row.original.id
@@ -98,14 +105,14 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
-          className={styles["table-link"]}
+            className={styles["table-link"]}
             onClick={() =>
               setDeleteDetails({
                 open: true,
                 title: `Revoke Supplier`,
                 message: `Are you want to revoke ${cell.row.original.company.name}`,
                 alertmessage: cell.row.original.company.name,
-                id : cell.row.original.id
+                id: cell.row.original.id,
               })
             }
           >
@@ -122,57 +129,105 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
       );
     }
   };
+
+  const formData = new URLSearchParams();
+  formData.append("bid_open_date", bidStartDate);
+  formData.append("bid_close_date", bidEndDate);
+
+  const submitdate = async () => {
+    setLoading(true);
+    try {
+      const response = await _sendAPIRequest(
+        "PATCH",
+        `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+        formData,
+        true
+      );
+
+      if (response.status === 200) {
+        setLoading(false);
+        setAlert({
+          isVisible: true,
+          message: "Your Bid Dates have been submitted",
+          severity: "success",
+        });
+      }
+      window.location.reload();
+    } catch (error) {
+      setLoading(false);
+
+      // Set an error alert based on the response error
+      setAlert({
+        isVisible: true,
+        message:
+          error?.response?.data?.error || "An unexpected error occurred.",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <>
       <div className="container">
         <div className="row">
-          <form>
-            <div className="row">
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Opening Date & Time"
-                  name="bid_start_date"
-                  rules={{
-                    required: "Opening Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+          {bidDetails?.bid_open_date === null ? (
+            <form onSubmit={handleSubmit(submitdate)}>
+              <div className="row">
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Opening Date & Time"
+                    name="bid_start_date"
+                    rules={{
+                      required: "Opening Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Closing Date & Time"
+                    name="bid_end_date"
+                    rules={{
+                      required: "Closing Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
               </div>
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Closing Date & Time"
-                  name="bid_end_date"
-                  rules={{
-                    required: "Closing Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+
+              <div className="row mt-3">
+                <div className="col-12">
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      className={styles["form-button"]}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="row mt-3">
-              <div className="col-12">
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className={styles["form-button"]}
-                >
-                  Submit
-                </Button>
-              </div>
-            </div>
-          </form>
+            </form>
+          ) : (
+            <></>
+          )}
         </div>
         <Accordion
           defaultExpanded

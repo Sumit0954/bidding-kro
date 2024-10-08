@@ -16,7 +16,8 @@ const DateTimeRangePicker = ({
   handleChange,
   disableField = false,
   type = "datetime-local",
-  clearErrors
+  clearErrors,
+  value,  // Use this to set the initial value of the field
 }) => {
   return (
     <Box className={styles["input-field-container"]}>
@@ -29,7 +30,7 @@ const DateTimeRangePicker = ({
         control={control}
         name={name}
         rules={rules}
-        render={({ field, fieldState: { error } }) => {
+        render={({ field, fieldState: { error } } ) => {
           return (
             <>
               <Box
@@ -41,11 +42,11 @@ const DateTimeRangePicker = ({
                 <TextField
                   {...field}
                   {...textFieldProps}
-                  value={field.value || ""}
+                  value={field.value || value || ""} // If there's an external value, use it
                   onChange={(e) => {
-                    handleChange && handleChange(e);
-                    clearErrors(name)
-                    return field.onChange(e);
+                    handleChange && handleChange(e);  // Trigger handleChange if provided
+                    clearErrors(name); // Clear the error state
+                    return field.onChange(e); // Update the field value
                   }}
                   size="small"
                   className={cn(

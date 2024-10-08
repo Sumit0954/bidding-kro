@@ -48,7 +48,7 @@ const BidDetailsPage = () => {
   const [show, setShow] = useState(false);
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
-  const [participant , setParticipant] = useState()
+  const [participant, setParticipant] = useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -102,7 +102,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {truncatelength(bidDetails?.title, 61)}
+      {truncatelength(bidDetails?.title, 50)}
     </Typography>,
   ];
 
@@ -145,14 +145,12 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             const participants = response.data.participants;
-            setParticipant(response.data)
-            if (participants && participants.length === 0) {
-              setShow(true); // If participants array is empty, set show to true
-            } else {
-              setShow(false); // Otherwise, set show to false
-            }
-            
-            
+            setParticipant(response.data);
+            // if (participants && participants.length === 0) {
+            //   setShow(true); // If participants array is empty, set show to true
+            // } else {
+            //   setShow(false); // Otherwise, set show to false
+            // }
           }
         } catch (error) {
           console.log(error);
@@ -160,10 +158,9 @@ const BidDetailsPage = () => {
       };
 
       getParticipants();
-      
     }
   }, [bidDetails?.id]);
-  
+
   // useEffect(() => {
   //   const createdDate = new Date(bidDetails?.created_at);
   //   const currentDate = new Date();
@@ -230,7 +227,7 @@ const BidDetailsPage = () => {
                 </button>
               )}
 
-              {show ? (
+              {participant?.participants.length > 0 ? (
                 <button
                   className={cn("btn", "button")}
                   type="button"
@@ -360,7 +357,10 @@ const BidDetailsPage = () => {
             <Documents bidDetails={bidDetails} type={type} />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <InvitedSuppliers bidDetails={bidDetails} participant={participant}/>
+            <InvitedSuppliers
+              bidDetails={bidDetails}
+              participant={participant}
+            />
           </TabPanel>
           {bidDetails?.type === "L1" ? (
             <>

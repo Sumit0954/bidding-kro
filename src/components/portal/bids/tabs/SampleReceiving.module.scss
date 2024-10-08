@@ -44,3 +44,11 @@
 .alert-message {
   margin: 0;
 }
+
+.disable {
+  width: 200px !important;
+  margin-left: 171px !important;
+  padding: 6px 12px;
+  color: var(--gray);
+  background-color: var(--disable);
+}

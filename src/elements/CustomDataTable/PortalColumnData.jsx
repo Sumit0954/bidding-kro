@@ -9,7 +9,6 @@ import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useState } from "react";
 
-
 const onCloneBidClick = async (id, navigate) => {
   try {
     const response = await _sendAPIRequest(
@@ -23,7 +22,6 @@ const onCloneBidClick = async (id, navigate) => {
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
-
     console.log("Error cloning bid", error);
   }
 };
@@ -70,7 +68,6 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
     </>
   );
 };
-
 
 export const created_bids_column = [
   {
@@ -168,7 +165,6 @@ export const created_bids_column = [
         // >
         //   Clone Bid
         // </p>
-
       );
     },
   },
@@ -180,21 +176,24 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
-      console.log()
       return (
-        <NavLink
-          style={{ textAlign: "center" }}
-          className={
-            data?.row?.original?.status === "cancelled" || data?.row?.original?.status === "pending"
-              ? styles["disabled-link"]
-              : styles["table-link"]
-          }
-          to={`/portal/companies/${data?.cell?.row?.original.id}`}
-        >
-          Invite
-        </NavLink>
+        <>
+          {console.log()}
+          <NavLink
+            style={{ textAlign: "center" }}
+            className={
+              data?.row?.original?.status === "cancelled" ||
+              data?.row?.original?.status === "pending" ||
+              data?.row?.original?.bid_open_date === null
+                ? styles["disabled-link"]
+                : styles["table-link"]
+            }
+            to={`/portal/companies/${data?.cell?.row?.original.id}`}
+          >
+            Invite
+          </NavLink>
+        </>
       );
-
     },
   },
 ];
@@ -277,8 +276,15 @@ export const invited_bids_column = [
     width: 150,
     Cell: (data) => {
       return (
-        <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
-          {data?.row?.original?.bid?.status}
+        <div
+          className={`status-cloumn ${data?.row?.original?.bid?.status}`}
+          style={{
+            color: `${data?.row?.original?.status === "accepted"}`
+              ? "#22bb33"
+              : "green",
+          }}
+        >
+          {data?.row?.original?.status}
         </div>
       );
     },
@@ -513,7 +519,6 @@ export const l1_participants_column = [
     width: 160,
   },
   {
-
     Header: "Status",
     accessor: "status",
     align: "left",
@@ -643,6 +648,30 @@ export const PreviousBids_column = [
 ];
 
 export const Sample_Bid_Invitations_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_Name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Sample Status",
+    accessor: "company_email",
+    align: "center",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+  {
+    Header: "Action",
+    accessor: "mobile_number",
+    align: "right",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+  },
+];
+
+export const Sample_Bid_Invitations_result_log = [
   {
     Header: "Company Name",
     accessor: "company_Name",

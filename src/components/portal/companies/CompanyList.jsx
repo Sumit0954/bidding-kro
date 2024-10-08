@@ -1,6 +1,13 @@
 import styles from "./CompanyList.module.scss";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { Alert, Box, Button, TableCell } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  TableCell,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
@@ -14,13 +21,14 @@ import { useForm } from "react-hook-form";
 const CompanyList = ({ bidDetails, id, tab }) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
-  const [otherSuppliers, setOtherSuppliers] = useState([]);
+  const [companies, setCompanies] = useState({});
   const [participants, setParticipants] = useState([]);
   const [categories, setCategories] = useState({ 0: [] });
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
 
   const { control } = useForm();
+
 
   const handleInvite = (data) => {
     setInvitation(true);
@@ -37,7 +45,8 @@ const CompanyList = ({ bidDetails, id, tab }) => {
           true
         );
         if (response.status === 200) {
-          setOtherSuppliers(response?.data?.other_suppliers);
+          // console.log(response?.data)
+          setCompanies(response?.data);
         }
       } catch (error) {
         console.log(error);
@@ -69,8 +78,8 @@ const CompanyList = ({ bidDetails, id, tab }) => {
     }
   }, [id]);
 
+
   const addAction = (cell) => {
-    console.log(participants);
     if (cell.column.id === "action") {
       const found = participants.some(
         (participant) => participant.company.id === cell.row.original.id
@@ -153,7 +162,6 @@ const CompanyList = ({ bidDetails, id, tab }) => {
   };
 
   useEffect(() => {
-    console.log(rootCategory, "rootCategory updated");
   }, [rootCategory]);
 
   return (
@@ -215,12 +223,30 @@ const CompanyList = ({ bidDetails, id, tab }) => {
           </Alert>
         )}
 
-        <DataTable
-          propsColumn={companies_column}
-          propsData={otherSuppliers}
-          action={addAction}
-          customClassName="admin-data-table"
-        />
+        <div className={styles["supplier-section"]}>
+          <Typography variant="h6" className={styles["section-title"]}>
+            Existing Suppliers
+          </Typography>
+          <DataTable
+            propsColumn={companies_column}
+            propsData={companies?.existing_suppliers || []}
+            action={addAction}
+            customClassName="admin-data-table"
+          />
+        </div>
+
+        {/* Other Suppliers Section */}
+        <div className={styles["supplier-section"]}>
+          <Typography variant="h6" className={styles["section-title"]}>
+            Other Suppliers
+          </Typography>
+          <DataTable
+            propsColumn={companies_column}
+            propsData={companies?.Other_suppliers || []}
+            action={addAction}
+            customClassName="admin-data-table"
+          />
+        </div>
       </div>
 
       {addInvitaion && (

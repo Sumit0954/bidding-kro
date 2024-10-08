@@ -6,7 +6,7 @@ import {
   related_bids_column,
 } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
-import styles from  "./BidList.module.scss"
+import styles from "./BidList.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { useForm } from "react-hook-form";
@@ -24,7 +24,7 @@ const BidList = ({ listType }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
 
-
+  // To Created Bid List
   const getCreatedBidList = async () => {
     // console.log(
     //   selectedCategory,
@@ -49,7 +49,6 @@ const BidList = ({ listType }) => {
       }
     });
     try {
-
       // const params = {
       //   category: selectedCategory,
       // };
@@ -183,9 +182,12 @@ const BidList = ({ listType }) => {
 
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
-          <button 
-          className={`${styles["request-btn"]}`}
-          onClick={handlerequest}>invite request</button>
+          <button
+            className={`${styles["request-btn"]}`}
+            onClick={handlerequest}
+          >
+            invite request
+          </button>
         </TableCell>
       );
     } else {

@@ -21,6 +21,10 @@ const Documents = ({ bidDetails, type }) => {
     action: "",
   });
 
+  const formData = new URLSearchParams();
+  formData.append("action", deleteDetails.action);
+  formData.append("is_sample_invite", "false");
+
   const handleAction = async (action) => {
     setLoadingAction(action);
     setLoading(true);
@@ -28,16 +32,12 @@ const Documents = ({ bidDetails, type }) => {
       const response = await _sendAPIRequest(
         "PUT",
         PortalApiUrls.INVITE_ACTION + `${bidDetails?.id}/`,
-        { 
-          action: "accept",
-          is_sample_invite: false
-         },
+        formData,
         true
       );
       if (response.status === 204) {
         window.location.reload();
         setLoading(false);
-
         setAlert({
           isVisible: true,
           message:
@@ -49,16 +49,18 @@ const Documents = ({ bidDetails, type }) => {
       }
     } catch (error) {
       setLoading(false);
+      console.log("Error response:", error?.response); // Log the full error response for debugging
       setAlert({
         isVisible: true,
-        message: error?.response?.data?.error,
+        message:
+          error?.response?.data?.error || "An unexpected error occurred.",
         severity: "error",
       });
     }
   };
   const handleDownloadDocument = (data) => {
     const { file, name } = data;
-  
+
     fetch(file)
       .then((response) => {
         if (!response.ok) {
@@ -77,11 +79,9 @@ const Documents = ({ bidDetails, type }) => {
         window.URL.revokeObjectURL(url); // Release memory for the object URL
       })
       .catch((error) => {
-      
         console.error("There was an error downloading the file:", error);
       });
   };
-  
 
   const handleDeleteConfirmation = (choice) => {
     if (choice) {
