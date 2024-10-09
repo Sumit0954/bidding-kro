@@ -8,7 +8,6 @@ import classNames from "classnames";
 
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useState } from "react";
-
 const onCloneBidClick = async (id, navigate) => {
   try {
     const response = await _sendAPIRequest(
@@ -89,7 +88,9 @@ export const created_bids_column = [
           className={styles["table-link"]}
           to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
-          {truncateString(data?.row?.original?.title, 30)}
+          {`${truncateString(data?.row?.original?.title, 30)}${
+            data?.row?.original?.type === "L1" ? null : " (QCBS)"
+          }`}
         </NavLink>
       );
     },
@@ -178,13 +179,11 @@ export const created_bids_column = [
     Cell: (data) => {
       return (
         <>
-          {console.log()}
+          {console.log(data?.row?.original)}
           <NavLink
             style={{ textAlign: "center" }}
             className={
-              data?.row?.original?.status === "cancelled" ||
-              data?.row?.original?.status === "pending" ||
-              data?.row?.original?.bid_open_date === null
+              data?.row?.original?.status !== "active"
                 ? styles["disabled-link"]
                 : styles["table-link"]
             }
@@ -275,11 +274,17 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      {console.log(data)}
+      {
+        console.log(data);
+      }
       return (
         <div
           className={`status-cloumn ${data?.row?.original?.status}`}
-          style={{color : `${data?.row?.original?.status === "accepted" ? "#22bb33" : "red"}`}}
+          style={{
+            color: `${
+              data?.row?.original?.status === "accepted" ? "#22bb33" : "red"
+            }`,
+          }}
         >
           {data?.row?.original?.status}
         </div>
@@ -651,67 +656,101 @@ export const Sample_Bid_Invitations_column = [
     align: "left",
     disablePadding: false,
     width: 150, // Add a uniform width
+    Cell: (data) => {
+      return `${data.row.original.company.name}`;
+    },
   },
   {
     Header: "Sample Status",
     accessor: "company_email",
-    align: "center",
+    align: "left",
     disablePadding: false,
     width: 150, // Add a uniform width
+    Cell: (data) => {
+      const [status, setStatus] = useState("Not Received"); // Default value set to "Not Received"
+
+      const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+      };
+
+      return (
+        <select value={status} onChange={handleStatusChange}>
+          <option value="Received">Received</option>
+          <option value="Not Received">Not Received</option>
+        </select>
+      );
+    },
   },
   {
     Header: "Action",
     accessor: "mobile_number",
-    align: "right",
+    align: "left",
     disablePadding: false,
     width: 150, // Add a uniform width
+    Cell: (data) => {
+      const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
+
+      const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+      };
+
+      return (
+        <select value={status} onChange={handleStatusChange}>
+          <option value="Approved">Approved</option>
+          <option value="Not Approved">Not Approved</option>
+        </select>
+      );
+    },
   },
 ];
-
 export const Sample_Bid_Invitations_result_log = [
   {
     Header: "Company Name",
-    accessor: "company_Name",
+    accessor: "company.name",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 160,
+    Cell: (data) => {
+      return data.row.original.company.name;
+    },
   },
   {
     Header: "Company Email",
-    accessor: "company_email",
+    accessor: "company.business_email",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 160,
   },
   {
     Header: "Company Mobile",
-    accessor: "mobile_number",
+    accessor: "company.business_mobile",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 160,
   },
   {
     Header: "Status",
     accessor: "status",
-    align: "center",
+    align: "left",
     width: 150, // Change to uniform width
     disablePadding: false,
     hideSortIcon: true,
-    // Cell: (data) => {
-    //   return (
-    //     <div
-    //       className={`status-cloumn ${data?.row?.original?.status}`}
-    //       style={{
-    //         color: `${
-    //           data?.row?.original?.status === "active"
-    //             ? "#22bb33"
-    //             : "darkyellow"
-    //         }`,
-    //       }}
-    //     >
-    //       {data?.row?.original?.status}
-    //     </div>
-    //   );
-    // },
+    Cell: (data) => {
+      console.log("data : ", data);
+      return (
+        <div
+          className={`status-cloumn ${data?.row?.original?.sample?.invite_status}`}
+          style={{
+            color: `${
+              data?.row?.original?.status === "active"
+                ? "#22bb33"
+                : "darkyellow"
+            }`,
+          }}
+        >
+          {data?.row?.original?.sample?.invite_status}
+        </div>
+      );
+    },
   },
 ];

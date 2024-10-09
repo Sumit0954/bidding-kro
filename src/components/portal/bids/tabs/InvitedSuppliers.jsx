@@ -146,13 +146,14 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
 
       if (response.status === 200) {
         setLoading(false);
+        window.location.reload();
         setAlert({
           isVisible: true,
           message: "Your Bid Dates have been submitted",
           severity: "success",
         });
       }
-      window.location.reload();
+      
     } catch (error) {
       setLoading(false);
 

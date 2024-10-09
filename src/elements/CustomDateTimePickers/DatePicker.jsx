@@ -17,7 +17,7 @@ const DatePicker = ({
   disableField = false,
   type = "date", // Set the default type to 'date'
   clearErrors,
-  value,  // Use this to set the initial value of the field
+  value,
 }) => {
   return (
     <Box className={styles["input-field-container"]}>
@@ -41,19 +41,19 @@ const DatePicker = ({
               >
                 <TextField
                   {...field}
-                  {...textFieldProps}
-                  value={field.value || value || ""} // If there's an external value, use it
+                  value={value}
                   onChange={(e) => {
-                    handleChange && handleChange(e);  // Trigger handleChange if provided
-                    clearErrors(name); // Clear the error state
-                    return field.onChange(e); // Update the field value
+                    const selectedDate = e.target.value;
+                    handleChange && handleChange(selectedDate); // Optional: trigger external handler if provided
+                    clearErrors(name); // Clear validation errors
+                    return field.onChange(selectedDate); // Update the form state with the new date
                   }}
                   size="small"
                   className={cn(
                     styles["input-field"],
                     `${disableField && "disable-input-field"}`
                   )}
-                  type={type} // The type is now 'date' by default
+                  type={type} // 'date' type input
                   inputProps={{
                     "aria-label": "controlled",
                     placeholder: placeholder,

@@ -32,6 +32,7 @@ const CompanyList = ({ bidDetails, id, tab }) => {
   const handleInvite = (data) => {
     setInvitation(true);
     setCompanyDetail(data.row.original);
+    window.location.reload()
   };
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
+import { useNavigate } from "react-router-dom";
 
 const Documents = ({ bidDetails, type }) => {
   const { setAlert } = useContext(AlertContext);
@@ -20,10 +21,13 @@ const Documents = ({ bidDetails, type }) => {
     message: "",
     action: "",
   });
-
+  const navigate = useNavigate();
   const formData = new URLSearchParams();
   formData.append("action", deleteDetails.action);
-  formData.append("is_sample_invite", "false");
+  formData.append(
+    "is_sample_invite",
+    `${bidDetails?.type === "L1" ? false : true}`
+  );
 
   const handleAction = async (action) => {
     setLoadingAction(action);
@@ -38,10 +42,12 @@ const Documents = ({ bidDetails, type }) => {
       if (response.status === 204) {
         window.location.reload();
         setLoading(false);
+
         setAlert({
           isVisible: true,
           message:
-            loadingAction === "accept"
+            bidDetails?.participant?.status === "accepted" ||
+            bidDetails.participant.sample.invite_status === "accepted"
               ? "Your bid invitation has been successfully accepted."
               : "Bid invitation has been declined.",
           severity: "success",
@@ -49,7 +55,6 @@ const Documents = ({ bidDetails, type }) => {
       }
     } catch (error) {
       setLoading(false);
-      console.log("Error response:", error?.response); // Log the full error response for debugging
       setAlert({
         isVisible: true,
         message:
@@ -111,7 +116,7 @@ const Documents = ({ bidDetails, type }) => {
       );
     }
   };
-
+  console.log("status", bidDetails.participant.sample.invite_status);
   return (
     <>
       <DataTable
@@ -124,17 +129,22 @@ const Documents = ({ bidDetails, type }) => {
       {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
           {bidDetails?.participant?.status === "accepted" ||
-          bidDetails?.participant?.status === "declined" ? (
+          bidDetails?.participant?.status === "declined" ||
+          bidDetails.participant.sample.invite_status === "accepted" ||
+          bidDetails.participant.sample.invite_status === "declined" ? (
             <button
               type="button"
               className={`btn button ${
-                bidDetails?.participant?.status === "accepted"
+                bidDetails?.participant?.status === "accepted" ||
+                bidDetails.participant.sample.invite_status === "accepted"
                   ? "approve"
                   : "reject"
               }`}
               disabled={true}
             >
-              {bidDetails?.participant?.status}
+              {bidDetails?.type === "L1"
+                ? bidDetails?.participant?.status
+                : bidDetails.participant.sample.invite_status}
             </button>
           ) : (
             <>
@@ -187,6 +197,9 @@ const Documents = ({ bidDetails, type }) => {
           )}
         </Box>
       )}
+      <button onClick={() => navigate("/portal/bids/details/acceptance")}>
+        Click
+      </button>
     </>
   );
 };

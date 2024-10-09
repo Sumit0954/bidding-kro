@@ -20,6 +20,7 @@ import {
   Alert,
   Box,
   Button,
+  TableCell,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -29,7 +30,7 @@ import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 
-const SampleReceiving = ({ bidDetails }) => {
+const SampleReceiving = ({ bidDetails, participant }) => {
   const {
     control,
     handleSubmit,
@@ -45,8 +46,20 @@ const SampleReceiving = ({ bidDetails }) => {
     .toISOString()
     .split("T")[0];
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
+
+  const found = participant?.participants.some(
+    (participant) => participant.sample.invite_status === "accepted"
+  );
+
+  const filteredParticipants = participant?.participants.filter(
+    (p) => p.sample?.invite_status === "accepted"
+  );
+
+  console.log(filteredParticipants, "filteredParticipants");
 
   const { setAlert } = useContext(AlertContext);
+  console.log(bidDetails);
 
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
@@ -54,7 +67,6 @@ const SampleReceiving = ({ bidDetails }) => {
     message: "",
     id: null,
   });
-
   const sampleStartDate = watch("sample_receive_start_date");
   const sampleEndDate = watch("sample_receive_end_date");
 
@@ -64,36 +76,108 @@ const SampleReceiving = ({ bidDetails }) => {
   formData.append("sample_receive_start_date", sampleStartDate);
   formData.append("sample_receive_end_date", sampleEndDate);
 
+  const editformData = new URLSearchParams();
+  editformData.append("sample_receive_end_date", sampleEndDate);
+
+  console.log("Start", sampleStartDate);
+  console.log("End", sampleEndDate);
+
   const submitSampledates = async () => {
     setLoading(true);
-    try {
-      const response = await _sendAPIRequest(
-        "PATCH",
-        `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
-        formData,
-        true
-      );
+    if (
+      bidDetails.sample_receive_start_date === null &&
+      bidDetails.sample_receive_end_date
+    ) {
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+          formData,
+          true
+        );
 
-      if (response.status === 200) {
+        if (response.status === 200) {
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Your Bid Dates have been submitted",
+            severity: "success",
+          });
+        }
+        window.location.reload();
+      } catch (error) {
         setLoading(false);
         setAlert({
           isVisible: true,
-          message: "Your Bid Dates have been submitted",
-          severity: "success",
+          message:
+            error?.response?.data?.error || "An unexpected error occurred.",
+          severity: "error",
         });
       }
-      window.location.reload();
-    } catch (error) {
-      setLoading(false);
-      setAlert({
-        isVisible: true,
-        message:
-          error?.response?.data?.error || "An unexpected error occurred.",
-        severity: "error",
-      });
+    } else {
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+          editformData,
+          true
+        );
+
+        if (response.status === 200) {
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Your Bid Dates have been submitted",
+            severity: "success",
+          });
+        }
+        window.location.reload();
+      } catch (error) {
+        setLoading(false);
+        setAlert({
+          isVisible: true,
+          message:
+            error?.response?.data?.error || "An unexpected error occurred.",
+          severity: "error",
+        });
+      }
     }
   };
+  // console.log("participant :", participant);
 
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+  };
+
+  // const addSampleRecivedAction = (cell) => {
+  //   if (cell.column.id === "action") {
+  //     return (
+  //       <>
+  //         <TableCell {...cell.getCellProps()} align="center" padding="none">
+  //           <select value={status} onChange={handleStatusChange}>
+  //             <option value="Received">Received</option>
+  //             <option value="Not Received">Not Received</option>
+  //           </select>
+  //         </TableCell>
+  //       </>
+  //     );
+  //   }
+  // };
+  // const addSampleApproveAction = (cell) => {
+  //   console.log( "cell" , cell)
+  //   if (cell.column.id === "action") {
+  //     return (
+  //       <>
+  //         <TableCell {...cell.getCellProps()} align="center" padding="none">
+  //           <select value={status} onChange={handleStatusChange}>
+  //             <option value="Received">Approved</option>
+  //             <option value="Rejected">Rejected</option>
+  //           </select>
+  //         </TableCell>
+  //       </>
+  //     );
+  //   }
+  // };
   return (
     <>
       <div className="container">
@@ -157,15 +241,21 @@ const SampleReceiving = ({ bidDetails }) => {
                   control={control}
                   label="Sample Receiving Opening Date"
                   name="sample_receive_start_date"
-                  rules={{
-                    required: "Opening Date is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
+                  rules={
+                    sampleEndDate === null
+                      ? {
+                          required: "Opening Date is required.",
+                          validate: (value) =>
+                            dateValidator(value, minDate, maxDate),
+                        }
+                      : null
+                  }
                   textFieldProps={{
                     min: `${minDate}T12:00`,
                     max: `${maxDate}T17:00`,
                   }}
                   clearErrors={clearErrors}
+                  value={bidDetails?.sample_receive_start_date} // Bind value to selected date
                 />
               </div>
               <div className="col-lg-6">
@@ -182,6 +272,7 @@ const SampleReceiving = ({ bidDetails }) => {
                     max: `${maxDate}T17:00`,
                   }}
                   clearErrors={clearErrors}
+                  value={bidDetails?.sample_receive_end_date}
                 />
               </div>
             </div>
@@ -199,26 +290,30 @@ const SampleReceiving = ({ bidDetails }) => {
           </form>
         </div>
         <br />
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Invited Suppliers
-            </Typography>
-          </AccordionSummary>
+        {found && (
+          <Accordion
+            defaultExpanded
+            square={true}
+            classes={{
+              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography classes={{ root: "custom-accordion-heading" }}>
+                Invited Suppliers
+              </Typography>
+            </AccordionSummary>
 
-          <AccordionDetails>
-            <DataTable
-              propsColumn={Sample_Bid_Invitations_column}
-              propsData={[]}
-            />
-          </AccordionDetails>
-        </Accordion>
+            <AccordionDetails>
+              <DataTable
+                propsColumn={Sample_Bid_Invitations_column}
+                propsData={filteredParticipants || []}
+                // action={addSampleRecivedAction}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+
         <Accordion
           defaultExpanded
           square={true}
@@ -235,7 +330,7 @@ const SampleReceiving = ({ bidDetails }) => {
           <AccordionDetails>
             <DataTable
               propsColumn={Sample_Bid_Invitations_result_log}
-              propsData={[]}
+              propsData={participant.participants || []}
             />
           </AccordionDetails>
         </Accordion>

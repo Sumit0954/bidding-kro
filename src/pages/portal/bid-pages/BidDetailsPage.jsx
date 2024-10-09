@@ -50,6 +50,17 @@ const BidDetailsPage = () => {
   const type = new URLSearchParams(useLocation().search).get("type");
   const [participant, setParticipant] = useState();
 
+  const found = participant?.participants.some(
+    (participant) => participant.status === "accepted"
+  );
+
+  const Sample_invite_found = participant?.participants.some(
+    (participant) => participant?.participants?.invite_status === "accepted"
+  );
+
+  console.log(Sample_invite_found)
+
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -292,21 +303,19 @@ const BidDetailsPage = () => {
             ? [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                <Tab
+                  label="Acceptance Status"
+                  {...a11yProps(2)}
+                  key={2}
+                  disabled={found && Sample_invite_found === true ? false : true}
+                />,
                 <Tab label="Questions" {...a11yProps(3)} key={3} />,
                 <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab
-                  label="Invite Suppliers"
-                  {...a11yProps(2)}
-                  key={2}
-                  disabled={
-                    bidDetails?.sample_receive_end_date === null ? true : false
-                  }
-                />,
+                <Tab label="Invite Suppliers" {...a11yProps(2)} key={2} />,
                 bidDetails?.type === "L1"
                   ? [
                       <Tab label="Bids" {...a11yProps(3)} key={3} />,
@@ -387,7 +396,10 @@ const BidDetailsPage = () => {
           ) : (
             <>
               <TabPanel value={value} index={3}>
-                <SampleReceiving bidDetails={bidDetails} />
+                <SampleReceiving
+                  bidDetails={bidDetails}
+                  participant={participant}
+                />
               </TabPanel>
               <TabPanel value={value} index={4}>
                 <Bids />
