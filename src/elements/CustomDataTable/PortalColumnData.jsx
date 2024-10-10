@@ -5,9 +5,37 @@ import { convertFileSize } from "../../helpers/common";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
-
 import DeleteDialog from "../CustomDialog/DeleteDialog";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AlertContext } from "../../contexts/AlertProvider";
+
+const patchBidStatus = async (id, formData) => {
+  console.log(formData, "actionformdata");
+  try {
+    const response = await _sendAPIRequest(
+      "PATCH",
+      `${PortalApiUrls.BID_SAMPLE_ACTION}${id}/`,
+      formData,
+      true
+    );
+
+    if (response.status === 200) {
+      console.log(response, "bid sample Action");
+      // setAlert({
+      //   isVisible: true,
+      //   message: "Your Bid Status Updated sucessfully",
+      //   severity: "success",
+      // });
+    }
+  } catch (error) {
+    // setAlert({
+    //   isVisible: true,
+    //   message: error?.response?.data?.error || "An unexpected error occurred.",
+    //   severity: "error",
+    // });
+  }
+};
+
 const onCloneBidClick = async (id, navigate) => {
   try {
     const response = await _sendAPIRequest(
@@ -667,16 +695,24 @@ export const Sample_Bid_Invitations_column = [
     disablePadding: false,
     width: 150, // Add a uniform width
     Cell: (data) => {
-      const [status, setStatus] = useState("Not Received"); // Default value set to "Not Received"
-
+      const [status, setStatus] = useState(
+        data.row.original.sample.is_received
+      );
+      console.log(data.row.original.sample.is_received, "is_received");
       const handleStatusChange = (event) => {
+        const newStatus = event.target.value;
         setStatus(event.target.value);
+        const formData = {
+          is_received: newStatus,
+        };
+
+        patchBidStatus(data.row.original.id, formData);
       };
 
       return (
         <select value={status} onChange={handleStatusChange}>
-          <option value="Received">Received</option>
-          <option value="Not Received">Not Received</option>
+          <option value="true">Received</option>
+          <option value="false">Not Received</option>
         </select>
       );
     },
@@ -688,16 +724,24 @@ export const Sample_Bid_Invitations_column = [
     disablePadding: false,
     width: 150, // Add a uniform width
     Cell: (data) => {
-      const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
-
+      const [status, setStatus] = useState(
+        data.row.original.sample.approval_status
+      );
+      console.log(data.row.original.sample.approval_status, "approval_status");
       const handleStatusChange = (event) => {
+        const newActionStatus = event.target.value;
         setStatus(event.target.value);
+        const formData = {
+          action: newActionStatus,
+        };
+
+        patchBidStatus(data.row.original.id, formData);
       };
 
       return (
         <select value={status} onChange={handleStatusChange}>
-          <option value="Approved">Approved</option>
-          <option value="Not Approved">Not Approved</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Not Approved</option>
         </select>
       );
     },
