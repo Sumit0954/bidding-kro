@@ -57,6 +57,10 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
     id: null,
   });
 
+  const filteredParticipants = participant?.participants.filter(
+    (p) => p.sample?.approval_status === "approved"
+  );
+
   const handleAction = async (id, alertmessage) => {
     try {
       const response = await _sendAPIRequest(
@@ -307,7 +311,7 @@ const InvitedSuppliers = ({ participant, bidDetails }) => {
           <AccordionDetails>
             <DataTable
               propsColumn={l1_participants_column}
-              propsData={participant.participants}
+              propsData={bidDetails?.type === "L1"? participant.participants: filteredParticipants}
               action={addAction}
             />
           </AccordionDetails>

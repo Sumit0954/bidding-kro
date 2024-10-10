@@ -205,21 +205,26 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
+      console.log(data?.row?.original?.type); // Debugging/logging
+
+      const isInviteDisabled =
+        data?.row?.original?.status !== "active" ||
+        (data?.row?.original?.type === "L1" &&
+          data?.row?.original?.bid_close_date === null) ||
+        (data?.row?.original?.type === "QCBS" &&
+          (data?.row?.original?.sample_receive_start_date === null ||
+            data?.row?.original?.sample_receive_end_date === null));
+
       return (
-        <>
-          {console.log(data?.row?.original)}
-          <NavLink
-            style={{ textAlign: "center" }}
-            className={
-              data?.row?.original?.status !== "active"
-                ? styles["disabled-link"]
-                : styles["table-link"]
-            }
-            to={`/portal/companies/${data?.cell?.row?.original.id}`}
-          >
-            Invite
-          </NavLink>
-        </>
+        <NavLink
+          style={{ textAlign: "center" }}
+          className={
+            isInviteDisabled ? styles["disabled-link"] : styles["table-link"]
+          }
+          to={`/portal/companies/${data?.cell?.row?.original.id}`}
+        >
+          Invite
+        </NavLink>
       );
     },
   },
@@ -302,15 +307,18 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      {
-        console.log(data);
-      }
+      console.log(data); // Debugging log
+
       return (
         <div
-          className={`status-cloumn ${data?.row?.original?.status}`}
+          className={`status-column ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "accepted" ? "#22bb33" : "red"
+              data?.row?.original?.status === "accepted"
+                ? "#22bb33" // Green for accepted
+                : data?.row?.original?.status === "pending"
+                ? "#FFBF00" // Yellow for pending
+                : "red" // Default red for other statuses
             }`,
           }}
         >
@@ -319,6 +327,7 @@ export const invited_bids_column = [
       );
     },
   },
+
   // {
   //   Header: "Action",
   //   accessor: "action",
@@ -710,9 +719,19 @@ export const Sample_Bid_Invitations_column = [
       };
 
       return (
-        <select value={status} onChange={handleStatusChange}>
-          <option value="true">Received</option>
-          <option value="false">Not Received</option>
+        <select
+          value={status}
+          onChange={handleStatusChange}
+          style={{
+            color: status === "true" ? "green" : "red", // Conditional color for the select box
+          }}
+        >
+          <option value="true" style={{ color: "green" }}>
+            Received{" "}
+          </option>
+          <option value="false" style={{ color: "red" }}>
+            Not Received
+          </option>
         </select>
       );
     },
@@ -725,7 +744,11 @@ export const Sample_Bid_Invitations_column = [
     width: 150, // Add a uniform width
     Cell: (data) => {
       const [status, setStatus] = useState(
-        data.row.original.sample.approval_status
+        data.row.original.sample.approval_status === "rejected"
+          ? "reject"
+          : data.row.original.sample.approval_status === "pending"
+          ? "pending"
+          : "approve"
       );
       console.log(data.row.original.sample.approval_status, "approval_status");
       const handleStatusChange = (event) => {
@@ -734,14 +757,30 @@ export const Sample_Bid_Invitations_column = [
         const formData = {
           action: newActionStatus,
         };
-
-        patchBidStatus(data.row.original.id, formData);
+        patchBidStatus(
+          data.row.original.id,
+          formData,
+          true,
+          data.row.original.company.id
+        );
       };
-
       return (
-        <select value={status} onChange={handleStatusChange}>
-          <option value="approved">Approved</option>
-          <option value="rejected">Not Approved</option>
+        <select
+          disabled={status === "approve"}
+          value={status === "pending" ? "pending" : status}
+          onChange={handleStatusChange}
+        >
+          {status === "pending" && (
+            <option value="pending" disabled style={{ color: "yellow" }}>
+              Pending
+            </option>
+          )}
+          <option value="approve" style={{ color: "green" }}>
+            Approved
+          </option>
+          <option value="reject" style={{ color: "red" }}>
+            Not Approved
+          </option>
         </select>
       );
     },
@@ -786,7 +825,7 @@ export const Sample_Bid_Invitations_result_log = [
           className={`status-cloumn ${data?.row?.original?.sample?.invite_status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "active"
+              data?.row?.original?.sample?.invite_status === "accepted"
                 ? "#22bb33"
                 : "darkyellow"
             }`,

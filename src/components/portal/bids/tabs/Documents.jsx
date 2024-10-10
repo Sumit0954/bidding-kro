@@ -46,8 +46,7 @@ const Documents = ({ bidDetails, type }) => {
         setAlert({
           isVisible: true,
           message:
-            bidDetails?.participant?.status === "accepted" ||
-            bidDetails.participant.sample.invite_status === "accepted"
+            bidDetails?.participant?.status === "accepted"
               ? "Your bid invitation has been successfully accepted."
               : "Bid invitation has been declined.",
           severity: "success",
@@ -116,7 +115,7 @@ const Documents = ({ bidDetails, type }) => {
       );
     }
   };
-  console.log("status", bidDetails.participant.sample.invite_status);
+  // console.log("status", bidDetails.participant.sample.invite_status);
   return (
     <>
       <DataTable
@@ -129,14 +128,16 @@ const Documents = ({ bidDetails, type }) => {
       {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
           {bidDetails?.participant?.status === "accepted" ||
-          bidDetails?.participant?.status === "declined" ||
-          bidDetails.participant.sample.invite_status === "accepted" ||
-          bidDetails.participant.sample.invite_status === "declined" ? (
+          bidDetails?.participant?.status === "revoked" ||
+          (bidDetails?.type === "QCBS" &&
+            (bidDetails.participant.sample.invite_status === "accepted" ||
+              bidDetails.participant.sample.invite_status === "declined")) ? (
             <button
               type="button"
               className={`btn button ${
                 bidDetails?.participant?.status === "accepted" ||
-                bidDetails.participant.sample.invite_status === "accepted"
+                (bidDetails?.type === "QCBS" &&
+                  bidDetails.participant.sample.invite_status === "accepted")
                   ? "approve"
                   : "reject"
               }`}
@@ -158,7 +159,7 @@ const Documents = ({ bidDetails, type }) => {
                     setDeleteDetails({
                       open: true,
                       title: "Decline Bid Invite",
-                      message: `Are you sure you want to decline this invite bid ? This action cannot be undone.`,
+                      message: `Are you sure you want to decline this invite bid? This action cannot be undone.`,
                       action: "decline",
                     })
                   }
@@ -177,7 +178,7 @@ const Documents = ({ bidDetails, type }) => {
                     setDeleteDetails({
                       open: true,
                       title: "Accept Bid Invite",
-                      message: `Are you sure you want to accept this invite bid ?.`,
+                      message: `Are you sure you want to accept this invite bid?`,
                       action: "accept",
                     })
                   }
@@ -197,9 +198,6 @@ const Documents = ({ bidDetails, type }) => {
           )}
         </Box>
       )}
-      <button onClick={() => navigate("/portal/bids/details/acceptance")}>
-        Click
-      </button>
     </>
   );
 };

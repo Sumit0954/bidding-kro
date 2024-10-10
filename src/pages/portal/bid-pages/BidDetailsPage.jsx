@@ -50,16 +50,31 @@ const BidDetailsPage = () => {
   const type = new URLSearchParams(useLocation().search).get("type");
   const [participant, setParticipant] = useState();
 
-  const found = participant?.participants.some(
-    (participant) => participant.status === "accepted"
+  const isdisableforL1 =
+    bidDetails?.participant?.status === "revoked" ||
+    bidDetails?.participant?.status === "pending";
+
+  const isdisableforQCBS =
+    bidDetails?.participant?.sample?.invite_status === "revoked" ||
+    (bidDetails?.participant?.status === "pending" &&
+      bidDetails?.participant?.sample?.invite_status !== "accepted");
+
+  // Combine the conditions for the tab disabling
+  const isTabDisabled =
+    (bidDetails?.type === "L1" && isdisableforL1) ||
+    (bidDetails?.type === "QCBS" && isdisableforQCBS);
+
+
+
+  console.log("Approved : ", participant);
+
+  const isQCBSBid = bidDetails?.type === "QCBS";
+  const isSampleNotApproved = !participant?.participants.some(
+    (participant) => participant.sample?.approval_status === "approved"
   );
-
-  const Sample_invite_found = participant?.participants.some(
-    (participant) => participant?.participants?.invite_status === "accepted"
-  );
-
-  console.log(Sample_invite_found)
-
+  
+  // Disable condition for the tab
+  const shouldDisableTab = isQCBSBid && isSampleNotApproved;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -157,11 +172,6 @@ const BidDetailsPage = () => {
           if (response.status === 200) {
             const participants = response.data.participants;
             setParticipant(response.data);
-            // if (participants && participants.length === 0) {
-            //   setShow(true); // If participants array is empty, set show to true
-            // } else {
-            //   setShow(false); // Otherwise, set show to false
-            // }
           }
         } catch (error) {
           console.log(error);
@@ -307,25 +317,30 @@ const BidDetailsPage = () => {
                   label="Acceptance Status"
                   {...a11yProps(2)}
                   key={2}
-                  disabled={found && Sample_invite_found === true ? false : true}
+                  disabled={isTabDisabled}
                 />,
-                <Tab label="Questions" {...a11yProps(3)} key={3} />,
-                <Tab label="Remark" {...a11yProps(4)} key={4} />,
+                // <Tab label="Questions" {...a11yProps(3)} key={3} />,
+                // <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Invite Suppliers" {...a11yProps(2)} key={2} />,
+                <Tab
+                  label="Invite Suppliers"
+                  {...a11yProps(2)}
+                  key={2}
+                  disabled={shouldDisableTab}
+                />,
                 bidDetails?.type === "L1"
                   ? [
-                      <Tab label="Bids" {...a11yProps(3)} key={3} />,
-                      <Tab label="Analysis" {...a11yProps(4)} key={4} />,
-                      <Tab
-                        label="Letter Of Intent"
-                        {...a11yProps(5)}
-                        key={5}
-                      />,
-                      <Tab label="Feedback" {...a11yProps(6)} key={6} />,
+                      // <Tab label="Bids" {...a11yProps(3)} key={3} />,
+                      // <Tab label="Analysis" {...a11yProps(4)} key={4} />,
+                      // <Tab
+                      //   label="Letter Of Intent"
+                      //   {...a11yProps(5)}
+                      //   key={5}
+                      // />,
+                      // <Tab label="Feedback" {...a11yProps(6)} key={6} />,
                     ]
                   : [
                       <Tab
@@ -333,14 +348,14 @@ const BidDetailsPage = () => {
                         {...a11yProps(3)}
                         key={3}
                       />,
-                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
-                      <Tab label="Analysis" {...a11yProps(5)} key={5} />,
-                      <Tab
-                        label="Letter Of Intent"
-                        {...a11yProps(6)}
-                        key={6}
-                      />,
-                      <Tab label="Feedback" {...a11yProps(7)} key={7} />,
+                      // <Tab label="Bids" {...a11yProps(4)} key={4} />,
+                      // <Tab label="Analysis" {...a11yProps(5)} key={5} />,
+                      // <Tab
+                      //   label="Letter Of Intent"
+                      //   {...a11yProps(6)}
+                      //   key={6}
+                      // />,
+                      // <Tab label="Feedback" {...a11yProps(7)} key={7} />,
                     ],
               ]}
         </Tabs>

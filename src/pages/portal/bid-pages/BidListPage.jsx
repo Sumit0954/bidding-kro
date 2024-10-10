@@ -100,7 +100,7 @@ const BidListPage = () => {
           >
             <Tab label="Created Bids" {...a11yProps(0)} />
             <Tab label="Invited Bids" {...a11yProps(1)} />
-            <Tab label="Related Bids" {...a11yProps(2)} />
+            {/* <Tab label="Related Bids" {...a11yProps(2)} /> */}
           </Tabs>
 
           {value === 0 && (
@@ -159,9 +159,9 @@ const BidListPage = () => {
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        {/* <TabPanel value={value} index={2}>
           <BidList listType={"related"} />
-        </TabPanel>
+        </TabPanel> */}
       </Box>
     </>
   );

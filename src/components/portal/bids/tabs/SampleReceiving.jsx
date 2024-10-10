@@ -56,7 +56,7 @@ const SampleReceiving = ({ bidDetails, participant }) => {
     (p) => p.sample?.invite_status === "accepted"
   );
 
-  console.log(filteredParticipants, "filteredParticipants");
+  // console.log(filteredParticipants, "filteredParticipants");
 
   const { setAlert } = useContext(AlertContext);
   console.log(bidDetails);
@@ -69,8 +69,6 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   });
   const sampleStartDate = watch("sample_receive_start_date");
   const sampleEndDate = watch("sample_receive_end_date");
-
-  const handleDeleteConfirmation = () => {};
 
   const formData = new URLSearchParams();
   formData.append("sample_receive_start_date", sampleStartDate);
@@ -85,8 +83,7 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   const submitSampledates = async () => {
     setLoading(true);
     if (
-      bidDetails.sample_receive_start_date === null &&
-      bidDetails.sample_receive_end_date
+      bidDetails.sample_receive_end_date === null && bidDetails.sample_receive_start_date === null
     ) {
       try {
         const response = await _sendAPIRequest(
@@ -145,9 +142,6 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   };
   // console.log("participant :", participant);
 
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
-  };
 
   // const addSampleRecivedAction = (cell) => {
   //   if (cell.column.id === "action") {
@@ -234,9 +228,9 @@ const SampleReceiving = ({ bidDetails, participant }) => {
               <div className="col-lg-6">
                 <DatePicker
                   disableField={
-                    bidDetails?.sample_receive_start_date === null
-                      ? false
-                      : true
+                    bidDetails?.sample_receive_start_date !== null
+                      ? true
+                      : false
                   }
                   control={control}
                   label="Sample Receiving Opening Date"
