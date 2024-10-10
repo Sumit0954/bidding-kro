@@ -391,6 +391,7 @@ const BidDetailsPage = () => {
             <InvitedSuppliers
               bidDetails={bidDetails}
               participant={participant}
+              onActionComplete={() => setValue(2)} 
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (

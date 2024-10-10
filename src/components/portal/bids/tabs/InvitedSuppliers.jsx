@@ -26,7 +26,7 @@ import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 
-const InvitedSuppliers = ({ participant, bidDetails }) => {
+const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
   const {
     control,
     handleSubmit,

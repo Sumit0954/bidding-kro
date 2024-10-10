@@ -15,11 +15,19 @@ import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { NavLink } from "react-router-dom";
+import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 
 const AcceptanceStatus = ({ bidDetails }) => {
   const { control, handleSubmit } = useForm();
   const { setAlert } = useContext(AlertContext);
+  const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    action: "",
+  });
 
   console.log("bidDetails : ", bidDetails);
 
@@ -59,6 +67,51 @@ const AcceptanceStatus = ({ bidDetails }) => {
   //     }
   //   };
 
+  const handleDeleteConfirmation = (choice) => {
+    if (choice) {
+      handleAction(deleteDetails.action);
+    } else {
+      setDeleteDetails({ open: false, title: "", message: "", action: "" });
+    }
+  };
+
+  const formData = new URLSearchParams();
+  formData.append("action", deleteDetails.action);
+  formData.append("is_sample_invite", false);
+
+  const handleAction = async (action) => {
+    setLoadingAction(action);
+    setLoading(true);
+    try {
+      const response = await _sendAPIRequest(
+        "PUT",
+        PortalApiUrls.INVITE_ACTION + `${bidDetails?.id}/`,
+        formData,
+        true
+      );
+      if (response.status === 204) {
+        window.location.reload();
+        setLoading(false);
+
+        setAlert({
+          isVisible: true,
+          message:
+            bidDetails?.participant?.status === "accepted"
+              ? "Your bid invitation has been successfully accepted."
+              : "Bid invitation has been declined.",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      setAlert({
+        isVisible: true,
+        message:
+          error?.response?.data?.error || "An unexpected error occurred.",
+        severity: "error",
+      });
+    }
+  };
   return (
     <>
       <Box
@@ -105,23 +158,68 @@ const AcceptanceStatus = ({ bidDetails }) => {
         {bidDetails?.type === "QCBS" &&
         bidDetails.participant.sample.approval_status === "approved" ? (
           <>
-            <Box className={styles["btn-contanier"]}>
-              {loading ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <button className="btn button reject" type="submit">
-                  Reject
-                </button>
-              )}
+            {bidDetails.participant.status === "pending" ? (
+              <Box className={styles["btn-contanier"]}>
+                {loading && loadingAction === "decline" ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <button
+                    type="button"
+                    className="btn button reject"
+                    onClick={() =>
+                      setDeleteDetails({
+                        open: true,
+                        title: "Decline Bid Invite",
+                        message: `Are you sure you want to decline this invite bid? This action cannot be undone.`,
+                        action: "decline",
+                      })
+                    }
+                  >
+                    Decline
+                  </button>
+                )}
 
-              {loading ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <button className="btn button approve" type="submit">
-                  Accept
+                {loading && loadingAction === "accept" ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <button
+                    type="button"
+                    className="btn button approve"
+                    onClick={() =>
+                      setDeleteDetails({
+                        open: true,
+                        title: "Accept Bid Invite",
+                        message: `Are you sure you want to accept this invite bid?`,
+                        action: "accept",
+                      })
+                    }
+                  >
+                    Accept
+                  </button>
+                )}
+                {deleteDetails?.open && (
+                  <DeleteDialog
+                    title={deleteDetails.title}
+                    message={deleteDetails.message}
+                    handleClick={handleDeleteConfirmation}
+                  />
+                )}
+              </Box>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={`btn button ${
+                    bidDetails?.participant?.status === "accepted"
+                      ? "approve"
+                      : "reject"
+                  }`}
+                  disabled={true}
+                >
+                  {bidDetails?.participant?.status}
                 </button>
-              )}
-            </Box>
+              </>
+            )}
           </>
         ) : null}
       </Box>
