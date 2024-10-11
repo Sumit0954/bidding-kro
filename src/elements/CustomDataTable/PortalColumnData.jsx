@@ -8,6 +8,7 @@ import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useContext, useState } from "react";
 import { AlertContext } from "../../contexts/AlertProvider";
+import { Select, MenuItem, FormControl } from "@mui/material";
 
 const patchBidStatus = async (id, formData) => {
   console.log(formData, "actionformdata");
@@ -708,31 +709,36 @@ export const Sample_Bid_Invitations_column = [
         data.row.original.sample.is_received
       );
       console.log(data.row.original.sample.is_received, "is_received");
+
       const handleStatusChange = (event) => {
         const newStatus = event.target.value;
-        setStatus(event.target.value);
+        setStatus(newStatus);
+
         const formData = {
           is_received: newStatus,
         };
-
         patchBidStatus(data.row.original.id, formData);
       };
 
       return (
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          style={{
-            color: status === "true" ? "green" : "red", // Conditional color for the select box
-          }}
-        >
-          <option value="true" style={{ color: "green" }}>
-            Received{" "}
-          </option>
-          <option value="false" style={{ color: "red" }}>
-            Not Received
-          </option>
-        </select>
+        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
+          <Select
+            value={status}
+            onChange={handleStatusChange}
+            style={{
+              color: status === "true" ? "green" : "red",
+              height : "35px",
+              fontSize : "14px" // Conditional color for the select box
+            }}
+          >
+            <MenuItem value="true" style={{ color: "green" }}>
+              Received
+            </MenuItem>
+            <MenuItem value="false" style={{ color: "red" }}>
+              Not Received
+            </MenuItem>
+          </Select>
+        </FormControl>
       );
     },
   },
@@ -751,9 +757,11 @@ export const Sample_Bid_Invitations_column = [
           : "approve"
       );
       console.log(data.row.original.sample.approval_status, "approval_status");
+
       const handleStatusChange = (event) => {
         const newActionStatus = event.target.value;
-        setStatus(event.target.value);
+        setStatus(newActionStatus);
+
         const formData = {
           action: newActionStatus,
         };
@@ -764,24 +772,31 @@ export const Sample_Bid_Invitations_column = [
           data.row.original.company.id
         );
       };
+
       return (
-        <select
-          disabled={status === "approve"}
-          value={status === "pending" ? "pending" : status}
-          onChange={handleStatusChange}
-        >
-          {status === "pending" && (
-            <option value="pending" disabled style={{ color: "yellow" }}>
-              Pending
-            </option>
-          )}
-          <option value="approve" style={{ color: "green" }}>
-            Approved
-          </option>
-          <option value="reject" style={{ color: "red" }}>
-            Not Approved
-          </option>
-        </select>
+        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
+          <Select
+            disabled={status === "approve"}
+            value={status}
+            onChange={handleStatusChange}
+            sx={{
+              height: "35px", // Adjust the height of the dropdown
+              fontSize: "14px", // Adjust the font size inside the dropdown
+            }}
+          >
+            {status === "pending" && (
+              <MenuItem value="pending" disabled sx={{ color: "yellow" }}>
+                Pending
+              </MenuItem>
+            )}
+            <MenuItem value="approve" sx={{ color: "green" }}>
+              Approved
+            </MenuItem>
+            <MenuItem value="reject" sx={{ color: "red" }}>
+              Not Approved
+            </MenuItem>
+          </Select>
+        </FormControl>
       );
     },
   },

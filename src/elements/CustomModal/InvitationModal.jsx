@@ -37,6 +37,7 @@ const InvitationModal = ({
       if (response.status === 204) {
         setLoading(false);
         setInvitation(false);
+        window.location.reload()
         setAlert({
           isVisible: true,
           message: "Invitation successfully sent to the supplier.",
