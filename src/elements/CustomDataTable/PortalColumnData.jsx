@@ -452,11 +452,12 @@ export const documents_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      const handleDownloadDocument = (data) => {
-        const { file, name } = data;
+      const handlePreviewDocument = (data) => {
+        const { file } = data; // File URL
         const link = document.createElement("a");
         link.href = file;
-        link.setAttribute("download", name);
+        link.target = "_blank"; // Opens in new tab
+        link.rel = "noopener noreferrer"; // Security enhancement
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -464,7 +465,7 @@ export const documents_column = [
       return (
         <div
           className={styles["document-type"]}
-          onClick={() => handleDownloadDocument(data.row.original)}
+          onClick={() => handlePreviewDocument(data.row.original)}
         >
           {data?.row?.original?.type}
         </div>

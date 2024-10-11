@@ -239,7 +239,7 @@ const CompanyList = ({ bidDetails, id, tab }) => {
           </Typography>
           <DataTable
             propsColumn={companies_column}
-            propsData={companies?.Other_suppliers || []}
+            propsData={companies?.other_suppliers || []}
             action={addAction}
             customClassName="admin-data-table"
           />
