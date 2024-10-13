@@ -14,73 +14,73 @@ import SearchBar from "../../../elements/CustomSelect/SearchBar";
 const BidListPage = () => {
   const [value, setValue] = useState(0);
   const [selectedRow, setSelectedRow] = useState({});
-  const [categories, setCategories] = useState({ 0: [] });
-  const [rootCategory, setRootCategory] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  // const [categories, setCategories] = useState({ 0: [] });
+  // const [rootCategory, setRootCategory] = useState("");
+  // const [selectedCategory, setSelectedCategory] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const { control } = useForm();
+  // const { control } = useForm();
 
-  const handleCategorySelection = (selected) => {
-    console.log(selected, "Selected category");
-    if (selected && selected.value) {
-      setRootCategory(selected.value);
-    } else {
-      setRootCategory(null);
-    }
-  };
+  // const handleCategorySelection = (selected) => {
+  //   console.log(selected, "Selected category");
+  //   if (selected && selected.value) {
+  //     setRootCategory(selected.value);
+  //   } else {
+  //     setRootCategory(null);
+  //   }
+  // };
 
-  const getCategories = async (parent_categories, depth) => {
-    const params = new URLSearchParams();
-    parent_categories.forEach((value) => {
-      if (value !== undefined) {
-        params.append("parent_category", value);
-      }
-    });
+  // const getCategories = async (parent_categories, depth) => {
+  //   const params = new URLSearchParams();
+  //   parent_categories.forEach((value) => {
+  //     if (value !== undefined) {
+  //       params.append("parent_category", value);
+  //     }
+  //   });
 
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.GET_CATEGORIES,
-        params,
-        true
-      );
-      if (response.status === 200) {
-        const mappedCategories = response.data.map((category) => ({
-          lable: category.name, // 'label' is used by Autocomplete to display
-          value: category.id, // 'value' is used for internal management
-          depth: category.depth,
-        }));
-        setCategories((prevCategories) => ({
-          ...prevCategories,
-          [depth]: mappedCategories,
-        }));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   try {
+  //     const response = await _sendAPIRequest(
+  //       "GET",
+  //       PortalApiUrls.GET_CATEGORIES,
+  //       params,
+  //       true
+  //     );
+  //     if (response.status === 200) {
+  //       const mappedCategories = response.data.map((category) => ({
+  //         lable: category.name, // 'label' is used by Autocomplete to display
+  //         value: category.id, // 'value' is used for internal management
+  //         depth: category.depth,
+  //       }));
+  //       setCategories((prevCategories) => ({
+  //         ...prevCategories,
+  //         [depth]: mappedCategories,
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getCategories([], 0);
-  }, []);
+  // useEffect(() => {
+  //   getCategories([], 0);
+  // }, []);
 
-  useEffect(() => {
-    setSelectedCategory(rootCategory);
-  }, [rootCategory]);
+  // useEffect(() => {
+  //   setSelectedCategory(rootCategory);
+  // }, [rootCategory]);
 
-  const handleOptionChange = (ancestors) => {
-    console.log(ancestors, "ancestorsancestors");
-    setSelectedCategory(ancestors);
-  };
+  // const handleOptionChange = (ancestors) => {
+  //   console.log(ancestors, "ancestorsancestors");
+  //   setSelectedCategory(ancestors);
+  // };
 
-  useEffect(() => {
-    console.log(rootCategory, "rootCategory updated");
-  }, [rootCategory]);
+  // useEffect(() => {
+  //   console.log(rootCategory, "rootCategory updated");
+  // }, [rootCategory]);
 
   return (
     <>
@@ -100,7 +100,7 @@ const BidListPage = () => {
           >
             <Tab label="Created Bids" {...a11yProps(0)} />
             <Tab label="Invited Bids" {...a11yProps(1)} />
-            <Tab label="Related Bids" {...a11yProps(2)} />
+            {/* <Tab label="Related Bids" {...a11yProps(2)} /> */}
           </Tabs>
 
           {value === 0 && (
@@ -122,7 +122,7 @@ const BidListPage = () => {
           )}
         </Box>
 
-        <div className="row">
+        {/* <div className="row">
           <div className="col-lg-3">
             <CustomSelect
               control={control}
@@ -147,21 +147,21 @@ const BidListPage = () => {
 
             />
           </div>
-        </div>
+        </div> */}
 
         <TabPanel value={value} index={0}>
           <BidList
             listType={"created"}
-            setSelectedRow={setSelectedRow}
-            selectedCategory={selectedCategory}
+            // setSelectedRow={setSelectedRow}
+            // selectedCategory={selectedCategory}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        {/* <TabPanel value={value} index={2}>
           <BidList listType={"related"} />
-        </TabPanel>
+        </TabPanel> */}
       </Box>
     </>
   );

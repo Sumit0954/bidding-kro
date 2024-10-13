@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 import styles from "./DateTimeRangePicker.module.scss";
 import cn from "classnames";
 
-const DateTimeRangePicker = ({
+const DatePicker = ({
   label = "",
   showLabel = true,
   name = "",
@@ -15,9 +15,9 @@ const DateTimeRangePicker = ({
   control,
   handleChange,
   disableField = false,
-  type = "datetime-local",
+  type = "date", // Set the default type to 'date'
   clearErrors,
-  value,  // Use this to set the initial value of the field
+  value,
 }) => {
   return (
     <Box className={styles["input-field-container"]}>
@@ -30,7 +30,7 @@ const DateTimeRangePicker = ({
         control={control}
         name={name}
         rules={rules}
-        render={({ field, fieldState: { error } } ) => {
+        render={({ field, fieldState: { error } }) => {
           return (
             <>
               <Box
@@ -41,19 +41,19 @@ const DateTimeRangePicker = ({
               >
                 <TextField
                   {...field}
-                  {...textFieldProps}
-                  value={field.value || value || ""} // If there's an external value, use it
+                  value={value}
                   onChange={(e) => {
-                    handleChange && handleChange(e);  // Trigger handleChange if provided
-                    clearErrors(name); // Clear the error state
-                    return field.onChange(e); // Update the field value
+                    const selectedDate = e.target.value;
+                    handleChange && handleChange(selectedDate); // Optional: trigger external handler if provided
+                    clearErrors(name); // Clear validation errors
+                    return field.onChange(selectedDate); // Update the form state with the new date
                   }}
                   size="small"
                   className={cn(
                     styles["input-field"],
                     `${disableField && "disable-input-field"}`
                   )}
-                  type={type}
+                  type={type} // 'date' type input
                   inputProps={{
                     "aria-label": "controlled",
                     placeholder: placeholder,
@@ -73,4 +73,4 @@ const DateTimeRangePicker = ({
   );
 };
 
-export default DateTimeRangePicker;
+export default DatePicker;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import _sendAPIRequest from "../../../../helpers/api";
 import DateTimeRangePicker from "../../../../elements/CustomDateTimePickers/DateTimeRangePicker";
@@ -10,9 +10,8 @@ import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import {
   l1_participants_column,
   products_Column,
-
   Sample_Bid_Invitations_column,
-
+  Sample_Bid_Invitations_result_log,
 } from "../../../../elements/CustomDataTable/PortalColumnData";
 import {
   Accordion,
@@ -21,17 +20,22 @@ import {
   Alert,
   Box,
   Button,
+  TableCell,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
+import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../../../../contexts/AlertProvider";
+import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 
-const SampleReceiving = () => {
+const SampleReceiving = ({ bidDetails, participant }) => {
   const {
     control,
     handleSubmit,
     clearErrors,
+    watch,
     formState: { dirtyFields },
   } = useForm();
   const [createdAt, setCreatedAt] = useState("");
@@ -41,6 +45,21 @@ const SampleReceiving = () => {
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
+
+  const found = participant?.participants.some(
+    (participant) => participant.sample.invite_status === "accepted"
+  );
+
+  const filteredParticipants = participant?.participants.filter(
+    (p) => p.sample?.invite_status === "accepted"
+  );
+
+  // console.log(filteredParticipants, "filteredParticipants");
+
+  const { setAlert } = useContext(AlertContext);
+  console.log(bidDetails);
 
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
@@ -48,9 +67,111 @@ const SampleReceiving = () => {
     message: "",
     id: null,
   });
+  const sampleStartDate = watch("sample_receive_start_date");
+  const sampleEndDate = watch("sample_receive_end_date");
 
-  const handleDeleteConfirmation = () => {};
+  const formData = new URLSearchParams();
+  formData.append("sample_receive_start_date", sampleStartDate);
+  formData.append("sample_receive_end_date", sampleEndDate);
 
+  const editformData = new URLSearchParams();
+  editformData.append("sample_receive_end_date", sampleEndDate);
+
+  console.log("Start", sampleStartDate);
+  console.log("End", sampleEndDate);
+
+  const submitSampledates = async () => {
+    setLoading(true);
+    if (
+      bidDetails.sample_receive_end_date === null && bidDetails.sample_receive_start_date === null
+    ) {
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+          formData,
+          true
+        );
+
+        if (response.status === 200) {
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Your Bid Dates have been submitted",
+            severity: "success",
+          });
+        }
+        window.location.reload();
+      } catch (error) {
+        setLoading(false);
+        setAlert({
+          isVisible: true,
+          message:
+            error?.response?.data?.error || "An unexpected error occurred.",
+          severity: "error",
+        });
+      }
+    } else {
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+          editformData,
+          true
+        );
+
+        if (response.status === 200) {
+          setLoading(false);
+          setAlert({
+            isVisible: true,
+            message: "Your Bid Dates have been submitted",
+            severity: "success",
+          });
+        }
+        window.location.reload();
+      } catch (error) {
+        setLoading(false);
+        setAlert({
+          isVisible: true,
+          message:
+            error?.response?.data?.error || "An unexpected error occurred.",
+          severity: "error",
+        });
+      }
+    }
+  };
+  // console.log("participant :", participant);
+
+
+  // const addSampleRecivedAction = (cell) => {
+  //   if (cell.column.id === "action") {
+  //     return (
+  //       <>
+  //         <TableCell {...cell.getCellProps()} align="center" padding="none">
+  //           <select value={status} onChange={handleStatusChange}>
+  //             <option value="Received">Received</option>
+  //             <option value="Not Received">Not Received</option>
+  //           </select>
+  //         </TableCell>
+  //       </>
+  //     );
+  //   }
+  // };
+  // const addSampleApproveAction = (cell) => {
+  //   console.log( "cell" , cell)
+  //   if (cell.column.id === "action") {
+  //     return (
+  //       <>
+  //         <TableCell {...cell.getCellProps()} align="center" padding="none">
+  //           <select value={status} onChange={handleStatusChange}>
+  //             <option value="Received">Approved</option>
+  //             <option value="Rejected">Rejected</option>
+  //           </select>
+  //         </TableCell>
+  //       </>
+  //     );
+  //   }
+  // };
   return (
     <>
       <div className="container">
@@ -62,6 +183,7 @@ const SampleReceiving = () => {
           </p>
         </Alert>
         <br />
+
         <Alert
           severity="info"
           sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
@@ -81,10 +203,18 @@ const SampleReceiving = () => {
                 accordingly to meet requirements.
               </span>
             </p>
+            {/*  */}
             <Button
+              disabled={
+                bidDetails?.sample_receive_end_date === null ? true : false
+              }
               type="submit"
               variant="contained"
-              className={styles["note-button"]}
+              className={
+                bidDetails?.sample_receive_end_date === null
+                  ? styles["disable"]
+                  : styles["note-button"]
+              }
               startIcon={<PriorityHighIcon />}
             >
               Set Live Bid
@@ -93,29 +223,40 @@ const SampleReceiving = () => {
         </Alert>
         <br />
         <div className="row">
-          <form>
+          <form onSubmit={handleSubmit(submitSampledates)}>
             <div className="row">
               <div className="col-lg-6">
-                <DateTimeRangePicker
+                <DatePicker
+                  disableField={
+                    bidDetails?.sample_receive_start_date !== null
+                      ? true
+                      : false
+                  }
                   control={control}
                   label="Sample Receiving Opening Date"
-                  name="bid_start_date"
-                  rules={{
-                    required: "Opening Date is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
+                  name="sample_receive_start_date"
+                  rules={
+                    sampleEndDate === null
+                      ? {
+                          required: "Opening Date is required.",
+                          validate: (value) =>
+                            dateValidator(value, minDate, maxDate),
+                        }
+                      : null
+                  }
                   textFieldProps={{
                     min: `${minDate}T12:00`,
                     max: `${maxDate}T17:00`,
                   }}
                   clearErrors={clearErrors}
+                  value={bidDetails?.sample_receive_start_date} // Bind value to selected date
                 />
               </div>
               <div className="col-lg-6">
-                <DateTimeRangePicker
+                <DatePicker
                   control={control}
                   label="Sample Receiving Closing Date"
-                  name="bid_end_date"
+                  name="sample_receive_end_date"
                   rules={{
                     required: "Closing Date is required.",
                     validate: (value) => dateValidator(value, minDate, maxDate),
@@ -125,6 +266,7 @@ const SampleReceiving = () => {
                     max: `${maxDate}T17:00`,
                   }}
                   clearErrors={clearErrors}
+                  value={bidDetails?.sample_receive_end_date}
                 />
               </div>
             </div>
@@ -134,7 +276,6 @@ const SampleReceiving = () => {
                   type="submit"
                   variant="contained"
                   className={styles["form-button"]}
-
                 >
                   Submit
                 </Button>
@@ -143,6 +284,30 @@ const SampleReceiving = () => {
           </form>
         </div>
         <br />
+        {found && (
+          <Accordion
+            defaultExpanded
+            square={true}
+            classes={{
+              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography classes={{ root: "custom-accordion-heading" }}>
+                Invited Suppliers
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <DataTable
+                propsColumn={Sample_Bid_Invitations_column}
+                propsData={filteredParticipants || []}
+                // action={addSampleRecivedAction}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+
         <Accordion
           defaultExpanded
           square={true}
@@ -152,16 +317,15 @@ const SampleReceiving = () => {
         >
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography classes={{ root: "custom-accordion-heading" }}>
-              Invited Suppliers
+              Sample Bid Invitations
             </Typography>
           </AccordionSummary>
 
           <AccordionDetails>
             <DataTable
-              propsColumn={Sample_Bid_Invitations_column}
-              propsData={[]}
+              propsColumn={Sample_Bid_Invitations_result_log}
+              propsData={participant.participants || []}
             />
-
           </AccordionDetails>
         </Accordion>
       </div>

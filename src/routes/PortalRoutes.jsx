@@ -24,6 +24,7 @@ import CompanyDetailPage from "../pages/portal/company-page/CompanyDetailPage";
 import BidProducts from "../components/portal/bids/BidProducts";
 import BidCreateDetails from "../components/portal/bids/BidCreateDetails";
 import InvitedSuppliers from "../components/portal/bids/tabs/InvitedSuppliers";
+import AcceptanceStatus from "../components/portal/bids/tabs/AcceptanceStatus";
 
 const PortalRoutes = () => {
   return (
@@ -117,6 +118,11 @@ const PortalRoutes = () => {
                       path="/bids/details/:id"
                       element={<LayoutPage Component={BidDetailsPage} />}
                     />
+
+                    <Route
+                      path="/portal/bids/details/acceptance"
+                      element={<LayoutPage Component={AcceptanceStatus} />}
+                    />
                     {/* Bids Routes End */}
 
                     {/* comapanies list route with id */}
@@ -130,7 +136,6 @@ const PortalRoutes = () => {
                       path="/companies/:id"
                       element={<LayoutPage Component={CompanyListPage} />}
                     />
-
 
                     <Route
                       path="/invitesuppliers/:id"

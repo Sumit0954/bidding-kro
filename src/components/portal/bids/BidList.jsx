@@ -6,19 +6,30 @@ import {
   related_bids_column,
 } from "../../../elements/CustomDataTable/PortalColumnData";
 import { TableCell } from "@mui/material";
+import styles from "./BidList.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { useForm } from "react-hook-form";
+import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
+import SearchBar from "../../../elements/CustomSelect/SearchBar";
+import RequestModal from "../../../elements/CustomModal/RequestModal";
 
-const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
+const BidList = ({ listType }) => {
+  const [sendRequest, setSendRequest] = useState(false);
+  const [bidDetails, setBidDetails] = useState({});
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
+  const [categories, setCategories] = useState({ 0: [] });
+  const [rootCategory, setRootCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedRow, setSelectedRow] = useState({});
 
-
+  // To Created Bid List
   const getCreatedBidList = async () => {
-    console.log(
-      selectedCategory,
-      "selectedCategoryselectedCategoryselectedCategory"
-    );
+    // console.log(
+    //   selectedCategory,
+    //   "selectedCategoryselectedCategoryselectedCategory"
+    // );
     const categoryArray = Array.isArray(selectedCategory)
       ? selectedCategory
       : [selectedCategory];
@@ -38,7 +49,6 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
       }
     });
     try {
-
       // const params = {
       //   category: selectedCategory,
       // };
@@ -53,7 +63,7 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
         setCreatedBids(response.data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -100,8 +110,126 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
       </TableCell>
     );
   };
+
+  const { control } = useForm();
+
+  const handleCategorySelection = (selected) => {
+    // console.log(selected, "Selected category");
+    if (selected && selected.value) {
+      setRootCategory(selected.value);
+    } else {
+      setRootCategory(null);
+    }
+  };
+
+  const getCategories = async (parent_categories, depth) => {
+    const params = new URLSearchParams();
+    parent_categories.forEach((value) => {
+      if (value !== undefined) {
+        params.append("parent_category", value);
+      }
+    });
+
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        params,
+        true
+      );
+      if (response.status === 200) {
+        const mappedCategories = response.data.map((category) => ({
+          lable: category.name, // 'label' is used by Autocomplete to display
+          value: category.id, // 'value' is used for internal management
+          depth: category.depth,
+        }));
+        setCategories((prevCategories) => ({
+          ...prevCategories,
+          [depth]: mappedCategories,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories([], 0);
+  }, []);
+
+  useEffect(() => {
+    setSelectedCategory(rootCategory);
+  }, [rootCategory]);
+
+  const handleOptionChange = (ancestors) => {
+    // console.log(ancestors, "ancestorsancestors");
+    setSelectedCategory(ancestors);
+  };
+
+  useEffect(() => {
+    // console.log(rootCategory, "rootCategory updated");
+  }, [rootCategory]);
+
+  const handlerequest = (data) => {
+    setSendRequest(true);
+  };
+
+  const requestAction = (cell) => {
+    if (cell.column.id === "action") {
+      // const found = participants.some(
+      //   (participant) => participant.company.id === cell.row.original.id
+      // );
+
+      return (
+        <TableCell {...cell.getCellProps()} align="center" padding="none">
+          <button
+            className={`${styles["request-btn"]}`}
+            onClick={handlerequest}
+          >
+            invite request
+          </button>
+        </TableCell>
+      );
+    } else {
+      return (
+        <TableCell {...cell.getCellProps()} align={cell.column.align}>
+          {" "}
+          {cell.render("Cell")}{" "}
+        </TableCell>
+      );
+    }
+  };
+
   return (
     <>
+      {listType === "created" && (
+        <div className="row">
+          <div className="col-lg-3">
+            <CustomSelect
+              control={control}
+              name="Industry"
+              placeholder="Industry"
+              options={categories[0]}
+              handleChange={handleCategorySelection}
+              multiple={false}
+            />
+          </div>
+          <div className="col-lg-9">
+            <SearchBar
+              name="product_search"
+              placeholder="Search Your Category"
+              control={control}
+              rootCategory={rootCategory}
+              value={undefined}
+              ancestors={false}
+              onAncestorsChange={handleOptionChange}
+              disabled={!rootCategory}
+              multiple={true}
+            />
+          </div>
+        </div>
+      )}
+
       {listType === "created" ? (
         <DataTable
           propsColumn={created_bids_column}
@@ -121,12 +249,19 @@ const BidList = ({ listType, setSelectedRow, selectedCategory }) => {
       ) : (
         listType === "related" && (
           <DataTable
-            propsColumn={related_bids_column}
+            propsColumn={invited_bids_column}
             propsData={inviteBids}
-            action={addInvitedAction}
+            action={requestAction}
             customClassName="portal-data-table"
           />
         )
+      )}
+
+      {sendRequest && (
+        <RequestModal
+          setSendRequest={setSendRequest}
+          sendRequest={sendRequest}
+        />
       )}
     </>
   );

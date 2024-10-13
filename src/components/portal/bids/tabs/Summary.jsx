@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+// import company_log from ""
 import styles from "./Summary.module.scss";
 import cn from "classnames";
 import {
@@ -42,6 +43,7 @@ const Summary = ({ bidDetails }) => {
     message: "",
     id: null,
   });
+
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -100,6 +102,12 @@ const Summary = ({ bidDetails }) => {
     setSelectedProduct,
   });
 
+  const truncatelength = (title, maxlength) => {
+    return title?.length > maxlength
+      ? title.substring(0, maxlength) + "..."
+      : title;
+  };
+
   return (
     <>
       {/* Summury */}
@@ -125,7 +133,7 @@ const Summary = ({ bidDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>{bidDetails?.title}</p>
+              <p className={styles["col-data"]}> {truncatelength(bidDetails?.title, 61)}</p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
@@ -173,7 +181,9 @@ const Summary = ({ bidDetails }) => {
               </p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Bid Created Date and Time</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Created Date and Time
+              </h6>
               <p className={styles["col-data"]}>
                 {`${dateTimeFormatter(bidDetails?.created_at)}`}
 
@@ -413,38 +423,45 @@ const Summary = ({ bidDetails }) => {
       </Accordion>
 
       {/* Buyer */}
-      {/* <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Buyer
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails className={styles["accordion-details"]}>
-          <Box display="flex" alignItems="center">
-            <Avatar
-              className={styles["buyer-avatar"]}
-              alt="Buyer Image"
-              src="/path_to_your_image.png" // Add correct path to your buyer image
-            />
-            <Typography
-              component="a"
-              href="#"
-              className={styles["company-name"]}
-            >
-              Bombay Dyeing and Manufacturing
+
+      {type === "invited" && (
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography classes={{ root: "custom-accordion-heading" }}>
+              Buyer
             </Typography>
-          </Box>
-          <Button variant="contained" className={styles["chat-button"]}>
-            Chat with Buyer
-          </Button>
-        </AccordionDetails>
-      </Accordion> */}
+          </AccordionSummary>
+          <AccordionDetails className={styles["accordion-details"]}>
+            <Box display="flex" alignItems="center">
+              <Avatar
+                className={styles["buyer-avatar"]}
+                alt="Buyer Image"
+                src={
+                  bidDetails?.company?.logo === null
+                    ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS4VAsurdDdyaWQ3h_FwC1MpAytWmY8_q0Ig&s"
+                    : bidDetails?.company?.logo
+                }
+              />
+              <Typography
+                component="a"
+                href="#"
+                className={styles["company-name"]}
+              >
+                {bidDetails?.company?.name}
+              </Typography>
+            </Box>
+            <Button variant="contained" className={styles["chat-button"]}>
+              Chat with Buyer
+            </Button>
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       {/* Eligibility Criteria */}
       {bidDetails?.eligiblity_criteria && (
@@ -577,41 +594,43 @@ const Summary = ({ bidDetails }) => {
         </Accordion>
       )}
 
-      {/* Note Tagsline for user started */}
-      <div className="container-fluid">
-        <div className={styles["blue-container"]}>
-          <div className={styles["note-header"]}>
-            Note: Flexibility at Your Fingertips
-          </div>
-          <div className={styles["note-description"]}>
-            At Bidding Kro, we understand that circumstances can change. That's
-            why we've made it easy for you to manage your bids with complete
-            flexibility:
-          </div>
-          <div className={cn("mt-3", styles["note-list"])}>
-            <ul>
-              <li>
-                <strong>Edit Bids:</strong> After creating a bid, you have a
-                24-hour window to make any necessary edits. Whether it's
-                adjusting the amount or changing the terms, ensure your bid is
-                just right within this time frame.
-              </li>
-              <li>
-                <strong>Make Amendments:</strong> Once the initial 24-hour edit
-                period is over, you can still make amendments for another 24
-                hours. This allows you to fine-tune your bid even further before
-                it becomes final.
-              </li>
-              <li>
-                <strong>Cancel Bids:</strong> If you need to withdraw your bid,
-                you can cancel it anytime before it goes live. You have up to 24
-                hours to cancel the bid, giving you the flexibility to
-                reconsider your decisions.
-              </li>
-            </ul>
+      {type === "invited" ? null : (
+        <div className="container-fluid">
+          <div className={styles["blue-container"]}>
+            <div className={styles["note-header"]}>
+              Note: Flexibility at Your Fingertips
+            </div>
+            <div className={styles["note-description"]}>
+              At Bidding Kro, we understand that circumstances can change.
+              That's why we've made it easy for you to manage your bids with
+              complete flexibility:
+            </div>
+            <div className={cn("mt-3", styles["note-list"])}>
+              <ul>
+                <li>
+                  <strong>Edit Bids:</strong> After creating a bid, you have a
+                  24-hour window to make any necessary edits. Whether it's
+                  adjusting the amount or changing the terms, ensure your bid is
+                  just right within this time frame.
+                </li>
+                <li>
+                  <strong>Make Amendments:</strong> Once the initial 24-hour
+                  edit period is over, you can still make amendments for another
+                  24 hours. This allows you to fine-tune your bid even further
+                  before it becomes final.
+                </li>
+                <li>
+                  <strong>Cancel Bids:</strong> If you need to withdraw your
+                  bid, you can cancel it anytime before it goes live. You have
+                  up to 24 hours to cancel the bid, giving you the flexibility
+                  to reconsider your decisions.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       {/* Note Tagsline for user ended */}
 
       {/* {deleteDetails?.open && (

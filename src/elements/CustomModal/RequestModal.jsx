@@ -7,58 +7,55 @@ import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import { AlertContext } from "../../contexts/AlertProvider";
+import CustomInput from "../CustomInput/CustomInput";
+import { useForm } from "react-hook-form";
 
-const InvitationModal = ({
-  addInvitaion,
-  setInvitation,
-  bidDetails,
-  companyDetail,
-}) => {
+const RequestModal = ({ sendRequest, setSendRequest }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  console.log("InvitationModal", bidDetails);
+
+  const {control} = useForm()
 
   const handleClose = () => {
-    setInvitation(false);
+    setSendRequest(false);
   };
 
-  const sendInvite = async () => {
-    setLoading(true);
-    try {
-      let formData = new FormData();
-      formData.append("company", companyDetail?.id);
+  //   const sendInvite = async () => {
+  //     setLoading(true);
+  //     try {
+  //       let formData = new FormData();
+  //       formData.append("company", companyDetail?.id);
 
-      const response = await _sendAPIRequest(
-        "POST",
-        PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
-        formData,
-        true
-      );
-      if (response.status === 204) {
-        setLoading(false);
-        setInvitation(false);
-        window.location.reload()
-        setAlert({
-          isVisible: true,
-          message: "Invitation successfully sent to the supplier.",
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      setLoading(false);
-      if (error.response.data.error_code === 9999)
-        setAlert({
-          isVisible: true,
-          message: error.response.data.error,
-          severity: "error",
-        });
-    }
-  };
+  //       const response = await _sendAPIRequest(
+  //         "POST",
+  //         PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
+  //         formData,
+  //         true
+  //       );
+  //       if (response.status === 204) {
+  //         setLoading(false);
+  //         setInvitation(false);
+  //         setAlert({
+  //           isVisible: true,
+  //           message: "Invitation successfully sent to the supplier.",
+  //           severity: "success",
+  //         });
+  //       }
+  //     } catch (error) {
+  //       setLoading(false);
+  //       if (error.response.data.error_code === 9999)
+  //         setAlert({
+  //           isVisible: true,
+  //           message: error.response.data.error,
+  //           severity: "error",
+  //         });
+  //     }
+  //   };
 
   return (
     <>
       <Modal
-        open={addInvitaion}
+        open={sendRequest}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >
@@ -72,7 +69,7 @@ const InvitationModal = ({
                   variant="h6"
                   component="h6"
                 >
-                  Invitation
+                  Request Participation
                 </Typography>
 
                 {loading ? (
@@ -81,14 +78,20 @@ const InvitationModal = ({
                   <button
                     type="button"
                     className="btn button"
-                    onClick={sendInvite}
+                    // onClick={sendInvite}
                   >
-                    Send Message
+                    Send Request
                   </button>
                 )}
               </Box>
 
               <Box className="row">
+                <CustomInput
+                  control={control}
+                  name="message"
+                  placeholder="Message to buyer (Optional)"
+                  inputType="message"
+                />
                 <Box className={cn("col text-start", styles["title"])}>
                   Bid Details
                 </Box>
@@ -103,13 +106,13 @@ const InvitationModal = ({
                   className="col-lg-3 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {bidDetails?.formatted_number}
+                  {/* {bidDetails?.formatted_number} */}
                 </Box>
                 <Box
                   className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {bidDetails?.title}{" "}
+                  {/* {bidDetails?.title}{" "} */}
                 </Box>
                 {/* <Box
                   className="col-lg-3 text-start"
@@ -117,40 +120,14 @@ const InvitationModal = ({
                 >
                   ₹ {bidDetails?.reserved_price}
                 </Box> */}
-                <Box className="col-lg-3 text-start"> 
+                {/* <Box className="col-lg-3 text-start"> 
                   {bidDetails?.bid_open_date === null &&
                   bidDetails?.bid_close_date === null
                     ? "- -"
                     : `${dateTimeFormatter(
-                        bidDetails?.bid_open_date
+                        bidDetails?.bid_start_date
                       )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
-                </Box>
-              </Box>
-
-              <Box className="row">
-                <Box className="row">
-                  <Box className={cn("col text-start", styles["title"])}>
-                    Company Details
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box className="row mb-2">
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {companyDetail?.name}
-                </Box>
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {companyDetail?.business_email}
-                </Box>
-                <Box className="col-lg-4 text-start">
-                  {companyDetail?.business_mobile}
-                </Box>
+                </Box> */}
               </Box>
             </Box>
           </Box>
@@ -160,4 +137,4 @@ const InvitationModal = ({
   );
 };
 
-export default InvitationModal;
+export default RequestModal;

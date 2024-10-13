@@ -69,19 +69,17 @@ const Questions = ({ bidDetails }) => {
                       }}
                       placeholder="write your answer here..."
                     />
+                    {loading ? (
+                      <ButtonLoader size={60} />
+                    ) : (
+                      <button className="btn button" type="submit">
+                        Submit
+                      </button>
+                    )}
                   </Box>
                 </>
               );
             })}
-          {loading ? (
-            <ButtonLoader size={60} />
-          ) : (
-            <div className="row">
-              <button className="btn button" type="submit">
-                Submit
-              </button>
-            </div>
-          )}
         </form>
       </Box>
     </>

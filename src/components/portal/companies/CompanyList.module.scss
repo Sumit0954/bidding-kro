@@ -35,15 +35,10 @@
 
 .alert-container {
   margin-bottom: 10px;
-  background-color: white !important; /* Background color white */
-  border: 1px solid #d3d3d3; /* Light gray border */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
   transition: box-shadow 0.3s ease; /* Smooth shadow transition */
 }
 
-.alert-container:hover {
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
-}
 
 .amendment-info {
   margin-bottom: 0;
@@ -54,5 +49,18 @@
 
   strong {
     color: var(--error);
+  }
+}
+
+.supplier-section {
+  margin-bottom: 30px;
+  background-color: var(--primary-color) !important;
+
+  .section-title {
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    font-weight: bold;
   }
 }
