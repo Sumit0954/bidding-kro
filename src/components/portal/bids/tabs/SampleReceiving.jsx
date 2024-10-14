@@ -83,7 +83,8 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   const submitSampledates = async () => {
     setLoading(true);
     if (
-      bidDetails.sample_receive_end_date === null && bidDetails.sample_receive_start_date === null
+      bidDetails.sample_receive_end_date === null &&
+      bidDetails.sample_receive_start_date === null
     ) {
       try {
         const response = await _sendAPIRequest(
@@ -142,7 +143,6 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   };
   // console.log("participant :", participant);
 
-
   // const addSampleRecivedAction = (cell) => {
   //   if (cell.column.id === "action") {
   //     return (
@@ -199,8 +199,8 @@ const SampleReceiving = ({ bidDetails, participant }) => {
           >
             <p className={styles["amendment-info"]} style={{ margin: 0 }}>
               <span>
-                You can extend the sample submission dates if needed. Adjust
-                accordingly to meet requirements.
+                Click to set the live bidding dates once you're satisfied with
+                the samples, even before sample receving closing dates.
               </span>
             </p>
             {/*  */}
