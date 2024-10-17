@@ -64,15 +64,13 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "L1" && isdisableforL1) ||
     (bidDetails?.type === "QCBS" && isdisableforQCBS);
 
-
-
   console.log("Approved : ", participant);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
   );
-  
+
   // Disable condition for the tab
   const shouldDisableTab = isQCBSBid && isSampleNotApproved;
 
@@ -325,14 +323,20 @@ const BidDetailsPage = () => {
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab
-                  label="Invite Suppliers"
-                  {...a11yProps(2)}
-                  key={2}
-                  disabled={shouldDisableTab}
-                />,
+                // <Tab
+                //   label="Invite Suppliers"
+                //   {...a11yProps(2)}
+                //   key={2}
+                //   disabled={shouldDisableTab}
+                // />,
                 bidDetails?.type === "L1"
                   ? [
+                      <Tab
+                        label="Invite Suppliers"
+                        {...a11yProps(2)}
+                        key={2}
+                        disabled={shouldDisableTab}
+                      />,
                       // <Tab label="Bids" {...a11yProps(3)} key={3} />,
                       // <Tab label="Analysis" {...a11yProps(4)} key={4} />,
                       // <Tab
@@ -347,6 +351,12 @@ const BidDetailsPage = () => {
                         label="Sample Receiving"
                         {...a11yProps(3)}
                         key={3}
+                      />,
+                      <Tab
+                        label="Invite Suppliers"
+                        {...a11yProps(2)}
+                        key={2}
+                        disabled={shouldDisableTab}
                       />,
                       // <Tab label="Bids" {...a11yProps(4)} key={4} />,
                       // <Tab label="Analysis" {...a11yProps(5)} key={5} />,
@@ -391,7 +401,7 @@ const BidDetailsPage = () => {
             <InvitedSuppliers
               bidDetails={bidDetails}
               participant={participant}
-              onActionComplete={() => setValue(2)} 
+              onActionComplete={() => setValue(2)}
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (

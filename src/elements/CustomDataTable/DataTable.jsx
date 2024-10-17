@@ -24,7 +24,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
 import { debounce } from "lodash";
-import cn from "classnames"
+import cn from "classnames";
 
 function descendingComparator(a, b, orderBy) {
   if (b.values[orderBy] < a.values[orderBy]) {
@@ -247,12 +247,35 @@ const DataTable = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  // const visibleRows = useMemo(() => {
+  //   if (searchQuery) {
+  //     const filtered = rows.filter((row) =>
+  //       row.allCells.some((cell) =>
+  //         String(cell.value).toLowerCase().includes(searchQuery.toLowerCase())
+  //       )
+  //     );
+
+  //     return stableSort(filtered, getComparator(order, orderBy)).slice(
+  //       page * rowsPerPage,
+  //       page * rowsPerPage + rowsPerPage
+  //     );
+  //   } else {
+  //     return stableSort(rows, getComparator(order, orderBy)).slice(
+  //       page * rowsPerPage,
+  //       page * rowsPerPage + rowsPerPage
+  //     );
+  //   }
+  // }, [order, orderBy, page, rowsPerPage, rows, searchQuery]);
+
   const visibleRows = useMemo(() => {
     if (searchQuery) {
-      const filtered = rows.filter((row) =>
-        row.allCells.some((cell) =>
-          String(cell.value).toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      // Filter rows based on search query
+      const filtered = rows.filter(
+        (row) =>
+          row.allCells &&
+          row.allCells.some((cell) =>
+            String(cell.value).toLowerCase().includes(searchQuery.toLowerCase())
+          )
       );
 
       return stableSort(filtered, getComparator(order, orderBy)).slice(

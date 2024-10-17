@@ -20,8 +20,9 @@ const patchBidStatus = async (id, formData) => {
       true
     );
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       console.log(response, "bid sample Action");
+      window.location.reload();
       // setAlert({
       //   isVisible: true,
       //   message: "Your Bid Status Updated sucessfully",
@@ -727,9 +728,9 @@ export const Sample_Bid_Invitations_column = [
             value={status}
             onChange={handleStatusChange}
             style={{
-              color: status === "true" ? "green" : "red",
-              height : "35px",
-              fontSize : "14px" // Conditional color for the select box
+              color: status === true ? "green" : "red",
+              height: "35px",
+              fontSize: "14px", // Conditional color for the select box
             }}
           >
             <MenuItem value="true" style={{ color: "green" }}>
@@ -781,12 +782,25 @@ export const Sample_Bid_Invitations_column = [
             value={status}
             onChange={handleStatusChange}
             sx={{
+              color:
+                status === "pending"
+                  ? "#FFC72C"
+                  : status === "approve"
+                  ? "green"
+                  : "red",
               height: "35px", // Adjust the height of the dropdown
               fontSize: "14px", // Adjust the font size inside the dropdown
+              "&.Mui-disabled": {
+                color: status === "approve" ? "green" : "inherit", // Keep green when disabled for 'approve'
+              },
+
+              "& .Mui-disabled": {
+                WebkitTextFillColor: status === "approve" ? "green" : "inherit", // For the selected text
+              },
             }}
           >
             {status === "pending" && (
-              <MenuItem value="pending" disabled sx={{ color: "yellow" }}>
+              <MenuItem value="pending" disabled sx={{ color: "#FFC72C" }}>
                 Pending
               </MenuItem>
             )}
