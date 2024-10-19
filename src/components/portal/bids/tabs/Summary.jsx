@@ -31,6 +31,12 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { useLocation } from "react-router-dom";
 import ProductSpecification from "../../../../elements/CustomModal/ProductSpecificationModal";
 import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
+import {
+  CheckCircleOutline,
+  CancelOutlined,
+  GroupAdd,
+} from "@mui/icons-material";
+import { Step, StepLabel, Stepper } from "@mui/material";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
@@ -108,8 +114,93 @@ const Summary = ({ bidDetails }) => {
       : title;
   };
 
+  const steps = [
+    {
+      label: "Invited",
+      icon: <GroupAdd color="success" />,
+      status: "complete",
+    },
+    {
+      label: bidDetails?.participant?.status,
+      icon: <CheckCircleOutline color="success" />,
+      status: "complete",
+    },
+    {
+      label: "Sample Approved",
+      icon: <CheckCircleOutline color="success" />,
+      status: "complete",
+    },
+    {
+      label: "Invited Again",
+      icon: <GroupAdd color="success" />,
+      status: "complete",
+    },
+    {
+      label: "Accepted Again",
+      icon: <CheckCircleOutline color="success" />,
+      status: "complete",
+    },
+    {
+      label: "Revoked",
+      icon: <CancelOutlined color="error" />,
+      status: "error",
+    },
+  ];
+
   return (
     <>
+    {
+      type === "invited" ? (
+        <Box
+          key="3" // Always provide a unique key for elements in the array
+          sx={{
+            width: "100%",
+            fontSize: "0.8rem",
+            lineHeight: 1.2,
+          }}
+        >
+          <Stepper
+            alternativeLabel
+            activeStep={steps.length - 1}
+            sx={{ padding: "0.5rem" }}
+          >
+            {steps.map((step, index) => (
+              <Step key={index}>
+                <StepLabel
+                  icon={step.icon}
+                  StepIconProps={{
+                    sx: {
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {/* Icon and label horizontally aligned */}
+                    <span
+                      style={{
+                        color: step.status === "error" ? "red" : "green",
+                        fontSize: "0.8rem",
+                        marginLeft: "8px", // Margin to add space between the icon and the text
+                      }}
+                    >
+                      {step.label}
+                    </span>
+                  </Box>
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+      ) : null
+    }
       {/* Summury */}
       <Accordion
         defaultExpanded

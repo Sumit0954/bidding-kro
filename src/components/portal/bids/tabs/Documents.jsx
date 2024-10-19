@@ -12,6 +12,7 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { useNavigate } from "react-router-dom";
 
 const Documents = ({ bidDetails, type }) => {
+
   const { setAlert } = useContext(AlertContext);
   const [loading, setLoading] = useState(false);
   const [loadingAction, setLoadingAction] = useState(null);
@@ -87,7 +88,7 @@ const Documents = ({ bidDetails, type }) => {
       });
   };
 
-  const handleDeleteConfirmation = (choice) => {
+  const handleInvitation = (choice) => {
     if (choice) {
       handleAction(deleteDetails.action);
     } else {
@@ -125,7 +126,7 @@ const Documents = ({ bidDetails, type }) => {
         customClassName="portal-data-table"
       />
 
-      {type === "invited" && (
+      {/* {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
           {bidDetails?.participant?.status === "accepted" ||
           bidDetails?.participant?.status === "revoked" ||
@@ -193,11 +194,11 @@ const Documents = ({ bidDetails, type }) => {
             <DeleteDialog
               title={deleteDetails.title}
               message={deleteDetails.message}
-              handleClick={handleDeleteConfirmation}
+              handleClick={handleInvitation}
             />
           )}
         </Box>
-      )}
+      )} */}
     </>
   );
 };

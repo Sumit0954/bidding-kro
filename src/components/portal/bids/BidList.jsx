@@ -249,8 +249,8 @@ const BidList = ({ listType }) => {
       ) : (
         listType === "related" && (
           <DataTable
-            propsColumn={invited_bids_column}
-            propsData={inviteBids}
+            propsColumn={related_bids_column}
+            propsData={[]}
             action={requestAction}
             customClassName="portal-data-table"
           />

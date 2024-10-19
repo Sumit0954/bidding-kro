@@ -430,7 +430,7 @@ const BidProducts = () => {
                       <div className="col-lg-4">
                         <CustomInput
                           control={control}
-                          label="Reserve Bid Price"
+                          label="Reserve Bid Price / Unit"
                           name="reserved_price"
                           placeholder="₹ 20,000"
                           rules={{

@@ -100,7 +100,7 @@ export const getCategoryLevel = () => {
 
 export const getBidTypes = () => {
   const type = [
-    { lable: "L1", value: "L1" },
+    { lable: "L1 - Commercial Bid Selection", value: "L1" },
     { lable: "QCBS - Quality & Cost-Based Selection", value: "QCBS" },
   ];
 

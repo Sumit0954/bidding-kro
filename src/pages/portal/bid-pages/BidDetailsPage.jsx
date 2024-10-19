@@ -35,6 +35,8 @@ import Bids from "../../../components/portal/bids/tabs/Bids";
 import Award from "../../../components/portal/bids/tabs/Award";
 import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
+import * as React from "react";
+
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -64,7 +66,7 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "L1" && isdisableforL1) ||
     (bidDetails?.type === "QCBS" && isdisableforQCBS);
 
-  console.log("Approved : ", participant);
+  console.log("deatails : ", bidDetails?.participant?.status);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
   const isSampleNotApproved = !participant?.participants.some(
@@ -114,6 +116,8 @@ const BidDetailsPage = () => {
       setDeleteDetails({ open: false, title: "", message: "" });
     }
   };
+
+  
 
   const breadcrumbs = [
     <NavLink
@@ -179,20 +183,6 @@ const BidDetailsPage = () => {
       getParticipants();
     }
   }, [bidDetails?.id]);
-
-  // useEffect(() => {
-  //   const createdDate = new Date(bidDetails?.created_at);
-  //   const currentDate = new Date();
-
-  //   const difference = currentDate.getTime() - createdDate.getTime();
-  //   const twentyFourHours = 24 * 60 * 60 * 1000;
-
-  //   if (difference > twentyFourHours) {
-  //     setShow(true);
-  //   } else {
-  //     setShow(false);
-  //   }
-  // }, [bidDetails?.created_at]);
 
   return (
     <>

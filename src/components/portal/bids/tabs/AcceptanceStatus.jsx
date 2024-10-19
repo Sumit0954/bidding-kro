@@ -3,6 +3,9 @@ import {
   Checkbox,
   Container,
   FormControlLabel,
+  List,
+  ListItem,
+  ListItemIcon,
   Typography,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
@@ -16,8 +19,10 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { NavLink } from "react-router-dom";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
-const AcceptanceStatus = ({ bidDetails }) => {
+
+const AcceptanceStatus = ({ bidDetails ,type }) => {
   const { control, handleSubmit } = useForm();
   const { setAlert } = useContext(AlertContext);
   const [loadingAction, setLoadingAction] = useState(null);
@@ -28,8 +33,6 @@ const AcceptanceStatus = ({ bidDetails }) => {
     message: "",
     action: "",
   });
-
-  console.log("bidDetails : ", bidDetails);
 
   //   const formSubmit = async (data) => {
   //     setLoading(true);
@@ -139,6 +142,20 @@ const AcceptanceStatus = ({ bidDetails }) => {
                   send a sample of your product to the buyer. Please ensure you
                   follow the guidelines provided in the email.
                 </Typography>
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                    </ListItemIcon>
+                    Sample Receiving Opening date : {bidDetails?.sample_receive_start_date}
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                    </ListItemIcon>
+                    Sample Receiving Closing date  : {bidDetails?.sample_receive_end_date}
+                  </ListItem>
+                </List>
                 <Typography variant="body1">
                   Your sample will be reviewed by the buyer. Once it is
                   approved, you will be notified and can proceed with the
@@ -155,73 +172,83 @@ const AcceptanceStatus = ({ bidDetails }) => {
             </Typography>
           </Box>
         </Box>
-        {bidDetails?.type === "QCBS" &&
-        bidDetails.participant.sample.approval_status === "approved" ? (
-          <>
-            {bidDetails.participant.status === "pending" ? (
-              <Box className={styles["btn-contanier"]}>
-                {loading && loadingAction === "decline" ? (
-                  <ButtonLoader size={60} />
-                ) : (
-                  <button
-                    type="button"
-                    className="btn button reject"
-                    onClick={() =>
-                      setDeleteDetails({
-                        open: true,
-                        title: "Decline Bid Invite",
-                        message: `Are you sure you want to decline this invite bid? This action cannot be undone.`,
-                        action: "decline",
-                      })
-                    }
-                  >
-                    Decline
-                  </button>
-                )}
 
-                {loading && loadingAction === "accept" ? (
-                  <ButtonLoader size={60} />
-                ) : (
-                  <button
-                    type="button"
-                    className="btn button approve"
-                    onClick={() =>
-                      setDeleteDetails({
-                        open: true,
-                        title: "Accept Bid Invite",
-                        message: `Are you sure you want to accept this invite bid?`,
-                        action: "accept",
-                      })
-                    }
-                  >
-                    Accept
-                  </button>
-                )}
-                {deleteDetails?.open && (
-                  <DeleteDialog
-                    title={deleteDetails.title}
-                    message={deleteDetails.message}
-                    handleClick={handleDeleteConfirmation}
-                  />
-                )}
-              </Box>
-            ) : (
-              <>
+        {type === "invited" && (
+        <Box className={styles["btn-contanier"]}>
+          {bidDetails?.participant?.status === "accepted" ||
+          bidDetails?.participant?.status === "revoked" ||
+          (bidDetails?.type === "QCBS" &&
+            (bidDetails.participant.sample.invite_status === "accepted" ||
+              bidDetails.participant.sample.invite_status === "declined")) ? (
+            <button
+              type="button"
+              className={`btn button ${
+                bidDetails?.participant?.status === "accepted" ||
+                (bidDetails?.type === "QCBS" &&
+                  bidDetails.participant.sample.invite_status === "accepted")
+                  ? "approve"
+                  : "reject"
+              }`}
+              disabled={true}
+            >
+              {bidDetails?.type === "L1"
+                ? bidDetails?.participant?.status
+                : bidDetails.participant.sample.invite_status}
+            </button>
+          ) : (
+            <>
+              {loading && loadingAction === "decline" ? (
+                <ButtonLoader size={60} />
+              ) : (
                 <button
                   type="button"
-                  className={`btn button ${
-                    bidDetails?.participant?.status === "accepted"
-                      ? "approve"
-                      : "reject"
-                  }`}
-                  disabled={true}
+                  className="btn button reject"
+                  onClick={() =>
+                    setDeleteDetails({
+                      open: true,
+                      title: "Decline Bid Invite",
+                      message: `Are you sure you want to decline this invite bid? This action cannot be undone.`,
+                      action: "decline",
+                    })
+                  }
                 >
-                  {bidDetails?.participant?.status}
+                  Decline
                 </button>
-              </>
-            )}
-          </>
-        ) : null}
+              )}
+
+              {loading && loadingAction === "accept" ? (
+                <ButtonLoader size={60} />
+              ) : (
+                <button
+                  type="button"
+                  className="btn button approve"
+                  onClick={() =>
+                    setDeleteDetails({
+                      open: true,
+                      title: "Accept Bid Invite",
+                      message: `Are you sure you want to accept this invite bid?`,
+                      action: "accept",
+                    })
+                  }
+                >
+                  Accept
+                </button>
+              )}
+            </>
+          )}
+
+          {deleteDetails?.open && (
+            <DeleteDialog
+              title={deleteDetails.title}
+              message={deleteDetails.message}
+              handleClick={handleDeleteConfirmation}
+            />
+          )}
+        </Box>
+      )}
+
+
+
       </Box>
     </>
   );

@@ -44,8 +44,6 @@ const CompanyDetailPage = () => {
         >
           <Tab label="About" {...a11yProps(0)} />
           <Tab label="Previous Bids" {...a11yProps(1)} />
-          <Tab label="Chat" {...a11yProps(2)} />
-
         </Tabs>
       </Box>
 
@@ -54,9 +52,6 @@ const CompanyDetailPage = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <PreviousBids PreviousBids={PreviousBids} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Chat Chat={Chat} />
       </TabPanel>
     </>
   )

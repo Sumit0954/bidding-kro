@@ -8,7 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import { companies_column, Invite_request_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
 import cn from "classnames";
@@ -18,7 +18,7 @@ import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import SearchBar from "../../../elements/CustomSelect/SearchBar";
 import { useForm } from "react-hook-form";
 
-const CompanyList = ({ bidDetails, id, tab }) => {
+const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
   const [companies, setCompanies] = useState({});
@@ -189,7 +189,7 @@ const CompanyList = ({ bidDetails, id, tab }) => {
             />
           </div>
         </div>
-        {tab === 0 && (
+        { listtype === "allcompanies" && (
           <Alert
             severity="info"
             sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
@@ -219,8 +219,10 @@ const CompanyList = ({ bidDetails, id, tab }) => {
             </Box>
           </Alert>
         )}
-
-        <div className={styles["supplier-section"]}>
+{
+  listtype === "allcompanies" ? (
+  <>
+          <div className={styles["supplier-section"]}>
           <Typography variant="h6" className={styles["section-title"]}>
             Existing Suppliers
           </Typography>
@@ -231,7 +233,6 @@ const CompanyList = ({ bidDetails, id, tab }) => {
             customClassName="admin-data-table"
           />
         </div>
-
         {/* Other Suppliers Section */}
         <div className={styles["supplier-section"]}>
           <Typography variant="h6" className={styles["section-title"]}>
@@ -244,6 +245,20 @@ const CompanyList = ({ bidDetails, id, tab }) => {
             customClassName="admin-data-table"
           />
         </div>
+  </>)  : (
+    <>
+      <DataTable
+            propsColumn={Invite_request_column}
+            propsData={[]}
+            action={addAction}
+            customClassName="admin-data-table"
+          />
+    </>
+  )
+}
+
+
+
       </div>
 
       {addInvitaion && (
