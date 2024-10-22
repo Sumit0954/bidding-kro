@@ -19,3 +19,12 @@
 .bids-detail-accordion {
 	box-shadow: var(--glow-shadow) !important;
 }
+
+.contacts-row{
+	display: flex;
+	justify-content: space-between;
+}
+
+.contacts-col{
+	flex: 1;
+}

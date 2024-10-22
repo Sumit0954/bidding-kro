@@ -82,6 +82,29 @@ const BidListPage = () => {
   //   console.log(rootCategory, "rootCategory updated");
   // }, [rootCategory]);
 
+  // useEffect(() => {
+  //   if (id) {
+  //     let url = PortalApiUrls.RETRIEVE_CREATED_BID;
+  //     const retrieveBid = async () => {
+  //       try {
+  //         const response = await _sendAPIRequest(
+  //           "GET",
+  //           url + `${id}/`,
+  //           "",
+  //           true
+  //         );
+  //         if (response.status === 200) {
+  //           setBidDetails(response.data);
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+
+  //     retrieveBid();
+  //   }
+  // }, []);
+
   return (
     <>
       <Box sx={{ width: "100%" }}>

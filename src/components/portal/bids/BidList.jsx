@@ -19,6 +19,7 @@ const BidList = ({ listType }) => {
   const [bidDetails, setBidDetails] = useState({});
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
+  const [relatedBids, setRelatedBids] = useState([]);
   const [categories, setCategories] = useState({ 0: [] });
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
@@ -84,6 +85,21 @@ const BidList = ({ listType }) => {
     }
   };
 
+  // To Related Bid List
+  const getRelatedBidList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.RELATED_BID_LIST,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setRelatedBids(response.data);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
     getCreatedBidList();
   }, [selectedCategory]);
@@ -91,6 +107,7 @@ const BidList = ({ listType }) => {
   useEffect(() => {
     getCreatedBidList();
     getInvitedBidList();
+    getRelatedBidList();
   }, []);
 
   const addCreatedAction = (cell) => {
@@ -172,21 +189,22 @@ const BidList = ({ listType }) => {
 
   const handlerequest = (data) => {
     setSendRequest(true);
+    setBidDetails(data.row.original);
   };
 
   const requestAction = (cell) => {
+    const is_requested = cell.row.original.is_requested
     if (cell.column.id === "action") {
-      // const found = participants.some(
-      //   (participant) => participant.company.id === cell.row.original.id
-      // );
-
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
-            className={`${styles["request-btn"]}`}
-            onClick={handlerequest}
+            className={`${styles["request-btn"]} ${
+              is_requested ? styles["disable"] : styles["request-btn"]
+            }`}
+            onClick={() => handlerequest(cell)}
+            disabled={is_requested && true}
           >
-            invite request
+            invite Request   
           </button>
         </TableCell>
       );
@@ -199,6 +217,29 @@ const BidList = ({ listType }) => {
       );
     }
   };
+
+  // useEffect(() => {
+  //   if (relatedBids?.id) {
+  //     const retrieveBid = async () => {
+  //       try {
+  //         const response = await _sendAPIRequest(
+  //           "GET",
+  //           PortalApiUrls.RETRIEVE_CREATED_BID + `${relatedBids?.id}/`,
+  //           "",
+  //           true
+  //         );
+  //         if (response.status === 200) {
+  //           console.log("bidDetails", bidDetails);
+  //           setBidDetails();
+  //         }
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+
+  //     retrieveBid();
+  //   }
+  // }, [relatedBids?.id]);
 
   return (
     <>
@@ -250,7 +291,7 @@ const BidList = ({ listType }) => {
         listType === "related" && (
           <DataTable
             propsColumn={related_bids_column}
-            propsData={[]}
+            propsData={relatedBids || []}
             action={requestAction}
             customClassName="portal-data-table"
           />
@@ -259,8 +300,9 @@ const BidList = ({ listType }) => {
 
       {sendRequest && (
         <RequestModal
-          setSendRequest={setSendRequest}
           sendRequest={sendRequest}
+          setSendRequest={setSendRequest}
+          bidDetails={bidDetails}
         />
       )}
     </>

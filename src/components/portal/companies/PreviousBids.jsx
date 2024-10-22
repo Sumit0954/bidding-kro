@@ -4,6 +4,7 @@ import { TableCell } from "@mui/material";
 import { PreviousBids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { Grid, Card, CardContent, Typography, Box } from "@mui/material";
 import { TrendingUp, Group } from "@mui/icons-material";
+import _sendAPIRequest from "../../../helpers/api";
 
 const PreviousBids = () => {
   const addAction = (cell) => {
@@ -12,9 +13,22 @@ const PreviousBids = () => {
     );
   };
 
+
+const getPreviousBidsData = async () =>{
+  try {
+    const response = _sendAPIRequest(
+
+    )
+  } catch (error) {
+    
+  }
+}
+
+
+
   return (
     <>
-      <Box sx={{ padding: "20px", backgroundColor: "#f5f5f5" }}>
+      <Box className={styles["filter-points"]} >
         <Grid container spacing={2}>
           {/* Total Spends */}
           <Grid item xs={12} sm={6} md={4}>

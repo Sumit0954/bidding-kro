@@ -11,7 +11,6 @@ import { AlertContext } from "../../contexts/AlertProvider";
 import { Select, MenuItem, FormControl } from "@mui/material";
 
 const patchBidStatus = async (id, formData) => {
-  console.log(formData, "actionformdata");
   try {
     const response = await _sendAPIRequest(
       "PATCH",
@@ -21,7 +20,6 @@ const patchBidStatus = async (id, formData) => {
     );
 
     if (response.status === 204) {
-      console.log(response, "bid sample Action");
       window.location.reload();
       // setAlert({
       //   isVisible: true,
@@ -47,7 +45,6 @@ const onCloneBidClick = async (id, navigate) => {
       true
     );
     if (response?.status === 201) {
-      console.log(response);
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
@@ -207,8 +204,6 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
-      console.log(data?.row?.original?.type); // Debugging/logging
-
       const isInviteDisabled =
         data?.row?.original?.status !== "active" ||
         (data?.row?.original?.type === "L1" &&
@@ -309,8 +304,6 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      console.log(data); // Debugging log
-
       return (
         <div
           className={`status-column ${data?.row?.original?.status}`}
@@ -337,8 +330,6 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      console.log(data); // Debugging log
-
       return (
         <div
           className={`status-column ${data?.row?.original?.sample?.approval_status}`}
@@ -365,8 +356,9 @@ export const related_bids_column = [
     accessor: "bid.formatted_number",
     align: "left",
     disablePadding: false,
+
     Cell: (data) => {
-      return data.row.original.bid.formatted_number;
+      return data?.row?.original?.formatted_number;
     },
   },
   {
@@ -379,9 +371,9 @@ export const related_bids_column = [
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
+          to={`/portal/bids/details/${data?.row?.original?.id}/?type=invited`}
         >
-          {truncateString(data?.row?.original?.bid?.title, 30)}
+          {truncateString(data?.row?.original?.title, 30)}
         </NavLink>
       );
     },
@@ -393,7 +385,7 @@ export const related_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return data?.row?.original?.bid?.company?.name;
+      return data?.row?.original?.company?.name;
     },
   },
   {
@@ -405,9 +397,9 @@ export const related_bids_column = [
     Cell: (data) => {
       return (
         <>
-          {data?.row?.original?.bid?.bid_open_date === null
+          {data?.row?.original?.bid_open_date === null
             ? "-"
-            : dateTimeFormatter(data?.row?.original?.bid?.bid_open_date)}
+            : dateTimeFormatter(data?.row?.original?.bid_open_date)}
         </>
       );
     },
@@ -421,9 +413,9 @@ export const related_bids_column = [
     Cell: (data) => {
       return (
         <>
-          {data?.row?.original?.bid?.bid_close_date === null
+          {data?.row?.original?.bid_close_date === null
             ? "-"
-            : dateTimeFormatter(data?.row?.original?.bid?.bid_close_date)}
+            : dateTimeFormatter(data?.row?.original?.bid_close_date)}
         </>
       );
     },
@@ -436,14 +428,12 @@ export const related_bids_column = [
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      console.log(data); // Debugging log
-
       return (
         <div
           className={`status-column ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "accepted"
+              data?.row?.original?.status === "active"
                 ? "#22bb33" // Green for accepted
                 : data?.row?.original?.status === "pending"
                 ? "#FFBF00" // Yellow for pending
@@ -458,31 +448,11 @@ export const related_bids_column = [
   },
   {
     Header: "Action",
-    accessor: "Invite Request",
+    accessor: "action",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
     width: 150,
-    Cell: (data) => {
-      console.log(data); // Debugging log
-
-      return (
-        <div
-          className={`status-column ${data?.row?.original?.status}`}
-          style={{
-            color: `${
-              data?.row?.original?.status === "accepted"
-                ? "#22bb33" // Green for accepted
-                : data?.row?.original?.status === "pending"
-                ? "#FFBF00" // Yellow for pending
-                : "red" // Default red for other statuses
-            }`,
-          }}
-        >
-          {data?.row?.original?.status}
-        </div>
-      );
-    },
   },
 ];
 
@@ -559,9 +529,6 @@ export const companies_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      {
-        console.log(data);
-      }
       return (
         <NavLink
           className={styles["table-link"]}
@@ -604,15 +571,12 @@ export const Invite_request_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      {
-        console.log(data);
-      }
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/portal/companies/details/${data?.row?.original?.id}`}
+          to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
         >
-          {data?.row?.original?.name}
+          {data?.row?.original?.requestor?.name}
         </NavLink>
       );
     },
@@ -623,13 +587,27 @@ export const Invite_request_column = [
     align: "left",
     disablePadding: false,
     width: 160,
+    cell: (data) => {
+      console.log("requestor : ", data);
+      return data?.row?.original?.requestor?.business_email;
+    },
   },
   {
     Header: "Bid Title",
-    accessor: "Bid_Title",
+    accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 180,
+    width: 150,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/bids/details/${data?.row?.original?.bid?.id}`}
+        >
+          {truncateString(data?.row?.original?.bid?.title, 30)}
+        </NavLink>
+      );
+    },
   },
   {
     Header: "Action",
@@ -816,7 +794,6 @@ export const Sample_Bid_Invitations_column = [
       const [status, setStatus] = useState(
         data.row.original.sample.is_received
       );
-      console.log(data.row.original.sample.is_received, "is_received");
 
       const handleStatusChange = (event) => {
         const newStatus = event.target.value;
@@ -864,7 +841,6 @@ export const Sample_Bid_Invitations_column = [
           ? "pending"
           : "approve"
       );
-      console.log(data.row.original.sample.approval_status, "approval_status");
 
       const handleStatusChange = (event) => {
         const newActionStatus = event.target.value;
@@ -922,6 +898,7 @@ export const Sample_Bid_Invitations_column = [
     },
   },
 ];
+
 export const Sample_Bid_Invitations_result_log = [
   {
     Header: "Company Name",
@@ -955,7 +932,6 @@ export const Sample_Bid_Invitations_result_log = [
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
-      console.log("data : ", data);
       return (
         <div
           className={`status-cloumn ${data?.row?.original?.sample?.invite_status}`}

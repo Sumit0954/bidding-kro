@@ -15,7 +15,7 @@ import {
   TableCell,
   Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, HourglassEmpty } from "@mui/icons-material";
 import { dateTimeFormatter } from "../../../../helpers/formatter";
 import DOMPurify from "dompurify";
 import { getLableByValue } from "../../../../helpers/common";
@@ -114,45 +114,174 @@ const Summary = ({ bidDetails }) => {
       : title;
   };
 
-  const steps = [
-    {
-      label: "Invited",
-      icon: <GroupAdd color="success" />,
-      status: "complete",
-    },
-    {
-      label: bidDetails?.participant?.status,
-      icon: <CheckCircleOutline color="success" />,
-      status: "complete",
-    },
-    {
-      label: "Sample Approved",
-      icon: <CheckCircleOutline color="success" />,
-      status: "complete",
-    },
-    {
-      label: "Invited Again",
-      icon: <GroupAdd color="success" />,
-      status: "complete",
-    },
-    {
-      label: "Accepted Again",
-      icon: <CheckCircleOutline color="success" />,
-      status: "complete",
-    },
-    {
-      label: "Revoked",
-      icon: <CancelOutlined color="error" />,
-      status: "error",
-    },
-  ];
+  let steps = [];
+
+  if (bidDetails.type === "L1") {
+    steps = [
+      {
+        label: "Invited",
+        icon: (
+          <GroupAdd
+            style={{
+              color: `${
+                bidDetails?.participant?.status === "accepted" ||
+                bidDetails?.participant?.status === "declined" ||
+                bidDetails?.participant?.status === "revoked" ||
+                bidDetails?.participant?.status === "pending"
+                  ? "green"
+                  : "grey"
+              }`,
+            }}
+          />
+        ),
+        status: "complete",
+      },
+      {
+        label: `${
+          bidDetails?.participant?.status === "accepted"
+            ? "Accepted"
+            : bidDetails?.participant?.status === "declined"
+            ? "Declined"
+            : bidDetails?.participant?.status === "revoked"
+            ? "Accepted"
+            : "Pending"
+        }`,
+        icon:
+          bidDetails?.participant?.status === "accepted" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : bidDetails?.participant?.status === "declined" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : bidDetails?.participant?.status === "revoked" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+      ...(bidDetails?.participant?.status === "revoked"
+        ? [
+            {
+              label: "Revoked",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+    ];
+  } else {
+    steps = [
+      {
+        label: "Invited",
+        icon: (
+          <GroupAdd
+            style={{
+              color: `${
+                bidDetails?.participant?.status === "accepted" ||
+                bidDetails?.participant?.status === "declined" ||
+                bidDetails?.participant?.status === "revoked" ||
+                bidDetails?.participant?.status === "pending"
+                  ? "green"
+                  : "grey"
+              }`,
+            }}
+          />
+        ),
+        status: "complete",
+      },
+      {
+        label: `${
+          bidDetails?.participant?.sample?.invite_status === "accepted"
+            ? "Accepted"
+            : bidDetails?.participant?.sample?.invite_status === "declined"
+            ? "Declined"
+            : bidDetails?.participant?.status === "revoked"
+            ? "Accepted"
+            : "Pending"
+        }`,
+        icon:
+          bidDetails?.participant?.sample?.invite_status === "accepted" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : bidDetails?.participant?.sample?.invite_status === "declined" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : bidDetails?.participant?.status === "revoked" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+      {
+        label: `${
+          bidDetails?.participant?.sample?.approval_status === "approved"
+            ? "Sample Approved"
+            : bidDetails?.participant?.sample?.approval_status === "rejected"
+            ? "Sample Rejected"
+            : "Sample Pending"
+        }`,
+        icon:
+          bidDetails?.participant?.sample?.approval_status === "approved" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : bidDetails?.participant?.sample?.approval_status ===
+            "rejected" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+      {
+        label: "Commercial Bid Invite",
+        icon:
+          bidDetails?.participant?.sample?.approval_status === "approved" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+      {
+        label:
+          bidDetails?.participant?.status === "pending"
+            ? "Pending"
+            : bidDetails?.participant?.status === "accepted" ||
+              bidDetails?.participant?.status === "revoked"
+            ? "Accepted"
+            : bidDetails?.participant?.status === "declined"
+            ? "Declined"
+            : "Pending",
+        icon:
+          bidDetails?.participant?.status === "pending" ? (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ) : bidDetails?.participant?.status === "accepted" ||
+            bidDetails?.participant?.status === "revoked" ? (
+            <GroupAdd style={{ color: "green" }} />
+          ) : bidDetails?.participant?.status === "declined" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+
+      ...(bidDetails?.participant?.status === "revoked"
+        ? [
+            {
+              label: "Revoked",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+    ];
+  }
+
+  // Now you can use the `steps` array for rendering steps in your component.
 
   return (
     <>
-    {
-      type === "invited" ? (
+      {type === "invited" ? (
         <Box
-          key="3" // Always provide a unique key for elements in the array
+          key="3"
           sx={{
             width: "100%",
             fontSize: "0.8rem",
@@ -161,7 +290,7 @@ const Summary = ({ bidDetails }) => {
         >
           <Stepper
             alternativeLabel
-            activeStep={steps.length - 1}
+            activeStep={2} // Set this to the index of the last visible step (in this case, 2 for the third step)
             sx={{ padding: "0.5rem" }}
           >
             {steps.map((step, index) => (
@@ -186,9 +315,9 @@ const Summary = ({ bidDetails }) => {
                     {/* Icon and label horizontally aligned */}
                     <span
                       style={{
-                        color: step.status === "error" ? "red" : "green",
+                        color: "grey", // Set label color to grey
                         fontSize: "0.8rem",
-                        marginLeft: "8px", // Margin to add space between the icon and the text
+                        marginLeft: "8px",
                       }}
                     >
                       {step.label}
@@ -199,8 +328,7 @@ const Summary = ({ bidDetails }) => {
             ))}
           </Stepper>
         </Box>
-      ) : null
-    }
+      ) : null}
       {/* Summury */}
       <Accordion
         defaultExpanded
@@ -224,7 +352,10 @@ const Summary = ({ bidDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}> {truncatelength(bidDetails?.title, 61)}</p>
+              <p className={styles["col-data"]}>
+                {" "}
+                {truncatelength(bidDetails?.title, 61)}
+              </p>
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
@@ -268,7 +399,6 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
                   : "-"}
-
               </p>
             </div>
             <div className="col">
@@ -277,7 +407,6 @@ const Summary = ({ bidDetails }) => {
               </h6>
               <p className={styles["col-data"]}>
                 {`${dateTimeFormatter(bidDetails?.created_at)}`}
-
               </p>
             </div>
           </div>

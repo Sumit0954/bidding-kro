@@ -66,7 +66,7 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "L1" && isdisableforL1) ||
     (bidDetails?.type === "QCBS" && isdisableforQCBS);
 
-  console.log("deatails : ", bidDetails?.participant?.status);
+  console.log("deatails : ", bidDetails?.participant);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
   const isSampleNotApproved = !participant?.participants.some(

@@ -8,7 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { companies_column, Invite_request_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import {
+  companies_column,
+  Invite_request_column,
+} from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
 import { useEffect, useState } from "react";
 import cn from "classnames";
@@ -18,7 +21,7 @@ import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import SearchBar from "../../../elements/CustomSelect/SearchBar";
 import { useForm } from "react-hook-form";
 
-const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
+const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
   const [companies, setCompanies] = useState({});
@@ -26,6 +29,7 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
   const [categories, setCategories] = useState({ 0: [] });
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [requestBids, setRequestBids] = useState([]);
 
   const { control } = useForm();
 
@@ -44,7 +48,6 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
           true
         );
         if (response.status === 200) {
-          // console.log(response?.data)
           setCompanies(response?.data);
         }
       } catch (error) {
@@ -53,7 +56,7 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
     };
 
     getCompanyList();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -77,6 +80,24 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
     }
   }, [id]);
 
+  useEffect(() => {
+    const getRequestList = async () => {
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.BID_INVITED_REQUESTS,
+          "",
+          true
+        );
+
+        if (response.status === 200) {
+          setRequestBids(response?.data);
+        }
+      } catch (error) {}
+    };
+    getRequestList();
+  }, []);
+
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       const found = participants.some(
@@ -90,7 +111,7 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
               !id || found ? styles["disable"] : styles["invite-btn"]
             }`}
             onClick={() => handleInvite(cell)}
-            disabled={!id || found && true}
+            disabled={!id || (found && true)}
           >
             {found ? "Invited" : "Invite"}
           </button>
@@ -189,7 +210,7 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
             />
           </div>
         </div>
-        { listtype === "allcompanies" && (
+        {listtype === "allcompanies" && (
           <Alert
             severity="info"
             sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
@@ -219,46 +240,42 @@ const CompanyList = ({ bidDetails, id, tab ,listtype }) => {
             </Box>
           </Alert>
         )}
-{
-  listtype === "allcompanies" ? (
-  <>
-          <div className={styles["supplier-section"]}>
-          <Typography variant="h6" className={styles["section-title"]}>
-            Existing Suppliers
-          </Typography>
-          <DataTable
-            propsColumn={companies_column}
-            propsData={companies?.existing_suppliers || []}
-            action={addAction}
-            customClassName="admin-data-table"
-          />
-        </div>
-        {/* Other Suppliers Section */}
-        <div className={styles["supplier-section"]}>
-          <Typography variant="h6" className={styles["section-title"]}>
-            Other Suppliers
-          </Typography>
-          <DataTable
-            propsColumn={companies_column}
-            propsData={companies?.other_suppliers || []}
-            action={addAction}
-            customClassName="admin-data-table"
-          />
-        </div>
-  </>)  : (
-    <>
-      <DataTable
-            propsColumn={Invite_request_column}
-            propsData={[]}
-            action={addAction}
-            customClassName="admin-data-table"
-          />
-    </>
-  )
-}
-
-
-
+        {listtype === "allcompanies" ? (
+          <>
+            <div className={styles["supplier-section"]}>
+              <Typography variant="h6" className={styles["section-title"]}>
+                Existing Suppliers
+              </Typography>
+              <DataTable
+                propsColumn={companies_column}
+                propsData={companies?.existing_suppliers || []}
+                action={addAction}
+                customClassName="admin-data-table"
+              />
+            </div>
+            {/* Other Suppliers Section */}
+            <div className={styles["supplier-section"]}>
+              <Typography variant="h6" className={styles["section-title"]}>
+                Other Suppliers
+              </Typography>
+              <DataTable
+                propsColumn={companies_column}
+                propsData={companies?.other_suppliers || []}
+                action={addAction}
+                customClassName="admin-data-table"
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <DataTable
+              propsColumn={Invite_request_column}
+              propsData={requestBids || []}
+              action={addAction}
+              customClassName="admin-data-table"
+            />
+          </>
+        )}
       </div>
 
       {addInvitaion && (

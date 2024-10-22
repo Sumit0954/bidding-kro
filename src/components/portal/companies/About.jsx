@@ -1,9 +1,10 @@
-import styles from './About.module.scss'
+import styles from "./About.module.scss";
 import React from "react";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Chip,
   Divider,
   Stack,
@@ -15,215 +16,178 @@ import DOMPurify from "dompurify";
 import { getLableByValue } from "../../../helpers/common";
 import cn from "classnames";
 
-
-const About = () => {
-
-
-
+const About = ({ companyDetail }) => {
   return (
-
     <>
-      <>
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Summary
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Company Name</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Website Url</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Organisation Type</h6>
-
-              </div>
+      {/* Summary */}
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Summary
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className="row">
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Company Name</h6>
+              <p className={styles["col-data"]}>{companyDetail?.name}</p>
             </div>
-            <Divider classes={{ root: "custom-divider" }} />
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Year of incorporation</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>No. of Employess</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>GST</h6>
-
-              </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Website Url</h6>
+              <a className={styles["col-data"]}>{companyDetail?.website}</a>
             </div>
-            <Divider classes={{ root: "custom-divider" }} />
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Average Annual Revenue (last 3 years)</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Business Email</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Business Mobile</h6>
-
-              </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Organisation Type</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.organization_type === null
+                  ? "-"
+                  : companyDetail?.organization_type}
+              </p>
             </div>
-            <Divider classes={{ root: "custom-divider" }} />
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Description</h6>
-
-              </div>
+          </div>
+          <Divider classes={{ root: "custom-divider" }} />
+          <div className="row">
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Year of incorporation</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.incorporation_year}
+              </p>
             </div>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Owner info
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Owner Name</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Designation</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Mobile</h6>
-
-              </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>No. of Employess</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.employee_count}
+              </p>
             </div>
-            <Divider classes={{ root: "custom-divider" }} />
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Email</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>WhatsApp</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>GST</h6>
-
-              </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>GST</h6>
+              <p className={styles["col-data"]}>{companyDetail?.gstin}</p>
             </div>
-
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Categories
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Stack direction="row" spacing={1}>
-              {About?.category?.map((category) => {
-                return <Chip label={category?.name} />;
-              })}
-            </Stack>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Contact(2)
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Contact Person Name</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Designation</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Mobile</h6>
-
-              </div>
+          </div>
+          <Divider classes={{ root: "custom-divider" }} />
+          <div className="row">
+            <div className="col">
+              <h6 className={styles["col-heading"]}>
+                Average Annual Revenue (last 3 years)
+              </h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.avg_annual_revenue}
+              </p>
             </div>
-            <Divider classes={{ root: "custom-divider" }} />
-            <div className="row">
-              <div className="col">
-                <h6 className={styles["col-heading"]}>Email</h6>
-
-              </div>
-              <div className="col">
-                <h6 className={styles["col-heading"]}>WhatsApp</h6>
-
-              </div>
-
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Business Email</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.business_email}
+              </p>
             </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Business Mobile</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.business_mobile}
+              </p>
+            </div>
+          </div>
+          <Divider classes={{ root: "custom-divider" }} />
+          <div className="row">
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Description</h6>
+              <p className={styles["col-data"]}>
+                {companyDetail?.description
+                  ? companyDetail.description.replace(/<\/?p>/g, "")
+                  : "No description available"}
+              </p>
+            </div>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+      {/* Contacts */}
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Contact(2)
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div className={cn("row", styles["contacts-row"])}>
+            <div className={cn("col", styles["contacts-col"])}>
+              <h6 className={styles["col-heading"]}>Name</h6>
+            </div>
+            <div className={cn("col", styles["contacts-col"])}>
+              <h6 className={styles["col-heading"]}>Designation</h6>
+            </div>
+            <div className={cn("col", styles["contacts-col"])}>
+              <h6 className={styles["col-heading"]}>Mobile</h6>
+            </div>
+            <div className={cn("col", styles["contacts-col"])}>
+              <h6 className={styles["col-heading"]}>Email</h6>
+            </div>
+            <div className={cn("col", styles["contacts-col"])}>
+              <h6 className={styles["col-heading"]}>WhatsApp</h6>
+            </div>
+          </div>
+          <Divider classes={{ root: "custom-divider" }} />
+        </AccordionDetails>
+      </Accordion>
+      {/* Categories */}
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Categories({companyDetail?.category?.length})
+          </Typography>
+        </AccordionSummary>
 
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-
-              Address
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-
-
-          </AccordionDetails>
-        </Accordion>
-
-      </>
+        <AccordionDetails>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              display: "flex",
+              flexWrap:
+                companyDetail?.category?.length >= 7 ? "wrap" : "nowrap", // Wrap if more than 7
+              gap: "9px", // Space between chips
+            }}
+          >
+            {companyDetail?.category?.map((category) => {
+              return <Chip label={category?.name} />;
+            })}
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+      {/* Address */}
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Address
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails></AccordionDetails>
+      </Accordion>
     </>
+  );
+};
 
-  )
-}
-
-export default About
+export default About;

@@ -96,6 +96,14 @@ const Documents = ({ bidDetails, type }) => {
     }
   };
 
+  const handleDeleteConfirmation = (choice) => {
+    if (choice) {
+      handleAction(deleteDetails.action);
+    } else {
+      setDeleteDetails({ open: false, title: "", message: "", action: "" });
+    }
+  };
+
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       return (
@@ -116,7 +124,7 @@ const Documents = ({ bidDetails, type }) => {
       );
     }
   };
-  // console.log("status", bidDetails.participant.sample.invite_status);
+
   return (
     <>
       <DataTable
@@ -126,7 +134,7 @@ const Documents = ({ bidDetails, type }) => {
         customClassName="portal-data-table"
       />
 
-      {/* {type === "invited" && (
+      {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
           {bidDetails?.participant?.status === "accepted" ||
           bidDetails?.participant?.status === "revoked" ||
@@ -198,7 +206,7 @@ const Documents = ({ bidDetails, type }) => {
             />
           )}
         </Box>
-      )} */}
+      )}
     </>
   );
 };

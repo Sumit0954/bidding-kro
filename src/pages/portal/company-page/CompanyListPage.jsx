@@ -37,6 +37,8 @@ const CompanyListPage = () => {
     }
   }, [id]);
 
+
+  
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -61,7 +63,7 @@ const CompanyListPage = () => {
           <CompanyList bidDetails={bidDetails} id={id} tab={value} listtype={"allcompanies"} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-        <CompanyList bidDetails={bidDetails} id={id} tab={value} />
+        <CompanyList bidDetails={bidDetails} id={id} tab={value}  listtype={"InviteRequest"}/>
         </TabPanel>
       </Box>
     </>
