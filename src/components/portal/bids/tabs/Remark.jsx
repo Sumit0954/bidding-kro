@@ -9,52 +9,59 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { NavLink } from "react-router-dom";
 
-const Remark = () => {
-  const { control, handleSubmit } = useForm();
+const Remark = ({ bidDetails }) => {
+  const { control, handleSubmit, reset } = useForm();
   const { setAlert } = useContext(AlertContext);
   const [loading, setLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-  //   const formSubmit = async (data) => {
-  //     setLoading(true);
-  //     let answers = Object.entries(data).map(([key, value]) => {
-  //       const question = key.split("-")[1];
-  //       return {
-  //         question: parseInt(question, 10),
-  //         text: value,
-  //       };
-  //     });
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
-  //     try {
-  //       const response = await _sendAPIRequest(
-  //         "POST",
-  //         PortalApiUrls.UPDATE_ANSWER + `${bidDetails.id}/`,
-  //         answers,
-  //         true
-  //       );
-  //       if (response.status === 204) {
-  //         setLoading(false);
-  //         setAlert({
-  //           isVisible: true,
-  //           message: "Answer Submited successfully.",
-  //           severity: "success",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       setAlert({
-  //         isVisible: true,
-  //         message:
-  //           "There was a problem submitting your answer. Please try again later.",
-  //         severity: "error",
-  //       });
-  //     }
-  //   };
+  const formSubmit = async (data) => {
+    setLoading(true);
+
+    // Prepare the form data
+    const formData = new FormData();
+    formData.append("remarks", data.remark);
+
+    try {
+      const response = await _sendAPIRequest(
+        "PUT",
+        `${PortalApiUrls.REMARK}${bidDetails?.id}/`, // Use bidDetails.id
+        formData,
+        true
+      );
+
+      // Handle successful response
+      if (response.status === 200 || response.status === 204) {
+        setAlert({
+          isVisible: true,
+          message: "Remark submitted successfully.",
+          severity: "success",
+        });
+        reset(); // Reset form after successful submission
+      }
+    } catch (error) {
+      // Handle error
+      setAlert({
+        isVisible: true,
+        message: "Failed to submit remark. Please try again.",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       <Box classname="row" sx={{ marginTop: "2rem" }}>
         <FormControlLabel
-          control={<Checkbox />}
+          control={
+            <Checkbox checked={isChecked} onChange={handleCheckboxChange} />
+          }
           label={
             <Typography variant="body1">
               By clicking this you agree to{" "}
@@ -63,7 +70,7 @@ const Remark = () => {
             </Typography>
           }
         />
-        <form>
+        <form onSubmit={handleSubmit(formSubmit)}>
           <>
             <Box sx={{ marginBottom: "2rem" }}>
               <CustomInput
@@ -79,7 +86,11 @@ const Remark = () => {
               {loading ? (
                 <ButtonLoader size={60} />
               ) : (
-                <button className="btn button" type="submit">
+                <button
+                  className="btn button"
+                  type="submit"
+                  disabled={!isChecked}
+                >
                   Submit
                 </button>
               )}

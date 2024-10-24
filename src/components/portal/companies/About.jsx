@@ -116,7 +116,7 @@ const About = ({ companyDetail }) => {
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
-            Contact(2)
+            Contacts
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -184,7 +184,29 @@ const About = ({ companyDetail }) => {
             Address
           </Typography>
         </AccordionSummary>
-        <AccordionDetails></AccordionDetails>
+        <AccordionDetails>
+          {companyDetail?.address?.map((item, index) => {
+            console.log(item, "item");
+            return (
+              <>
+                <div className="row">
+                  <div className="col">
+                    <h6 className={styles["col-heading"]}>
+                      Address {index + 1}
+                    </h6>
+                    <p className={styles["col-data"]}>
+                      {`${item.address}, ${item.city}, ${item.state}, ${item.country} - ${item.pincode}`}
+                    </p>
+                  </div>
+                </div>
+
+                {index < companyDetail?.address?.length - 1 && (
+                  <Divider classes={{ root: "custom-divider" }} />
+                )}
+              </>
+            );
+          })}
+        </AccordionDetails>
       </Accordion>
     </>
   );

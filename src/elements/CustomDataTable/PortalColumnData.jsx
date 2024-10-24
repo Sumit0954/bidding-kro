@@ -573,6 +573,11 @@ export const Invite_request_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
+      console.log(
+        "requestor : ",
+        data?.row?.original?.requestor.business_email
+      );
+
       return (
         <NavLink
           className={styles["table-link"]}

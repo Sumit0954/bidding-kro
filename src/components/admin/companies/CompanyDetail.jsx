@@ -277,6 +277,7 @@ const CompanyDetail = ({ companyDetails }) => {
         </AccordionSummary>
         <AccordionDetails>
           {companyDetails?.address?.map((item, index) => {
+            console.log(item, "item");
             return (
               <>
                 <div className="row">

@@ -5,30 +5,48 @@ import { PreviousBids_column } from "../../../elements/CustomDataTable/PortalCol
 import { Grid, Card, CardContent, Typography, Box } from "@mui/material";
 import { TrendingUp, Group } from "@mui/icons-material";
 import _sendAPIRequest from "../../../helpers/api";
+import { useEffect, useContext, useState } from "react";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
-const PreviousBids = () => {
+const PreviousBids = ({ companyDetail }) => {
+  const { setAlert } = useContext(AlertContext);
+  const [previousBidsData, setPreviousBidsData] = useState();
+
   const addAction = (cell) => {
     return (
       <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
     );
   };
 
+  useEffect(() => {
+    getPreviousBidsData();
+  }, []);
 
-const getPreviousBidsData = async () =>{
-  try {
-    const response = _sendAPIRequest(
-
-    )
-  } catch (error) {
-    
-  }
-}
-
-
+  const getPreviousBidsData = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        `${PortalApiUrls.RETRIEVE_INVITED_BID}${companyDetail?.id}/`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        console.log("response.data", response.data);
+        setPreviousBidsData(response.data);
+      }
+    } catch (error) {
+      setAlert({
+        isVisible: true,
+        message: "Failed to fetch questions. Please try again later.",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <>
-      <Box className={styles["filter-points"]} >
+      <Box className={styles["filter-points"]}>
         <Grid container spacing={2}>
           {/* Total Spends */}
           <Grid item xs={12} sm={6} md={4}>
@@ -37,7 +55,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Total Spends
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   20
                 </Typography>
               </CardContent>
@@ -54,7 +76,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Successful Bids
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   12
                 </Typography>
               </CardContent>
@@ -71,7 +97,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Cancelled Bids
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   8
                 </Typography>
               </CardContent>
@@ -88,7 +118,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Invited Bids
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   35
                 </Typography>
               </CardContent>
@@ -105,7 +139,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Participated Bids
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   25
                 </Typography>
               </CardContent>
@@ -122,7 +160,11 @@ const getPreviousBidsData = async () =>{
                 <Typography variant="h6" component="div">
                   Awarded Bids
                 </Typography>
-                <Typography variant="h4" component="div" sx={{ color: "#055160" }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
                   10
                 </Typography>
               </CardContent>

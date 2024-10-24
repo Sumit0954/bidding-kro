@@ -37,7 +37,6 @@ import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
 import * as React from "react";
 
-
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
   const [addAmendment, setAddAmendment] = useState(false);
@@ -102,8 +101,6 @@ const BidDetailsPage = () => {
       setDeleteDetails({ open: false, title: "", message: "" });
     }
   };
-
-  
 
   const breadcrumbs = [
     <NavLink
@@ -292,8 +289,8 @@ const BidDetailsPage = () => {
                   {...a11yProps(2)}
                   key={2}
                 />,
-                // <Tab label="Questions" {...a11yProps(3)} key={3} />,
-                // <Tab label="Remark" {...a11yProps(4)} key={4} />,
+                <Tab label="Questions" {...a11yProps(3)} key={3} />,
+                <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
                 <Tab label="Summa ry" {...a11yProps(0)} key={0} />,
@@ -361,7 +358,7 @@ const BidDetailsPage = () => {
             <Questions bidDetails={bidDetails} />
           </TabPanel>
           <TabPanel value={value} index={4}>
-            <Remark />
+            <Remark bidDetails={bidDetails} />
           </TabPanel>
         </>
       ) : (
