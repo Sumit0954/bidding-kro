@@ -176,7 +176,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   }, [rootCategory]);
 
   const handleOptionChange = (ancestors) => {
-    console.log(ancestors, "ancestorsancestors");
     setSelectedCategory(ancestors);
   };
 

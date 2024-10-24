@@ -337,7 +337,7 @@ const BidDocuments = () => {
                   <button
                     className={cn("btn", "button")}
                     type="button"
-                    onClick={() => navigate(`/portal/bids/`)}
+                    onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
                   >
                     Back
                   </button>

@@ -244,12 +244,14 @@ export const invited_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
+      console.log("data : ", data);
       return (
         <NavLink
           className={styles["table-link"]}
           to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
         >
-          {truncateString(data?.row?.original?.bid?.title, 30)}
+          {truncateString(data?.row?.original?.bid?.title, 30) 
+         }
         </NavLink>
       );
     },
@@ -587,8 +589,7 @@ export const Invite_request_column = [
     align: "left",
     disablePadding: false,
     width: 160,
-    cell: (data) => {
-      console.log("requestor : ", data);
+    Cell: (data) => {
       return data?.row?.original?.requestor?.business_email;
     },
   },

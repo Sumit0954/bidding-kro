@@ -12,57 +12,59 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { useNavigate } from "react-router-dom";
 
 const Documents = ({ bidDetails, type }) => {
-
   const { setAlert } = useContext(AlertContext);
-  const [loading, setLoading] = useState(false);
-  const [loadingAction, setLoadingAction] = useState(null);
-  const [deleteDetails, setDeleteDetails] = useState({
-    open: false,
-    title: "",
-    message: "",
-    action: "",
-  });
   const navigate = useNavigate();
-  const formData = new URLSearchParams();
-  formData.append("action", deleteDetails.action);
-  formData.append(
-    "is_sample_invite",
-    `${bidDetails?.type === "L1" ? false : true}`
-  );
 
-  const handleAction = async (action) => {
-    setLoadingAction(action);
-    setLoading(true);
-    try {
-      const response = await _sendAPIRequest(
-        "PUT",
-        PortalApiUrls.INVITE_ACTION + `${bidDetails?.id}/`,
-        formData,
-        true
-      );
-      if (response.status === 204) {
-        window.location.reload();
-        setLoading(false);
 
-        setAlert({
-          isVisible: true,
-          message:
-            bidDetails?.participant?.status === "accepted"
-              ? "Your bid invitation has been successfully accepted."
-              : "Bid invitation has been declined.",
-          severity: "success",
-        });
-      }
-    } catch (error) {
-      setLoading(false);
-      setAlert({
-        isVisible: true,
-        message:
-          error?.response?.data?.error || "An unexpected error occurred.",
-        severity: "error",
-      });
-    }
-  };
+  // const formData = new URLSearchParams();
+  // formData.append("action", deleteDetails.action);
+  // formData.append(
+  //   "is_sample_invite",
+  //   `${bidDetails?.type === "L1" ? false : true}`
+  // );
+
+  // / invite action :  accepted / decline
+  // const handleAction = async (action) => {
+  //   setLoadingAction(action);
+  //   setLoading(true);
+  //   try {
+  //     const response = await _sendAPIRequest(
+  //       "PUT",
+  //       PortalApiUrls.INVITE_ACTION + `${bidDetails?.id}/`,
+  //       formData,
+  //       true
+  //     );
+  //     if (response.status === 204) {
+  //       window.location.reload();
+  //       setLoading(false);
+
+  //       setAlert({
+  //         isVisible: true,
+  //         message:
+  //           bidDetails?.participant?.status === "accepted"
+  //             ? "Your bid invitation has been successfully accepted."
+  //             : "Bid invitation has been declined.",
+  //         severity: "success",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     setAlert({
+  //       isVisible: true,
+  //       message:
+  //         error?.response?.data?.error || "An unexpected error occurred.",
+  //       severity: "error",
+  //     });
+  //   }
+  // };
+  // const handleInvitation = (choice) => {
+  //   if (choice) {
+  //     handleAction(deleteDetails.action);
+  //   } else {
+  //     setDeleteDetails({ open: false, title: "", message: "", action: "" });
+  //   }
+  // };
+
   const handleDownloadDocument = (data) => {
     const { file, name } = data;
 
@@ -88,22 +90,7 @@ const Documents = ({ bidDetails, type }) => {
       });
   };
 
-  const handleInvitation = (choice) => {
-    if (choice) {
-      handleAction(deleteDetails.action);
-    } else {
-      setDeleteDetails({ open: false, title: "", message: "", action: "" });
-    }
-  };
-
-  const handleDeleteConfirmation = (choice) => {
-    if (choice) {
-      handleAction(deleteDetails.action);
-    } else {
-      setDeleteDetails({ open: false, title: "", message: "", action: "" });
-    }
-  };
-
+  // downloading document
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       return (
@@ -134,7 +121,7 @@ const Documents = ({ bidDetails, type }) => {
         customClassName="portal-data-table"
       />
 
-      {type === "invited" && (
+      {/* {type === "invited" && (
         <Box className={styles["btn-contanier"]}>
           {bidDetails?.participant?.status === "accepted" ||
           bidDetails?.participant?.status === "revoked" ||
@@ -206,7 +193,7 @@ const Documents = ({ bidDetails, type }) => {
             />
           )}
         </Box>
-      )}
+      )} */}
     </>
   );
 };

@@ -43,12 +43,6 @@ const BidProducts = () => {
   const { productData } = location.state || {};
   console.log(productData, "productData");
 
-  // Fetch products list on component load
-
-  useEffect(() => {
-    fetchProductList();
-  }, []);
-
   // Function to fetch product list
   const fetchProductList = async () => {
     try {
@@ -59,13 +53,17 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 200) {
-        setProductList(response.data);
+        setProductList(response?.data);
         response.data.forEach((product, index) => prefillForm(product, index));
       }
     } catch (error) {
       console.log("Error fetching product list", error);
     }
   };
+
+  useEffect(() => {
+    fetchProductList();
+  }, [id])
 
   const prefillForm = (product, index) => {
     setValue(`product_title${index}`, product.title);
@@ -208,7 +206,6 @@ const BidProducts = () => {
     });
   };
 
-
   const transformedProductData = productData.map((product) => ({
     lable: product.name, // use 'lable' instead of 'label'
     value: product.name, // keep 'value' as expected
@@ -221,7 +218,7 @@ const BidProducts = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={styles["bid-form-section"]}>
-              <h4>Products ({productList.length})</h4>
+              <h4>Products ({productList?.length})</h4>
               <button
                 type="button"
 
@@ -230,7 +227,7 @@ const BidProducts = () => {
                 className={cn(
                   "btn",
                   "button",
-                  productList.length >= MAX_PRODUCTS ? "disable" : ""
+                  productList?.length >= MAX_PRODUCTS ? "disable" : ""
                 )}
                 onClick={() => setAddFormOpen(true)}
                 disabled={productList.length >= MAX_PRODUCTS}
@@ -240,7 +237,7 @@ const BidProducts = () => {
             </div>
 
             {/* List of existing products */}
-            {productList.length > 0 && (
+            {productList?.length > 0 && (
               <div>
                 <h5>Existing Products</h5>
                 {productList.map((item, index) => (
@@ -470,7 +467,7 @@ const BidProducts = () => {
                 type="button"
                 className={cn("btn", "button")}
                 // disabled={bidStatus === "cancelled" ? true : false}
-                onClick={() => navigate(`/portal/bids/:action/${id}`)}
+                onClick={() => navigate(`/portal/bids/products/${id}`)}
               >
                 Back
               </button>

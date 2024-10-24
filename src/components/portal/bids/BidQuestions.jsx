@@ -150,7 +150,7 @@ const BidQuestions = () => {
                 <button
                   className={cn("btn", "button")}
                   type="button"
-                  // onClick={() => navigate(`/portal/bids/categories/${id}`)}
+                  onClick={() => navigate(`/portal/bids/create/deatils/${id}`)}
                 >
                   Back
                 </button>

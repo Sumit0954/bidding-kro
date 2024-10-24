@@ -108,3 +108,24 @@
   background-color: var(--secondary-color) !important;
 }
 
+.animated-step {
+  animation: stepTransition 0.6s ease-in-out; /* Customize duration & easing */
+}
+
+.animated-label {
+  transition: color 0.5s ease-in-out;
+}
+
+/* Keyframe for smooth appearance */
+@keyframes stepTransition {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+

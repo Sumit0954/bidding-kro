@@ -50,6 +50,7 @@ const Summary = ({ bidDetails }) => {
     id: null,
   });
 
+  console.log("bidDetails", bidDetails);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -115,11 +116,10 @@ const Summary = ({ bidDetails }) => {
   };
 
   let steps = [];
-
   if (bidDetails.type === "L1") {
     steps = [
       {
-        label: "Invited",
+        label: "Commercial Bid Invite",
         icon: (
           <GroupAdd
             style={{
@@ -129,7 +129,7 @@ const Summary = ({ bidDetails }) => {
                 bidDetails?.participant?.status === "revoked" ||
                 bidDetails?.participant?.status === "pending"
                   ? "green"
-                  : "grey"
+                  : "#FFC107"
               }`,
             }}
           />
@@ -171,7 +171,7 @@ const Summary = ({ bidDetails }) => {
   } else {
     steps = [
       {
-        label: "Invited",
+        label: "Sample Bid Invited",
         icon: (
           <GroupAdd
             style={{
@@ -210,58 +210,66 @@ const Summary = ({ bidDetails }) => {
           ),
         status: "complete",
       },
-      {
-        label: `${
-          bidDetails?.participant?.sample?.approval_status === "approved"
-            ? "Sample Approved"
-            : bidDetails?.participant?.sample?.approval_status === "rejected"
-            ? "Sample Rejected"
-            : "Sample Pending"
-        }`,
-        icon:
-          bidDetails?.participant?.sample?.approval_status === "approved" ? (
-            <CheckCircleOutline style={{ color: "green" }} />
-          ) : bidDetails?.participant?.sample?.approval_status ===
-            "rejected" ? (
-            <CancelOutlined style={{ color: "red" }} />
-          ) : (
-            <HourglassEmpty style={{ color: "#FFC107" }} />
-          ),
-        status: "complete",
-      },
-      {
-        label: "Commercial Bid Invite",
-        icon:
-          bidDetails?.participant?.sample?.approval_status === "approved" ? (
-            <CheckCircleOutline style={{ color: "green" }} />
-          ) : (
-            <HourglassEmpty style={{ color: "#FFC107" }} />
-          ),
-        status: "complete",
-      },
-      {
-        label:
-          bidDetails?.participant?.status === "pending"
-            ? "Pending"
-            : bidDetails?.participant?.status === "accepted" ||
-              bidDetails?.participant?.status === "revoked"
-            ? "Accepted"
-            : bidDetails?.participant?.status === "declined"
-            ? "Declined"
-            : "Pending",
-        icon:
-          bidDetails?.participant?.status === "pending" ? (
-            <HourglassEmpty style={{ color: "#FFC107" }} />
-          ) : bidDetails?.participant?.status === "accepted" ||
-            bidDetails?.participant?.status === "revoked" ? (
-            <GroupAdd style={{ color: "green" }} />
-          ) : bidDetails?.participant?.status === "declined" ? (
-            <CancelOutlined style={{ color: "red" }} />
-          ) : (
-            <HourglassEmpty style={{ color: "#FFC107" }} />
-          ),
-        status: "complete",
-      },
+
+      ...(bidDetails?.participant?.sample?.invite_status === "declined"
+        ? []
+        : [
+            {
+              label: `${
+                bidDetails?.participant?.sample?.approval_status === "approved"
+                  ? "Sample Approved"
+                  : bidDetails?.participant?.sample?.approval_status ===
+                    "rejected"
+                  ? "Sample Rejected"
+                  : "Sample Pending"
+              }`,
+              icon:
+                bidDetails?.participant?.sample?.approval_status ===
+                "approved" ? (
+                  <CheckCircleOutline style={{ color: "green" }} />
+                ) : bidDetails?.participant?.sample?.approval_status ===
+                  "rejected" ? (
+                  <CancelOutlined style={{ color: "red" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFC107" }} />
+                ),
+              status: "complete",
+            },
+            {
+              label: "Commercial Bid Invite",
+              icon:
+                bidDetails?.participant?.sample?.approval_status ===
+                "approved" ? (
+                  <GroupAdd style={{ color: "green" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFC107" }} />
+                ),
+              status: "complete",
+            },
+            {
+              label:
+                bidDetails?.participant?.status === "pending"
+                  ? "Pending"
+                  : bidDetails?.participant?.status === "accepted" ||
+                    bidDetails?.participant?.status === "revoked"
+                  ? "Accepted"
+                  : bidDetails?.participant?.status === "declined"
+                  ? "Declined"
+                  : "Pending",
+              icon:
+                bidDetails?.participant?.status === "pending" ? (
+                  <HourglassEmpty style={{ color: "#FFBF00" }} />
+                ) : bidDetails?.participant?.status === "accepted" ||
+                  bidDetails?.participant?.status === "revoked" ? (
+                  <CheckCircleOutline style={{ color: "green" }} />
+                ) : bidDetails?.participant?.status === "declined" ? (
+                  <CancelOutlined style={{ color: "red" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFBF00" }} />
+                ),
+              status: "complete",
+            },
+          ]),
 
       ...(bidDetails?.participant?.status === "revoked"
         ? [
@@ -274,8 +282,6 @@ const Summary = ({ bidDetails }) => {
         : []),
     ];
   }
-
-  // Now you can use the `steps` array for rendering steps in your component.
 
   return (
     <>
@@ -293,39 +299,44 @@ const Summary = ({ bidDetails }) => {
             activeStep={2} // Set this to the index of the last visible step (in this case, 2 for the third step)
             sx={{ padding: "0.5rem" }}
           >
-            {steps.map((step, index) => (
-              <Step key={index}>
-                <StepLabel
-                  icon={step.icon}
-                  StepIconProps={{
-                    sx: {
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+            {steps.map((step, index) => {
+              // Extract the color of the icon dynamically
+              const iconColor = step.icon.props.style.color;
+
+              return (
+                <Step key={index}>
+                  <StepLabel
+                    icon={step.icon}
+                    StepIconProps={{
+                      sx: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      },
                     }}
                   >
-                    {/* Icon and label horizontally aligned */}
-                    <span
-                      style={{
-                        color: "grey", // Set label color to grey
-                        fontSize: "0.8rem",
-                        marginLeft: "8px",
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      {step.label}
-                    </span>
-                  </Box>
-                </StepLabel>
-              </Step>
-            ))}
+                      {/* Icon and label horizontally aligned */}
+                      <span
+                        style={{
+                          color: iconColor, // Set label color to the same color as the icon
+                          fontSize: "0.8rem",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        {step.label}
+                      </span>
+                    </Box>
+                  </StepLabel>
+                </Step>
+              );
+            })}
           </Stepper>
         </Box>
       ) : null}
@@ -359,30 +370,14 @@ const Summary = ({ bidDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
-              <p className={styles["col-data"]}>{bidDetails?.type}</p>
-            </div>
-          </div>
-          {/* <Divider classes={{ root: "custom-divider" }} />
-          <div className="row">
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>
                 {bidDetails?.type}
-              </p>
-            </div> 
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Product Quantity</h6>
-              <p className={styles["col-data"]}>
-                {parseInt(bidDetails?.product_quantity)}
-              </p>
+                {bidDetails?.type === "L1"
+                  ? " ( Commercial Bid )"
+                  : " ( Quality & Cost Based Selection )"}
+              </p>{" "}
             </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Unit</h6>
-              <p className={styles["col-data"]}>
-                {getLableByValue(bidDetails?.product_unit)}
-              </p>
-            </div>
-          </div> */}
+          </div>
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">

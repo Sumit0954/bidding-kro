@@ -85,7 +85,6 @@ const BidForm = () => {
         setLoading(false);
 
         navigate(`/portal/bids/products/${id}`, { state: { productData } });
-
       }
     } catch (error) {
       setLoading(false);
@@ -420,9 +419,8 @@ const BidForm = () => {
                     className={cn("btn", "button")}
                     disabled={bidStatus === "cancelled" ? true : false}
                     onClick={() => {
-                      
                       id
-                        ? navigate(`/portal/bids/categories${id}`)
+                        ? navigate(`/portal/bids/categories/${id}`)
                         : navigate(`/portal/bids/categories`);
                     }}
                   >
@@ -432,7 +430,6 @@ const BidForm = () => {
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
-
                     <button
                       type="submit"
                       className={cn("btn", "button")}
@@ -441,7 +438,6 @@ const BidForm = () => {
                     >
                       {id ? "Update Bid" : "Create Bid"}
                     </button>
-
                   )}
                 </div>
               </form>

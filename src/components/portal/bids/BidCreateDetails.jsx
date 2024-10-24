@@ -30,7 +30,6 @@ const BidCreateDetails = () => {
   const { action, id } = useParams();
 
   const submitForm = async (data) => {
-
     setLoading(true);
     let updateFormData = new FormData();
 
@@ -58,7 +57,6 @@ const BidCreateDetails = () => {
             message: "Bid Details has been created successfully.",
             severity: "success",
           });
-
 
           navigate(`/portal/bids/create/questions/${id}`);
         }
@@ -175,16 +173,13 @@ const BidCreateDetails = () => {
                   <button
                     type="button"
                     className={cn("btn", "button")}
-
                     disabled={bidStatus === "cancelled" ? true : false}
                     onClick={() => {
-                      navigate(`/portal/bids/products${id}`);
+                      navigate(`/portal/bids/products/116`);
                     }}
-
                   >
                     Back
                   </button>
-
 
                   {loading ? (
                     <ButtonLoader size={60} />
@@ -199,7 +194,6 @@ const BidCreateDetails = () => {
                       Save & Next
                     </button>
                   )}
-
                 </div>
               </form>
             </div>

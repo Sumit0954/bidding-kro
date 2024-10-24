@@ -52,22 +52,8 @@ const BidDetailsPage = () => {
   const type = new URLSearchParams(useLocation().search).get("type");
   const [participant, setParticipant] = useState();
 
-  const isdisableforL1 =
-    bidDetails?.participant?.status === "revoked" ||
-    bidDetails?.participant?.status === "pending";
 
-  const isdisableforQCBS =
-    bidDetails?.participant?.sample?.invite_status === "revoked" ||
-    (bidDetails?.participant?.status === "pending" &&
-      bidDetails?.participant?.sample?.invite_status !== "accepted");
-
-  // Combine the conditions for the tab disabling
-  const isTabDisabled =
-    (bidDetails?.type === "L1" && isdisableforL1) ||
-    (bidDetails?.type === "QCBS" && isdisableforQCBS);
-
-  console.log("deatails : ", bidDetails?.participant);
-
+  
   const isQCBSBid = bidDetails?.type === "QCBS";
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
@@ -305,13 +291,12 @@ const BidDetailsPage = () => {
                   label="Acceptance Status"
                   {...a11yProps(2)}
                   key={2}
-                  disabled={isTabDisabled}
                 />,
                 // <Tab label="Questions" {...a11yProps(3)} key={3} />,
                 // <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
-                <Tab label="Summary" {...a11yProps(0)} key={0} />,
+                <Tab label="Summa ry" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
                 <Tab
                   label="Invite Suppliers"

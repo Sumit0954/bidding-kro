@@ -25,8 +25,9 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
+import CustomInput from "../../../../elements/CustomInput/CustomInput";
 
-const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
+const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
   const {
     control,
     handleSubmit,
@@ -157,7 +158,6 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
           severity: "success",
         });
       }
-      
     } catch (error) {
       setLoading(false);
 
@@ -213,7 +213,19 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
                   />
                 </div>
               </div>
-
+              {/* <div className="row">
+                <div className="col-lg-6">
+                  <CustomInput
+                    control={control}
+                    label="Minimum bid Amount increment"
+                    name= "Minimum_bid_Amount_increment"
+                    placeholder="₹ 20,000"
+                    // rules={{
+                    //   required: "Minimum bid Amount increment is required.",
+                    // }}
+                  />
+                </div>
+              </div> */}
               <div className="row mt-3">
                 <div className="col-12">
                   {loading ? (
@@ -311,7 +323,11 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
           <AccordionDetails>
             <DataTable
               propsColumn={l1_participants_column}
-              propsData={bidDetails?.type === "L1"? participant.participants: filteredParticipants}
+              propsData={
+                bidDetails?.type === "L1"
+                  ? participant.participants
+                  : filteredParticipants
+              }
               action={addAction}
             />
           </AccordionDetails>
