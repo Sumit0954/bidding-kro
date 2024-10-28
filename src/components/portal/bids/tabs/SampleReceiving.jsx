@@ -77,9 +77,6 @@ const SampleReceiving = ({ bidDetails, participant }) => {
   const editformData = new URLSearchParams();
   editformData.append("sample_receive_end_date", sampleEndDate);
 
-  console.log("Start", sampleStartDate);
-  console.log("End", sampleEndDate);
-
   const submitSampledates = async () => {
     setLoading(true);
     if (
@@ -284,6 +281,27 @@ const SampleReceiving = ({ bidDetails, participant }) => {
           </form>
         </div>
         <br />
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography classes={{ root: "custom-accordion-heading" }}>
+              Sample Bid Invitations
+            </Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+            <DataTable
+              propsColumn={Sample_Bid_Invitations_result_log}
+              propsData={participant.participants || []}
+            />
+          </AccordionDetails>
+        </Accordion>
+
         {found && (
           <Accordion
             defaultExpanded
@@ -307,27 +325,6 @@ const SampleReceiving = ({ bidDetails, participant }) => {
             </AccordionDetails>
           </Accordion>
         )}
-
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-          }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Sample Bid Invitations
-            </Typography>
-          </AccordionSummary>
-
-          <AccordionDetails>
-            <DataTable
-              propsColumn={Sample_Bid_Invitations_result_log}
-              propsData={participant.participants || []}
-            />
-          </AccordionDetails>
-        </Accordion>
       </div>
     </>
   );

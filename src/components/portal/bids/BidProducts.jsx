@@ -39,7 +39,6 @@ const BidProducts = () => {
   const [productList, setProductList] = useState([]); // For fetched products
   const [expanded, setExpanded] = useState(null); // Track which form is open
 
-
   const { productData } = location.state || {};
   console.log(productData, "productData");
 
@@ -63,7 +62,7 @@ const BidProducts = () => {
 
   useEffect(() => {
     fetchProductList();
-  }, [id])
+  }, [id]);
 
   const prefillForm = (product, index) => {
     setValue(`product_title${index}`, product.title);
@@ -211,7 +210,6 @@ const BidProducts = () => {
     value: product.name, // keep 'value' as expected
   }));
 
-
   return (
     <>
       <div className="container">
@@ -221,9 +219,7 @@ const BidProducts = () => {
               <h4>Products ({productList?.length})</h4>
               <button
                 type="button"
-
                 style={{ marginBottom: "5px" }}
-
                 className={cn(
                   "btn",
                   "button",
@@ -260,7 +256,6 @@ const BidProducts = () => {
                       >
                         <div className="row">
                           <div className="col-lg-12">
-
                             <CustomSelect
                               control={control}
                               label="Product Title"
@@ -271,19 +266,8 @@ const BidProducts = () => {
                                 required: "Product Title is required.",
                               }}
                             />
-                            {/* <CustomInput
-
-                              control={control}
-                              label="Product Title"
-                              name={`product_title${index}`}
-                              placeholder="Product Title"
-                              rules={{ required: "Product Title is required." }}
-
-                            /> */}
-
                           </div>
                         </div>
-
                         <div className="row">
                           <div className="col-lg-4">
                             <CustomInput
@@ -318,7 +302,19 @@ const BidProducts = () => {
                             />
                           </div>
                         </div>
-
+                        <div className="row">
+                          <div className="col-lg-4">
+                            <CustomInput
+                              control={control}
+                              label="Price Diffrence"
+                              name={`product_quantity${index}`}
+                              placeholder="Price Diffrence"
+                              rules={{
+                                required: "Price Diffrence is required.",
+                              }}
+                            />
+                          </div>
+                        </div>
                         <div className="row">
                           <div className="col-lg-12">
                             <CustomCkEditor
@@ -378,7 +374,6 @@ const BidProducts = () => {
                   <form onSubmit={handleSubmit(submitForm)}>
                     <div className="row">
                       <div className="col-lg-12">
-
                         <CustomSelect
                           control={control}
                           label="Product Title"
@@ -389,17 +384,6 @@ const BidProducts = () => {
                             required: "Product Title is required.",
                           }}
                         />
-                        {/* <CustomInput
-
-                          control={control}
-                          label="Product title"
-                          name="product_title"
-                          placeholder="Product Title"
-                          inputType="text"
-                          rules={{ required: "Product Title is required." }}
-
-                        /> */}
-
                       </div>
                     </div>
 
@@ -436,7 +420,19 @@ const BidProducts = () => {
                         />
                       </div>
                     </div>
-
+                    {/* <div className="row">
+                      <div className="col-lg-4">
+                        <CustomInput
+                          control={control}
+                          label="Price Diffrence"
+                          name={`product_quantity`}
+                          placeholder="Price Diffrence"
+                          rules={{
+                            required: "Price Diffrence is required.",
+                          }}
+                        />
+                      </div>
+                    </div> */}
                     <div className="row">
                       <div className="col-lg-12">
                         <CustomCkEditor
@@ -462,7 +458,6 @@ const BidProducts = () => {
             )}
 
             <div className={cn("my-3", styles["btn-container"])}>
-
               <button
                 type="button"
                 className={cn("btn", "button")}

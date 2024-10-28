@@ -213,19 +213,6 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
                   />
                 </div>
               </div>
-              {/* <div className="row">
-                <div className="col-lg-6">
-                  <CustomInput
-                    control={control}
-                    label="Minimum bid Amount increment"
-                    name= "Minimum_bid_Amount_increment"
-                    placeholder="₹ 20,000"
-                    // rules={{
-                    //   required: "Minimum bid Amount increment is required.",
-                    // }}
-                  />
-                </div>
-              </div> */}
               <div className="row mt-3">
                 <div className="col-12">
                   {loading ? (

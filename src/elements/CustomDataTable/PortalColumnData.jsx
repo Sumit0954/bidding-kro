@@ -160,7 +160,7 @@ export const created_bids_column = [
           className={`status-cloumn ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "active"
+              data?.row?.original?.status === "active" || data?.row?.original?.status === "awarded"
                 ? "#22bb33"
                 : "darkyellow"
             }`,
@@ -244,7 +244,6 @@ export const invited_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      console.log("data : ", data);
       return (
         <NavLink
           className={styles["table-link"]}
@@ -373,7 +372,7 @@ export const related_bids_column = [
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}/?type=invited`}
+          to={`/portal/bids/details/${data?.row?.original?.id}/?type=related`}
         >
           {truncateString(data?.row?.original?.title, 30)}
         </NavLink>
@@ -573,11 +572,6 @@ export const Invite_request_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      console.log(
-        "requestor : ",
-        data?.row?.original?.requestor.business_email
-      );
-
       return (
         <NavLink
           className={styles["table-link"]}

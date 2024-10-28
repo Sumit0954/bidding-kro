@@ -49,8 +49,7 @@ const Summary = ({ bidDetails }) => {
     message: "",
     id: null,
   });
-
-  console.log("bidDetails", bidDetails);
+  console.log("bidDetails : ", bidDetails);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -405,6 +404,38 @@ const Summary = ({ bidDetails }) => {
               </p>
             </div>
           </div>
+          {bidDetails.type === "QCBS" &&
+            type === "invited" &&
+            bidDetails?.participant?.sample?.invite_status === "accepted" && (
+              <>
+                <Divider classes={{ root: "custom-divider" }} />
+                <div className="row">
+                  <div className="col">
+                    <h6 className={styles["col-heading"]}>
+                      Sample Receiving Opening Date
+                    </h6>
+                    <p className={styles["col-data"]}>
+                      {bidDetails?.bid_close_date
+                        ? dateTimeFormatter(
+                            bidDetails?.sample_receive_start_date
+                          )
+                        : "-"}
+                    </p>
+                  </div>
+                  <div className="col">
+                    <h6 className={styles["col-heading"]}>
+                      Sample Receiving Closing Date
+                    </h6>
+                    <p className={styles["col-data"]}>
+                      {bidDetails?.bid_close_date
+                        ? dateTimeFormatter(bidDetails?.sample_receive_end_date)
+                        : "-"}
+                    </p>
+                  </div>
+                  <div className="col"></div>
+                </div>
+              </>
+            )}
         </AccordionDetails>
       </Accordion>
 

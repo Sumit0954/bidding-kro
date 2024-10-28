@@ -25,7 +25,6 @@ const Questions = ({ bidDetails }) => {
           true
         );
         if (response?.data?.question) {
-          console.log(response.data.question, "ty");
           setQuestions(response.data.question);
         }
       } catch (error) {

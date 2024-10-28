@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./AcceptanceStatus.module.scss";
 import cn from "classnames";
 import CustomInput from "../../../../elements/CustomInput/CustomInput";
@@ -22,10 +22,10 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const AcceptanceStatus = ({ bidDetails, type }) => {
-  const { control, handleSubmit } = useForm();
   const { setAlert } = useContext(AlertContext);
   const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [participant, setParticipant] = useState({});
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -33,16 +33,39 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
     action: "",
   });
 
-  console.log("bidDetails :", bidDetails);
   // formdata for the invite action
   const formData = new URLSearchParams();
   formData.append("action", deleteDetails.action);
   formData.append(
     "is_sample_invite",
-    `${bidDetails?.type === "L1" ? false : true}`
+    `${
+      bidDetails?.type === "L1" ||
+      bidDetails?.participant?.sample?.approval_status === "approved"
+        ? false
+        : true
+    }`
   );
 
+  console.log("participant", participant);
   // invite action :  accepted / decline
+
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          `${PortalApiUrls.RETRIEVE_INVITED_BID}${bidDetails?.id}/`,
+          "",
+          true
+        );
+        if (response.data.participant) {
+          setParticipant(response.data.participant);
+        }
+      } catch (error) {}
+    };
+    fetchParticipants();
+  }, [bidDetails?.id, deleteDetails.action]);
+
   const handleAction = async (action) => {
     setLoadingAction(action);
     setLoading(true);
@@ -54,23 +77,26 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
         true
       );
       if (response.status === 204) {
-        window.location.reload();
         setLoading(false);
-
+        setDeleteDetails({ open: false, title: "", message: "", action: "" });
         setAlert({
           isVisible: true,
           message:
-            bidDetails?.participant?.status === "accepted"
+            participant?.status === "accepted" ||
+            (bidDetails?.type === "QCBS" &&
+              participant?.sample?.invite_status === "accepted")
               ? "Your bid invitation has been successfully accepted."
               : "Bid invitation has been declined.",
           severity:
-            bidDetails?.participant?.status === "accepted"
+            participant?.status === "accepted" ||
+            participant?.sample?.invite_status === "accepted"
               ? "success"
               : "error",
         });
       }
     } catch (error) {
       setLoading(false);
+      setDeleteDetails({ open: false, title: "", message: "", action: "" });
       setAlert({
         isVisible: true,
         message:
@@ -89,7 +115,6 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
     }
   };
 
-
   return (
     <>
       <Box
@@ -97,7 +122,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
         sx={{ marginTop: "2rem", marginLeft: "8px" }}
       >
         {bidDetails?.type === "L1" ? (
-          bidDetails?.participant?.status === "pending" ? (
+          participant.status === "pending" ? (
             // PENDING CONTENT
             <>
               <Box sx={{ marginBottom: "2rem" }}>
@@ -148,7 +173,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                 </Box>
               </Box>
             </>
-          ) : bidDetails?.participant?.status === "accepted" ? (
+          ) : participant.status === "accepted" ? (
             // ACCEPTED CONTENT
             <>
               <Box sx={{ marginBottom: "2rem" }}>
@@ -197,7 +222,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                 </Box>
               </Box>
             </>
-          ) : bidDetails?.participant?.status === "declined" ? (
+          ) : participant.status === "declined" ? (
             // DECLINED CONTENT
             <>
               <Box sx={{ marginBottom: "2rem" }}>
@@ -237,7 +262,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </>
           ) : // REVOKED CONTENT
-          bidDetails?.participant?.status === "revoked" ? (
+          participant.status === "revoked" ? (
             <>
               <Box sx={{ marginBottom: "2rem" }}>
                 {/* Heading */}
@@ -325,57 +350,52 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </>
           )
-        ) : bidDetails?.participant?.sample?.invite_status === "pending" ? (
+        ) : participant?.sample?.invite_status === "pending" ? (
           // SAMPLE INVITE PENDING CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
               {/* Heading */}
               <Typography variant="h4" gutterBottom>
-                Thank You for Accepting the Bid Invitation!
+                Invitation for Quality-Based Selection Bid
               </Typography>
 
               {/* Paragraph 2 */}
               <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
+                <Typography variant="body1">
+                  We are excited to invite you to participate in a Quality-Based
+                  Selection bid on our platform, Bidding Kro. This process
+                  requires suppliers to submit samples for evaluation, which
+                  will determine your eligibility to proceed with live bidding.
+                </Typography>
+
+                <>
                   <Typography variant="body1">
-                    You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
+                    ease take a moment to review the bid details and submit your
+                    materials for the quality check. If you need any assistance,
+                    feel free to reach out to our support team.
                   </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
+                  <List>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Sample Receiving Opening date :{" "}
+                      {bidDetails?.sample_receive_start_date}
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Sample Receiving Closing date :{" "}
+                      {bidDetails?.sample_receive_end_date}
+                    </ListItem>
+                  </List>
+                  <Typography variant="body1">
+                    Your sample will be reviewed by the buyer. Once it is
+                    approved, you will be notified and can proceed with the
+                    bidding process.
+                  </Typography>
+                </>
               </Box>
 
               {/* Paragraph 3 */}
@@ -386,57 +406,52 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </Box>
           </>
-        ) : bidDetails?.participant?.sample?.invite_status === "accepted" ? (
+        ) : participant?.sample?.invite_status === "accepted" &&
+          !participant?.sample?.approval_status === "approved" ? (
           // SAMPLE INVITE ACCEPTED CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
               {/* Heading */}
               <Typography variant="h4" gutterBottom>
-                Thank You for Accepting the Bid Invitation!
+                Acceptance Confirmation for Quality-Based Selection Bid
               </Typography>
 
               {/* Paragraph 2 */}
               <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
+                <Typography variant="body1">
+                  Thank you for accepting the invitation to participate in the
+                  Quality-Based Selection bid on our platform, Bidding Kro. We
+                  are pleased to have you on board for this important process.
+                </Typography>
+
+                <>
                   <Typography variant="body1">
-                    You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
+                    As a reminder, please ensure that your samples are submitted
+                    within the following timeline:
                   </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
+                  <List>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Sample Receiving Opening date :{" "}
+                      {bidDetails?.sample_receive_start_date}
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Sample Receiving Closing date :{" "}
+                      {bidDetails?.sample_receive_end_date}
+                    </ListItem>
+                  </List>
+                  <Typography variant="body1">
+                    Once we receive your samples, our evaluation team will
+                    assess them based on the specified criteria. Should you have
+                    any questions or require further assistance during this
+                    process, do not hesitate to contact us.
+                  </Typography>
+                </>
               </Box>
 
               {/* Paragraph 3 */}
@@ -447,57 +462,30 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </Box>
           </>
-        ) : bidDetails?.participant?.sample?.invite_status === "declined" ? (
+        ) : participant?.sample?.invite_status === "declined" ? (
           // SAMPLE INVITE DECLINED CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
               {/* Heading */}
               <Typography variant="h4" gutterBottom>
-                Thank You for Accepting the Bid Invitation!
+                Bid Invitation Declined
               </Typography>
 
               {/* Paragraph 2 */}
               <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
+                <Typography variant="body1">
+                  We have received your decision to decline the bid invitation.
+                  As you have opted out of this bidding opportunity, no further
+                  action is required on your part.
+                </Typography>
+
+                <>
                   <Typography variant="body1">
-                    You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
+                    hank you for considering this bid, and we respect your
+                    decision. We look forward to collaborating on future
+                    opportunities.
                   </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
+                </>
               </Box>
 
               {/* Paragraph 3 */}
@@ -508,131 +496,66 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </Box>
           </>
-        ) : bidDetails?.participant?.sample?.approval_status === "rejected" ? (
-          // SAMPLE APPROVAL REJECTED CONTENT
-          <>
-            <Box sx={{ marginBottom: "2rem" }}>
-              {/* Heading */}
-              <Typography variant="h4" gutterBottom>
-                Thank You for Accepting the Bid Invitation!
-              </Typography>
-
-              {/* Paragraph 2 */}
-              <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
-                  <Typography variant="body1">
-                    You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
-                  </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
-              </Box>
-
-              {/* Paragraph 3 */}
-              <Box>
-                <Typography variant="body1">
-                  We appreciate your patience and cooperation.
-                </Typography>
-              </Box>
-            </Box>
-          </>
-        ) : bidDetails?.participant?.sample?.approval_status === "approved" &&
-          bidDetails?.participant?.status === "pending" ? (
+        ) : participant?.sample?.approval_status === "approved" &&
+          participant?.status === "pending" ? (
           // SAMPLE APPROVAL APPROVAL WITH COMMERCIAL BID INVITE PENDING CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
               {/* Heading */}
               <Typography variant="h4" gutterBottom>
-                Thank You for Accepting the Bid Invitation!
+                Congratulations! Your Sample is Approved – Live Bid Invitation
+                Awaits
               </Typography>
 
               {/* Paragraph 2 */}
               <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
+                <Typography variant="body1">
+                  We are pleased to inform you that your sample submitted for
+                  the Quality-Based Selection bid has been reviewed and approved
+                  by the buyer. Congratulations on this achievement!
+                </Typography>
+
+                <>
                   <Typography variant="body1">
-                    You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
+                    As a result, you are now invited to participate in the live
+                    bidding process. Here are the details for the live bid:
                   </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
+                  <List>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Live Bid Opening date :{" "}
+                      {bidDetails?.sample_receive_start_date}
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Live Bid Closing date :{" "}
+                      {bidDetails?.sample_receive_end_date}
+                    </ListItem>
+                  </List>
+                  <Typography variant="body1">
+                    Please make sure to prepare for the live bid and have any
+                    necessary documentation ready for submission. If you have
+                    any questions or need further assistance, feel free to reach
+                    out to us.
+                  </Typography>
+                </>
               </Box>
 
               {/* Paragraph 3 */}
               <Box>
                 <Typography variant="body1">
-                  We appreciate your patience and cooperation.
+                  We look forward to your participation in the live bid and wish
+                  you the best of luck!
                 </Typography>
               </Box>
             </Box>
           </>
-        ) : bidDetails?.participant?.sample?.approval_status === "approved" &&
-          bidDetails?.participant?.status === "accepted" ? (
+        ) : participant.sample?.approval_status === "approved" &&
+          participant.status === "accepted" ? (
           // SAMPLE APPROVAL APPROVAL WITH COMMERCIAL BID INVITE ACCEPTED CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
@@ -643,46 +566,40 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
 
               {/* Paragraph 2 */}
               <Box mb={2}>
-                {bidDetails?.type === "L1" ? (
+                <Typography variant="body1">
+                  You will receive an email shortly with instructions on how to
+                  proceed with the bidding process. Please ensure you follow the
+                  guidelines provided in the email.
+                </Typography>
+
+                <>
                   <Typography variant="body1">
                     You will receive an email shortly with instructions on how
-                    to proceed with the bidding process. Please ensure you
-                    follow the guidelines provided in the email.
+                    to send a sample of your product to the buyer. Please ensure
+                    you follow the guidelines provided in the email.
                   </Typography>
-                ) : (
-                  <>
-                    <Typography variant="body1">
-                      You will receive an email shortly with instructions on how
-                      to send a sample of your product to the buyer. Please
-                      ensure you follow the guidelines provided in the email.
-                    </Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: "small" }}
-                          />
-                        </ListItemIcon>
-                        Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
-                      </ListItem>
-                    </List>
-                    <Typography variant="body1">
-                      Your sample will be reviewed by the buyer. Once it is
-                      approved, you will be notified and can proceed with the
-                      bidding process.
-                    </Typography>
-                  </>
-                )}
+                  <List>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Live Bid Opening date :{" "}
+                      {bidDetails?.sample_receive_start_date}
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <FiberManualRecordIcon style={{ fontSize: "small" }} />
+                      </ListItemIcon>
+                      Live Bid Closing date :{" "}
+                      {bidDetails?.sample_receive_end_date}
+                    </ListItem>
+                  </List>
+                  <Typography variant="body1">
+                    Your sample will be reviewed by the buyer. Once it is
+                    approved, you will be notified and can proceed with the
+                    bidding process.
+                  </Typography>
+                </>
               </Box>
 
               {/* Paragraph 3 */}
@@ -693,8 +610,8 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               </Box>
             </Box>
           </>
-        ) : bidDetails?.participant?.sample?.approval_status === "approved" &&
-          bidDetails?.participant?.status === "declined" ? (
+        ) : participant?.sample?.approval_status === "approved" &&
+          participant?.status === "declined" ? (
           // SAMPLE APPROVAL APPROVAL WITH COMMERCIAL BID INVITE DECLINED CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
@@ -751,6 +668,43 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               <Box>
                 <Typography variant="body1">
                   We appreciate your patience and cooperation.
+                </Typography>
+              </Box>
+            </Box>
+          </>
+        ) : participant?.sample?.approval_status === "approved" &&
+          participant?.status === "revoked" ? (
+          // SAMPLE APPROVED BUT REVOKED FROM THE LIVE BID CONTENT
+          <>
+            <Box sx={{ marginBottom: "2rem" }}>
+              {/* Heading */}
+              <Typography variant="h4" gutterBottom>
+                Notification of Bid Participation Revocation.
+              </Typography>
+
+              {/* Paragraph 2 */}
+              <Box mb={2}>
+                <Typography variant="body1">
+                  We hope this message finds you well. We would like to inform
+                  you that, following your acceptance of the bid invitation,
+                  your participation in the commercial bid has been revoked by
+                  the buyer.
+                </Typography>
+              </Box>
+              <Box mb={2}>
+                <Typography variant="body1">
+                  This decision is part of the ongoing evaluation process, and
+                  we understand that this news may be unexpected. We encourage
+                  you to remain positive, as there will be future opportunities
+                  to participate in other bids on the Bidding Kro platform.
+                </Typography>
+              </Box>
+
+              {/* Paragraph 3 */}
+              <Box>
+                <Typography variant="body1">
+                  Thank you for your understanding, and we look forward to your
+                  continued engagement with Bidding Kro.
                 </Typography>
               </Box>
             </Box>
@@ -818,102 +772,37 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
           </>
         )}
 
-        {/* {type === "invited" && (
-        <Box className={styles["btn-contanier"]}>
-          {bidDetails?.participant?.status === "accepted" ||
-          bidDetails?.participant?.status === "revoked" ||
-          (bidDetails?.type === "QCBS" &&
-            (bidDetails.participant.sample.invite_status === "accepted" ||
-              bidDetails.participant.sample.invite_status === "declined")) ? (
-            <button
-              type="button"
-              className={`btn button ${
-                bidDetails?.participant?.status === "accepted" ||
-                (bidDetails?.type === "QCBS" &&
-                  bidDetails.participant.sample.invite_status === "accepted")
-                  ? "approve"
-                  : "reject"
-              }`}
-              disabled={true}
-            >
-              {bidDetails?.type === "L1"
-                ? bidDetails?.participant?.status
-                : bidDetails.participant.sample.invite_status}
-            </button>
-          ) : (
-            <>
-              {loading && loadingAction === "decline" ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <button
-                  type="button"
-                  className="btn button reject"
-                  onClick={() =>
-                    setDeleteDetails({
-                      open: true,
-                      title: "Decline Bid Invite",
-                      message: `Are you sure you want to decline this invite bid? This action cannot be undone.`,
-                      action: "decline",
-                    })
-                  }
-                >
-                  Decline
-                </button>
-              )}
-
-              {loading && loadingAction === "accept" ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <button
-                  type="button"
-                  className="btn button approve"
-                  onClick={() =>
-                    setDeleteDetails({
-                      open: true,
-                      title: "Accept Bid Invite",
-                      message: `Are you sure you want to accept this invite bid?`,
-                      action: "accept",
-                    })
-                  }
-                >
-                  Accept
-                </button>
-              )}
-            </>
-          )}
-
-          {deleteDetails?.open && (
-            <DeleteDialog
-              title={deleteDetails.title}
-              message={deleteDetails.message}
-              handleClick={handleDeleteConfirmation}
-            />
-          )}
-        </Box>
-      )} */}
-
         {type === "invited" && (
           <Box className={styles["btn-contanier"]}>
-            {bidDetails?.participant?.status === "accepted" ||
-            bidDetails?.participant?.status === "revoked" ||
-            bidDetails?.participant?.status === "declined" ||
+            {participant?.status === "accepted" ||
+            participant?.status === "revoked" ||
+            participant?.status === "declined" ||
             (bidDetails?.type === "QCBS" &&
-              (bidDetails.participant.sample.invite_status === "accepted" ||
-                bidDetails.participant.sample.invite_status === "declined")) ? (
+              ((participant?.sample?.invite_status === "accepted" &&
+                participant?.sample?.approval_status === "pending") ||
+                participant?.sample?.invite_status === "declined")) ? (
               <button
                 type="button"
                 className={`btn button ${
-                  bidDetails?.participant?.status === "accepted" ||
-                  (bidDetails?.type === "QCBS" &&
-                    bidDetails.participant.sample.invite_status === "accepted")
+                  participant?.status === "accepted"
+                    ? "approve"
+                    : participant?.status === "revoked"
+                    ? "reject"
+                    : bidDetails.type === "QCBS" &&
+                      participant?.sample?.invite_status === "accepted"
                     ? "approve"
                     : "reject"
                 }`}
                 disabled={true}
               >
                 {bidDetails?.type === "L1"
-                  ? bidDetails?.participant?.status
-                  : bidDetails?.participant?.sample?.invite_status}
+                  ? participant?.status
+                  : bidDetails?.type === "QCBS" &&
+                    participant?.sample.approval_status === "approved"
+                  ? participant.status
+                  : bidDetails?.type === "QCBS"
+                  ? participant?.sample?.invite_status
+                  : participant?.status}
               </button>
             ) : (
               <>
