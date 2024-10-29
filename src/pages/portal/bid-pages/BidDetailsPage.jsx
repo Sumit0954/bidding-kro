@@ -35,6 +35,7 @@ import Bids from "../../../components/portal/bids/tabs/Bids";
 import Award from "../../../components/portal/bids/tabs/Award";
 import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
+import * as React from "react";
 
 const BidDetailsPage = () => {
   const [value, setValue] = useState(0);
@@ -49,22 +50,6 @@ const BidDetailsPage = () => {
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
   const [participant, setParticipant] = useState();
-
-  const isdisableforL1 =
-    bidDetails?.participant?.status === "revoked" ||
-    bidDetails?.participant?.status === "pending";
-
-  const isdisableforQCBS =
-    bidDetails?.participant?.sample?.invite_status === "revoked" ||
-    (bidDetails?.participant?.status === "pending" &&
-      bidDetails?.participant?.sample?.invite_status !== "accepted");
-
-  // Combine the conditions for the tab disabling
-  const isTabDisabled =
-    (bidDetails?.type === "L1" && isdisableforL1) ||
-    (bidDetails?.type === "QCBS" && isdisableforQCBS);
-
-  console.log("Approved : ", participant);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
   const isSampleNotApproved = !participant?.participants.some(
@@ -180,20 +165,6 @@ const BidDetailsPage = () => {
     }
   }, [bidDetails?.id]);
 
-  // useEffect(() => {
-  //   const createdDate = new Date(bidDetails?.created_at);
-  //   const currentDate = new Date();
-
-  //   const difference = currentDate.getTime() - createdDate.getTime();
-  //   const twentyFourHours = 24 * 60 * 60 * 1000;
-
-  //   if (difference > twentyFourHours) {
-  //     setShow(true);
-  //   } else {
-  //     setShow(false);
-  //   }
-  // }, [bidDetails?.created_at]);
-
   return (
     <>
       <div className="d-flex align-items-center justify-content-between mb-2">
@@ -225,7 +196,7 @@ const BidDetailsPage = () => {
             removeAfterPrint
           />
 
-          {type !== "invited" && (
+          {type === "related" || type === "invited" ? null : (
             <>
               {bidDetails?.status === "active" ? (
                 <button
@@ -311,24 +282,23 @@ const BidDetailsPage = () => {
             ? [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab
-                  label="Acceptance Status"
-                  {...a11yProps(2)}
-                  key={2}
-                  disabled={isTabDisabled}
-                />,
-                // <Tab label="Questions" {...a11yProps(3)} key={3} />,
-                // <Tab label="Remark" {...a11yProps(4)} key={4} />,
+                <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                <Tab label="Questions" {...a11yProps(3)} key={3} />,
+                <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab
-                  label="Invite Suppliers"
-                  {...a11yProps(2)}
-                  key={2}
-                  disabled={shouldDisableTab}
-                />,
+
+                type !== "related" && (
+                  <Tab
+                    label="Invite Suppliers"
+                    {...a11yProps(2)}
+                    key={2}
+                    disabled={shouldDisableTab}
+                  />
+                ),
+
                 bidDetails?.type === "L1"
                   ? [
                       // <Tab
@@ -347,11 +317,13 @@ const BidDetailsPage = () => {
                       // <Tab label="Feedback" {...a11yProps(6)} key={6} />,
                     ]
                   : [
-                      <Tab
-                        label="Sample Receiving"
-                        {...a11yProps(3)}
-                        key={3}
-                      />,
+                      type !== "related" && (
+                        <Tab
+                          label="Sample Receiving"
+                          {...a11yProps(3)}
+                          key={3}
+                        />
+                      ),
                       // <Tab
                       //   label="Invite Suppliers"
                       //   {...a11yProps(2)}
@@ -386,7 +358,7 @@ const BidDetailsPage = () => {
             <Questions bidDetails={bidDetails} />
           </TabPanel>
           <TabPanel value={value} index={4}>
-            <Remark />
+            <Remark bidDetails={bidDetails} />
           </TabPanel>
         </>
       ) : (

@@ -10,47 +10,48 @@ import { AlertContext } from "../../contexts/AlertProvider";
 import CustomInput from "../CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 
-const RequestModal = ({ sendRequest, setSendRequest }) => {
+const RequestModal = ({ sendRequest, setSendRequest, bidDetails }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
 
-  const {control} = useForm()
+  console.log("request : ", bidDetails?.title);
+
+  const { control } = useForm();
 
   const handleClose = () => {
     setSendRequest(false);
   };
 
-  //   const sendInvite = async () => {
-  //     setLoading(true);
-  //     try {
-  //       let formData = new FormData();
-  //       formData.append("company", companyDetail?.id);
+  const sendInviteRequest = async () => {
+    setLoading(true);
+    try {
+      // let formData = new FormData();
+      // formData.append("company", bidDetails?.id);
 
-  //       const response = await _sendAPIRequest(
-  //         "POST",
-  //         PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
-  //         formData,
-  //         true
-  //       );
-  //       if (response.status === 204) {
-  //         setLoading(false);
-  //         setInvitation(false);
-  //         setAlert({
-  //           isVisible: true,
-  //           message: "Invitation successfully sent to the supplier.",
-  //           severity: "success",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       setLoading(false);
-  //       if (error.response.data.error_code === 9999)
-  //         setAlert({
-  //           isVisible: true,
-  //           message: error.response.data.error,
-  //           severity: "error",
-  //         });
-  //     }
-  //   };
+      const response = await _sendAPIRequest(
+        "POST",
+        PortalApiUrls.SEND_RELATED_REQUEST + `${bidDetails?.id}/`,
+        " ",
+        true 
+      );
+      if (response.status === 204) {
+        setLoading(false);
+        setSendRequest(false);
+        setAlert({
+          isVisible: true,
+          message: "Request successfully sent to the Buyer.",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+        setAlert({
+          isVisible: true,
+          message: error.response.data.error,
+          severity: "error",
+        });
+    }
+  };
 
   return (
     <>
@@ -78,7 +79,7 @@ const RequestModal = ({ sendRequest, setSendRequest }) => {
                   <button
                     type="button"
                     className="btn button"
-                    // onClick={sendInvite}
+                    onClick={() => sendInviteRequest()}
                   >
                     Send Request
                   </button>
@@ -97,37 +98,34 @@ const RequestModal = ({ sendRequest, setSendRequest }) => {
                 </Box>
               </Box>
 
-              {/* <Box className="row mb-2">
-                <Box className="col text-start">{bidDetails?.title}</Box>
-              </Box> */}
-
-              <Box className="row mb-2">
-                <Box
-                  className="col-lg-3 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {/* {bidDetails?.formatted_number} */}
+              <Box
+                className="row mb-2"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <Box className="col text-start" sx={{ flex: 1 , borderRight: "2px solid var(--primary-color)",
+                    paddingRight: "10px",}}>
+                  {bidDetails?.type}
                 </Box>
+
                 <Box
                   className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                  sx={{
+                    flex: 2,
+                    borderRight: "2px solid var(--primary-color)",
+                    paddingRight: "10px",
+                  }}
                 >
-                  {/* {bidDetails?.title}{" "} */}
+                  {bidDetails?.title}
                 </Box>
-                {/* <Box
-                  className="col-lg-3 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  ₹ {bidDetails?.reserved_price}
-                </Box> */}
-                {/* <Box className="col-lg-3 text-start"> 
+
+                <Box className="col-lg-3 text-start" sx={{ flex: 2 }}>
                   {bidDetails?.bid_open_date === null &&
                   bidDetails?.bid_close_date === null
                     ? "- -"
                     : `${dateTimeFormatter(
-                        bidDetails?.bid_start_date
+                        bidDetails?.bid_open_date
                       )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
-                </Box> */}
+                </Box>
               </Box>
             </Box>
           </Box>

@@ -15,7 +15,7 @@ import {
   TableCell,
   Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, HourglassEmpty } from "@mui/icons-material";
 import { dateTimeFormatter } from "../../../../helpers/formatter";
 import DOMPurify from "dompurify";
 import { getLableByValue } from "../../../../helpers/common";
@@ -31,6 +31,12 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { useLocation } from "react-router-dom";
 import ProductSpecification from "../../../../elements/CustomModal/ProductSpecificationModal";
 import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
+import {
+  CheckCircleOutline,
+  CancelOutlined,
+  GroupAdd,
+} from "@mui/icons-material";
+import { Step, StepLabel, Stepper } from "@mui/material";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
@@ -43,7 +49,7 @@ const Summary = ({ bidDetails }) => {
     message: "",
     id: null,
   });
-
+  console.log("bidDetails : ", bidDetails);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -108,8 +114,231 @@ const Summary = ({ bidDetails }) => {
       : title;
   };
 
+  let steps = [];
+  if (bidDetails.type === "L1") {
+    steps = [
+      {
+        label: "Commercial Bid Invite",
+        icon: (
+          <GroupAdd
+            style={{
+              color: `${
+                bidDetails?.participant?.status === "accepted" ||
+                bidDetails?.participant?.status === "declined" ||
+                bidDetails?.participant?.status === "revoked" ||
+                bidDetails?.participant?.status === "pending"
+                  ? "green"
+                  : "#FFC107"
+              }`,
+            }}
+          />
+        ),
+        status: "complete",
+      },
+      {
+        label: `${
+          bidDetails?.participant?.status === "accepted"
+            ? "Accepted"
+            : bidDetails?.participant?.status === "declined"
+            ? "Declined"
+            : bidDetails?.participant?.status === "revoked"
+            ? "Accepted"
+            : "Pending"
+        }`,
+        icon:
+          bidDetails?.participant?.status === "accepted" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : bidDetails?.participant?.status === "declined" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : bidDetails?.participant?.status === "revoked" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+      ...(bidDetails?.participant?.status === "revoked"
+        ? [
+            {
+              label: "Revoked",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+    ];
+  } else {
+    steps = [
+      {
+        label: "Sample Bid Invited",
+        icon: (
+          <GroupAdd
+            style={{
+              color: `${
+                bidDetails?.participant?.status === "accepted" ||
+                bidDetails?.participant?.status === "declined" ||
+                bidDetails?.participant?.status === "revoked" ||
+                bidDetails?.participant?.status === "pending"
+                  ? "green"
+                  : "grey"
+              }`,
+            }}
+          />
+        ),
+        status: "complete",
+      },
+      {
+        label: `${
+          bidDetails?.participant?.sample?.invite_status === "accepted"
+            ? "Accepted"
+            : bidDetails?.participant?.sample?.invite_status === "declined"
+            ? "Declined"
+            : bidDetails?.participant?.status === "revoked"
+            ? "Accepted"
+            : "Pending"
+        }`,
+        icon:
+          bidDetails?.participant?.sample?.invite_status === "accepted" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : bidDetails?.participant?.sample?.invite_status === "declined" ? (
+            <CancelOutlined style={{ color: "red" }} />
+          ) : bidDetails?.participant?.status === "revoked" ? (
+            <CheckCircleOutline style={{ color: "green" }} />
+          ) : (
+            <HourglassEmpty style={{ color: "#FFC107" }} />
+          ),
+        status: "complete",
+      },
+
+      ...(bidDetails?.participant?.sample?.invite_status === "declined"
+        ? []
+        : [
+            {
+              label: `${
+                bidDetails?.participant?.sample?.approval_status === "approved"
+                  ? "Sample Approved"
+                  : bidDetails?.participant?.sample?.approval_status ===
+                    "rejected"
+                  ? "Sample Rejected"
+                  : "Sample Pending"
+              }`,
+              icon:
+                bidDetails?.participant?.sample?.approval_status ===
+                "approved" ? (
+                  <CheckCircleOutline style={{ color: "green" }} />
+                ) : bidDetails?.participant?.sample?.approval_status ===
+                  "rejected" ? (
+                  <CancelOutlined style={{ color: "red" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFC107" }} />
+                ),
+              status: "complete",
+            },
+            {
+              label: "Commercial Bid Invite",
+              icon:
+                bidDetails?.participant?.sample?.approval_status ===
+                "approved" ? (
+                  <GroupAdd style={{ color: "green" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFC107" }} />
+                ),
+              status: "complete",
+            },
+            {
+              label:
+                bidDetails?.participant?.status === "pending"
+                  ? "Pending"
+                  : bidDetails?.participant?.status === "accepted" ||
+                    bidDetails?.participant?.status === "revoked"
+                  ? "Accepted"
+                  : bidDetails?.participant?.status === "declined"
+                  ? "Declined"
+                  : "Pending",
+              icon:
+                bidDetails?.participant?.status === "pending" ? (
+                  <HourglassEmpty style={{ color: "#FFBF00" }} />
+                ) : bidDetails?.participant?.status === "accepted" ||
+                  bidDetails?.participant?.status === "revoked" ? (
+                  <CheckCircleOutline style={{ color: "green" }} />
+                ) : bidDetails?.participant?.status === "declined" ? (
+                  <CancelOutlined style={{ color: "red" }} />
+                ) : (
+                  <HourglassEmpty style={{ color: "#FFBF00" }} />
+                ),
+              status: "complete",
+            },
+          ]),
+
+      ...(bidDetails?.participant?.status === "revoked"
+        ? [
+            {
+              label: "Revoked",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+    ];
+  }
+
   return (
     <>
+      {type === "invited" ? (
+        <Box
+          key="3"
+          sx={{
+            width: "100%",
+            fontSize: "0.8rem",
+            lineHeight: 1.2,
+          }}
+        >
+          <Stepper
+            alternativeLabel
+            activeStep={2} // Set this to the index of the last visible step (in this case, 2 for the third step)
+            sx={{ padding: "0.5rem" }}
+          >
+            {steps.map((step, index) => {
+              // Extract the color of the icon dynamically
+              const iconColor = step.icon.props.style.color;
+
+              return (
+                <Step key={index}>
+                  <StepLabel
+                    icon={step.icon}
+                    StepIconProps={{
+                      sx: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* Icon and label horizontally aligned */}
+                      <span
+                        style={{
+                          color: iconColor, // Set label color to the same color as the icon
+                          fontSize: "0.8rem",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        {step.label}
+                      </span>
+                    </Box>
+                  </StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+        </Box>
+      ) : null}
       {/* Summury */}
       <Accordion
         defaultExpanded
@@ -133,34 +362,21 @@ const Summary = ({ bidDetails }) => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}> {truncatelength(bidDetails?.title, 61)}</p>
+              <p className={styles["col-data"]}>
+                {" "}
+                {truncatelength(bidDetails?.title, 61)}
+              </p>
             </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Bid Type</h6>
-              <p className={styles["col-data"]}>{bidDetails?.type}</p>
-            </div>
-          </div>
-          {/* <Divider classes={{ root: "custom-divider" }} />
-          <div className="row">
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>
                 {bidDetails?.type}
-              </p>
-            </div> 
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Product Quantity</h6>
-              <p className={styles["col-data"]}>
-                {parseInt(bidDetails?.product_quantity)}
-              </p>
+                {bidDetails?.type === "L1"
+                  ? " ( Commercial Bid )"
+                  : " ( Quality & Cost Based Selection )"}
+              </p>{" "}
             </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Unit</h6>
-              <p className={styles["col-data"]}>
-                {getLableByValue(bidDetails?.product_unit)}
-              </p>
-            </div>
-          </div> */}
+          </div>
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
@@ -177,7 +393,6 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
                   : "-"}
-
               </p>
             </div>
             <div className="col">
@@ -186,10 +401,41 @@ const Summary = ({ bidDetails }) => {
               </h6>
               <p className={styles["col-data"]}>
                 {`${dateTimeFormatter(bidDetails?.created_at)}`}
-
               </p>
             </div>
           </div>
+          {bidDetails.type === "QCBS" &&
+            type === "invited" &&
+            bidDetails?.participant?.sample?.invite_status === "accepted" && (
+              <>
+                <Divider classes={{ root: "custom-divider" }} />
+                <div className="row">
+                  <div className="col">
+                    <h6 className={styles["col-heading"]}>
+                      Sample Receiving Opening Date
+                    </h6>
+                    <p className={styles["col-data"]}>
+                      {bidDetails?.bid_close_date
+                        ? dateTimeFormatter(
+                            bidDetails?.sample_receive_start_date
+                          )
+                        : "-"}
+                    </p>
+                  </div>
+                  <div className="col">
+                    <h6 className={styles["col-heading"]}>
+                      Sample Receiving Closing Date
+                    </h6>
+                    <p className={styles["col-data"]}>
+                      {bidDetails?.bid_close_date
+                        ? dateTimeFormatter(bidDetails?.sample_receive_end_date)
+                        : "-"}
+                    </p>
+                  </div>
+                  <div className="col"></div>
+                </div>
+              </>
+            )}
         </AccordionDetails>
       </Accordion>
 

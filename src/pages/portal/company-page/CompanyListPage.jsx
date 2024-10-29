@@ -54,15 +54,25 @@ const CompanyListPage = () => {
             aria-label="companies-list-tabs"
           >
             <Tab label="ALL COMPANIES" {...a11yProps(0)} />
-            {/* <Tab label="INVITE REQUESTS" {...a11yProps(1)} /> */}
+            {id ? null : <Tab label="INVITE REQUESTS" {...a11yProps(1)} />}
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <CompanyList bidDetails={bidDetails} id={id} tab={value} />
+          <CompanyList
+            bidDetails={bidDetails}
+            id={id}
+            tab={value}
+            listtype={"allcompanies"}
+          />
         </TabPanel>
-        {/* <TabPanel value={value} index={1}>
-          <CompanyList bidDetails={bidDetails} id={id} />
-        </TabPanel> */}
+        <TabPanel value={value} index={1}>
+          <CompanyList
+            bidDetails={bidDetails}
+            id={id}
+            tab={value}
+            listtype={"InviteRequest"}
+          />
+        </TabPanel>
       </Box>
     </>
   );

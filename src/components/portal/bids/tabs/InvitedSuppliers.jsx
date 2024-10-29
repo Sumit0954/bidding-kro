@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import _sendAPIRequest, { setErrors } from "../../../../helpers/api";
 import DateTimeRangePicker from "../../../../elements/CustomDateTimePickers/DateTimeRangePicker";
@@ -25,8 +25,9 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
+import CustomInput from "../../../../elements/CustomInput/CustomInput";
 
-const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
+const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
   const {
     control,
     handleSubmit,
@@ -35,6 +36,7 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
     formState: { dirtyFields },
   } = useForm();
   const [createdAt, setCreatedAt] = useState("");
+  const [deatils, setdetails] = useState({});
   const [revokesupplier, setRevokeSupplier] = useState(false);
   const [loading, setLoading] = useState(false);
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
@@ -138,6 +140,30 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
   formData.append("bid_open_date", bidStartDate);
   formData.append("bid_close_date", bidEndDate);
 
+  // useEffect(() => {
+  //   const fetchDetails = async () => {
+  //     try {
+  //       const response = await _sendAPIRequest(
+  //         "GET",
+  //         `${PortalApiUrls.RETRIEVE_CREATED_BID}${bidDetails?.id}/`,
+  //         "",
+  //         true
+  //       );
+  //       // console.log("invite suppliers" , response?.status === 200)
+  //       if (response?.status === 200) {
+  //         setdetails(response?.data);
+  //       }
+  //     } catch (error) {
+  //       setAlert({
+  //         isVisible: true,
+  //         message: "Failed to fetch Bid Details, try Again Later.",
+  //         severity: "error",
+  //       });
+  //     }
+  //   };
+  //   fetchDetails();
+  // }, []);
+
   const submitdate = async () => {
     setLoading(true);
     try {
@@ -150,14 +176,12 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
 
       if (response.status === 200) {
         setLoading(false);
-        window.location.reload();
         setAlert({
           isVisible: true,
           message: "Your Bid Dates have been submitted",
           severity: "success",
         });
       }
-      
     } catch (error) {
       setLoading(false);
 
@@ -213,7 +237,6 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
                   />
                 </div>
               </div>
-
               <div className="row mt-3">
                 <div className="col-12">
                   {loading ? (
@@ -311,7 +334,11 @@ const InvitedSuppliers = ({ participant, bidDetails , onActionComplete }) => {
           <AccordionDetails>
             <DataTable
               propsColumn={l1_participants_column}
-              propsData={bidDetails?.type === "L1"? participant.participants: filteredParticipants}
+              propsData={
+                bidDetails?.type === "L1"
+                  ? participant.participants
+                  : filteredParticipants
+              }
               action={addAction}
             />
           </AccordionDetails>

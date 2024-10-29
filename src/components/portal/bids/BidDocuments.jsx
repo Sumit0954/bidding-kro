@@ -337,7 +337,7 @@ const BidDocuments = () => {
                   <button
                     className={cn("btn", "button")}
                     type="button"
-                    onClick={() => navigate(`/portal/bids/`)}
+                    onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
                   >
                     Back
                   </button>
@@ -353,6 +353,14 @@ const BidDocuments = () => {
                       Upload
                     </button>
                   )}
+                  <button
+                      className={cn("btn", "button")}
+                      type="submit"
+                      disabled={status === "cancelled" ? true : false}
+                      onClick={()=>navigate(`/portal/bids/details/${id}`)}
+                    >
+                     Procced further
+                    </button>
                 </div>
               </form>
               <Alert severity="info" sx={{ marginBottom: "15px" }}>

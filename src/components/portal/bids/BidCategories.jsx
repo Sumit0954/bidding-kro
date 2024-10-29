@@ -491,7 +491,11 @@ const BidCategories = () => {
                   <button
                     type="button"
                     className={cn("btn", "button", styles["custom-btn"])}
-                    onClick={() => navigate(`/portal/bids/`)}
+                    onClick={() =>
+                      id
+                        ? navigate(`/portal/bids/details/${id}`)
+                        : navigate(`/portal/bids/`)
+                    }
                   >
                     Back
                   </button>

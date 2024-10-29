@@ -11,7 +11,6 @@ import { AlertContext } from "../../contexts/AlertProvider";
 import { Select, MenuItem, FormControl } from "@mui/material";
 
 const patchBidStatus = async (id, formData) => {
-  console.log(formData, "actionformdata");
   try {
     const response = await _sendAPIRequest(
       "PATCH",
@@ -21,7 +20,6 @@ const patchBidStatus = async (id, formData) => {
     );
 
     if (response.status === 204) {
-      console.log(response, "bid sample Action");
       window.location.reload();
       // setAlert({
       //   isVisible: true,
@@ -47,7 +45,6 @@ const onCloneBidClick = async (id, navigate) => {
       true
     );
     if (response?.status === 201) {
-      console.log(response);
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
@@ -119,7 +116,7 @@ export const created_bids_column = [
           to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
           {`${truncateString(data?.row?.original?.title, 30)}${
-            data?.row?.original?.type === "L1" ? null : " (QCBS)"
+            data?.row?.original?.type === "L1" ? "" : " (QCBS)"
           }`}
         </NavLink>
       );
@@ -163,7 +160,7 @@ export const created_bids_column = [
           className={`status-cloumn ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "active"
+              data?.row?.original?.status === "active" || data?.row?.original?.status === "awarded"
                 ? "#22bb33"
                 : "darkyellow"
             }`,
@@ -207,8 +204,6 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
-      console.log(data?.row?.original?.type); // Debugging/logging
-
       const isInviteDisabled =
         data?.row?.original?.status !== "active" ||
         (data?.row?.original?.type === "L1" &&
@@ -260,7 +255,7 @@ export const invited_bids_column = [
     },
   },
   {
-    Header: "Company Name",
+    Header: "Comp.Name",
     accessor: "Company_Name",
     align: "left",
     disablePadding: false,
@@ -302,15 +297,13 @@ export const invited_bids_column = [
     },
   },
   {
-    Header: "Status",
+    Header: "Bid Status",
     accessor: "status",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
     width: 150,
     Cell: (data) => {
-      console.log(data); // Debugging log
-
       return (
         <div
           className={`status-column ${data?.row?.original?.status}`}
@@ -329,42 +322,56 @@ export const invited_bids_column = [
       );
     },
   },
-
-  // {
-  //   Header: "Action",
-  //   accessor: "action",
-  //   align: "center",
-  //   disablePadding: false,
-  //   hideSortIcon: true,
-  //   width: 150,
-  //   Cell: (data) => {
-  //     // return (
-  //     //   <div className={`status-cloumn ${data?.row?.original?.bid?.status}`}>
-  //     //     {data?.row?.original?.bid?.status}
-  //     //   </div>
-  //     // );
-  //   },
-  // },
+  {
+    Header: "Sample Status",
+    accessor: "Sample status",
+    align: "center",
+    disablePadding: false,
+    hideSortIcon: true,
+    width: 150,
+    Cell: (data) => {
+      return (
+        <div
+          className={`status-column ${data?.row?.original?.sample?.approval_status}`}
+          style={{
+            color: `${
+              data?.row?.original?.sample?.approval_status === "approved"
+                ? "#22bb33" // Green for approved
+                : data?.row?.original?.status === "pending"
+                ? "#FFBF00" // Yellow for pending
+                : "red" // Default red for other statuses
+            }`,
+          }}
+        >
+          {data?.row?.original?.sample?.approval_status}
+        </div>
+      );
+    },
+  },
 ];
 
 export const related_bids_column = [
   {
     Header: "Bid ID",
-    accessor: "formatted_number",
+    accessor: "bid.formatted_number",
     align: "left",
     disablePadding: false,
+
+    Cell: (data) => {
+      return data?.row?.original?.formatted_number;
+    },
   },
   {
     Header: "Bid Title",
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 200,
+    width: 150,
     Cell: (data) => {
       return (
         <NavLink
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}`}
+          to={`/portal/bids/details/${data?.row?.original?.id}/?type=related`}
         >
           {truncateString(data?.row?.original?.title, 30)}
         </NavLink>
@@ -372,48 +379,68 @@ export const related_bids_column = [
     },
   },
   {
-    Header: "Opening Date",
-    accessor: "bid_open_date",
+    Header: "Comp.Name",
+    accessor: "Company_Name",
     align: "left",
     disablePadding: false,
-    width: 190,
+    width: 150,
     Cell: (data) => {
-      // return dateTimeFormatter(data?.row?.original?.bid_open_date);
-      return data?.row?.original?.bid_open_date
-        ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
-        : " - ";
+      return data?.row?.original?.company?.name;
+    },
+  },
+  {
+    Header: "Opening Date",
+    accessor: "bid_start_date",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+    Cell: (data) => {
+      return (
+        <>
+          {data?.row?.original?.bid_open_date === null
+            ? "-"
+            : dateTimeFormatter(data?.row?.original?.bid_open_date)}
+        </>
+      );
     },
   },
   {
     Header: "Closing Date",
-    accessor: "bid_close_date",
+    accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 190,
+    width: 150,
     Cell: (data) => {
-      return data?.row?.original?.bid_close_date
-        ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
-        : " - ";
+      return (
+        <>
+          {data?.row?.original?.bid_close_date === null
+            ? "-"
+            : dateTimeFormatter(data?.row?.original?.bid_close_date)}
+        </>
+      );
     },
   },
-  // {
-  //   Header: "Reserve Price",
-  //   accessor: "reserved_price",
-  //   align: "right",
-  //   disablePadding: false,
-  //   Cell: (data) => {
-  //     return `₹ ${data.row.original.reserved_price}`;
-  //   },
-  // },
   {
-    Header: "Status",
+    Header: "Bid Status",
     accessor: "status",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
+    width: 150,
     Cell: (data) => {
       return (
-        <div className={`status-cloumn ${data?.row?.original?.status}`}>
+        <div
+          className={`status-column ${data?.row?.original?.status}`}
+          style={{
+            color: `${
+              data?.row?.original?.status === "active"
+                ? "#22bb33" // Green for accepted
+                : data?.row?.original?.status === "pending"
+                ? "#FFBF00" // Yellow for pending
+                : "red" // Default red for other statuses
+            }`,
+          }}
+        >
           {data?.row?.original?.status}
         </div>
       );
@@ -421,20 +448,11 @@ export const related_bids_column = [
   },
   {
     Header: "Action",
-    accessor: "clone_bid",
-    align: "right",
+    accessor: "action",
+    align: "center",
     disablePadding: false,
-    // width: 300,
-    Cell: (data) => {
-      return (
-        <NavLink
-          className={styles["table-link"]}
-          to={`/portal/bids/update/${data?.row?.original?.id}`}
-        >
-          Clone Bid
-        </NavLink>
-      );
-    },
+    hideSortIcon: true,
+    width: 150,
   },
 ];
 
@@ -510,6 +528,16 @@ export const companies_column = [
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/companies/details/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.name}
+        </NavLink>
+      );
+    },
   },
   {
     Header: "Company Email",
@@ -524,6 +552,61 @@ export const companies_column = [
     align: "left",
     disablePadding: false,
     width: 180,
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true,
+  },
+];
+
+export const Invite_request_column = [
+  {
+    Header: "Company Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
+        >
+          {data?.row?.original?.requestor?.name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Company Email",
+    accessor: "business_email",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data?.row?.original?.requestor?.business_email;
+    },
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/portal/bids/details/${data?.row?.original?.bid?.id}`}
+        >
+          {truncateString(data?.row?.original?.bid?.title, 30)}
+        </NavLink>
+      );
+    },
   },
   {
     Header: "Action",
@@ -646,46 +729,47 @@ export const products_Column = ({
 
 export const PreviousBids_column = [
   {
-    Header: "Product Name",
-    accessor: "product name",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Quantity",
-    accessor: "quantity",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Unit",
-    accessor: "unit",
+    Header: "Bid Name",
+    accessor: "title",
     align: "left",
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return convertFileSize(data?.row?.original?.size);
+      return data?.row?.original?.title;
+    },
+  },
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data?.row?.original?.type;
     },
   },
   {
     Header: "Closing Date",
-    accessor: "closing date",
+    accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
     width: 180,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.created_at);
+      console.log("data?.row?.original", data?.row?.original);
+      return dateTimeFormatter(data?.row?.original?.bid_close_date);
     },
   },
   {
     Header: "Buyer’s Rating",
     accessor: "buyer’s rating",
-    align: "center",
+    align: "left",
     disablePadding: false,
     width: 100,
     hideSortIcon: true,
+    Cell: (data) => {
+      console.log("data?.row?.original", data?.row?.original);
+      return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
+    },
   },
 ];
 
@@ -710,7 +794,6 @@ export const Sample_Bid_Invitations_column = [
       const [status, setStatus] = useState(
         data.row.original.sample.is_received
       );
-      console.log(data.row.original.sample.is_received, "is_received");
 
       const handleStatusChange = (event) => {
         const newStatus = event.target.value;
@@ -758,7 +841,6 @@ export const Sample_Bid_Invitations_column = [
           ? "pending"
           : "approve"
       );
-      console.log(data.row.original.sample.approval_status, "approval_status");
 
       const handleStatusChange = (event) => {
         const newActionStatus = event.target.value;
@@ -816,6 +898,7 @@ export const Sample_Bid_Invitations_column = [
     },
   },
 ];
+
 export const Sample_Bid_Invitations_result_log = [
   {
     Header: "Company Name",
@@ -849,7 +932,6 @@ export const Sample_Bid_Invitations_result_log = [
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
-      console.log("data : ", data);
       return (
         <div
           className={`status-cloumn ${data?.row?.original?.sample?.invite_status}`}

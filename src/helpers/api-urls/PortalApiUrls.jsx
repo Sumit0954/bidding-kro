@@ -27,6 +27,7 @@ export const PortalApiUrls = Object.freeze({
   BID_DELETE_PRODUCT: "bid/customer/product/",
   CREATED_LIST_BIDS: "/bid/customer/",
   INVITED_BID_LIST: "/bid/customer/invited/",
+  RELATED_BID_LIST: "/bid/customer/related/",
   ADD_QUESTION: "/bid/customer/question/",
   DELETE_QUESTION: "/bid/customer/question/",
   UPLOAD_DOCUMENT: "/bid/customer/document/",
@@ -46,4 +47,9 @@ export const PortalApiUrls = Object.freeze({
   REVOKE_PARTICIPANT: "/bid/customer/revoke/",
   COMPANY_LIST: "/company/customer/list/",
   BID_SAMPLE_ACTION: "/bid/customer/sample/action/",
+  SEND_RELATED_REQUEST: "/bid/customer/related/request/",
+  RETRIEVE_COMPANY_DETAILS: "/company/customer/",
+  BID_INVITED_REQUESTS: "/bid/customer/related/requested/",
+  REMARK: "/bid/customer/remark/",
+  PREVIOUS_BID: "/bid/customer/previous/",
 });
