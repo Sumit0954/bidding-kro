@@ -13,6 +13,7 @@ const InvitationModal = ({
   setInvitation,
   bidDetails,
   companyDetail,
+  listtype,
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -26,18 +27,26 @@ const InvitationModal = ({
     setLoading(true);
     try {
       let formData = new FormData();
-      formData.append("company", companyDetail?.id);
+      formData.append(
+        "company",
+        listtype === "allcompanies"
+          ? companyDetail?.id
+          : companyDetail?.requestor.id
+      );
 
       const response = await _sendAPIRequest(
         "POST",
-        PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
+        PortalApiUrls.SEND_INVITE +
+          `${
+            listtype === "allcompanies" ? bidDetails?.id : companyDetail?.bid.id
+          }/`,
         formData,
         true
       );
       if (response.status === 204) {
         setLoading(false);
         setInvitation(false);
-        window.location.reload()
+        window.location.reload();
         setAlert({
           isVisible: true,
           message: "Invitation successfully sent to the supplier.",
@@ -103,13 +112,17 @@ const InvitationModal = ({
                   className="col-lg-3 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {bidDetails?.formatted_number}
+                  {listtype === "allcompanies"
+                    ? bidDetails?.formatted_number
+                    : companyDetail?.bid.formatted_number}
                 </Box>
                 <Box
                   className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {bidDetails?.title}{" "}
+                  {listtype === "allcompanies"
+                    ? bidDetails?.title
+                    : companyDetail?.bid.title}{" "}
                 </Box>
                 {/* <Box
                   className="col-lg-3 text-start"
@@ -117,14 +130,27 @@ const InvitationModal = ({
                 >
                   ₹ {bidDetails?.reserved_price}
                 </Box> */}
-                <Box className="col-lg-3 text-start"> 
-                  {bidDetails?.bid_open_date === null &&
-                  bidDetails?.bid_close_date === null
-                    ? "- -"
-                    : `${dateTimeFormatter(
-                        bidDetails?.bid_open_date
-                      )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
-                </Box>
+                {listtype === "allcompanies" ? (
+                  <Box className="col-lg-3 text-start">
+                    {bidDetails?.bid_open_date === null &&
+                    bidDetails?.bid_close_date === null
+                      ? "- -"
+                      : `${dateTimeFormatter(
+                          bidDetails?.bid_open_date
+                        )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
+                  </Box>
+                ) : (
+                  <Box className="col-lg-3 text-start">
+                    {companyDetail?.bid.bid_open_date === null &&
+                    companyDetail?.bid.bid_close_date === null
+                      ? "- -"
+                      : `${dateTimeFormatter(
+                          companyDetail?.bid.bid_open_date
+                        )} - ${dateTimeFormatter(
+                          companyDetail?.bid.bid_close_date
+                        )}`}
+                  </Box>
+                )}
               </Box>
 
               <Box className="row">
@@ -140,16 +166,22 @@ const InvitationModal = ({
                   className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {companyDetail?.name}
+                  {listtype === "allcompanies"
+                    ? companyDetail?.name
+                    : companyDetail?.requestor.name}
                 </Box>
                 <Box
                   className="col-lg-4 text-start"
                   sx={{ borderRight: "2px solid var(--primary-color)" }}
                 >
-                  {companyDetail?.business_email}
+                  {listtype === "allcompanies"
+                    ? companyDetail?.business_email
+                    : companyDetail?.requestor.business_email}
                 </Box>
                 <Box className="col-lg-4 text-start">
-                  {companyDetail?.business_mobile}
+                  {listtype === "allcompanies"
+                    ? companyDetail?.business_mobile
+                    : companyDetail?.requestor.business_mobile}
                 </Box>
               </Box>
             </Box>

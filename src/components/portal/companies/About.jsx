@@ -107,7 +107,7 @@ const About = ({ companyDetail }) => {
         </AccordionDetails>
       </Accordion>
       {/* Contacts */}
-      <Accordion
+      {/* <Accordion
         defaultExpanded
         square={true}
         classes={{
@@ -139,7 +139,7 @@ const About = ({ companyDetail }) => {
           </div>
           <Divider classes={{ root: "custom-divider" }} />
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
       {/* Categories */}
       <Accordion
         defaultExpanded

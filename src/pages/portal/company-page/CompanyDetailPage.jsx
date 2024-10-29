@@ -52,7 +52,7 @@ const CompanyDetailPage = () => {
       underline="hover"
       key="1"
       color="inherit"
-      to="/portal/bids"
+      to="/portal/companies"
       style={{ textDecoration: "none" }}
     >
       Companies
@@ -69,7 +69,7 @@ const CompanyDetailPage = () => {
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
         <div className="d-flex align-items-center justify-content-end gap-3">
-          <Button
+          {/* <Button
             sx={{
               color:"white",
               backgroundColor: "var(--primary-color)",
@@ -79,7 +79,7 @@ const CompanyDetailPage = () => {
             }}
           >
             Invite Company
-          </Button>
+          </Button> */}
         </div>
       </div>
       <Box sx={{ width: "100%" }}>

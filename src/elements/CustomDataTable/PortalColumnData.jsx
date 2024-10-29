@@ -249,8 +249,7 @@ export const invited_bids_column = [
           className={styles["table-link"]}
           to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
         >
-          {truncateString(data?.row?.original?.bid?.title, 30) 
-         }
+          {truncateString(data?.row?.original?.bid?.title, 30)}
         </NavLink>
       );
     },
@@ -730,46 +729,47 @@ export const products_Column = ({
 
 export const PreviousBids_column = [
   {
-    Header: "Product Name",
-    accessor: "product name",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Quantity",
-    accessor: "quantity",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Unit",
-    accessor: "unit",
+    Header: "Bid Name",
+    accessor: "title",
     align: "left",
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return convertFileSize(data?.row?.original?.size);
+      return data?.row?.original?.title;
+    },
+  },
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data?.row?.original?.type;
     },
   },
   {
     Header: "Closing Date",
-    accessor: "closing date",
+    accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
     width: 180,
     Cell: (data) => {
-      return dateTimeFormatter(data?.row?.original?.created_at);
+      console.log("data?.row?.original", data?.row?.original);
+      return dateTimeFormatter(data?.row?.original?.bid_close_date);
     },
   },
   {
     Header: "Buyer’s Rating",
     accessor: "buyer’s rating",
-    align: "center",
+    align: "left",
     disablePadding: false,
     width: 100,
     hideSortIcon: true,
+    Cell: (data) => {
+      console.log("data?.row?.original", data?.row?.original);
+      return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
+    },
   },
 ];
 

@@ -35,6 +35,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
 
   const handleInvite = (data) => {
     setInvitation(true);
+    console.log("data.row.original", data.row.original);
     setCompanyDetail(data.row.original);
   };
 
@@ -91,6 +92,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
         );
 
         if (response.status === 200) {
+          console.log("response?.data", response?.data);
           setRequestBids(response?.data);
         }
       } catch (error) {}
@@ -194,32 +196,34 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   return (
     <>
       <div className="container">
-        <div className="row">
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              name="Industry"
-              placeholder="Industry"
-              options={categories[0]}
-              handleChange={handleCategorySelection}
-              multiple={false}
-            />
-          </div>
-          <div className="col-lg-9">
-            <SearchBar
-              name="product_search"
-              placeholder="Search Your Category"
-              control={control}
-              rootCategory={rootCategory}
-              value={undefined}
-              ancestors={false}
-              onAncestorsChange={handleOptionChange}
-              disabled={!rootCategory}
-              multiple={true}
-            />
-          </div>
-        </div>
         {listtype === "allcompanies" && (
+          <div className="row">
+            <div className="col-lg-3">
+              <CustomSelect
+                control={control}
+                name="Industry"
+                placeholder="Industry"
+                options={categories[0]}
+                handleChange={handleCategorySelection}
+                multiple={false}
+              />
+            </div>
+            <div className="col-lg-9">
+              <SearchBar
+                name="product_search"
+                placeholder="Search Your Category"
+                control={control}
+                rootCategory={rootCategory}
+                value={undefined}
+                ancestors={false}
+                onAncestorsChange={handleOptionChange}
+                disabled={!rootCategory}
+                multiple={true}
+              />
+            </div>
+          </div>
+        )}
+        {/* {listtype === "allcompanies" && (
           <Alert
             severity="info"
             sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
@@ -248,7 +252,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
               </Button>
             </Box>
           </Alert>
-        )}
+        )} */}
         {listtype === "allcompanies" ? (
           <>
             <div className={styles["supplier-section"]}>
@@ -293,6 +297,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
           setInvitation={setInvitation}
           bidDetails={bidDetails}
           companyDetail={companyDetail}
+          listtype={listtype}
         />
       )}
     </>

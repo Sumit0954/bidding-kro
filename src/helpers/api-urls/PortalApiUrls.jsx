@@ -51,4 +51,5 @@ export const PortalApiUrls = Object.freeze({
   RETRIEVE_COMPANY_DETAILS: "/company/customer/",
   BID_INVITED_REQUESTS: "/bid/customer/related/requested/",
   REMARK: "/bid/customer/remark/",
+  PREVIOUS_BID: "/bid/customer/previous/",
 });

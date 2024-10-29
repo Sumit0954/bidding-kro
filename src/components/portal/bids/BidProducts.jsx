@@ -269,7 +269,7 @@ const BidProducts = () => {
                           </div>
                         </div>
                         <div className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <CustomInput
                               control={control}
                               label="Product Quantity"
@@ -280,7 +280,7 @@ const BidProducts = () => {
                               }}
                             />
                           </div>
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <CustomSelect
                               control={control}
                               label="Unit"
@@ -290,7 +290,9 @@ const BidProducts = () => {
                               rules={{ required: "Unit is required." }}
                             />
                           </div>
-                          <div className="col-lg-4">
+                        </div>
+                        <div className="row">
+                          <div className="col-lg-6">
                             <CustomInput
                               control={control}
                               label="Reserve Bid Price"
@@ -301,17 +303,15 @@ const BidProducts = () => {
                               }}
                             />
                           </div>
-                        </div>
-                        <div className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <CustomInput
                               control={control}
                               label="Price Diffrence"
-                              name={`product_quantity${index}`}
+                              name={`price_diffrence`}
                               placeholder="Price Diffrence"
-                              rules={{
-                                required: "Price Diffrence is required.",
-                              }}
+                              // rules={{
+                              //   required: "Price Diffrence is required.",
+                              // }}
                             />
                           </div>
                         </div>
@@ -388,7 +388,7 @@ const BidProducts = () => {
                     </div>
 
                     <div className="row">
-                      <div className="col-lg-4">
+                      <div className="col-lg-6">
                         <CustomInput
                           control={control}
                           label="Product Quantity"
@@ -398,7 +398,7 @@ const BidProducts = () => {
                           rules={{ required: "Product Quantity is required." }}
                         />
                       </div>
-                      <div className="col-lg-4">
+                      <div className="col-lg-6">
                         <CustomSelect
                           control={control}
                           label="Unit"
@@ -408,7 +408,9 @@ const BidProducts = () => {
                           rules={{ required: "Unit is required." }}
                         />
                       </div>
-                      <div className="col-lg-4">
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6">
                         <CustomInput
                           control={control}
                           label="Reserve Bid Price / Unit"
@@ -419,20 +421,18 @@ const BidProducts = () => {
                           }}
                         />
                       </div>
-                    </div>
-                    {/* <div className="row">
-                      <div className="col-lg-4">
+                      <div className="col-lg-6">
                         <CustomInput
                           control={control}
                           label="Price Diffrence"
-                          name={`product_quantity`}
+                          name={`price_diffrence`}
                           placeholder="Price Diffrence"
-                          rules={{
-                            required: "Price Diffrence is required.",
-                          }}
+                          // rules={{
+                          //   required: "Price Diffrence is required.",
+                          // }}
                         />
                       </div>
-                    </div> */}
+                    </div>
                     <div className="row">
                       <div className="col-lg-12">
                         <CustomCkEditor
