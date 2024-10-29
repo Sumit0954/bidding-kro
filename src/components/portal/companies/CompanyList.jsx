@@ -108,10 +108,20 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
             className={`${styles["invite-btn"]} ${
-              !id || found ? styles["disable"] : styles["invite-btn"]
+              listtype === "InviteRequest"
+                ? found
+                  ? styles["disable"]
+                  : styles["invite-btn"]
+                : !id || found
+                ? styles["disable"]
+                : styles["invite-btn"]
             }`}
             onClick={() => handleInvite(cell)}
-            disabled={!id || (found && true)}
+            disabled={
+              listtype === "InviteRequest"
+                ? found && true
+                : !id || (found && true)
+            }
           >
             {found ? "Invited" : "Invite"}
           </button>

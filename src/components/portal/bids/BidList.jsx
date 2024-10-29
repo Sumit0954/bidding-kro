@@ -204,7 +204,7 @@ const BidList = ({ listType }) => {
             onClick={() => handlerequest(cell)}
             disabled={is_requested && true}
           >
-            invite Request   
+            {is_requested === true ? "Requested" : "invite Request"}   
           </button>
         </TableCell>
       );
