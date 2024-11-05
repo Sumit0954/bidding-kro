@@ -196,7 +196,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   return (
     <>
       <div className="container">
-        {listtype === "allcompanies" && (
+        {/* {listtype === "allcompanies" && (
           <div className="row">
             <div className="col-lg-3">
               <CustomSelect
@@ -222,7 +222,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
               />
             </div>
           </div>
-        )}
+        )} */}
         {/* {listtype === "allcompanies" && (
           <Alert
             severity="info"
@@ -269,7 +269,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
             {/* Other Suppliers Section */}
             <div className={styles["supplier-section"]}>
               <Typography variant="h6" className={styles["section-title"]}>
-                Other Suppliers
+                Suggested Other Suppliers
               </Typography>
               <DataTable
                 propsColumn={companies_column}

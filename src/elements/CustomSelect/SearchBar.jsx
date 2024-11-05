@@ -20,7 +20,6 @@ const SearchBar = ({
   onAncestorsChange,
   disabled,
   multiple,
-
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -96,7 +95,6 @@ const SearchBar = ({
         onAncestorsChange(ids);
       } else {
         onAncestorsChange(option.ancestors || []); // Pass ancestors when present
-
       }
     }
   };
@@ -119,7 +117,6 @@ const SearchBar = ({
               {...field}
               freeSolo
               multiple={multiple}
-
               options={searchResults}
               inputValue={inputValue}
               value={value}
@@ -175,7 +172,7 @@ const SearchBar = ({
                 const ancestorNames = option.ancestors.map(
                   (ancestor) => ancestor.name
                 );
-                const formattedLabel = ancestorNames.slice(0, -1).join(" > ");
+                const formattedLabel = ancestorNames.slice(1, -1).join(" > ");
 
                 return (
                   <Box component="li" {...props} style={{ display: "block" }}>
