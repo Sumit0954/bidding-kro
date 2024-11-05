@@ -258,12 +258,12 @@ const BidProducts = () => {
                           <div className="col-lg-12">
                             <CustomSelect
                               control={control}
-                              label="Product Title"
+                              label="Product Name"
                               options={transformedProductData}
                               name={`product_title${index}`}
-                              placeholder="Product Title"
+                              placeholder="Product Name"
                               rules={{
-                                required: "Product Title is required.",
+                                required: "Product Name is required.",
                               }}
                             />
                           </div>
@@ -376,12 +376,12 @@ const BidProducts = () => {
                       <div className="col-lg-12">
                         <CustomSelect
                           control={control}
-                          label="Product Title"
+                          label="Product Name"
                           options={transformedProductData}
                           name="product_title"
-                          placeholder="Product Title"
+                          placeholder="Product Name"
                           rules={{
-                            required: "Product Title is required.",
+                            required: "Product Name is required.",
                           }}
                         />
                       </div>
