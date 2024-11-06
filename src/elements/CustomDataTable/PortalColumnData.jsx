@@ -160,7 +160,8 @@ export const created_bids_column = [
           className={`status-cloumn ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "active" || data?.row?.original?.status === "awarded"
+              data?.row?.original?.status === "active" ||
+              data?.row?.original?.status === "awarded"
                 ? "#22bb33"
                 : "darkyellow"
             }`,
@@ -204,6 +205,7 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
+      console.log("data : ", data);
       const isInviteDisabled =
         data?.row?.original?.status !== "active" ||
         (data?.row?.original?.type === "L1" &&

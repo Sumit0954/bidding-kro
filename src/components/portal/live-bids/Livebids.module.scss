@@ -1,0 +1,10 @@
+.place-bid-btn{
+    text-transform: none;
+    font-weight: bold;
+    border-radius: 120px !important;
+    background-color: var(--primary-color) !important;
+}
+
+.place-bid-btn:hover{
+	background-color: var(--secondary-color) !important;
+}

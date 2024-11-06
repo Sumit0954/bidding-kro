@@ -20,6 +20,7 @@ import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { NavLink } from "react-router-dom";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const AcceptanceStatus = ({ bidDetails, type }) => {
   const { setAlert } = useContext(AlertContext);
@@ -32,6 +33,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
     message: "",
     action: "",
   });
+  const [screenLoader, setScreenLoader] = useState(true);
 
   // formdata for the invite action
   const formData = new URLSearchParams();
@@ -57,9 +59,10 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
           `${PortalApiUrls.RETRIEVE_INVITED_BID}${bidDetails?.id}/`,
           "",
           true
-        );
+        );  
         if (response.data.participant) {
           setParticipant(response.data.participant);
+          setScreenLoader(false)
         }
       } catch (error) {}
     };
@@ -114,6 +117,10 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
       setDeleteDetails({ open: false, title: "", message: "", action: "" });
     }
   };
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
@@ -205,20 +212,6 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                       Bid Closing Date : {bidDetails?.bid_close_date}
                     </ListItem>
                   </List>
-                  <Typography variant="body1">
-                    Your sample will be reviewed by the buyer. Once it is
-                    approved, you will be notified and can proceed with the
-                    bidding process.
-                  </Typography>
-                </Box>
-
-                {/* Paragraph 3 */}
-                <Box>
-                  <Typography variant="body1">
-                    Once your sample is submitted, it will be reviewed by the
-                    buyer. You will be notified when your sample is approved,
-                    after which you can proceed with the bidding process.
-                  </Typography>
                 </Box>
               </Box>
             </>

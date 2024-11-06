@@ -81,7 +81,7 @@ const InvitationModal = ({
                   variant="h6"
                   component="h6"
                 >
-                  Invitation
+                 Send Invitation For Bid
                 </Typography>
 
                 {loading ? (
@@ -92,7 +92,7 @@ const InvitationModal = ({
                     className="btn button"
                     onClick={sendInvite}
                   >
-                    Send Message
+                    Send Invitation
                   </button>
                 )}
               </Box>

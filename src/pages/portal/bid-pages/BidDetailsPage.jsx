@@ -52,6 +52,9 @@ const BidDetailsPage = () => {
   const [participant, setParticipant] = useState();
 
   const isQCBSBid = bidDetails?.type === "QCBS";
+
+  console.log("bidDetails : ", bidDetails);
+
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
   );
@@ -165,6 +168,13 @@ const BidDetailsPage = () => {
     }
   }, [bidDetails?.id]);
 
+  const isInviteDisabled =
+    bidDetails?.status !== "active" ||
+    (bidDetails?.type === "L1" && bidDetails?.bid_close_date === null) ||
+    (bidDetails?.type === "QCBS" &&
+      (bidDetails?.sample_receive_start_date === null ||
+        bidDetails?.sample_receive_end_date === null));
+
   return (
     <>
       <div className="d-flex align-items-center justify-content-between mb-2">
@@ -198,6 +208,14 @@ const BidDetailsPage = () => {
 
           {type === "related" || type === "invited" ? null : (
             <>
+              <button
+                className={cn("btn", "button")}
+                type="button"
+                onClick={() => navigate(`/portal/companies/${bidDetails?.id}`)}
+                disabled={isInviteDisabled}
+              >
+                Invite Suppliers
+              </button>
               {bidDetails?.status === "active" ? (
                 <button
                   className={cn("btn", "button", "approve")}
@@ -268,7 +286,8 @@ const BidDetailsPage = () => {
           <AlertTitle sx={{ fontWeight: "bold" }}>
             Warning: Bid Activation Required
           </AlertTitle>
-          Your bid is not yet activated. Please activate your bid to proceed.
+          Your bid is not yet activated. Please activate your bid for further
+          process.
         </Alert>
       )}
 

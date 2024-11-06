@@ -50,6 +50,11 @@ const sidebarMenu = [
     path: "/portal/bids",
   },
   {
+    icon: "/images/portal/layout/icons/bid-list-icon.svg",
+    title: "Live Bids",
+    path: "/portal/liveBids",
+  },
+  {
     icon: "/images/portal/layout/icons/building.svg",
     title: "Companies",
     path: "/portal/companies",
