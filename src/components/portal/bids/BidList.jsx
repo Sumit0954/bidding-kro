@@ -218,29 +218,7 @@ const BidList = ({ listType }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (relatedBids?.id) {
-  //     const retrieveBid = async () => {
-  //       try {
-  //         const response = await _sendAPIRequest(
-  //           "GET",
-  //           PortalApiUrls.RETRIEVE_CREATED_BID + `${relatedBids?.id}/`,
-  //           "",
-  //           true
-  //         );
-  //         if (response.status === 200) {
-  //           console.log("bidDetails", bidDetails);
-  //           setBidDetails();
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };
-
-  //     retrieveBid();
-  //   }
-  // }, [relatedBids?.id]);
-
+ 
   return (
     <>
       {listType === "created" && (

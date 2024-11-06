@@ -26,6 +26,7 @@ import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import CustomInput from "../../../../elements/CustomInput/CustomInput";
+import DateSubmittedModal from "../../../../elements/CustomModal/DateSubmittedModal";
 
 const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
   const {
@@ -37,6 +38,7 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
   } = useForm();
   const [createdAt, setCreatedAt] = useState("");
   const [deatils, setdetails] = useState({});
+  const [showSubmittedDated, setShowSubmittedDated] = useState(false);
   const [revokesupplier, setRevokeSupplier] = useState(false);
   const [loading, setLoading] = useState(false);
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
@@ -176,11 +178,11 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
 
       if (response.status === 200) {
         setLoading(false);
-        setAlert({
-          isVisible: true,
-          message: "Your Bid Dates have been submitted",
-          severity: "success",
-        });
+        // setAlert({
+        //   isVisible: true,
+        //   message: "Your Bid Dates have been submitted",
+        //   severity: "success",
+        // });
       }
     } catch (error) {
       setLoading(false);
@@ -199,61 +201,60 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     <>
       <div className="container">
         <div className="row">
-          {bidDetails?.bid_open_date === null ? (
-            <form onSubmit={handleSubmit(submitdate)}>
-              <div className="row">
-                <div className="col-lg-6">
-                  <DateTimeRangePicker
-                    control={control}
-                    label="Opening Date & Time"
-                    name="bid_start_date"
-                    rules={{
-                      required: "Opening Date & Time is required.",
-                      validate: (value) =>
-                        dateValidator(value, minDate, maxDate),
-                    }}
-                    textFieldProps={{
-                      min: `${minDate}T12:00`,
-                      max: `${maxDate}T17:00`,
-                    }}
-                    clearErrors={clearErrors}
-                  />
-                </div>
-                <div className="col-lg-6">
-                  <DateTimeRangePicker
-                    control={control}
-                    label="Closing Date & Time"
-                    name="bid_end_date"
-                    rules={{
-                      required: "Closing Date & Time is required.",
-                      validate: (value) =>
-                        dateValidator(value, minDate, maxDate),
-                    }}
-                    textFieldProps={{
-                      min: `${minDate}T12:00`,
-                      max: `${maxDate}T17:00`,
-                    }}
-                    clearErrors={clearErrors}
-                  />
-                </div>
+        {bidDetails?.bid_open_date === null ? (
+          <form onSubmit={handleSubmit(submitdate)}>
+            <div className="row">
+              <div className="col-lg-6">
+                <DateTimeRangePicker
+                  control={control}
+                  label="Opening Date & Time"
+                  name="bid_start_date"
+                  rules={{
+                    required: "Opening Date & Time is required.",
+                    validate: (value) => dateValidator(value, minDate, maxDate),
+                  }}
+                  textFieldProps={{
+                    min: `${minDate}T12:00`,
+                    max: `${maxDate}T17:00`,
+                  }}
+                  clearErrors={clearErrors}
+                />
               </div>
-              <div className="row mt-3">
-                <div className="col-12">
-                  {loading ? (
-                    <ButtonLoader size={60} />
-                  ) : (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      className={styles["form-button"]}
-                    >
-                      Submit
-                    </Button>
-                  )}
-                </div>
+              <div className="col-lg-6">
+                <DateTimeRangePicker
+                  control={control}
+                  label="Closing Date & Time"
+                  name={"bid_end_date"}
+                  rules={{
+                    required: "Closing Date & Time is required.",
+                    validate: (value) => dateValidator(value, minDate, maxDate),
+                  }}
+                  textFieldProps={{
+                    min: `${minDate}T12:00`,
+                    max: `${maxDate}T17:00`,
+                  }}
+                  clearErrors={clearErrors}
+                />
               </div>
-            </form>
-          ) : (
+            </div>
+            <div className="row mt-3">
+              <div className="col-12">
+                {loading ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className={styles["form-button"]}
+                    onClick={() => setShowSubmittedDated(true)}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </div>
+            </div>
+          </form>
+           ) : (
             <></>
           )}
         </div>
@@ -350,6 +351,16 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
           title={deleteDetails.title}
           message={deleteDetails.message}
           handleClick={handleDeleteConfirmation}
+        />
+      )}
+
+      {showSubmittedDated && (
+        <DateSubmittedModal
+          showSubmittedDated={showSubmittedDated}
+          setShowSubmittedDated={setShowSubmittedDated}
+          heading={"Date Submitted Successfully!"}
+          description={`You have successfully submitted the live bid. You can now activate the bid to invite the suppliers.`}
+          showLogin={false}
         />
       )}
     </>

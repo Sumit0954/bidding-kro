@@ -25,6 +25,8 @@ import BidProducts from "../components/portal/bids/BidProducts";
 import BidCreateDetails from "../components/portal/bids/BidCreateDetails";
 import InvitedSuppliers from "../components/portal/bids/tabs/InvitedSuppliers";
 import AcceptanceStatus from "../components/portal/bids/tabs/AcceptanceStatus";
+import LiveBidsDetailPage from "../pages/portal/live-bids-pages/LiveBidsDetailPage";
+import LivebidDetail from "../components/portal/live-bids/LivebidDetail";
 
 const PortalRoutes = () => {
   return (
@@ -125,7 +127,7 @@ const PortalRoutes = () => {
                     />
                     {/* Bids Routes End */}
 
-                    {/* comapanies list route with id */}
+                    {/* comapanies list route without id */}
                     <Route
                       path="/companies"
                       element={<LayoutPage Component={CompanyListPage} />}
@@ -145,6 +147,16 @@ const PortalRoutes = () => {
                     <Route
                       path="/companies/details/:id"
                       element={<LayoutPage Component={CompanyDetailPage} />}
+                    />
+                    {/* Live Bids Routes start */}
+                    <Route
+                      path="/liveBids"
+                      element={<LayoutPage Component={LiveBidsDetailPage} />}
+                    />
+
+                    <Route
+                      path="/liveBids/details"
+                      element={<LayoutPage Component={LivebidDetail} />}
                     />
                   </Route>
                 </Routes>

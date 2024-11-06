@@ -329,7 +329,7 @@ const BidDocuments = () => {
 
                 {file && (
                   <div>
-                    <h5>{file.name}</h5>
+                    <h5>File selected! Now, click the "Upload" button to upload your file {file.name}</h5>
                   </div>
                 )}
 
