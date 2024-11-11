@@ -1,69 +1,131 @@
-/*Color Loader*/
-.loader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    filter: url("#goo");
-    &:after {
-      content: "";
-      width: 4em;
-      height: 4em;
-      background: #39f;
-      border-radius: 50%;
-      position: absolute;
-      transform: scale(0.5);
-      animation: grow 2s cubic-bezier(.14, 0.05, 0.55, 0.5) infinite alternate;
-    }
-    span {
-      width: 2em;
-      height: 2em;
-      background: #3b3;
-      border-radius: 50%;
-      margin-right: 2em;
-      position: relative;
-      transform: translateX(7em);
-      animation: move 4s ease-in-out infinite;
-      &:before {
-        content: "";
-        width: 2em;
-        height: 2em;
-        background: #39f;
-        border-radius: 50%;
-        position: absolute;
-        left:3em;
-        transform: translateX(0em);
-        animation: shrink 2s ease-in-out infinite;
-      }
-      &:after {
-        content: "";
-        width: 2em;
-        height: 2em;
-        background: #f30;
-        border-radius: 50%;
-        position: absolute;
-        right: 3em;
-        transform: translateX(0em);
-        animation: shrink 2s ease-in-out infinite;
-      }
-    }
+/* Basic styling for the container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* Adjust as needed */
+  margin: 20px auto;
+}
+
+/* Skeleton styling for title */
+.loading-title {
+  width: 100%;
+  height: 50px;
+  background: white;
+  border-radius: 4px;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Skeleton styling for paragraph lines */
+.loading-paragraph {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loading-line {
+  width: 100%;
+  height: 15px;
+  background: #ddd;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.loading-line:nth-child(2) {
+  width: 100%;
+}
+
+.loading-line:nth-child(3) {
+  width: 70%;
+}
+
+/* Skeleton styling for thumbnail or image */
+.loading-thumbnail {
+  width: 100%;
+  height: 150px;
+  background: #ddd;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
   }
-  @keyframes grow {
-    0%  {transform: scale(0.5); background: #f30;}
-    50% {transform: scale(1); background: #3b3;}}
-  @keyframes move {
-    0% {transform: translateX(7em);}
-    50% {transform: translateX(-5em)}
+  100% {
+    background-position: 200px 0;
   }
-  @keyframes shrink {
-    0% {transform: translateX(0em)}
-    50% {transform: translateX(-1em)}
+}
+
+.loading-title,
+.loading-line,
+.loading-thumbnail {
+  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
+  background-size: 200% 100%;
+}
+
+
+/* Basic styling for the button placeholder */
+.loading-button {
+  position: absolute;
+  bottom: 50px; /* Position from the bottom */
+  right: 19px;  /* Position from the right */
+  width: 80px; /* Adjust as needed for the button size */
+  height: 30px;
+  background: #ddd;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.loading-button {
+  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
+  background-size: 200% 100%;
+}
+
+/* Dot-style loading list */
+.loading-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Space between each list item */
+}
+
+/* Each list item in the loading list */
+.loading-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between dot and line */
+}
+
+/* Dot placeholder */
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #ddd;
+  border-radius: 50%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Line placeholder */
+.line {
+  width: 50%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
-  svg {
-    width: 0;
-    height: 0;
+  100% {
+    background-position: 200% 0;
   }
-  /*Color Loader*/
-  
-  
-      
+}
+
+.dot, .line {
+  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
+  background-size: 200% 100%;
+}

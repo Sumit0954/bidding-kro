@@ -27,13 +27,14 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
   const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [participant, setParticipant] = useState({});
+  const [screenLoader , setScreenLoader] = useState(true)
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
     action: "",
   });
-  const [screenLoader, setScreenLoader] = useState(true);
+
 
   // formdata for the invite action
   const formData = new URLSearchParams();
@@ -48,7 +49,6 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
     }`
   );
 
-  console.log("participant", participant);
   // invite action :  accepted / decline
 
   useEffect(() => {
@@ -119,7 +119,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
   };
 
   if (screenLoader) {
-    return <ScreenLoader />;
+    return <ScreenLoader component={"AcceptanceStatus"} />;
   }
 
   return (

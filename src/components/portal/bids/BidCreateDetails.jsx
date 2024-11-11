@@ -175,7 +175,7 @@ const BidCreateDetails = () => {
                     className={cn("btn", "button")}
                     disabled={bidStatus === "cancelled" ? true : false}
                     onClick={() => {
-                      navigate(`/portal/bids/products/116`);
+                      navigate(`/portal/bids/products/${id}`);
                     }}
                   >
                     Back

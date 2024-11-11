@@ -122,7 +122,7 @@ const PortalRoutes = () => {
                     />
 
                     <Route
-                      path="/portal/bids/details/acceptance"
+                      path="/portal/bids/details/acceptanceStatus/:id/?type=invited"
                       element={<LayoutPage Component={AcceptanceStatus} />}
                     />
                     {/* Bids Routes End */}

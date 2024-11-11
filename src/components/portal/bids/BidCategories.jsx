@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import styles from "./BidCategories.module.scss";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
@@ -21,7 +21,8 @@ const BidCategories = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [bidStatus, setBidStatus] = useState("");
-  // const { companyDetails } = useContext(CompanyDetailsContext);
+  const { setBidformdata, setBidProductData } = useBidData();
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [showQueryForm, setShowQueryForm] = useState(false);
@@ -184,6 +185,9 @@ const BidCategories = () => {
         navigate(`/portal/bids/update/${id}`, {
           state: { formData, productData },
         });
+
+        setBidformdata(formData);
+        setBidProductData(productData);
       } else {
         navigate("/portal/bids/create", { state: { formData, productData } });
       }
@@ -530,3 +534,27 @@ const BidCategories = () => {
 };
 
 export default BidCategories;
+
+const BidDataContext = createContext();
+
+export const useBidData = () => {
+  return useContext(BidDataContext);
+};
+
+export const BidDataProvider = ({ children }) => {
+  const [formData, setBidformdata] = useState([]);
+  const [productData, setBidProductData] = useState([]);
+
+  return (
+    <BidDataContext.Provider
+      value={{
+        formData,
+        setBidformdata,
+        productData,
+        setBidProductData,
+      }}
+    >
+      {children}
+    </BidDataContext.Provider>
+  );
+};

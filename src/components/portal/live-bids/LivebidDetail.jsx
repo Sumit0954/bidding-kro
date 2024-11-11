@@ -7,10 +7,15 @@ import {
   TextField,
   Button,
   Grid,
+  ButtonBase
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LiveBidProducts from "./LiveBidProducts";
+import styles from "./LivebidDetail.module.scss"
+import { useLocation } from "react-router-dom";
 function LivebidDetail() {
+  
+  const type = new URLSearchParams(useLocation().search).get("type")
   const products = [
     {
       name: "Cotton Denim Fabric",
@@ -43,13 +48,13 @@ function LivebidDetail() {
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Container maxWidth="lg" >
         {/* Header Section */}
         <Grid
           container
           justifyContent="space-between"
           alignItems="center"
-          sx={{ mb: 0 }}
+          sx={{ mb: -3 }}
         >
           <Typography variant="h5" fontWeight="bold">
             Supply of Cotton Material
@@ -81,7 +86,7 @@ function LivebidDetail() {
 
         {/* Product Bid Cards */}
         {products.map((product, index) => (
-          <LiveBidProducts key={index} product={product} />
+          <LiveBidProducts key={index} product={product} type={type}/>
         ))}
       </Container>
     </>

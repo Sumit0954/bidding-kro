@@ -7,15 +7,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
+import { BidDataProvider } from "./components/portal/bids/BidCategories";
 
 // API BASEPATH Globally
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <BidDataProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </BidDataProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

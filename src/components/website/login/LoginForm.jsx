@@ -40,7 +40,12 @@ const LoginForm = () => {
       if (response.status === 200) {
         setLoading(false);
         login(response.data, "PORTAL");
-        navigate("/portal");
+        navigate("/portal/bids");
+        setAlert({
+          isVisible: true,
+          message: "Login Successfully",
+          severity: "success",
+        });
       }
     } catch (error) {
       setLoading(false);

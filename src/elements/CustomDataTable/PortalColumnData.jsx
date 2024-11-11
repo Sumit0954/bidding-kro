@@ -6,8 +6,7 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
-import { useContext, useState } from "react";
-import { AlertContext } from "../../contexts/AlertProvider";
+import { useState } from "react";
 import { Select, MenuItem, FormControl } from "@mui/material";
 
 const patchBidStatus = async (id, formData) => {
@@ -165,6 +164,8 @@ export const created_bids_column = [
                 ? "#22bb33"
                 : "darkyellow"
             }`,
+            textTransform : "uppercase",
+            fontWeight : "bold"
           }}
         >
           {data?.row?.original?.status}
@@ -205,7 +206,6 @@ export const created_bids_column = [
     paddingLeft: "2rem",
     width: 100, // Change to uniform width
     Cell: (data) => {
-      console.log("data : ", data);
       const isInviteDisabled =
         data?.row?.original?.status !== "active" ||
         (data?.row?.original?.type === "L1" &&
@@ -216,13 +216,13 @@ export const created_bids_column = [
 
       return (
         <NavLink
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", fontWeight: "bold" }}
           className={
             isInviteDisabled ? styles["disabled-link"] : styles["table-link"]
           }
           to={`/portal/companies/${data?.cell?.row?.original.id}`}
         >
-          Invite
+          INVITE
         </NavLink>
       );
     },
@@ -307,20 +307,24 @@ export const invited_bids_column = [
     width: 150,
     Cell: (data) => {
       return (
-        <div
+        <NavLink
           className={`status-column ${data?.row?.original?.status}`}
+          to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited&&status=acceptanceStatus`}
           style={{
             color: `${
               data?.row?.original?.status === "accepted"
                 ? "#22bb33" // Green for accepted
                 : data?.row?.original?.status === "pending"
                 ? "#FFBF00" // Yellow for pending
-                : "red" // Default red for other statuses
+                : "red" // Default red for other status
             }`,
+            textDecoration: "none",
+            fontWeight: "bold",
+            textTransform: "uppercase",
           }}
         >
           {data?.row?.original?.status}
-        </div>
+        </NavLink>
       );
     },
   },
@@ -441,6 +445,8 @@ export const related_bids_column = [
                 ? "#FFBF00" // Yellow for pending
                 : "red" // Default red for other statuses
             }`,
+            fontWeight: "bold",
+            textTransform: "uppercase",
           }}
         >
           {data?.row?.original?.status}

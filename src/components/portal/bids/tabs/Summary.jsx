@@ -49,7 +49,6 @@ const Summary = ({ bidDetails }) => {
     message: "",
     id: null,
   });
-  console.log("bidDetails : ", bidDetails);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {

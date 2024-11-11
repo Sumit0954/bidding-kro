@@ -38,7 +38,6 @@ import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceSta
 import * as React from "react";
 
 const BidDetailsPage = () => {
-  const [value, setValue] = useState(0);
   const [addAmendment, setAddAmendment] = useState(false);
   const navigate = useNavigate();
   const { userDetails } = useContext(UserDetailsContext);
@@ -46,14 +45,14 @@ const BidDetailsPage = () => {
   const [showThankyou, setShowThankyou] = useState(false);
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
-  const [show, setShow] = useState(false);
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
+  const status = new URLSearchParams(useLocation().search).get("status");
+  const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
   const [participant, setParticipant] = useState();
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
-  console.log("bidDetails : ", bidDetails);
 
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"

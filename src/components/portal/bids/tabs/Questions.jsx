@@ -6,6 +6,7 @@ import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const Questions = ({ bidDetails }) => {
   const { control, handleSubmit, reset } = useForm();
@@ -13,6 +14,7 @@ const Questions = ({ bidDetails }) => {
   const [loading, setLoading] = useState({});
   const [questions, setQuestions] = useState([]);
   const [submittedAnswers, setSubmittedAnswers] = useState({});
+  const [screenLoader, setScreenLoader] = useState(true);
 
   // Fetch questions and answers from API on component mount and after successful form submission
   useEffect(() => {
@@ -26,6 +28,7 @@ const Questions = ({ bidDetails }) => {
         );
         if (response?.data?.question) {
           setQuestions(response.data.question);
+          setScreenLoader(false)
         }
       } catch (error) {
         setAlert({
@@ -90,6 +93,12 @@ const Questions = ({ bidDetails }) => {
       setLoading((prev) => ({ ...prev, [questionId]: false }));
     }
   };
+
+  if (screenLoader) {
+    return <ScreenLoader component={"Questions"} />;
+  }
+
+
 
   return (
     <Box className="row" sx={{ marginTop: "2rem" }}>

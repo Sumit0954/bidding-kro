@@ -9,6 +9,7 @@ import {
   Typography,
   Button,
   Grid,
+  ButtonBase,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
@@ -40,7 +41,10 @@ const Livebids = ({ listType }) => {
   ];
   return (
     <>
-      <Box sx={{ p: 2, bgcolor: "#f0f4f8" }}>
+      <Box
+        sx={{ p: 2, bgcolor: "#f0f4f8" }}
+        onClick={() => navigate("/portal/liveBids/details")}
+      >
         {bids.map((bid) => (
           <Card key={bid.id} sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}>
             <CardContent>
@@ -134,7 +138,7 @@ const Livebids = ({ listType }) => {
                       color="success"
                       className={styles["place-bid-btn"]}
                       endIcon={<AccessTimeIcon />}
-                      onClick={() => navigate("/portal/liveBids/details")}
+                      onClick={() => navigate("/portal/liveBids/details/?type=supplier")}
                     >
                       Place a Bid
                     </Button>

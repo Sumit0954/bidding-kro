@@ -1,27 +1,34 @@
 import styles from "./ScreenLoader.module.scss";
-const ScreenLoader = () => {
+const ScreenLoader = ({ component }) => {
   return (
     <>
-      {/* <div className={styles["loader"]}>
-        <span></span>
+      <div className={styles["loading-container"]}>
+        <div className={styles["loading-title"]}></div>
+
+        <div className={styles["loading-paragraph"]}>
+          <div className={styles["loading-line"]}></div>
+          <div className={styles["loading-line"]}></div>
+          <div className={styles["loading-line"]}></div>
+        </div>
+        {component === "Questions" ? (
+          <div className={styles["loading-thumbnail"]}></div>
+        ) : (
+          <div className="loading-list">
+            <div className={styles["loading-list-item"]}>
+              <div className={styles["dot"]}></div>
+              <div className={styles["line"]}></div>
+            </div>
+            <br />
+            <div className={styles["loading-list-item"]}>
+              <div className={styles["dot"]}></div>
+              <div className={styles["line"]}></div>
+            </div>
+          </div>
+        )}
+        <br />
+        <br />
+        <div className={styles["loading-button"]}></div>
       </div>
-      <svg>
-        <defs>
-          <filter id="goo">
-            <feGaussianBlur
-              in="SourceGraphic"
-              stdDeviation="11"
-              result="blur"
-            ></feGaussianBlur>
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-              result="goo"
-            />
-          </filter>
-        </defs>
-      </svg> */}
     </>
   );
 };
