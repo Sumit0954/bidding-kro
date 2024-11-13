@@ -59,10 +59,10 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
           `${PortalApiUrls.RETRIEVE_INVITED_BID}${bidDetails?.id}/`,
           "",
           true
-        );  
+        );
         if (response.data.participant) {
           setParticipant(response.data.participant);
-          setScreenLoader(false)
+          setScreenLoader(false);
         }
       } catch (error) {}
     };

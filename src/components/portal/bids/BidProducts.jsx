@@ -30,8 +30,7 @@ const BidProducts = () => {
   const { id } = useParams(); // id is bid_id
   const [loading, setLoading] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { formData ,productData  } =
-  useBidData();
+  const { formData, productData } = useBidData();
   const { setAlert } = useContext(AlertContext);
   const MAX_PRODUCTS = 5;
 

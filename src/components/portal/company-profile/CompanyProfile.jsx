@@ -323,6 +323,9 @@ const CompanyProfile = () => {
                       label="Website Url"
                       name="website"
                       placeholder="www.example.com"
+                      rules={{
+                        required: "Website Url is required.",
+                      }}
                     />
                   </div>
                 </div>

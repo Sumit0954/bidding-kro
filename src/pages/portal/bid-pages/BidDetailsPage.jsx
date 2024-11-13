@@ -36,6 +36,10 @@ import Award from "../../../components/portal/bids/tabs/Award";
 import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
 import * as React from "react";
+import CompanyList from "../../../components/portal/companies/CompanyList";
+import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveTab } from "../../../store/tabSlice";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -53,7 +57,6 @@ const BidDetailsPage = () => {
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
-
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
   );
@@ -61,8 +64,12 @@ const BidDetailsPage = () => {
   // Disable condition for the tab
   const shouldDisableTab = isQCBSBid && isSampleNotApproved;
 
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.tab.activeTab);
+
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    // setValue(newValue);
+    dispatch(setActiveTab(newValue));
   };
 
   const truncatelength = (title, maxlength) => {
@@ -292,7 +299,8 @@ const BidDetailsPage = () => {
 
       <Box sx={{ width: "100%" }}>
         <Tabs
-          value={value}
+          // value={value}
+          value={activeTab}
           onChange={handleChange}
           aria-label="bid-detail-tabs"
         >
@@ -307,12 +315,13 @@ const BidDetailsPage = () => {
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
+                <Tab label="Pending Request" {...a11yProps(2)} key={2} />,
 
                 type !== "related" && (
                   <Tab
                     label="Invite Suppliers"
-                    {...a11yProps(2)}
-                    key={2}
+                    {...a11yProps(3)}
+                    key={3}
                     disabled={shouldDisableTab}
                   />
                 ),
@@ -338,8 +347,8 @@ const BidDetailsPage = () => {
                       type !== "related" && (
                         <Tab
                           label="Sample Receiving"
-                          {...a11yProps(3)}
-                          key={3}
+                          {...a11yProps(4)}
+                          key={4}
                         />
                       ),
                       // <Tab
@@ -363,70 +372,85 @@ const BidDetailsPage = () => {
 
       {type === "invited" ? (
         <>
-          <TabPanel value={value} index={0}>
+          <TabPanel value={activeTab} index={0}>
             <Summary bidDetails={bidDetails} />
           </TabPanel>
-          <TabPanel value={value} index={1}>
+          <TabPanel value={activeTab} index={1}>
             <Documents bidDetails={bidDetails} type={type} />
           </TabPanel>
-          <TabPanel value={value} index={2}>
+          <TabPanel value={activeTab} index={2}>
             <AcceptanceStatus bidDetails={bidDetails} type={type} />
           </TabPanel>
-          <TabPanel value={value} index={3}>
+          <TabPanel value={activeTab} index={3}>
             <Questions bidDetails={bidDetails} />
           </TabPanel>
-          <TabPanel value={value} index={4}>
+          <TabPanel value={activeTab} index={4}>
             <Remark bidDetails={bidDetails} />
           </TabPanel>
         </>
       ) : (
         <>
-          <TabPanel value={value} index={0}>
+          <TabPanel value={activeTab} index={0}>
             <Summary bidDetails={bidDetails} />
           </TabPanel>
-          <TabPanel value={value} index={1}>
+          <TabPanel value={activeTab} index={1}>
             <Documents bidDetails={bidDetails} type={type} />
           </TabPanel>
-          <TabPanel value={value} index={2}>
+          <TabPanel value={activeTab} index={2}>
+            <PendingRequests
+              bidDetails={bidDetails}
+              id={id}
+              tab={activeTab}
+              listtype={"InviteRequest"}
+            />
+            {/* <CompanyList
+              bidDetails={bidDetails}
+              id={id}
+              tab={value}
+              listtype={"InviteRequest"}
+            /> */}
+          </TabPanel>
+          <TabPanel value={activeTab} index={3}>
             <InvitedSuppliers
               bidDetails={bidDetails}
               participant={participant}
-              onActionComplete={() => setValue(2)}
+              // onActionComplete={() => setValue(2)}
+              onActionComplete={() => dispatch(setActiveTab(2))}
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (
             <>
-              <TabPanel value={value} index={3}>
+              <TabPanel value={activeTab} index={4}>
                 <Bids />
               </TabPanel>
-              <TabPanel value={value} index={4}>
+              <TabPanel value={activeTab} index={5}>
                 <Award />
               </TabPanel>
-              <TabPanel value={value} index={5}>
+              <TabPanel value={activeTab} index={6}>
                 <LetterOfIntent bidDetails={bidDetails} />
               </TabPanel>
-              <TabPanel value={value} index={6}>
+              <TabPanel value={activeTab} index={7}>
                 <Feedback />
               </TabPanel>
             </>
           ) : (
             <>
-              <TabPanel value={value} index={3}>
+              <TabPanel value={activeTab} index={4}>
                 <SampleReceiving
                   bidDetails={bidDetails}
                   participant={participant}
                 />
               </TabPanel>
-              <TabPanel value={value} index={4}>
+              <TabPanel value={activeTab} index={5}>
                 <Bids />
               </TabPanel>
-              <TabPanel value={value} index={5}>
+              <TabPanel value={activeTab} index={6}>
                 <Award />
               </TabPanel>
-              <TabPanel value={value} index={6}>
+              <TabPanel value={activeTab} index={7}>
                 <LetterOfIntent bidDetails={bidDetails} />
               </TabPanel>
-              <TabPanel value={value} index={7}>
+              <TabPanel value={activeTab} index={8}>
                 <Feedback />
               </TabPanel>
             </>
