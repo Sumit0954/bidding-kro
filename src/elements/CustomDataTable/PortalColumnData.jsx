@@ -111,15 +111,40 @@ export const created_bids_column = [
     disablePadding: false,
     width: 150, // Change to uniform width
     Cell: (data) => {
+      const hasRequest = data?.row?.original?.has_bid_request;
+      const bidId = data?.row?.original?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(0)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}`);
+      };
       return (
-        <NavLink
+        // <NavLink
+        //   className={styles["table-link"]}
+        //   to={`/portal/bids/details/${data?.row?.original?.id}`}
+        // >
+        //   {`${truncateString(data?.row?.original?.title, 30)}${
+        //     data?.row?.original?.type === "L1" ? "" : " (QCBS)"
+        //   }`}
+        // </NavLink>
+
+        <span
+          onClick={handleViewRequestClick}
+          style={{
+            color: "#0d6efd",
+            // fontWeight: "bold",
+            // textDecoration: "underline",
+            cursor: "pointer",
+          }}
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
           {`${truncateString(data?.row?.original?.title, 30)}${
             data?.row?.original?.type === "L1" ? "" : " (QCBS)"
           }`}
-        </NavLink>
+        </span>
       );
     },
   },
@@ -164,7 +189,7 @@ export const created_bids_column = [
             onClick={handleViewRequestClick}
             style={{
               color: hasRequest ? "#22bb33" : "#0d6efd",
-              fontWeight: "bold",
+              // fontWeight: "bold",
               textDecoration: "underline",
               cursor: "pointer",
             }}
