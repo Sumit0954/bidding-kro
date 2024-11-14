@@ -35,7 +35,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
 
   const handleInvite = (data) => {
     setInvitation(true);
-    console.log("data.row.original", data.row.original);
+    // console.log("data.row.original", data.row.original);
     setCompanyDetail(data.row.original);
   };
 

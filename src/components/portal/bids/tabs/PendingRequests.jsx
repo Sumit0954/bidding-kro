@@ -1,4 +1,4 @@
-import styles from "./InvitedSuppliers.module.scss";
+import styles from "./PendingRequests.module.scss";
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import {
   Alert,
@@ -87,7 +87,6 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
         );
 
         if (response.status === 200) {
-          console.log("response?.data", response?.data);
           setRequestBids(response?.data);
         }
       } catch (error) {}
@@ -96,9 +95,11 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
   }, []);
 
   const addAction = (cell) => {
+    console.log("Cell Data : ", cell);
     if (cell.column.id === "action") {
       const found = participants.some(
-        (participant) => participant.company.id === cell.row.original.id
+        (participant) =>
+          participant?.company?.id === cell?.row?.original?.requestor?.id
       );
 
       return (
@@ -120,6 +121,7 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
                 : !id || (found && true)
             }
           >
+            {console.log("found : ", found)}
             {found ? "Invited" : "Invite"}
           </button>
         </TableCell>
@@ -190,6 +192,7 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
 
   return (
     <>
+      <br />
       <div className="container">
         <DataTable
           propsColumn={Pending_request_column}

@@ -189,8 +189,8 @@ export const created_bids_column = [
             onClick={handleViewRequestClick}
             style={{
               color: hasRequest ? "#22bb33" : "#0d6efd",
-              // fontWeight: "bold",
-              textDecoration: "underline",
+              fontWeight: "bold",
+              textDecoration: "none",
               cursor: "pointer",
             }}
           >
@@ -207,7 +207,6 @@ export const created_bids_column = [
     disablePadding: false,
     width: 120, // Change to uniform width
     Cell: (data) => {
-      console.log(data?.row?.original, "data?.row?.original");
       return data?.row?.original?.bid_open_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
         : " - ";

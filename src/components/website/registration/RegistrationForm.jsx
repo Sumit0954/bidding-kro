@@ -148,6 +148,7 @@ const RegistrationForm = () => {
                           ((await passwordValidator(value)) !== true
                             ? await passwordValidator(value)
                             : true),
+                            
                       }}
                     />
                   </div>
