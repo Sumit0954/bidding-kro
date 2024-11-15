@@ -17,7 +17,6 @@ const InvitationModal = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  console.log("InvitationModal", bidDetails);
 
   const handleClose = () => {
     setInvitation(false);
@@ -31,15 +30,13 @@ const InvitationModal = ({
         "company",
         listtype === "allcompanies"
           ? companyDetail?.id
-          : companyDetail?.requestor.id
+          : companyDetail?.requestor?.id
       );
-
+      console.log("listtype : ", listtype);
+      console.log("Company details : ", companyDetail);
       const response = await _sendAPIRequest(
         "POST",
-        PortalApiUrls.SEND_INVITE +
-          `${
-            listtype === "allcompanies" ? bidDetails?.id : companyDetail?.bid.id
-          }/`,
+        PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
         formData,
         true
       );
@@ -81,7 +78,7 @@ const InvitationModal = ({
                   variant="h6"
                   component="h6"
                 >
-                 Send Invitation For Bid
+                  Send Invitation For Bid
                 </Typography>
 
                 {loading ? (
@@ -106,52 +103,6 @@ const InvitationModal = ({
               {/* <Box className="row mb-2">
                 <Box className="col text-start">{bidDetails?.title}</Box>
               </Box> */}
-
-              <Box className="row mb-2">
-                <Box
-                  className="col-lg-3 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {listtype === "allcompanies"
-                    ? bidDetails?.formatted_number
-                    : companyDetail?.bid.formatted_number}
-                </Box>
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {listtype === "allcompanies"
-                    ? bidDetails?.title
-                    : companyDetail?.bid.title}{" "}
-                </Box>
-                {/* <Box
-                  className="col-lg-3 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  ₹ {bidDetails?.reserved_price}
-                </Box> */}
-                {listtype === "allcompanies" ? (
-                  <Box className="col-lg-3 text-start">
-                    {bidDetails?.bid_open_date === null &&
-                    bidDetails?.bid_close_date === null
-                      ? "- -"
-                      : `${dateTimeFormatter(
-                          bidDetails?.bid_open_date
-                        )} - ${dateTimeFormatter(bidDetails?.bid_close_date)}`}
-                  </Box>
-                ) : (
-                  <Box className="col-lg-3 text-start">
-                    {companyDetail?.bid.bid_open_date === null &&
-                    companyDetail?.bid.bid_close_date === null
-                      ? "- -"
-                      : `${dateTimeFormatter(
-                          companyDetail?.bid.bid_open_date
-                        )} - ${dateTimeFormatter(
-                          companyDetail?.bid.bid_close_date
-                        )}`}
-                  </Box>
-                )}
-              </Box>
 
               <Box className="row">
                 <Box className="row">

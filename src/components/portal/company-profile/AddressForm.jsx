@@ -146,7 +146,7 @@ const IndividualAddressForm = ({ address, index, onDelete }) => {
   });
 
   const getStatesList = async () => {
-    const params = { country: 102, ordering: "name" };
+    const params = { country: 101, ordering: "name" };
     try {
       const response = await _sendAPIRequest(
         "GET",

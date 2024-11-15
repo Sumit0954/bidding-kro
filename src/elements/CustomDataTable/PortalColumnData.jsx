@@ -6,9 +6,12 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
-import { useContext, useState } from "react";
-import { AlertContext } from "../../contexts/AlertProvider";
+import { useState } from "react";
 import { Select, MenuItem, FormControl } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../store/tabSlice";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const patchBidStatus = async (id, formData) => {
   try {
@@ -95,13 +98,62 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
   );
 };
 
+const DeleteConfirmation = ({ id, onDeleteConfirm }) => {
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDeleteClick = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = async (confirm) => {
+    setOpenDialog(false);
+    if (confirm) {
+      await onDeleteConfirm(id);
+    }
+  };
+
+  return (
+    <>
+      <IconButton aria-label="delete" color="error" onClick={handleDeleteClick}>
+        <DeleteIcon />
+      </IconButton>
+      {openDialog && (
+        <DeleteDialog
+          title="Delete Bid"
+          message="Are you sure you want to delete this Request ? This action cannot be undone."
+          handleClick={handleDialogClose}
+        />
+      )}
+    </>
+  );
+};
+
+const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
+  try {
+    const response = await _sendAPIRequest(
+      "DELETE",
+      `${PortalApiUrls.DELETE_BID_REQUEST}${bid_requested_id}/`,
+      null,
+      true
+    );
+    if (response?.status === 204) {
+      console.log("Bid deleted successfully");
+      dispatch(setActiveTab(2));
+      window.location.reload();
+      // Optional: Trigger a refresh or redirect as needed
+    }
+  } catch (error) {
+    console.error("Error deleting bid", error);
+  }
+};
+
 export const created_bids_column = [
   {
     Header: "Bid ID",
     accessor: "formatted_number",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 100, // Add a uniform width
   },
   {
     Header: "Bid Title",
@@ -110,15 +162,92 @@ export const created_bids_column = [
     disablePadding: false,
     width: 150, // Change to uniform width
     Cell: (data) => {
+      const hasRequest = data?.row?.original?.has_bid_request;
+      const bidId = data?.row?.original?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(0)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}`);
+      };
       return (
-        <NavLink
+        // <NavLink
+        //   className={styles["table-link"]}
+        //   to={`/portal/bids/details/${data?.row?.original?.id}`}
+        // >
+        //   {`${truncateString(data?.row?.original?.title, 30)}${
+        //     data?.row?.original?.type === "L1" ? "" : " (QCBS)"
+        //   }`}
+        // </NavLink>
+
+        <span
+          onClick={handleViewRequestClick}
+          style={{
+            color: "#0d6efd",
+            // fontWeight: "bold",
+            // textDecoration: "underline",
+            cursor: "pointer",
+          }}
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}`}
         >
           {`${truncateString(data?.row?.original?.title, 30)}${
             data?.row?.original?.type === "L1" ? "" : " (QCBS)"
           }`}
-        </NavLink>
+        </span>
+      );
+    },
+  },
+  {
+    Header: "Pending Request",
+    accessor: "has_bid_request",
+    align: "center",
+    width: 150,
+    disablePadding: false,
+    hideSortIcon: true,
+    Cell: (data) => {
+      const hasRequest = data?.row?.original?.has_bid_request;
+      const bidId = data?.row?.original?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(2)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}`);
+      };
+
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <div
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor: hasRequest ? "#22bb33" : "#ccc",
+            }}
+          ></div>
+
+          <span
+            onClick={handleViewRequestClick}
+            style={{
+              color: hasRequest ? "#22bb33" : "#0d6efd",
+              // fontWeight: "bold",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            View Requests
+          </span>
+        </div>
       );
     },
   },
@@ -127,8 +256,9 @@ export const created_bids_column = [
     accessor: "bid_open_date",
     align: "left",
     disablePadding: false,
-    width: 150, // Change to uniform width
+    width: 120, // Change to uniform width
     Cell: (data) => {
+      // console.log(data?.row?.original, "data?.row?.original");
       return data?.row?.original?.bid_open_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
         : " - ";
@@ -139,7 +269,7 @@ export const created_bids_column = [
     accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
-    width: 150, // Change to uniform width
+    width: 100, // Change to uniform width
     Cell: (data) => {
       return data?.row?.original?.bid_close_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
@@ -150,7 +280,7 @@ export const created_bids_column = [
     Header: "Status",
     accessor: "status",
     align: "center",
-    width: 100, // Change to uniform width
+    width: 60, // Change to uniform width
 
     disablePadding: false,
     hideSortIcon: true,
@@ -165,6 +295,8 @@ export const created_bids_column = [
                 ? "#22bb33"
                 : "darkyellow"
             }`,
+            textTransform: "uppercase",
+            fontWeight: "bold",
           }}
         >
           {data?.row?.original?.status}
@@ -176,7 +308,7 @@ export const created_bids_column = [
     Header: "Action",
     accessor: "clone_bid",
     align: "center", // Center alignment to make it consistent
-    width: 100,
+    width: 60,
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -203,9 +335,8 @@ export const created_bids_column = [
     align: "left",
     disablePadding: false,
     paddingLeft: "2rem",
-    width: 100, // Change to uniform width
+    width: 60, // Change to uniform width
     Cell: (data) => {
-      console.log("data : ", data);
       const isInviteDisabled =
         data?.row?.original?.status !== "active" ||
         (data?.row?.original?.type === "L1" &&
@@ -216,13 +347,13 @@ export const created_bids_column = [
 
       return (
         <NavLink
-          style={{ textAlign: "center" }}
+          style={{ textAlign: "center", fontWeight: "bold" }}
           className={
             isInviteDisabled ? styles["disabled-link"] : styles["table-link"]
           }
           to={`/portal/companies/${data?.cell?.row?.original.id}`}
         >
-          Invite
+          INVITE
         </NavLink>
       );
     },
@@ -235,6 +366,7 @@ export const invited_bids_column = [
     accessor: "bid.formatted_number",
     align: "left",
     disablePadding: false,
+    width: 100,
     Cell: (data) => {
       return data.row.original.bid.formatted_number;
     },
@@ -246,14 +378,46 @@ export const invited_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
+      const bidId = data?.row?.original?.bid?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(0)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}/?type=invited`);
+      };
+
       return (
-        <NavLink
+        <span
+          onClick={handleViewRequestClick}
+          style={{
+            color: "#0d6efd",
+            // fontWeight: "bold",
+            // textDecoration: "underline",
+            cursor: "pointer",
+          }}
           className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
         >
           {truncateString(data?.row?.original?.bid?.title, 30)}
-        </NavLink>
+        </span>
+        // <NavLink
+        //   className={styles["table-link"]}
+        //   to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
+        // >
+        //   {truncateString(data?.row?.original?.bid?.title, 30)}
+        // </NavLink>
       );
+    },
+  },
+  {
+    Header: "Bid Type",
+    accessor: "bid.type",
+    align: "left",
+    disablePadding: false,
+    width: 120,
+    Cell: (data) => {
+      return data.row.original.bid.type;
     },
   },
   {
@@ -271,7 +435,7 @@ export const invited_bids_column = [
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 120,
     Cell: (data) => {
       return (
         <>
@@ -287,7 +451,7 @@ export const invited_bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 120,
     Cell: (data) => {
       return (
         <>
@@ -299,28 +463,81 @@ export const invited_bids_column = [
     },
   },
   {
-    Header: "Bid Status",
+    Header: "Status",
     accessor: "status",
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
-    width: 150,
+    width: 100,
     Cell: (data) => {
+      const bidId = data?.row?.original?.bid?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(2)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}/?type=invited`);
+      };
+
       return (
         <div
-          className={`status-column ${data?.row?.original?.status}`}
           style={{
-            color: `${
-              data?.row?.original?.status === "accepted"
-                ? "#22bb33" // Green for accepted
-                : data?.row?.original?.status === "pending"
-                ? "#FFBF00" // Yellow for pending
-                : "red" // Default red for other statuses
-            }`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
           }}
         >
-          {data?.row?.original?.status}
+          <div
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor:
+                data?.row?.original?.status === "pending" ? "#22bb33" : "#ccc",
+            }}
+          ></div>
+
+          <span
+            onClick={handleViewRequestClick}
+            className={`status-column ${data?.row?.original?.status}`}
+            style={{
+              color: `${
+                data?.row?.original?.status === "accepted"
+                  ? "#22bb33" // Green for accepted
+                  : data?.row?.original?.status === "pending"
+                  ? "#FFBF00" // Yellow for pending
+                  : "red" // Default red for other status
+              }`,
+              textDecoration: "none",
+              fontWeight:
+                data?.row?.original?.status === "pending" ? "bold" : "",
+              textTransform: "uppercase",
+            }}
+          >
+            {data?.row?.original?.status}
+          </span>
         </div>
+
+        // <NavLink
+        //   className={`status-column ${data?.row?.original?.status}`}
+        //   to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
+        //   style={{
+        //     color: `${
+        //       data?.row?.original?.status === "accepted"
+        //         ? "#22bb33" // Green for accepted
+        //         : data?.row?.original?.status === "pending"
+        //         ? "#FFBF00" // Yellow for pending
+        //         : "red" // Default red for other status
+        //     }`,
+        //     textDecoration: "none",
+        //     fontWeight: "bold",
+        //     textTransform: "uppercase",
+        //   }}
+        // >
+        //   {data?.row?.original?.status}
+        // </NavLink>
       );
     },
   },
@@ -330,8 +547,9 @@ export const invited_bids_column = [
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
-    width: 150,
+    width: 100,
     Cell: (data) => {
+      // console.log(data?.row?.original, "ol");
       return (
         <div
           className={`status-column ${data?.row?.original?.sample?.approval_status}`}
@@ -343,6 +561,8 @@ export const invited_bids_column = [
                 ? "#FFBF00" // Yellow for pending
                 : "red" // Default red for other statuses
             }`,
+            fontWeight: "",
+            textTransform: "uppercase",
           }}
         >
           {data?.row?.original?.sample?.approval_status}
@@ -441,6 +661,8 @@ export const related_bids_column = [
                 ? "#FFBF00" // Yellow for pending
                 : "red" // Default red for other statuses
             }`,
+            fontWeight: "bold",
+            textTransform: "uppercase",
           }}
         >
           {data?.row?.original?.status}
@@ -531,6 +753,7 @@ export const companies_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
+      console.log(data?.row?.original, "data?.row?.original");
       return (
         <NavLink
           className={styles["table-link"]}
@@ -619,6 +842,141 @@ export const Invite_request_column = [
     hideSortIcon: true,
   },
 ];
+
+export const Pending_request_column = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  return [
+    {
+      Header: "Company Name",
+      accessor: "name",
+      align: "left",
+      disablePadding: false,
+      width: 160,
+      Cell: (data) => {
+        return (
+          <NavLink
+            className={styles["table-link"]}
+            to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
+          >
+            {data?.row?.original?.requestor?.name}
+          </NavLink>
+        );
+      },
+    },
+    {
+      Header: "Company Email",
+      accessor: "business_email",
+      align: "left",
+      disablePadding: false,
+      width: 160,
+      Cell: (data) => {
+        return data?.row?.original?.requestor?.business_email;
+      },
+    },
+    {
+      Header: "Mobile No.",
+      accessor: "business_mobile",
+      align: "left",
+      disablePadding: false,
+      width: 150,
+      Cell: (data) => {
+        console.log(data?.row?.original.id, "yoyo");
+        return data?.row?.original?.requestor?.business_mobile;
+      },
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      align: "center",
+      disablePadding: false,
+      width: 100,
+      hideSortIcon: true,
+    },
+    {
+      Header: "",
+      accessor: "delete",
+      align: "center",
+      disablePadding: false,
+      width: 80,
+      Cell: (data) => {
+        console.log(data?.row?.original.id, "jojo");
+        return (
+          <DeleteConfirmation
+            id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
+            onDeleteConfirm={(id) => onDeleteBidClick(id, dispatch, navigate)} // Pass dispatch and navigate
+          />
+        );
+      },
+    },
+  ];
+};
+
+// export const Pending_request_column = [
+//   {
+//     Header: "Company Name",
+//     accessor: "name",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//     Cell: (data) => {
+//       return (
+//         <NavLink
+//           className={styles["table-link"]}
+//           to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
+//         >
+//           {data?.row?.original?.requestor?.name}
+//         </NavLink>
+//       );
+//     },
+//   },
+//   {
+//     Header: "Company Email",
+//     accessor: "business_email",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//     Cell: (data) => {
+//       return data?.row?.original?.requestor?.business_email;
+//     },
+//   },
+//   {
+//     Header: "Mobile No.",
+//     accessor: "business_mobile",
+//     align: "left",
+//     disablePadding: false,
+//     width: 150,
+//     Cell: (data) => {
+//       console.log(data?.row?.original.id, "yoyo");
+//       return data?.row?.original?.requestor?.business_mobile;
+//     },
+//   },
+//   {
+//     Header: "Action",
+//     accessor: "action",
+//     align: "center",
+//     disablePadding: false,
+//     width: 100,
+//     hideSortIcon: true,
+//   },
+//   {
+//     Header: "",
+//     accessor: "delete",
+//     align: "center",
+//     disablePadding: false,
+//     width: 80,
+//     Cell: (data) => {
+//       console.log(data?.row?.original.id, "jojo");
+//       return (
+//         <DeleteConfirmation
+//           id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
+//           onDeleteConfirm={onDeleteBidClick}
+//         />
+//       );
+//     },
+//   },
+// ];
 
 export const l1_participants_column = [
   {
@@ -757,7 +1115,7 @@ export const PreviousBids_column = [
     disablePadding: false,
     width: 180,
     Cell: (data) => {
-      console.log("data?.row?.original", data?.row?.original);
+      // console.log("data?.row?.original", data?.row?.original);
       return dateTimeFormatter(data?.row?.original?.bid_close_date);
     },
   },
@@ -769,7 +1127,7 @@ export const PreviousBids_column = [
     width: 100,
     hideSortIcon: true,
     Cell: (data) => {
-      console.log("data?.row?.original", data?.row?.original);
+      // console.log("data?.row?.original", data?.row?.original);
       return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
     },
   },

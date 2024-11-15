@@ -25,6 +25,7 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 import { dateValidator } from "../../../helpers/validation";
 import { useLocation } from "react-router-dom";
+import { useBidData } from "./BidCategories";
 
 const BidForm = () => {
   const {
@@ -47,14 +48,15 @@ const BidForm = () => {
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
-  // const [bidId, setBidId] = useState("");
+  const { formData ,productData  } =
+  useBidData();
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
-  const { formData, productData } = location.state || {};
+  // const { formData, productData } = location.state || {};
   console.log(productData, "productData");
   console.log(formData, "formData");
 

@@ -54,7 +54,7 @@ const CompanyListPage = () => {
             aria-label="companies-list-tabs"
           >
             <Tab label="ALL COMPANIES" {...a11yProps(0)} />
-            {id ? null : <Tab label="INVITE REQUESTS" {...a11yProps(1)} />}
+            {/* {id ? null : <Tab label="INVITE REQUESTS" {...a11yProps(1)} />} */}
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>

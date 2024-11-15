@@ -49,7 +49,6 @@ const Summary = ({ bidDetails }) => {
     message: "",
     id: null,
   });
-  console.log("bidDetails : ", bidDetails);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   useEffect(() => {
@@ -840,7 +839,50 @@ const Summary = ({ bidDetails }) => {
         </Accordion>
       )}
 
-      {type === "invited" ? null : (
+      {type === "invited" ? (
+        <>
+          <div className="container-fluid">
+            <div className={styles["blue-container"]}>
+              <div className={styles["note-header"]}>
+                Note: Navigating Supplier Dashboard
+              </div>
+              <div className={styles["note-description"]}>
+                As a supplier on Bidding Kro, you have access to a range of
+                tools to help manage your interactions and track the status of
+                your bids. Here's an overview of each panel:
+              </div>
+              <div className={cn("mt-3", styles["note-list"])}>
+                <ul>
+                  <li>
+                    <strong>Documents Panel:</strong> View and download all
+                    documents uploaded by the buyer. This panel keeps you
+                    informed of all bid-related documentation you need for
+                    reference and compliance.
+                  </li>
+                  <li>
+                    <strong>Acceptance Status:</strong> Monitor the status of
+                    your bid acceptance from the supplier’s end. This panel
+                    shows whether your bid has been accepted, rejected, or is
+                    still pending with the buyer.
+                  </li>
+                  <li>
+                    <strong>Questions:</strong> Find questions from the buyer
+                    directed to you, the supplier. Here, you can view and
+                    respond to buyer inquiries to ensure clarity and enhance bid
+                    collaboration.
+                  </li>
+                  <li>
+                    <strong>Remarks:</strong> Leave your remarks or feedback for
+                    the buyer regarding the bid. This feature allows you to
+                    communicate any observations, requests, or comments
+                    directly.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
         <div className="container-fluid">
           <div className={styles["blue-container"]}>
             <div className={styles["note-header"]}>

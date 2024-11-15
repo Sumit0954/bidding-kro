@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
+import { useBidData } from "./BidCategories";
 
 const BidProducts = () => {
   const { control, handleSubmit, setError, setValue, reset } = useForm();
@@ -29,6 +30,7 @@ const BidProducts = () => {
   const { id } = useParams(); // id is bid_id
   const [loading, setLoading] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
+  const { formData, productData } = useBidData();
   const { setAlert } = useContext(AlertContext);
   const MAX_PRODUCTS = 5;
 
@@ -39,7 +41,6 @@ const BidProducts = () => {
   const [productList, setProductList] = useState([]); // For fetched products
   const [expanded, setExpanded] = useState(null); // Track which form is open
 
-  const { productData } = location.state || {};
   console.log(productData, "productData");
 
   // Function to fetch product list
@@ -462,7 +463,7 @@ const BidProducts = () => {
                 type="button"
                 className={cn("btn", "button")}
                 // disabled={bidStatus === "cancelled" ? true : false}
-                onClick={() => navigate(`/portal/bids/products/${id}`)}
+                onClick={() => navigate(`/portal/bids/update/${id}`)}
               >
                 Back
               </button>
