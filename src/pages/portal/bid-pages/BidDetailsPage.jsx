@@ -7,6 +7,7 @@ import {
   Tab,
   Tabs,
   Typography,
+  Badge,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -140,6 +141,7 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
+            console.log(response.data, "badge");
             setBidDetails(response.data);
           }
         } catch (error) {
@@ -308,14 +310,26 @@ const BidDetailsPage = () => {
             ? [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                // <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                <Tab
+                  label={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {bidDetails?.participant?.status === "pending" ? (
+                        <Badge color="success" variant="dot" />
+                      ) : null}
+                      <span>Acceptance Status</span>
+                    </Box>
+                  }
+                  {...a11yProps(2)}
+                  key={2}
+                />,
                 <Tab label="Questions" {...a11yProps(3)} key={3} />,
                 <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Pending Request" {...a11yProps(2)} key={2} />,
+                <Tab label="Pending Requests" {...a11yProps(2)} key={2} />,
 
                 type !== "related" && (
                   <Tab

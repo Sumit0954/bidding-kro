@@ -52,4 +52,5 @@ export const PortalApiUrls = Object.freeze({
   BID_INVITED_REQUESTS: "/bid/customer/related/requested/",
   REMARK: "/bid/customer/remark/",
   PREVIOUS_BID: "/bid/customer/previous/",
+  DELETE_BID_REQUEST: "/bid/customer/related/request/",
 });

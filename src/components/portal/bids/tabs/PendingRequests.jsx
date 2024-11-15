@@ -26,6 +26,8 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [requestBids, setRequestBids] = useState([]);
 
+  const columns = Pending_request_column();
+
   const { control } = useForm();
 
   const handleInvite = (data) => {
@@ -195,7 +197,7 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
       <br />
       <div className="container">
         <DataTable
-          propsColumn={Pending_request_column}
+          propsColumn={columns}
           propsData={requestBids || []}
           action={addAction}
           customClassName="admin-data-table"

@@ -6,6 +6,7 @@ import { AuthContext } from "./AuthProvider";
 export const UserDetailsContext = createContext();
 const UserDetailsProvider = (props) => {
   const [userDetails, setUserDetails] = useState({});
+  const [noCompany, setNoCompany] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
 
   const getUserProfile = async () => {
@@ -18,6 +19,7 @@ const UserDetailsProvider = (props) => {
       );
       if (response.status === 200) {
         setUserDetails(response.data);
+        setNoCompany(response.data.company === null);
       }
     } catch (error) {
       console.log(error);
@@ -31,7 +33,9 @@ const UserDetailsProvider = (props) => {
   }, [isAuthenticated]);
 
   return (
-    <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
+    <UserDetailsContext.Provider
+      value={{ userDetails, setUserDetails, noCompany }}
+    >
       {props.children}
     </UserDetailsContext.Provider>
   );

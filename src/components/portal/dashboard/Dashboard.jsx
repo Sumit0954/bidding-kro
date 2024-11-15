@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./Dashboard.module.scss";
 import cn from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Alert, AlertTitle, Button } from "@mui/material";
-
+import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 
 function Dashboard() {
   const naviagte = useNavigate();
+  const { noCompany } = useContext(UserDetailsContext);
   return (
     <>
       {/* <div className="container">
@@ -33,25 +34,27 @@ function Dashboard() {
           </div>
         </div>
       </div> */}
-      <Alert severity="warning" className="my-3">
-        <AlertTitle sx={{ fontWeight: "bold" }}>
-          Warning: Company Creation Required
-        </AlertTitle>
-        Your account is registered, but you haven’t created a company yet.
-        Please click the button below to create your company profile and proceed
-        further:
-        <br />
-        <br />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => naviagte("/company-profile/create")}
-          sx={{ marginTop: "8px" }}
-          className={styles["create-comp-btn"]}
-        >
-          Create Company Profile
-        </Button>
-      </Alert>
+      {noCompany && (
+        <Alert severity="warning" className="my-3">
+          <AlertTitle sx={{ fontWeight: "bold" }}>
+            Warning: Company Creation Required
+          </AlertTitle>
+          Your account is registered, but you haven’t created a company yet.
+          Please click the button below to create your company profile and
+          proceed further:
+          <br />
+          <br />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => naviagte("company-profile/create")}
+            sx={{ marginTop: "8px" }}
+            className={styles["create-comp-btn"]}
+          >
+            Create Company Profile
+          </Button>
+        </Alert>
+      )}
     </>
   );
 }
