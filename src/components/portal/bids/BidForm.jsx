@@ -48,8 +48,8 @@ const BidForm = () => {
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
-  const { formData ,productData  } =
-  useBidData();
+  // const { formData ,productData  } =
+  // useBidData();
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
@@ -57,6 +57,9 @@ const BidForm = () => {
     .toISOString()
     .split("T")[0];
   // const { formData, productData } = location.state || {};
+
+  const formData = JSON.parse(localStorage.getItem("formData"));
+  const productData = JSON.parse(localStorage.getItem("productData"));
   console.log(productData, "productData");
   console.log(formData, "formData");
 

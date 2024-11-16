@@ -21,7 +21,7 @@ const BidCategories = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [bidStatus, setBidStatus] = useState("");
-  const { setBidformdata, setBidProductData } = useBidData();
+  // const { setBidformdata, setBidProductData } = useBidData();
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -181,14 +181,15 @@ const BidCategories = () => {
         severity: "success",
       });
 
+      localStorage.setItem("formData", JSON.stringify(formData));
+      localStorage.setItem("productData", JSON.stringify(productData));
+
       if (id) {
         navigate(`/portal/bids/update/${id}`, {
           state: { formData, productData },
         });
-
-        setBidformdata(formData);
-        setBidProductData(productData);
       } else {
+        console.log(formData, productData, "ppff");
         navigate("/portal/bids/create", { state: { formData, productData } });
       }
     }

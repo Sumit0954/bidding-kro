@@ -30,12 +30,16 @@ const BidProducts = () => {
   const { id } = useParams(); // id is bid_id
   const [loading, setLoading] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { formData, productData } = useBidData();
+  // const { formData, productData } = useBidData();
   const { setAlert } = useContext(AlertContext);
   const MAX_PRODUCTS = 5;
 
   const location = useLocation();
   console.log(location.state, "location.state");
+  // const { productData } = location.state || {};
+
+  const formData = JSON.parse(localStorage.getItem("formData"));
+  const productData = JSON.parse(localStorage.getItem("productData"));
 
   const [addFormOpen, setAddFormOpen] = useState(false); // To track if add product form is open
   const [productList, setProductList] = useState([]); // For fetched products
