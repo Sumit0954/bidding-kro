@@ -201,60 +201,62 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     <>
       <div className="container">
         <div className="row">
-        {bidDetails?.bid_open_date === null ? (
-          <form onSubmit={handleSubmit(submitdate)}>
-            <div className="row">
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Opening Date & Time"
-                  name="bid_start_date"
-                  rules={{
-                    required: "Opening Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+          {bidDetails?.type === "L1" && bidDetails?.bid_open_date === null ? (
+            <form onSubmit={handleSubmit(submitdate)}>
+              <div className="row">
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Opening Date & Time"
+                    name="bid_start_date"
+                    rules={{
+                      required: "Opening Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Closing Date & Time"
+                    name={"bid_end_date"}
+                    rules={{
+                      required: "Closing Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
               </div>
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Closing Date & Time"
-                  name={"bid_end_date"}
-                  rules={{
-                    required: "Closing Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+              <div className="row mt-3">
+                <div className="col-12">
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      className={styles["form-button"]}
+                      onClick={() => setShowSubmittedDated(true)}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="row mt-3">
-              <div className="col-12">
-                {loading ? (
-                  <ButtonLoader size={60} />
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    className={styles["form-button"]}
-                    onClick={() => setShowSubmittedDated(true)}
-                  >
-                    Submit
-                  </Button>
-                )}
-              </div>
-            </div>
-          </form>
-           ) : (
+            </form>
+          ) : (
             <></>
           )}
         </div>

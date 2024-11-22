@@ -29,6 +29,7 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
+import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 
 const SampleReceiving = ({ bidDetails, participant }) => {
   const {
@@ -56,7 +57,11 @@ const SampleReceiving = ({ bidDetails, participant }) => {
     (p) => p.sample?.invite_status === "accepted"
   );
 
-  // console.log(filteredParticipants, "filteredParticipants");
+  console.log(filteredParticipants, "filteredParticipants");
+
+  const isApproved = filteredParticipants.some(
+    (p) => p.sample?.approval_status === "approved"
+  );
 
   const { setAlert } = useContext(AlertContext);
   console.log(bidDetails);
@@ -324,6 +329,65 @@ const SampleReceiving = ({ bidDetails, participant }) => {
               />
             </AccordionDetails>
           </Accordion>
+        )}
+
+        {isApproved ? (
+          <form
+          // onSubmit={handleSubmit(submitdate)}
+          >
+            <div className="row">
+              <div className="col-lg-6">
+                <DateTimeRangePicker
+                  control={control}
+                  label="Opening Date & Time"
+                  name="bid_start_date"
+                  rules={{
+                    required: "Opening Date & Time is required.",
+                    validate: (value) => dateValidator(value, minDate, maxDate),
+                  }}
+                  textFieldProps={{
+                    min: `${minDate}T12:00`,
+                    max: `${maxDate}T17:00`,
+                  }}
+                  clearErrors={clearErrors}
+                />
+              </div>
+              <div className="col-lg-6">
+                <DateTimeRangePicker
+                  control={control}
+                  label="Closing Date & Time"
+                  name={"bid_end_date"}
+                  rules={{
+                    required: "Closing Date & Time is required.",
+                    validate: (value) => dateValidator(value, minDate, maxDate),
+                  }}
+                  textFieldProps={{
+                    min: `${minDate}T12:00`,
+                    max: `${maxDate}T17:00`,
+                  }}
+                  clearErrors={clearErrors}
+                />
+              </div>
+            </div>
+            <div className="row mt-3">
+              <div className="col-12">
+                {loading ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className={styles["form-button"]}
+                    // onClick={() => setShowSubmittedDated(true)}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </div>
+            </div>
+          </form>
+        ) : (
+          <></>
         )}
       </div>
     </>

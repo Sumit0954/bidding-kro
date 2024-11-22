@@ -232,15 +232,32 @@ export const created_bids_column = [
               width: "10px",
               height: "10px",
               borderRadius: "50%",
-              backgroundColor: hasRequest ? "#22bb33" : "#ccc",
+              backgroundColor: hasRequest ? "#FFBF00" : "#ccc",
+              animation: hasRequest ? "blink 1s infinite" : "none",
             }}
           ></div>
+
+          <style>
+            {`
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  `}
+          </style>
 
           <span
             onClick={handleViewRequestClick}
             style={{
-              color: hasRequest ? "#22bb33" : "#0d6efd",
-              // fontWeight: "bold",
+              color: hasRequest ? "#FFBF00" : "#0d6efd",
+              fontWeight: hasRequest ? "500" : "",
               textDecoration: "none",
               cursor: "pointer",
             }}
@@ -290,10 +307,15 @@ export const created_bids_column = [
           className={`status-cloumn ${data?.row?.original?.status}`}
           style={{
             color: `${
-              data?.row?.original?.status === "active" ||
-              data?.row?.original?.status === "awarded"
-                ? "#22bb33"
-                : "darkyellow"
+              data?.row?.original?.status === "active"
+                ? "#22bb33" // Green for active
+                : data?.row?.original?.status === "awarded"
+                ? "#B08D57" // Gold for awarded
+                : data?.row?.original?.status === "pending"
+                ? "#FFBF00" // Yellow for pending
+                : data?.row?.original?.status === "cancelled"
+                ? "red" // Red for canceled
+                : "black" // Default
             }`,
             textTransform: "uppercase",
             fontWeight: "bold",
@@ -470,6 +492,7 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 100,
     Cell: (data) => {
+      console.log(data?.row?.original, "data?.row?.original");
       const bidId = data?.row?.original?.bid?.id;
 
       const dispatch = useDispatch();
@@ -489,34 +512,126 @@ export const invited_bids_column = [
             gap: "0.5rem",
           }}
         >
+          {/* <div
+            style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor:
+                data?.row?.original?.bid?.type === "L1"
+                  ? data?.row?.original?.status === "pending"
+                    ? "#22bb33"
+                    : "#ccc"
+                  : data?.row?.original?.sample?.invite_status === "pending"
+                  ? "#22bb33"
+                  : "#ccc",
+            }}
+          ></div> */}
+
           <div
             style={{
               width: "10px",
               height: "10px",
               borderRadius: "50%",
               backgroundColor:
-                data?.row?.original?.status === "pending" ? "#22bb33" : "#ccc",
+                data?.row?.original?.bid?.type === "L1"
+                  ? data?.row?.original?.status === "pending"
+                    ? "#FFBF00" // Yellow for pending
+                    : data?.row?.original?.status === "accepted"
+                    ? "#22bb33" // Green for accepted
+                    : "#ccc" // Default gray
+                  : data?.row?.original?.sample?.approval_status === "approved"
+                  ? data?.row?.original?.status === "pending" &&
+                    data?.row?.original?.bid?.bid_open_date !== null
+                    ? "#FFBF00" // Yellow for pending
+                    : data?.row?.original?.status === "accepted"
+                    ? "#22bb33" // Green for accepted
+                    : "#ccc" // Default gray
+                  : data?.row?.original?.sample?.invite_status === "pending"
+                  ? "#FFBF00" // Yellow for pending
+                  : data?.row?.original?.sample?.invite_status === "accepted"
+                  ? "#22bb33" // Green for accepted
+                  : "#ccc", // Default gray
+              animation:
+                (data?.row?.original?.bid?.type === "L1" &&
+                  data?.row?.original?.status === "pending") ||
+                (data?.row?.original?.sample?.approval_status === "approved" &&
+                  data?.row?.original?.status === "pending" &&
+                  data?.row?.original?.bid?.bid_open_date !== null) ||
+                data?.row?.original?.sample?.invite_status === "pending"
+                  ? "blink 1s infinite"
+                  : "none",
             }}
           ></div>
+
+          <style>
+            {`
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  `}
+          </style>
 
           <span
             onClick={handleViewRequestClick}
             className={`status-column ${data?.row?.original?.status}`}
             style={{
               color: `${
-                data?.row?.original?.status === "accepted"
+                data?.row?.original?.bid?.type === "L1"
+                  ? data?.row?.original?.status === "accepted"
+                    ? "#22bb33" // Green for accepted
+                    : data?.row?.original?.status === "pending"
+                    ? "#FFBF00" // Yellow for pending
+                    : "red" // Default red for other status
+                  : data?.row?.original?.sample?.approval_status === "approved"
+                  ? data?.row?.original?.status === "accepted"
+                    ? "#22bb33" // Green for accepted
+                    : data?.row?.original?.status === "pending" &&
+                      data?.row?.original?.bid?.bid_open_date !== null
+                    ? "#FFBF00" // Yellow for pending
+                    : data?.row?.original?.status === "pending" &&
+                      data?.row?.original?.bid?.bid_open_date === null
+                    ? "#22bb33"
+                    : "red" // Default red for other status
+                  : data?.row?.original?.sample?.invite_status === "accepted"
                   ? "#22bb33" // Green for accepted
-                  : data?.row?.original?.status === "pending"
+                  : data?.row?.original?.sample?.invite_status === "pending"
                   ? "#FFBF00" // Yellow for pending
-                  : "red" // Default red for other status
+                  : "red" // Default red for other invite status
               }`,
               textDecoration: "none",
-              fontWeight:
-                data?.row?.original?.status === "pending" ? "bold" : "",
+              fontWeight: `${
+                data?.row?.original?.bid?.type === "L1"
+                  ? data?.row?.original?.status === "pending"
+                    ? "bold"
+                    : ""
+                  : data?.row?.original?.sample?.approval_status === "approved"
+                  ? data?.row?.original?.status === "pending" &&
+                    data?.row?.original?.bid?.bid_open_date !== null
+                    ? "bold"
+                    : ""
+                  : data?.row?.original?.sample?.invite_status === "pending"
+                  ? "bold"
+                  : ""
+              }`,
               textTransform: "uppercase",
             }}
           >
-            {data?.row?.original?.status}
+            {data?.row?.original?.bid?.type === "L1"
+              ? data?.row?.original?.status
+              : data?.row?.original?.sample?.approval_status === "approved" &&
+                data?.row?.original?.bid?.bid_open_date !== null
+              ? data?.row?.original?.status
+              : data?.row?.original?.sample?.invite_status}
+            {/* {data?.row?.original?.status} */}
           </span>
         </div>
 

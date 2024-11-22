@@ -237,7 +237,7 @@ const Summary = ({ bidDetails }) => {
               label: "Commercial Bid Invite",
               icon:
                 bidDetails?.participant?.sample?.approval_status ===
-                "approved" ? (
+                  "approved" && bidDetails?.bid_open_date !== null ? (
                   <GroupAdd style={{ color: "green" }} />
                 ) : (
                   <HourglassEmpty style={{ color: "#FFC107" }} />

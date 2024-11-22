@@ -58,6 +58,8 @@ const BidDetailsPage = () => {
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
+  console.log(bidDetails, "bidDetails");
+
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
   );
@@ -311,12 +313,72 @@ const BidDetailsPage = () => {
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
                 // <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                // <Tab
+                //   label={
+                //     <Box display="flex" alignItems="center" gap={1}>
+                //       {bidDetails?.participant?.status === "pending" ? (
+                //         <Badge color="success" variant="dot" />
+                //       ) : null}
+                //       <span>Acceptance Status</span>
+                //     </Box>
+                //   }
+                //   {...a11yProps(2)}
+                //   key={2}
+                // />,
                 <Tab
                   label={
                     <Box display="flex" alignItems="center" gap={1}>
-                      {bidDetails?.participant?.status === "pending" ? (
-                        <Badge color="success" variant="dot" />
+                      {/* {bidDetails?.participant?.status === "pending" ? (
+                        <Box
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            backgroundColor: "#FFBF00", // Green for pending
+                            animation: "blink 1s infinite",
+                          }}
+                        />
+                      ) : null} */}
+
+                      {bidDetails?.type === "L1" ? (
+                        bidDetails?.participant?.status === "pending" ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Yellow for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null
+                      ) : bidDetails?.participant?.sample?.approval_status ===
+                        "approved" ? (
+                        bidDetails?.participant?.status === "pending" &&
+                        bidDetails?.bid_open_date !== null ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Yellow for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null
+                      ) : bidDetails?.participant?.sample?.invite_status ===
+                        "pending" ? (
+                        <Box
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            backgroundColor: "#FFBF00", // Yellow for pending
+                            animation: "blink 1s infinite",
+                          }}
+                        />
                       ) : null}
+
                       <span>Acceptance Status</span>
                     </Box>
                   }
