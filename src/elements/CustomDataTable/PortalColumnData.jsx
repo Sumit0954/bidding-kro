@@ -302,8 +302,18 @@ export const created_bids_column = [
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
+      const bidId = data?.row?.original?.id;
+
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = () => {
+        dispatch(setActiveTab(0)); // Set the active tab
+        navigate(`/portal/bids/details/${bidId}`);
+      };
       return (
         <div
+          onClick={handleViewRequestClick}
           className={`status-cloumn ${data?.row?.original?.status}`}
           style={{
             color: `${

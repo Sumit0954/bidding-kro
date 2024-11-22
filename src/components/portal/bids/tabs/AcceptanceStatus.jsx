@@ -778,8 +778,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               ((participant?.sample?.invite_status === "accepted" &&
                 participant?.sample?.approval_status === "pending") ||
                 // (participant?.sample?.approval_status === "approved" &&
-                //   bidDetails?.bid_open_date !== null) ||
-                participant?.sample?.approval_status === "approved" ||
+                //   bidDetails?.bid_open_date !== null && participant?.status === "accepted") ||
                 participant?.sample?.invite_status === "declined")) ? (
               <button
                 type="button"
