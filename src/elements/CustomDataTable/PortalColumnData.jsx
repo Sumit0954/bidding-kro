@@ -315,6 +315,7 @@ export const created_bids_column = [
         <div
           onClick={handleViewRequestClick}
           className={`status-cloumn ${data?.row?.original?.status}`}
+          
           style={{
             color: `${
               data?.row?.original?.status === "active"
@@ -878,7 +879,6 @@ export const companies_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      console.log(data?.row?.original, "data?.row?.original");
       return (
         <NavLink
           className={styles["table-link"]}
@@ -1258,7 +1258,7 @@ export const PreviousBids_column = [
   },
 ];
 
-export const Sample_Bid_Invitations_column = [
+export const Sample_Bid_Invitations_column = ({id}) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
@@ -1276,6 +1276,34 @@ export const Sample_Bid_Invitations_column = [
     disablePadding: false,
     width: 150, // Add a uniform width
     Cell: (data) => {
+
+      const [participant, setParticipant] = useState();
+
+      console.log("id : " , id)
+
+      // useEffect(() => {
+      //   if (bidDetails?.id) {
+      //     const getParticipants = async () => {
+      //       try {
+      //         const response = await _sendAPIRequest(
+      //           "GET",
+      //           PortalApiUrls.PARTICIPANTS_LIST + `${bidDetails?.id}/`,
+      //           "",
+      //           true
+      //         );
+      //         if (response.status === 200) {
+      //           const participants = response.data.participants;
+      //           setParticipant(response.data);
+      //         }
+      //       } catch (error) {
+      //         console.log(error);
+      //       }
+      //     };
+    
+      //     getParticipants();
+      //   }
+      // }, [bidDetails?.id]);
+
       const [status, setStatus] = useState(
         data.row.original.sample.is_received
       );

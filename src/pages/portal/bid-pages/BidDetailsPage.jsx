@@ -58,7 +58,6 @@ const BidDetailsPage = () => {
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
-  console.log(bidDetails, "bidDetails");
 
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
@@ -123,7 +122,7 @@ const BidDetailsPage = () => {
       Bids
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {truncatelength(bidDetails?.title, 50)}
+      {truncatelength(bidDetails?.title, 30)}
     </Typography>,
   ];
 
@@ -143,7 +142,6 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
-            console.log(response.data, "badge");
             setBidDetails(response.data);
           }
         } catch (error) {
@@ -395,7 +393,7 @@ const BidDetailsPage = () => {
 
                 type !== "related" && (
                   <Tab
-                    label="Invite Suppliers"
+                    label="Invited Suppliers"
                     {...a11yProps(3)}
                     key={3}
                     disabled={shouldDisableTab}
@@ -492,6 +490,8 @@ const BidDetailsPage = () => {
               participant={participant}
               // onActionComplete={() => setValue(2)}
               onActionComplete={() => dispatch(setActiveTab(2))}
+              id = {id}
+              type = {type}
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (

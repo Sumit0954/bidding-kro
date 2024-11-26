@@ -164,11 +164,6 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                       Bid Closing Date : {bidDetails?.bid_close_date}
                     </ListItem>
                   </List>
-                  <Typography variant="body1">
-                    Your sample will be reviewed by the buyer. Once it is
-                    approved, you will be notified and can proceed with the
-                    bidding process.
-                  </Typography>
                 </Box>
 
                 {/* Paragraph 3 */}

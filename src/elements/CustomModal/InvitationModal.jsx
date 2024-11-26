@@ -17,7 +17,6 @@ const InvitationModal = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-
   const handleClose = () => {
     setInvitation(false);
   };
@@ -100,9 +99,23 @@ const InvitationModal = ({
                 </Box>
               </Box>
 
-              {/* <Box className="row mb-2">
-                <Box className="col text-start">{bidDetails?.title}</Box>
-              </Box> */}
+              <Box className="row mb-2">
+                <Box
+                  className="col-lg-4 text-start"
+                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                >
+                  {bidDetails?.title}
+                </Box>
+                <Box
+                  className="col-lg-4 text-start"
+                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                >
+                  {bidDetails?.type}
+                </Box>
+                <Box className="col-lg-4 text-start">
+                  {bidDetails?.bid_close_date}
+                </Box>
+              </Box>
 
               <Box className="row">
                 <Box className="row">

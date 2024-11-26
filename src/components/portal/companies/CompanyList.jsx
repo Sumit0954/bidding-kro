@@ -32,7 +32,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   const [requestBids, setRequestBids] = useState([]);
 
   const { control } = useForm();
-
   const handleInvite = (data) => {
     setInvitation(true);
     // console.log("data.row.original", data.row.original);
@@ -92,7 +91,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
         );
 
         if (response.status === 200) {
-          console.log("response?.data", response?.data);
           setRequestBids(response?.data);
         }
       } catch (error) {}
@@ -139,14 +137,14 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
     }
   };
 
-  const handleCategorySelection = (selected) => {
-    console.log(selected, "Selected category");
-    if (selected && selected.value) {
-      setRootCategory(selected.value);
-    } else {
-      setRootCategory(null);
-    }
-  };
+  // const handleCategorySelection = (selected) => {
+  //   console.log(selected, "Selected category");
+  //   if (selected && selected.value) {
+  //     setRootCategory(selected.value);
+  //   } else {
+  //     setRootCategory(null);
+  //   }
+  // };
 
   const getCategories = async (parent_categories, depth) => {
     const params = new URLSearchParams();
@@ -187,9 +185,9 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
     setSelectedCategory(rootCategory);
   }, [rootCategory]);
 
-  const handleOptionChange = (ancestors) => {
-    setSelectedCategory(ancestors);
-  };
+  // const handleOptionChange = (ancestors) => {
+  //   setSelectedCategory(ancestors);
+  // };
 
   useEffect(() => {}, [rootCategory]);
 
