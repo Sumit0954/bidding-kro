@@ -6,7 +6,7 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, MenuItem, FormControl } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../store/tabSlice";
@@ -23,7 +23,7 @@ const patchBidStatus = async (id, formData) => {
     );
 
     if (response.status === 204) {
-      window.location.reload();
+      // window.location.reload();
       // setAlert({
       //   isVisible: true,
       //   message: "Your Bid Status Updated sucessfully",
@@ -315,7 +315,6 @@ export const created_bids_column = [
         <div
           onClick={handleViewRequestClick}
           className={`status-cloumn ${data?.row?.original?.status}`}
-          
           style={{
             color: `${
               data?.row?.original?.status === "active"
@@ -1258,7 +1257,7 @@ export const PreviousBids_column = [
   },
 ];
 
-export const Sample_Bid_Invitations_column = ({id}) => [
+export const Sample_Bid_Invitations_column = ({ id }) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
@@ -1276,33 +1275,31 @@ export const Sample_Bid_Invitations_column = ({id}) => [
     disablePadding: false,
     width: 150, // Add a uniform width
     Cell: (data) => {
-
       const [participant, setParticipant] = useState();
 
-      console.log("id : " , id)
+      useEffect(() => {
+        if (id) {
+          const getParticipants = async () => {
+            try {
+              const response = await _sendAPIRequest(
+                "GET",
+                PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
+                "",
+                true
+              );
+              if (response.status === 200) {
+                // const participants = response.data.participants;
+                setParticipant(response.data);
+                console.log("data :", response.data.participants);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          };
 
-      // useEffect(() => {
-      //   if (bidDetails?.id) {
-      //     const getParticipants = async () => {
-      //       try {
-      //         const response = await _sendAPIRequest(
-      //           "GET",
-      //           PortalApiUrls.PARTICIPANTS_LIST + `${bidDetails?.id}/`,
-      //           "",
-      //           true
-      //         );
-      //         if (response.status === 200) {
-      //           const participants = response.data.participants;
-      //           setParticipant(response.data);
-      //         }
-      //       } catch (error) {
-      //         console.log(error);
-      //       }
-      //     };
-    
-      //     getParticipants();
-      //   }
-      // }, [bidDetails?.id]);
+          getParticipants();
+        }
+      }, [id, participant?.sample?.is_received , participant?.sample?.approval_status]);
 
       const [status, setStatus] = useState(
         data.row.original.sample.is_received
@@ -1311,6 +1308,10 @@ export const Sample_Bid_Invitations_column = ({id}) => [
       const handleStatusChange = (event) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
+        setParticipant((prevDetails) => ({
+          ...prevDetails,
+          is_received: newStatus,
+        }));
 
         const formData = {
           is_received: newStatus,
@@ -1347,6 +1348,7 @@ export const Sample_Bid_Invitations_column = ({id}) => [
     disablePadding: false,
     width: 150, // Add a uniform width
     Cell: (data) => {
+      const [participant, setParticipant] = useState();
       const [status, setStatus] = useState(
         data.row.original.sample.approval_status === "rejected"
           ? "reject"
@@ -1368,6 +1370,11 @@ export const Sample_Bid_Invitations_column = ({id}) => [
           true,
           data.row.original.company.id
         );
+
+        setParticipant((prevDetails) => ({
+          ...prevDetails,
+          approval_status: newActionStatus,
+        }));
       };
 
       return (

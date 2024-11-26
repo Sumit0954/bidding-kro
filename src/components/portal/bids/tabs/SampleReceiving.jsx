@@ -75,6 +75,10 @@ const SampleReceiving = ({ participant }) => {
     id: null,
   });
 
+  const SampleBidInvitationscolumn = Sample_Bid_Invitations_column({
+    id,
+  });
+
   // ---------- SUBMIT SAMPLE DATES --------------
 
   const sampleStartDate = watch("sample_receive_start_date");
@@ -120,10 +124,6 @@ const SampleReceiving = ({ participant }) => {
     bidDetails?.bid_open_date,
     bidDetails?.bid_close_date,
   ]);
-  
-
-
-
 
   const submitSampledates = async () => {
     setLoading(true);
@@ -467,7 +467,7 @@ const SampleReceiving = ({ participant }) => {
 
             <AccordionDetails>
               <DataTable
-                propsColumn={Sample_Bid_Invitations_column(id)}
+                propsColumn={SampleBidInvitationscolumn}
                 propsData={filteredParticipants || []}
                 // action={addSampleRecivedAction}
               />
