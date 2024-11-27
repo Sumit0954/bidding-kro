@@ -128,4 +128,12 @@
   }
 }
 
+.navigator{
+  cursor: pointer;
+}
+
+.navigator:hover{
+  color: var(--secondary-color)
+}
+
 

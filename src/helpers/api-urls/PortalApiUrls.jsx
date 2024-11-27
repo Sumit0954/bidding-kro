@@ -53,4 +53,5 @@ export const PortalApiUrls = Object.freeze({
   REMARK: "/bid/customer/remark/",
   PREVIOUS_BID: "/bid/customer/previous/",
   DELETE_BID_REQUEST: "/bid/customer/related/request/",
+  SET_LIVE_DATES : "/bid/customer/set_date/"
 });

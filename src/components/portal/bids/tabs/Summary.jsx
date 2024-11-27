@@ -37,12 +37,16 @@ import {
   GroupAdd,
 } from "@mui/icons-material";
 import { Step, StepLabel, Stepper } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../../../store/tabSlice";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
   const { setAlert } = useContext(AlertContext);
   const [showSpecification, setShowSpecification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [screenLoader, setScreenLoader] = useState(true);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -111,6 +115,13 @@ const Summary = ({ bidDetails }) => {
     return title?.length > maxlength
       ? title.substring(0, maxlength) + "..."
       : title;
+  };
+
+  const dispatch = useDispatch();
+
+
+  const handleViewRequestClick = (tabvalue) => {
+    dispatch(setActiveTab(tabvalue)); // Set the active tab
   };
 
   let steps = [];
@@ -237,7 +248,7 @@ const Summary = ({ bidDetails }) => {
               label: "Commercial Bid Invite",
               icon:
                 bidDetails?.participant?.sample?.approval_status ===
-                "approved" ? (
+                  "approved" && bidDetails?.bid_open_date !== null ? (
                   <GroupAdd style={{ color: "green" }} />
                 ) : (
                   <HourglassEmpty style={{ color: "#FFC107" }} />
@@ -280,6 +291,8 @@ const Summary = ({ bidDetails }) => {
         : []),
     ];
   }
+
+
 
   return (
     <>
@@ -854,25 +867,25 @@ const Summary = ({ bidDetails }) => {
               <div className={cn("mt-3", styles["note-list"])}>
                 <ul>
                   <li>
-                    <strong>Documents Panel:</strong> View and download all
+                    <strong onClick={()=>handleViewRequestClick(1)} className={styles["navigator"]}>Documents Panel:</strong> View and download all
                     documents uploaded by the buyer. This panel keeps you
                     informed of all bid-related documentation you need for
                     reference and compliance.
                   </li>
                   <li>
-                    <strong>Acceptance Status:</strong> Monitor the status of
+                    <strong onClick={()=>handleViewRequestClick(2)} className={styles["navigator"]}>Acceptance Status:</strong> Monitor the status of
                     your bid acceptance from the supplier’s end. This panel
                     shows whether your bid has been accepted, rejected, or is
                     still pending with the buyer.
                   </li>
                   <li>
-                    <strong>Questions:</strong> Find questions from the buyer
+                    <strong onClick={()=>handleViewRequestClick(3)} className={styles["navigator"]}>Questions:</strong> Find questions from the buyer
                     directed to you, the supplier. Here, you can view and
                     respond to buyer inquiries to ensure clarity and enhance bid
                     collaboration.
                   </li>
                   <li>
-                    <strong>Remarks:</strong> Leave your remarks or feedback for
+                    <strong onClick={()=>handleViewRequestClick(4)} className={styles["navigator"]}>Remarks:</strong> Leave your remarks or feedback for
                     the buyer regarding the bid. This feature allows you to
                     communicate any observations, requests, or comments
                     directly.

@@ -8,6 +8,7 @@ import {
   Tabs,
   Typography,
   Badge,
+  Tooltip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -41,6 +42,7 @@ import CompanyList from "../../../components/portal/companies/CompanyList";
 import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -55,6 +57,8 @@ const BidDetailsPage = () => {
   const status = new URLSearchParams(useLocation().search).get("status");
   const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
   const [participant, setParticipant] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
@@ -71,6 +75,10 @@ const BidDetailsPage = () => {
   const handleChange = (event, newValue) => {
     // setValue(newValue);
     dispatch(setActiveTab(newValue));
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1); // Increment the refresh key
   };
 
   const truncatelength = (title, maxlength) => {
@@ -120,9 +128,11 @@ const BidDetailsPage = () => {
     >
       Bids
     </NavLink>,
-    <Typography key="2" color="text.primary">
-      {truncatelength(bidDetails?.title, 50)}
-    </Typography>,
+    <Tooltip title={bidDetails?.title || ""} arrow>
+      <Typography key="2" color="text.primary" style={{ cursor: "pointer" }}>
+        {truncatelength(bidDetails?.title, 30)}
+      </Typography>
+    </Tooltip>,
   ];
 
   useEffect(() => {
@@ -141,8 +151,8 @@ const BidDetailsPage = () => {
             true
           );
           if (response.status === 200) {
-            console.log(response.data, "badge");
             setBidDetails(response.data);
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -151,7 +161,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id, type]);
+  }, [id, type, refreshKey]);
 
   useEffect(() => {
     if (bidDetails?.id) {
@@ -174,7 +184,7 @@ const BidDetailsPage = () => {
 
       getParticipants();
     }
-  }, [bidDetails?.id]);
+  }, [bidDetails?.id, refreshKey]);
 
   const isInviteDisabled =
     bidDetails?.status !== "active" ||
@@ -182,6 +192,10 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "QCBS" &&
       (bidDetails?.sample_receive_start_date === null ||
         bidDetails?.sample_receive_end_date === null));
+
+  if (screenLoader) {
+    return <ScreenLoader component={"AcceptanceStatus"} />;
+  }
 
   return (
     <>
@@ -311,12 +325,72 @@ const BidDetailsPage = () => {
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
                 // <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
+                // <Tab
+                //   label={
+                //     <Box display="flex" alignItems="center" gap={1}>
+                //       {bidDetails?.participant?.status === "pending" ? (
+                //         <Badge color="success" variant="dot" />
+                //       ) : null}
+                //       <span>Acceptance Status</span>
+                //     </Box>
+                //   }
+                //   {...a11yProps(2)}
+                //   key={2}
+                // />,
                 <Tab
                   label={
                     <Box display="flex" alignItems="center" gap={1}>
-                      {bidDetails?.participant?.status === "pending" ? (
-                        <Badge color="success" variant="dot" />
+                      {/* {bidDetails?.participant?.status === "pending" ? (
+                        <Box
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            backgroundColor: "#FFBF00", // Green for pending
+                            animation: "blink 1s infinite",
+                          }}
+                        />
+                      ) : null} */}
+
+                      {bidDetails?.type === "L1" ? (
+                        bidDetails?.participant?.status === "pending" ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Yellow for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null
+                      ) : bidDetails?.participant?.sample?.approval_status ===
+                        "approved" ? (
+                        bidDetails?.participant?.status === "pending" &&
+                        bidDetails?.bid_open_date !== null ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Yellow for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null
+                      ) : bidDetails?.participant?.sample?.invite_status ===
+                        "pending" ? (
+                        <Box
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            backgroundColor: "#FFBF00", // Yellow for pending
+                            animation: "blink 1s infinite",
+                          }}
+                        />
                       ) : null}
+
                       <span>Acceptance Status</span>
                     </Box>
                   }
@@ -329,11 +403,53 @@ const BidDetailsPage = () => {
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Pending Requests" {...a11yProps(2)} key={2} />,
 
                 type !== "related" && (
                   <Tab
-                    label="Invite Suppliers"
+                    // label="Pending Requests"
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {bidDetails?.has_bid_request ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Green for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null}
+
+                        <span>Pending Requests</span>
+                      </Box>
+                    }
+                    {...a11yProps(2)}
+                    key={2}
+                  />
+                ),
+
+                type !== "related" && (
+                  <Tab
+                    // label="Invited Suppliers"
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {bidDetails?.type === "L1" &&
+                        bidDetails?.bid_open_date == null ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Green for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null}
+
+                        <span>Invited Suppliers</span>
+                      </Box>
+                    }
                     {...a11yProps(3)}
                     key={3}
                     disabled={shouldDisableTab}
@@ -360,7 +476,24 @@ const BidDetailsPage = () => {
                   : [
                       type !== "related" && (
                         <Tab
-                          label="Sample Receiving"
+                          // label="Sample Receiving"
+                          label={
+                            <Box display="flex" alignItems="center" gap={1}>
+                              {bidDetails?.sample_receive_start_date == null ? (
+                                <Box
+                                  sx={{
+                                    width: "10px",
+                                    height: "10px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "#FFBF00", // Green for pending
+                                    animation: "blink 1s infinite",
+                                  }}
+                                />
+                              ) : null}
+
+                              <span>Sample Receiving</span>
+                            </Box>
+                          }
                           {...a11yProps(4)}
                           key={4}
                         />
@@ -393,7 +526,11 @@ const BidDetailsPage = () => {
             <Documents bidDetails={bidDetails} type={type} />
           </TabPanel>
           <TabPanel value={activeTab} index={2}>
-            <AcceptanceStatus bidDetails={bidDetails} type={type} />
+            <AcceptanceStatus
+              bidDetails={bidDetails}
+              type={type}
+              onActionComplete={handleRefresh}
+            />
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <Questions bidDetails={bidDetails} />
@@ -416,6 +553,7 @@ const BidDetailsPage = () => {
               id={id}
               tab={activeTab}
               listtype={"InviteRequest"}
+              onActionComplete={handleRefresh}
             />
             {/* <CompanyList
               bidDetails={bidDetails}
@@ -429,7 +567,10 @@ const BidDetailsPage = () => {
               bidDetails={bidDetails}
               participant={participant}
               // onActionComplete={() => setValue(2)}
-              onActionComplete={() => dispatch(setActiveTab(2))}
+              // onActionComplete={() => dispatch(setActiveTab(2))}
+              onActionComplete={handleRefresh}
+              id={id}
+              type={type}
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (
@@ -453,6 +594,7 @@ const BidDetailsPage = () => {
                 <SampleReceiving
                   bidDetails={bidDetails}
                   participant={participant}
+                  onActionComplete={handleRefresh}
                 />
               </TabPanel>
               <TabPanel value={activeTab} index={5}>

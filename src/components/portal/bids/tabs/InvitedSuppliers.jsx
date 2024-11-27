@@ -27,8 +27,10 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import CustomInput from "../../../../elements/CustomInput/CustomInput";
 import DateSubmittedModal from "../../../../elements/CustomModal/DateSubmittedModal";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../../../store/tabSlice";
 
-const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
+const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
   const {
     control,
     handleSubmit,
@@ -36,15 +38,15 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     watch,
     formState: { dirtyFields },
   } = useForm();
+  const dispatch = useDispatch();
   const [createdAt, setCreatedAt] = useState("");
-  const [deatils, setdetails] = useState({});
   const [showSubmittedDated, setShowSubmittedDated] = useState(false);
   const [revokesupplier, setRevokeSupplier] = useState(false);
+  const [bidDetails, setBidDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
-
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
@@ -65,6 +67,34 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     (p) => p.sample?.approval_status === "approved"
   );
 
+  useEffect(() => {
+    if (id) {
+      let url =
+        type === "invited"
+          ? PortalApiUrls.RETRIEVE_INVITED_BID
+          : PortalApiUrls.RETRIEVE_CREATED_BID;
+
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            url + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            console.log(response?.data);
+            setBidDetails(response?.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id, type, bidDetails?.bid_open_date]);
+
   const handleAction = async (id, alertmessage) => {
     try {
       const response = await _sendAPIRequest(
@@ -79,7 +109,6 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
           message: `${alertmessage} Successfully revoked`,
           severity: "success",
         });
-        window.location.reload();
       }
     } catch (error) {
       const { data } = error.response;
@@ -138,33 +167,37 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      let url =
+        type === "invited"
+          ? PortalApiUrls.RETRIEVE_INVITED_BID
+          : PortalApiUrls.RETRIEVE_CREATED_BID;
+
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            url + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            console.log(response?.data);
+            setBidDetails(response?.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id, type, bidDetails?.bid_open_date]);
+
   const formData = new URLSearchParams();
   formData.append("bid_open_date", bidStartDate);
   formData.append("bid_close_date", bidEndDate);
-
-  // useEffect(() => {
-  //   const fetchDetails = async () => {
-  //     try {
-  //       const response = await _sendAPIRequest(
-  //         "GET",
-  //         `${PortalApiUrls.RETRIEVE_CREATED_BID}${bidDetails?.id}/`,
-  //         "",
-  //         true
-  //       );
-  //       // console.log("invite suppliers" , response?.status === 200)
-  //       if (response?.status === 200) {
-  //         setdetails(response?.data);
-  //       }
-  //     } catch (error) {
-  //       setAlert({
-  //         isVisible: true,
-  //         message: "Failed to fetch Bid Details, try Again Later.",
-  //         severity: "error",
-  //       });
-  //     }
-  //   };
-  //   fetchDetails();
-  // }, []);
 
   const submitdate = async () => {
     setLoading(true);
@@ -178,16 +211,23 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
 
       if (response.status === 200) {
         setLoading(false);
-        // setAlert({
-        //   isVisible: true,
-        //   message: "Your Bid Dates have been submitted",
-        //   severity: "success",
-        // });
+        setAlert({
+          isVisible: true,
+          message: "Your Bid Dates have been submitted",
+          severity: "success",
+        });
+        setBidDetails((prevDetails) => ({
+          ...prevDetails,
+          bid_open_date: bidStartDate,
+          bid_close_date: bidEndDate,
+        }));
+        if (onActionComplete) {
+          onActionComplete();
+        }
+        dispatch(setActiveTab(3));
       }
     } catch (error) {
       setLoading(false);
-
-      // Set an error alert based on the response error
       setAlert({
         isVisible: true,
         message:
@@ -201,60 +241,62 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
     <>
       <div className="container">
         <div className="row">
-        {bidDetails?.bid_open_date === null ? (
-          <form onSubmit={handleSubmit(submitdate)}>
-            <div className="row">
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Opening Date & Time"
-                  name="bid_start_date"
-                  rules={{
-                    required: "Opening Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+          {bidDetails?.type === "L1" && bidDetails?.bid_open_date === null ? (
+            <form onSubmit={handleSubmit(submitdate)}>
+              <div className="row">
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Opening Date & Time"
+                    name="bid_start_date"
+                    rules={{
+                      required: "Opening Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
+                <div className="col-lg-6">
+                  <DateTimeRangePicker
+                    control={control}
+                    label="Closing Date & Time"
+                    name={"bid_end_date"}
+                    rules={{
+                      required: "Closing Date & Time is required.",
+                      validate: (value) =>
+                        dateValidator(value, minDate, maxDate),
+                    }}
+                    textFieldProps={{
+                      min: `${minDate}T12:00`,
+                      max: `${maxDate}T17:00`,
+                    }}
+                    clearErrors={clearErrors}
+                  />
+                </div>
               </div>
-              <div className="col-lg-6">
-                <DateTimeRangePicker
-                  control={control}
-                  label="Closing Date & Time"
-                  name={"bid_end_date"}
-                  rules={{
-                    required: "Closing Date & Time is required.",
-                    validate: (value) => dateValidator(value, minDate, maxDate),
-                  }}
-                  textFieldProps={{
-                    min: `${minDate}T12:00`,
-                    max: `${maxDate}T17:00`,
-                  }}
-                  clearErrors={clearErrors}
-                />
+              <div className="row mt-3">
+                <div className="col-12">
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      className={styles["form-button"]}
+                      onClick={() => setShowSubmittedDated(true)}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="row mt-3">
-              <div className="col-12">
-                {loading ? (
-                  <ButtonLoader size={60} />
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    className={styles["form-button"]}
-                    onClick={() => setShowSubmittedDated(true)}
-                  >
-                    Submit
-                  </Button>
-                )}
-              </div>
-            </div>
-          </form>
-           ) : (
+            </form>
+          ) : (
             <></>
           )}
         </div>
@@ -354,7 +396,7 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
         />
       )}
 
-      {showSubmittedDated && (
+      {/* {showSubmittedDated && (
         <DateSubmittedModal
           showSubmittedDated={showSubmittedDated}
           setShowSubmittedDated={setShowSubmittedDated}
@@ -362,7 +404,7 @@ const InvitedSuppliers = ({ participant, bidDetails, onActionComplete }) => {
           description={`You have successfully submitted the live bid. You can now activate the bid to invite the suppliers.`}
           showLogin={false}
         />
-      )}
+      )} */}
     </>
   );
 };

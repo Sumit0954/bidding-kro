@@ -1,131 +1,50 @@
-/* Basic styling for the container */
-.loading-container {
+/* LineLoader.css */
+.line-loader-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%; /* Adjust as needed */
-  margin: 20px auto;
-}
-
-/* Skeleton styling for title */
-.loading-title {
-  width: 100%;
-  height: 50px;
-  background: white;
-  border-radius: 4px;
-  animation: shimmer 2s infinite linear;
-}
-
-/* Skeleton styling for paragraph lines */
-.loading-paragraph {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.loading-line {
-  width: 100%;
-  height: 15px;
-  background: #ddd;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite linear;
-}
-
-.loading-line:nth-child(2) {
-  width: 100%;
-}
-
-.loading-line:nth-child(3) {
-  width: 70%;
-}
-
-/* Skeleton styling for thumbnail or image */
-.loading-thumbnail {
-  width: 100%;
-  height: 150px;
-  background: #ddd;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite linear;
-}
-
-/* Shimmer animation */
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: 200px 0;
-  }
-}
-
-.loading-title,
-.loading-line,
-.loading-thumbnail {
-  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
-  background-size: 200% 100%;
-}
-
-
-/* Basic styling for the button placeholder */
-.loading-button {
-  position: absolute;
-  bottom: 50px; /* Position from the bottom */
-  right: 19px;  /* Position from the right */
-  width: 80px; /* Adjust as needed for the button size */
-  height: 30px;
-  background: #ddd;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite linear;
-}
-
-.loading-button {
-  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
-  background-size: 200% 100%;
-}
-
-/* Dot-style loading list */
-.loading-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px; /* Space between each list item */
-}
-
-/* Each list item in the loading list */
-.loading-list-item {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 10px; /* Space between dot and line */
+  height: 100vh; /* Full screen height */
+  background-color: #fff; /* Optional: white background */
 }
 
-/* Dot placeholder */
-.dot {
-  width: 12px;
-  height: 12px;
-  background: #ddd;
-  border-radius: 50%;
-  animation: shimmer 1.5s infinite linear;
+.line-loader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80px;
+  height: 50px;
 }
 
-/* Line placeholder */
-.line {
-  width: 50%;
-  height: 10px;
-  background: #ddd;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite linear;
+.line-loader span {
+  display: block;
+  width: 5px;
+  height: 30px;
+  background-color: var(--primary-color) !important; /* Blue color for the lines */
+  animation: upDown 1.2s infinite ease-in-out;
 }
 
-/* Shimmer effect */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
+/* Add delays to create the up-down effect */
+.line-loader span:nth-child(1) {
+  animation-delay: 0s;
+}
+.line-loader span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.line-loader span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.line-loader span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.line-loader span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+@keyframes upDown {
+  0%, 100% {
+    transform: scaleY(1); /* Default size */
   }
-  100% {
-    background-position: 200% 0;
+  50% {
+    transform: scaleY(2); /* Stretch the line vertically */
   }
-}
-
-.dot, .line {
-  background: linear-gradient(90deg, #ddd 25%, #e3e3e3 50%, #ddd 75%);
-  background-size: 200% 100%;
 }

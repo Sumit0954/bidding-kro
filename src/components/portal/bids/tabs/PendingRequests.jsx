@@ -16,7 +16,13 @@ import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { useForm } from "react-hook-form";
 
-const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
+const PendingRequests = ({
+  bidDetails,
+  id,
+  tab,
+  listtype,
+  onActionComplete,
+}) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
   const [companies, setCompanies] = useState({});
@@ -211,6 +217,7 @@ const PendingRequests = ({ bidDetails, id, tab, listtype }) => {
           bidDetails={bidDetails}
           companyDetail={companyDetail}
           listtype={listtype}
+          onActionComplete={onActionComplete}
         />
       )}
     </>

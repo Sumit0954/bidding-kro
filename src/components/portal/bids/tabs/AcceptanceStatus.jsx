@@ -22,19 +22,18 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
-const AcceptanceStatus = ({ bidDetails, type }) => {
+const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   const { setAlert } = useContext(AlertContext);
   const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [participant, setParticipant] = useState({});
-  const [screenLoader , setScreenLoader] = useState(true)
+  const [screenLoader, setScreenLoader] = useState(true);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
     message: "",
     action: "",
   });
-
 
   // formdata for the invite action
   const formData = new URLSearchParams();
@@ -81,21 +80,27 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
       );
       if (response.status === 204) {
         setLoading(false);
-        setDeleteDetails({ open: false, title: "", message: "", action: "" });
+        // setDeleteDetails({ open: false, title: "", message: "", action: "" });
         setAlert({
           isVisible: true,
           message:
-            participant?.status === "accepted" ||
-            (bidDetails?.type === "QCBS" &&
-              participant?.sample?.invite_status === "accepted")
-              ? "Your bid invitation has been successfully accepted."
+            action === "accept"
+              ? // participant?.status === "accepted" ||
+                // (bidDetails?.type === "QCBS" &&
+                //   participant?.sample?.invite_status === "accepted")
+                "Your bid invitation has been successfully accepted."
               : "Bid invitation has been declined.",
           severity:
-            participant?.status === "accepted" ||
-            participant?.sample?.invite_status === "accepted"
-              ? "success"
+            action === "accept"
+              ? // participant?.status === "accepted" ||
+                // participant?.sample?.invite_status === "accepted"
+                "success"
               : "error",
         });
+        setDeleteDetails({ open: false, title: "", message: "", action: "" });
+        if (onActionComplete) {
+          onActionComplete();
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -111,6 +116,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
 
   // invite action confirmation
   const handleInvitation = (choice) => {
+    console.log(deleteDetails.action, "deleteDetails.action");
     if (choice) {
       handleAction(deleteDetails.action);
     } else {
@@ -161,11 +167,6 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                       Bid Closing Date : {bidDetails?.bid_close_date}
                     </ListItem>
                   </List>
-                  <Typography variant="body1">
-                    Your sample will be reviewed by the buyer. Once it is
-                    approved, you will be notified and can proceed with the
-                    bidding process.
-                  </Typography>
                 </Box>
 
                 {/* Paragraph 3 */}
@@ -490,7 +491,8 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
             </Box>
           </>
         ) : participant?.sample?.approval_status === "approved" &&
-          participant?.status === "pending" ? (
+          participant?.status === "pending" &&
+          bidDetails?.bid_open_date !== null ? (
           // SAMPLE APPROVAL APPROVAL WITH COMMERCIAL BID INVITE PENDING CONTENT
           <>
             <Box sx={{ marginBottom: "2rem" }}>
@@ -773,6 +775,8 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
             (bidDetails?.type === "QCBS" &&
               ((participant?.sample?.invite_status === "accepted" &&
                 participant?.sample?.approval_status === "pending") ||
+                // (participant?.sample?.approval_status === "approved" &&
+                //   bidDetails?.bid_open_date !== null && participant?.status === "accepted") ||
                 participant?.sample?.invite_status === "declined")) ? (
               <button
                 type="button"
@@ -791,13 +795,21 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                 {bidDetails?.type === "L1"
                   ? participant?.status
                   : bidDetails?.type === "QCBS" &&
-                    participant?.sample.approval_status === "approved"
+                    participant?.sample.approval_status === "approved" &&
+                    bidDetails?.bid_open_date !== null
                   ? participant.status
                   : bidDetails?.type === "QCBS"
                   ? participant?.sample?.invite_status
                   : participant?.status}
               </button>
-            ) : (
+            ) : (bidDetails?.type === "L1" &&
+                participant?.status === "pending") ||
+              (bidDetails?.type === "QCBS" &&
+                participant?.sample?.invite_status === "pending") ||
+              (bidDetails?.type === "QCBS" &&
+                participant?.sample?.approval_status === "approved" &&
+                bidDetails?.bid_open_date !== null &&
+                participant?.status === "pending") ? (
               <>
                 {loading && loadingAction === "decline" ? (
                   <ButtonLoader size={60} />
@@ -837,7 +849,7 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
                   </button>
                 )}
               </>
-            )}
+            ) : null}
 
             {deleteDetails?.open && (
               <DeleteDialog
