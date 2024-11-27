@@ -8,6 +8,7 @@ import {
   Tabs,
   Typography,
   Badge,
+  Tooltip,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -57,10 +58,8 @@ const BidDetailsPage = () => {
   const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
-  
 
   const isQCBSBid = bidDetails?.type === "QCBS";
-
 
   const isSampleNotApproved = !participant?.participants.some(
     (participant) => participant.sample?.approval_status === "approved"
@@ -124,9 +123,11 @@ const BidDetailsPage = () => {
     >
       Bids
     </NavLink>,
-    <Typography key="2" color="text.primary">
-      {truncatelength(bidDetails?.title, 30)}
-    </Typography>,
+    <Tooltip title={bidDetails?.title || ""} arrow>
+      <Typography key="2" color="text.primary" style={{ cursor: "pointer" }}>
+        {truncatelength(bidDetails?.title, 30)}
+      </Typography>
+    </Tooltip>,
   ];
 
   useEffect(() => {
@@ -146,8 +147,7 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             setBidDetails(response.data);
-            setScreenLoader(false)
-
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -188,7 +188,6 @@ const BidDetailsPage = () => {
       (bidDetails?.sample_receive_start_date === null ||
         bidDetails?.sample_receive_end_date === null));
 
-        
   if (screenLoader) {
     return <ScreenLoader component={"AcceptanceStatus"} />;
   }
@@ -500,8 +499,8 @@ const BidDetailsPage = () => {
               participant={participant}
               // onActionComplete={() => setValue(2)}
               onActionComplete={() => dispatch(setActiveTab(2))}
-              id = {id}
-              type = {type}
+              id={id}
+              type={type}
             />
           </TabPanel>
           {bidDetails?.type === "L1" ? (

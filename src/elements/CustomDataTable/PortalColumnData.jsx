@@ -7,7 +7,7 @@ import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useEffect, useState } from "react";
-import { Select, MenuItem, FormControl } from "@mui/material";
+import { Select, MenuItem, FormControl, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../store/tabSlice";
 import IconButton from "@mui/material/IconButton";
@@ -181,21 +181,22 @@ export const created_bids_column = [
         //     data?.row?.original?.type === "L1" ? "" : " (QCBS)"
         //   }`}
         // </NavLink>
-
-        <span
-          onClick={handleViewRequestClick}
-          style={{
-            color: "#0d6efd",
-            // fontWeight: "bold",
-            // textDecoration: "underline",
-            cursor: "pointer",
-          }}
-          className={styles["table-link"]}
-        >
-          {`${truncateString(data?.row?.original?.title, 30)}${
-            data?.row?.original?.type === "L1" ? "" : " (QCBS)"
-          }`}
-        </span>
+        <Tooltip title={"Click here to see the BId Details"} arrow>
+          <span
+            onClick={handleViewRequestClick}
+            style={{
+              color: "#0d6efd",
+              // fontWeight: "bold",
+              // textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            className={styles["table-link"]}
+          >
+            {`${truncateString(data?.row?.original?.title, 30)}${
+              data?.row?.original?.type === "L1" ? "" : " (QCBS)"
+            }`}
+          </span>
+        </Tooltip>
       );
     },
   },
@@ -252,18 +253,19 @@ export const created_bids_column = [
     }
   `}
           </style>
-
-          <span
-            onClick={handleViewRequestClick}
-            style={{
-              color: hasRequest ? "#FFBF00" : "#0d6efd",
-              fontWeight: hasRequest ? "500" : "",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            View Requests
-          </span>
+          <Tooltip title={"Click here to see Pending Requests"} arrow>
+            <span
+              onClick={handleViewRequestClick}
+              style={{
+                color: hasRequest ? "#FFBF00" : "#0d6efd",
+                fontWeight: hasRequest ? "500" : "",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+            >
+              View Requests
+            </span>
+          </Tooltip>
         </div>
       );
     },
@@ -312,27 +314,29 @@ export const created_bids_column = [
         navigate(`/portal/bids/details/${bidId}`);
       };
       return (
-        <div
-          onClick={handleViewRequestClick}
-          className={`status-cloumn ${data?.row?.original?.status}`}
-          style={{
-            color: `${
-              data?.row?.original?.status === "active"
-                ? "#22bb33" // Green for active
-                : data?.row?.original?.status === "awarded"
-                ? "#B08D57" // Gold for awarded
-                : data?.row?.original?.status === "pending"
-                ? "#FFBF00" // Yellow for pending
-                : data?.row?.original?.status === "cancelled"
-                ? "red" // Red for canceled
-                : "black" // Default
-            }`,
-            textTransform: "uppercase",
-            fontWeight: "bold",
-          }}
-        >
-          {data?.row?.original?.status}
-        </div>
+        <Tooltip title={"Click here to See the Bid Status"} arrow>
+          <div
+            onClick={handleViewRequestClick}
+            className={`status-cloumn ${data?.row?.original?.status}`}
+            style={{
+              color: `${
+                data?.row?.original?.status === "active"
+                  ? "#22bb33" // Green for active
+                  : data?.row?.original?.status === "awarded"
+                  ? "#B08D57" // Gold for awarded
+                  : data?.row?.original?.status === "pending"
+                  ? "#FFBF00" // Yellow for pending
+                  : data?.row?.original?.status === "cancelled"
+                  ? "red" // Red for canceled
+                  : "black" // Default
+              }`,
+              textTransform: "uppercase",
+              fontWeight: "bold",
+            }}
+          >
+            {data?.row?.original?.status}
+          </div>
+        </Tooltip>
       );
     },
   },
@@ -345,6 +349,7 @@ export const created_bids_column = [
     hideSortIcon: true,
     Cell: (data) => {
       const navigate = useNavigate();
+
       return (
         <CloneConfirmation
           id={data?.row?.original?.id}
@@ -378,15 +383,17 @@ export const created_bids_column = [
             data?.row?.original?.sample_receive_end_date === null));
 
       return (
-        <NavLink
-          style={{ textAlign: "center", fontWeight: "bold" }}
-          className={
-            isInviteDisabled ? styles["disabled-link"] : styles["table-link"]
-          }
-          to={`/portal/companies/${data?.cell?.row?.original.id}`}
-        >
-          INVITE
-        </NavLink>
+        <Tooltip title={"Click here to Invite the Suppliers on this bid"} arrow>
+          <NavLink
+            style={{ textAlign: "center", fontWeight: "bold" }}
+            className={
+              isInviteDisabled ? styles["disabled-link"] : styles["table-link"]
+            }
+            to={`/portal/companies/${data?.cell?.row?.original.id}`}
+          >
+            INVITE
+          </NavLink>
+        </Tooltip>
       );
     },
   },
@@ -421,18 +428,20 @@ export const invited_bids_column = [
       };
 
       return (
-        <span
-          onClick={handleViewRequestClick}
-          style={{
-            color: "#0d6efd",
-            // fontWeight: "bold",
-            // textDecoration: "underline",
-            cursor: "pointer",
-          }}
-          className={styles["table-link"]}
-        >
-          {truncateString(data?.row?.original?.bid?.title, 30)}
-        </span>
+        <Tooltip title={"Click here to see the bid detail"} arrow>
+          <span
+            onClick={handleViewRequestClick}
+            style={{
+              color: "#0d6efd",
+              // fontWeight: "bold",
+              // textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            className={styles["table-link"]}
+          >
+            {truncateString(data?.row?.original?.bid?.title, 30)}
+          </span>
+        </Tooltip>
         // <NavLink
         //   className={styles["table-link"]}
         //   to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
@@ -589,60 +598,65 @@ export const invited_bids_column = [
     }
   `}
           </style>
-
-          <span
-            onClick={handleViewRequestClick}
-            className={`status-column ${data?.row?.original?.status}`}
-            style={{
-              color: `${
-                data?.row?.original?.bid?.type === "L1"
-                  ? data?.row?.original?.status === "accepted"
-                    ? "#22bb33" // Green for accepted
-                    : data?.row?.original?.status === "pending"
-                    ? "#FFBF00" // Yellow for pending
-                    : "red" // Default red for other status
-                  : data?.row?.original?.sample?.approval_status === "approved"
-                  ? data?.row?.original?.status === "accepted"
-                    ? "#22bb33" // Green for accepted
-                    : data?.row?.original?.status === "pending" &&
-                      data?.row?.original?.bid?.bid_open_date !== null
-                    ? "#FFBF00" // Yellow for pending
-                    : data?.row?.original?.status === "pending" &&
-                      data?.row?.original?.bid?.bid_open_date === null
-                    ? "#22bb33"
-                    : "red" // Default red for other status
-                  : data?.row?.original?.sample?.invite_status === "accepted"
-                  ? "#22bb33" // Green for accepted
-                  : data?.row?.original?.sample?.invite_status === "pending"
-                  ? "#FFBF00" // Yellow for pending
-                  : "red" // Default red for other invite status
-              }`,
-              textDecoration: "none",
-              fontWeight: `${
-                data?.row?.original?.bid?.type === "L1"
-                  ? data?.row?.original?.status === "pending"
-                    ? "bold"
-                    : ""
-                  : data?.row?.original?.sample?.approval_status === "approved"
-                  ? data?.row?.original?.status === "pending" &&
-                    data?.row?.original?.bid?.bid_open_date !== null
-                    ? "bold"
-                    : ""
-                  : data?.row?.original?.sample?.invite_status === "pending"
-                  ? "bold"
-                  : ""
-              }`,
-              textTransform: "uppercase",
-            }}
+          <Tooltip
+            title={"Click Here to see your acceptance status on this bid"}
           >
-            {data?.row?.original?.bid?.type === "L1"
-              ? data?.row?.original?.status
-              : data?.row?.original?.sample?.approval_status === "approved" &&
-                data?.row?.original?.bid?.bid_open_date !== null
-              ? data?.row?.original?.status
-              : data?.row?.original?.sample?.invite_status}
-            {/* {data?.row?.original?.status} */}
-          </span>
+            <span
+              onClick={handleViewRequestClick}
+              className={`status-column ${data?.row?.original?.status}`}
+              style={{
+                color: `${
+                  data?.row?.original?.bid?.type === "L1"
+                    ? data?.row?.original?.status === "accepted"
+                      ? "#22bb33" // Green for accepted
+                      : data?.row?.original?.status === "pending"
+                      ? "#FFBF00" // Yellow for pending
+                      : "red" // Default red for other status
+                    : data?.row?.original?.sample?.approval_status ===
+                      "approved"
+                    ? data?.row?.original?.status === "accepted"
+                      ? "#22bb33" // Green for accepted
+                      : data?.row?.original?.status === "pending" &&
+                        data?.row?.original?.bid?.bid_open_date !== null
+                      ? "#FFBF00" // Yellow for pending
+                      : data?.row?.original?.status === "pending" &&
+                        data?.row?.original?.bid?.bid_open_date === null
+                      ? "#22bb33"
+                      : "red" // Default red for other status
+                    : data?.row?.original?.sample?.invite_status === "accepted"
+                    ? "#22bb33" // Green for accepted
+                    : data?.row?.original?.sample?.invite_status === "pending"
+                    ? "#FFBF00" // Yellow for pending
+                    : "red" // Default red for other invite status
+                }`,
+                textDecoration: "none",
+                fontWeight: `${
+                  data?.row?.original?.bid?.type === "L1"
+                    ? data?.row?.original?.status === "pending"
+                      ? "bold"
+                      : ""
+                    : data?.row?.original?.sample?.approval_status ===
+                      "approved"
+                    ? data?.row?.original?.status === "pending" &&
+                      data?.row?.original?.bid?.bid_open_date !== null
+                      ? "bold"
+                      : ""
+                    : data?.row?.original?.sample?.invite_status === "pending"
+                    ? "bold"
+                    : ""
+                }`,
+                textTransform: "uppercase",
+              }}
+            >
+              {data?.row?.original?.bid?.type === "L1"
+                ? data?.row?.original?.status
+                : data?.row?.original?.sample?.approval_status === "approved" &&
+                  data?.row?.original?.bid?.bid_open_date !== null
+                ? data?.row?.original?.status
+                : data?.row?.original?.sample?.invite_status}
+              {/* {data?.row?.original?.status} */}
+            </span>
+          </Tooltip>
         </div>
 
         // <NavLink
@@ -716,12 +730,14 @@ export const related_bids_column = [
     width: 150,
     Cell: (data) => {
       return (
-        <NavLink
-          className={styles["table-link"]}
-          to={`/portal/bids/details/${data?.row?.original?.id}/?type=related`}
-        >
-          {truncateString(data?.row?.original?.title, 30)}
-        </NavLink>
+        <Tooltip title={"Click Here to see your acceptance status on this bid"}>
+          <NavLink
+            className={styles["table-link"]}
+            to={`/portal/bids/details/${data?.row?.original?.id}/?type=related`}
+          >
+            {truncateString(data?.row?.original?.title, 30)}
+          </NavLink>
+        </Tooltip>
       );
     },
   },
@@ -1255,7 +1271,7 @@ export const PreviousBids_column = [
   },
 ];
 
-export const Sample_Bid_Invitations_column = ({ id  }) => [
+export const Sample_Bid_Invitations_column = ({ id }) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
@@ -1271,7 +1287,7 @@ export const Sample_Bid_Invitations_column = ({ id  }) => [
     accessor: "company_email",
     align: "left",
     disablePadding: false,
-    width: 150, 
+    width: 150,
     Cell: (data) => {
       const [participant, setParticipant] = useState();
 
@@ -1296,7 +1312,11 @@ export const Sample_Bid_Invitations_column = ({ id  }) => [
 
           getParticipants();
         }
-      }, [id, participant?.sample?.is_received , participant?.sample?.approval_status]);
+      }, [
+        id,
+        participant?.sample?.is_received,
+        participant?.sample?.approval_status,
+      ]);
 
       const [status, setStatus] = useState(
         data.row.original.sample.is_received
