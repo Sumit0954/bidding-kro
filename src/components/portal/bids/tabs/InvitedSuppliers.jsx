@@ -27,13 +27,10 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import CustomInput from "../../../../elements/CustomInput/CustomInput";
 import DateSubmittedModal from "../../../../elements/CustomModal/DateSubmittedModal";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../../../../store/tabSlice";
 
-const InvitedSuppliers = ({
-  participant,
-  onActionComplete,
-  id,
-  type,
-}) => {
+const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
   const {
     control,
     handleSubmit,
@@ -41,6 +38,7 @@ const InvitedSuppliers = ({
     watch,
     formState: { dirtyFields },
   } = useForm();
+  const dispatch = useDispatch();
   const [createdAt, setCreatedAt] = useState("");
   const [showSubmittedDated, setShowSubmittedDated] = useState(false);
   const [revokesupplier, setRevokeSupplier] = useState(false);
@@ -85,7 +83,7 @@ const InvitedSuppliers = ({
             true
           );
           if (response.status === 200) {
-            console.log(response?.data)
+            console.log(response?.data);
             setBidDetails(response?.data);
           }
         } catch (error) {
@@ -95,7 +93,7 @@ const InvitedSuppliers = ({
 
       retrieveBid();
     }
-  }, [id, type , bidDetails?.bid_open_date]);
+  }, [id, type, bidDetails?.bid_open_date]);
 
   const handleAction = async (id, alertmessage) => {
     try {
@@ -126,7 +124,6 @@ const InvitedSuppliers = ({
       }
     }
   };
-  
 
   const handleDeleteConfirmation = (choice) => {
     if (choice) {
@@ -186,7 +183,7 @@ const InvitedSuppliers = ({
             true
           );
           if (response.status === 200) {
-            console.log(response?.data)
+            console.log(response?.data);
             setBidDetails(response?.data);
           }
         } catch (error) {
@@ -196,7 +193,7 @@ const InvitedSuppliers = ({
 
       retrieveBid();
     }
-  }, [id, type , bidDetails?.bid_open_date]);
+  }, [id, type, bidDetails?.bid_open_date]);
 
   const formData = new URLSearchParams();
   formData.append("bid_open_date", bidStartDate);
@@ -219,13 +216,15 @@ const InvitedSuppliers = ({
           message: "Your Bid Dates have been submitted",
           severity: "success",
         });
-        setBidDetails((prevDetails)=>(
-          {
-            ...prevDetails,
-            bid_open_date : bidStartDate ,
-            bid_close_date : bidEndDate
-          }
-        ));
+        setBidDetails((prevDetails) => ({
+          ...prevDetails,
+          bid_open_date: bidStartDate,
+          bid_close_date: bidEndDate,
+        }));
+        if (onActionComplete) {
+          onActionComplete();
+        }
+        dispatch(setActiveTab(3));
       }
     } catch (error) {
       setLoading(false);

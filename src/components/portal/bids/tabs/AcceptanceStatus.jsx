@@ -22,7 +22,7 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
-const AcceptanceStatus = ({ bidDetails, type }) => {
+const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   const { setAlert } = useContext(AlertContext);
   const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -98,6 +98,9 @@ const AcceptanceStatus = ({ bidDetails, type }) => {
               : "error",
         });
         setDeleteDetails({ open: false, title: "", message: "", action: "" });
+        if (onActionComplete) {
+          onActionComplete();
+        }
       }
     } catch (error) {
       setLoading(false);

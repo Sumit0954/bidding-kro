@@ -16,13 +16,13 @@ const InvitationModal = ({
   bidDetails,
   companyDetail,
   listtype,
+  onActionComplete,
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const dispatch = useDispatch();
 
-
-console.log("bidDetails : " , companyDetail)
+  console.log("bidDetails : ", companyDetail);
 
   const handleClose = () => {
     setInvitation(false);
@@ -55,7 +55,10 @@ console.log("bidDetails : " , companyDetail)
           message: "Invitation successfully sent to the supplier.",
           severity: "success",
         });
-        if(companyDetail?.id){
+        if (onActionComplete) {
+          onActionComplete();
+        }
+        if (companyDetail?.id) {
           try {
             const response = await _sendAPIRequest(
               "DELETE",
@@ -66,6 +69,7 @@ console.log("bidDetails : " , companyDetail)
             if (response?.status === 204) {
               console.log("Bid deleted successfully");
               dispatch(setActiveTab(2));
+
               window.location.reload();
               // Optional: Trigger a refresh or redirect as needed
             }

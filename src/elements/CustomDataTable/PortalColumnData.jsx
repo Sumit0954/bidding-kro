@@ -729,11 +729,22 @@ export const related_bids_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
+      const dispatch = useDispatch();
+      const navigate = useNavigate();
+
+      const handleViewRequestClick = (e) => {
+        e.preventDefault(); // Prevent default NavLink behavior
+        dispatch(setActiveTab(0)); // Dispatch action to set the active tab
+        navigate(
+          `/portal/bids/details/${data?.row?.original?.id}/?type=related`
+        ); // Programmatically navigate
+      };
       return (
         <Tooltip title={"Click Here to see your acceptance status on this bid"}>
           <NavLink
             className={styles["table-link"]}
             to={`/portal/bids/details/${data?.row?.original?.id}/?type=related`}
+            onClick={handleViewRequestClick}
           >
             {truncateString(data?.row?.original?.title, 30)}
           </NavLink>
@@ -1218,7 +1229,7 @@ export const products_Column = ({
             setShowSpecification(true);
           }}
         >
-          View Speciication
+          View Specification
         </NavLink>
       );
     },
@@ -1271,7 +1282,7 @@ export const PreviousBids_column = [
   },
 ];
 
-export const Sample_Bid_Invitations_column = ({ id }) => [
+export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
@@ -1333,6 +1344,9 @@ export const Sample_Bid_Invitations_column = ({ id }) => [
           is_received: newStatus,
         };
         patchBidStatus(data.row.original.id, formData);
+        if (onActionComplete) {
+          onActionComplete();
+        }
       };
 
       return (
@@ -1386,6 +1400,10 @@ export const Sample_Bid_Invitations_column = ({ id }) => [
           true,
           data.row.original.company.id
         );
+
+        if (onActionComplete) {
+          onActionComplete();
+        }
 
         setParticipant((prevDetails) => ({
           ...prevDetails,

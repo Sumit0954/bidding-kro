@@ -32,7 +32,7 @@ import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { useLocation, useParams } from "react-router-dom";
 
-const SampleReceiving = ({ participant }) => {
+const SampleReceiving = ({ participant, onActionComplete }) => {
   const {
     control,
     handleSubmit,
@@ -78,9 +78,10 @@ const SampleReceiving = ({ participant }) => {
 
   const SampleBidInvitationscolumn = Sample_Bid_Invitations_column({
     id,
+    onActionComplete,
   });
 
-  console.log( " from prop : ",participant)
+  console.log(" from prop : ", participant);
 
   useEffect(() => {
     if (id) {
@@ -104,7 +105,11 @@ const SampleReceiving = ({ participant }) => {
 
       getParticipants();
     }
-  }, [id, participant?.sample?.is_received , participant?.sample?.approval_status]);
+  }, [
+    id,
+    participant?.sample?.is_received,
+    participant?.sample?.approval_status,
+  ]);
 
   // ---------- SUBMIT SAMPLE DATES --------------
 
@@ -191,6 +196,10 @@ const SampleReceiving = ({ participant }) => {
             }
           )
         );
+
+        if (onActionComplete) {
+          onActionComplete(); // Trigger the callback
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -237,6 +246,10 @@ const SampleReceiving = ({ participant }) => {
           bid_open_date: live_Bid_Opening_Dates,
           bid_close_date: live_Bid_Closing_Dates,
         }));
+
+        if (onActionComplete) {
+          onActionComplete(); // Trigger the callback
+        }
       }
     } catch (error) {
       setLoading(false);
@@ -331,7 +344,9 @@ const SampleReceiving = ({ participant }) => {
         </Alert> */}
         <br />
         <div className="row">
-          <form onSubmit={handleSubmit(submitSampledates)}>
+          <form
+          // onSubmit={handleSubmit(submitSampledates)}
+          >
             <div className="row">
               <div className="col-lg-6">
                 <DatePicker
@@ -381,7 +396,7 @@ const SampleReceiving = ({ participant }) => {
             <div className="row mt-3">
               <div className="col-12">
                 <Button
-                  type="submit"
+                  // type="submit"
                   variant="contained"
                   className={styles["form-button"]}
                   onClick={submitSampledates}
@@ -417,60 +432,73 @@ const SampleReceiving = ({ participant }) => {
           {bidDetails?.bid_close_date === null ? (
             <>
               {isApproved ? (
-                <form onSubmit={handleSubmit(submitliveBidDates)}>
-                  <div className="row">
-                    <div className="col-lg-6">
-                      <DateTimeRangePicker
-                        control={control}
-                        label="Opening Date & Time"
-                        name="bid_open_date"
-                        rules={{
-                          required: "Opening Date & Time is required.",
-                          validate: (value) =>
-                            dateValidator(value, minDate, maxDate),
-                        }}
-                        textFieldProps={{
-                          min: `${minDate}T12:00`,
-                          max: `${maxDate}T17:00`,
-                        }}
-                        clearErrors={clearErrors}
-                      />
+                <>
+                  <br />
+                  <Alert severity="info" sx={{ marginBottom: "10px" }}>
+                    <p className={styles["alert-message"]}>
+                      <span> Note : </span>
+                      Please submit the Live Bid Date & time to invite the
+                      Approved Suppliers.
+                    </p>
+                  </Alert>
+                  <br />
+                  <form
+                  // onSubmit={handleSubmit(submitliveBidDates)}
+                  >
+                    <div className="row">
+                      <div className="col-lg-6">
+                        <DateTimeRangePicker
+                          control={control}
+                          label="Opening Date & Time"
+                          name="bid_open_date"
+                          rules={{
+                            required: "Opening Date & Time is required.",
+                            validate: (value) =>
+                              dateValidator(value, minDate, maxDate),
+                          }}
+                          textFieldProps={{
+                            min: `${minDate}T12:00`,
+                            max: `${maxDate}T17:00`,
+                          }}
+                          clearErrors={clearErrors}
+                        />
+                      </div>
+                      <div className="col-lg-6">
+                        <DateTimeRangePicker
+                          control={control}
+                          label="Closing Date & Time"
+                          name={"bid_close_date"}
+                          rules={{
+                            required: "Closing Date & Time is required.",
+                            validate: (value) =>
+                              dateValidator(value, minDate, maxDate),
+                          }}
+                          textFieldProps={{
+                            min: `${minDate}T12:00`,
+                            max: `${maxDate}T17:00`,
+                          }}
+                          clearErrors={clearErrors}
+                        />
+                      </div>
                     </div>
-                    <div className="col-lg-6">
-                      <DateTimeRangePicker
-                        control={control}
-                        label="Closing Date & Time"
-                        name={"bid_close_date"}
-                        rules={{
-                          required: "Closing Date & Time is required.",
-                          validate: (value) =>
-                            dateValidator(value, minDate, maxDate),
-                        }}
-                        textFieldProps={{
-                          min: `${minDate}T12:00`,
-                          max: `${maxDate}T17:00`,
-                        }}
-                        clearErrors={clearErrors}
-                      />
+                    <div className="row mt-3">
+                      <div className="col-12">
+                        {loading ? (
+                          <ButtonLoader size={60} />
+                        ) : (
+                          <Button
+                            // type="submit"
+                            variant="contained"
+                            className={styles["form-button"]}
+                            onClick={submitliveBidDates}
+                          >
+                            Submit
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="row mt-3">
-                    <div className="col-12">
-                      {loading ? (
-                        <ButtonLoader size={60} />
-                      ) : (
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          className={styles["form-button"]}
-                          // onClick={submitliveBidDates}
-                        >
-                          Submit
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </form>
+                  </form>
+                </>
               ) : (
                 <></>
               )}

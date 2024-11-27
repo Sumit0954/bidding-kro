@@ -58,6 +58,7 @@ const BidDetailsPage = () => {
   const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
@@ -74,6 +75,10 @@ const BidDetailsPage = () => {
   const handleChange = (event, newValue) => {
     // setValue(newValue);
     dispatch(setActiveTab(newValue));
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1); // Increment the refresh key
   };
 
   const truncatelength = (title, maxlength) => {
@@ -156,7 +161,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id, type]);
+  }, [id, type, refreshKey]);
 
   useEffect(() => {
     if (bidDetails?.id) {
@@ -179,7 +184,7 @@ const BidDetailsPage = () => {
 
       getParticipants();
     }
-  }, [bidDetails?.id]);
+  }, [bidDetails?.id, refreshKey]);
 
   const isInviteDisabled =
     bidDetails?.status !== "active" ||
@@ -398,11 +403,53 @@ const BidDetailsPage = () => {
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
                 <Tab label="Documents" {...a11yProps(1)} key={1} />,
-                <Tab label="Pending Requests" {...a11yProps(2)} key={2} />,
 
                 type !== "related" && (
                   <Tab
-                    label="Invited Suppliers"
+                    // label="Pending Requests"
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {bidDetails?.has_bid_request ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Green for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null}
+
+                        <span>Pending Requests</span>
+                      </Box>
+                    }
+                    {...a11yProps(2)}
+                    key={2}
+                  />
+                ),
+
+                type !== "related" && (
+                  <Tab
+                    // label="Invited Suppliers"
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {bidDetails?.type === "L1" &&
+                        bidDetails?.bid_open_date == null ? (
+                          <Box
+                            sx={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: "#FFBF00", // Green for pending
+                              animation: "blink 1s infinite",
+                            }}
+                          />
+                        ) : null}
+
+                        <span>Invited Suppliers</span>
+                      </Box>
+                    }
                     {...a11yProps(3)}
                     key={3}
                     disabled={shouldDisableTab}
@@ -429,7 +476,24 @@ const BidDetailsPage = () => {
                   : [
                       type !== "related" && (
                         <Tab
-                          label="Sample Receiving"
+                          // label="Sample Receiving"
+                          label={
+                            <Box display="flex" alignItems="center" gap={1}>
+                              {bidDetails?.sample_receive_start_date == null ? (
+                                <Box
+                                  sx={{
+                                    width: "10px",
+                                    height: "10px",
+                                    borderRadius: "50%",
+                                    backgroundColor: "#FFBF00", // Green for pending
+                                    animation: "blink 1s infinite",
+                                  }}
+                                />
+                              ) : null}
+
+                              <span>Sample Receiving</span>
+                            </Box>
+                          }
                           {...a11yProps(4)}
                           key={4}
                         />
@@ -462,7 +526,11 @@ const BidDetailsPage = () => {
             <Documents bidDetails={bidDetails} type={type} />
           </TabPanel>
           <TabPanel value={activeTab} index={2}>
-            <AcceptanceStatus bidDetails={bidDetails} type={type} />
+            <AcceptanceStatus
+              bidDetails={bidDetails}
+              type={type}
+              onActionComplete={handleRefresh}
+            />
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <Questions bidDetails={bidDetails} />
@@ -485,6 +553,7 @@ const BidDetailsPage = () => {
               id={id}
               tab={activeTab}
               listtype={"InviteRequest"}
+              onActionComplete={handleRefresh}
             />
             {/* <CompanyList
               bidDetails={bidDetails}
@@ -498,7 +567,8 @@ const BidDetailsPage = () => {
               bidDetails={bidDetails}
               participant={participant}
               // onActionComplete={() => setValue(2)}
-              onActionComplete={() => dispatch(setActiveTab(2))}
+              // onActionComplete={() => dispatch(setActiveTab(2))}
+              onActionComplete={handleRefresh}
               id={id}
               type={type}
             />
@@ -524,6 +594,7 @@ const BidDetailsPage = () => {
                 <SampleReceiving
                   bidDetails={bidDetails}
                   participant={participant}
+                  onActionComplete={handleRefresh}
                 />
               </TabPanel>
               <TabPanel value={activeTab} index={5}>
