@@ -139,7 +139,7 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
     if (response?.status === 204) {
       console.log("Bid deleted successfully");
       dispatch(setActiveTab(2));
-      window.location.reload();
+      // window.location.reload();
       // Optional: Trigger a refresh or redirect as needed
     }
   } catch (error) {
@@ -1006,7 +1006,6 @@ export const Pending_request_column = () => {
       disablePadding: false,
       width: 150,
       Cell: (data) => {
-        console.log(data?.row?.original.id, "yoyo");
         return data?.row?.original?.requestor?.business_mobile;
       },
     },
@@ -1025,7 +1024,6 @@ export const Pending_request_column = () => {
       disablePadding: false,
       width: 80,
       Cell: (data) => {
-        console.log(data?.row?.original.id, "jojo");
         return (
           <DeleteConfirmation
             id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
@@ -1257,7 +1255,7 @@ export const PreviousBids_column = [
   },
 ];
 
-export const Sample_Bid_Invitations_column = ({ id }) => [
+export const Sample_Bid_Invitations_column = ({ id  }) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
@@ -1273,7 +1271,7 @@ export const Sample_Bid_Invitations_column = ({ id }) => [
     accessor: "company_email",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 150, 
     Cell: (data) => {
       const [participant, setParticipant] = useState();
 
@@ -1290,7 +1288,6 @@ export const Sample_Bid_Invitations_column = ({ id }) => [
               if (response.status === 200) {
                 // const participants = response.data.participants;
                 setParticipant(response.data);
-                console.log("data :", response.data.participants);
               }
             } catch (error) {
               console.log(error);
@@ -1312,7 +1309,6 @@ export const Sample_Bid_Invitations_column = ({ id }) => [
           ...prevDetails,
           is_received: newStatus,
         }));
-
         const formData = {
           is_received: newStatus,
         };

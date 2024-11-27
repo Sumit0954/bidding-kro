@@ -51,6 +51,7 @@ const SampleReceiving = ({ participant }) => {
   const [loading, setLoading] = useState(false);
   const [bidDetails, setBidDetails] = useState({});
   // const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
+
   const [sampleClosingDate, setSampleClosingDate] = useState();
   const type = new URLSearchParams(useLocation().search).get("type");
 
@@ -78,6 +79,32 @@ const SampleReceiving = ({ participant }) => {
   const SampleBidInvitationscolumn = Sample_Bid_Invitations_column({
     id,
   });
+
+  console.log( " from prop : ",participant)
+
+  useEffect(() => {
+    if (id) {
+      const getParticipants = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            // const participants = response.data.participants;
+            // setParticipant(response.data);
+            console.log("data :", response.data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      getParticipants();
+    }
+  }, [id, participant?.sample?.is_received , participant?.sample?.approval_status]);
 
   // ---------- SUBMIT SAMPLE DATES --------------
 
@@ -357,6 +384,7 @@ const SampleReceiving = ({ participant }) => {
                   type="submit"
                   variant="contained"
                   className={styles["form-button"]}
+                  onClick={submitSampledates}
                 >
                   Submit
                 </Button>
@@ -389,7 +417,7 @@ const SampleReceiving = ({ participant }) => {
           {bidDetails?.bid_close_date === null ? (
             <>
               {isApproved ? (
-                <form>
+                <form onSubmit={handleSubmit(submitliveBidDates)}>
                   <div className="row">
                     <div className="col-lg-6">
                       <DateTimeRangePicker
@@ -435,7 +463,7 @@ const SampleReceiving = ({ participant }) => {
                           type="submit"
                           variant="contained"
                           className={styles["form-button"]}
-                          onClick={submitliveBidDates}
+                          // onClick={submitliveBidDates}
                         >
                           Submit
                         </Button>

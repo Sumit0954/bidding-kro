@@ -7,6 +7,8 @@ import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import { AlertContext } from "../../contexts/AlertProvider";
+import { setActiveTab } from "../../store/tabSlice";
+import { useDispatch } from "react-redux";
 
 const InvitationModal = ({
   addInvitaion,
@@ -17,6 +19,11 @@ const InvitationModal = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
+  const dispatch = useDispatch();
+
+
+console.log("bidDetails : " , companyDetail)
+
   const handleClose = () => {
     setInvitation(false);
   };
@@ -42,12 +49,30 @@ const InvitationModal = ({
       if (response.status === 204) {
         setLoading(false);
         setInvitation(false);
-        window.location.reload();
+        // window.location.reload();
         setAlert({
           isVisible: true,
           message: "Invitation successfully sent to the supplier.",
           severity: "success",
         });
+        if(companyDetail?.id){
+          try {
+            const response = await _sendAPIRequest(
+              "DELETE",
+              `${PortalApiUrls.DELETE_BID_REQUEST}${companyDetail?.id}/`,
+              null,
+              true
+            );
+            if (response?.status === 204) {
+              console.log("Bid deleted successfully");
+              dispatch(setActiveTab(2));
+              window.location.reload();
+              // Optional: Trigger a refresh or redirect as needed
+            }
+          } catch (error) {
+            console.error("Error deleting bid", error);
+          }
+        }
       }
     } catch (error) {
       setLoading(false);

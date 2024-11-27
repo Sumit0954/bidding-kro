@@ -41,6 +41,7 @@ import CompanyList from "../../../components/portal/companies/CompanyList";
 import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -55,6 +56,8 @@ const BidDetailsPage = () => {
   const status = new URLSearchParams(useLocation().search).get("status");
   const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
   const [participant, setParticipant] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
+  
 
   const isQCBSBid = bidDetails?.type === "QCBS";
 
@@ -143,6 +146,8 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             setBidDetails(response.data);
+            setScreenLoader(false)
+
           }
         } catch (error) {
           console.log(error);
@@ -182,6 +187,11 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "QCBS" &&
       (bidDetails?.sample_receive_start_date === null ||
         bidDetails?.sample_receive_end_date === null));
+
+        
+  if (screenLoader) {
+    return <ScreenLoader component={"AcceptanceStatus"} />;
+  }
 
   return (
     <>

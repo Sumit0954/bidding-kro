@@ -39,12 +39,14 @@ import {
 import { Step, StepLabel, Stepper } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../../../store/tabSlice";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const Summary = ({ bidDetails }) => {
   const [participantDetail, setParticipantDetail] = useState({});
   const { setAlert } = useContext(AlertContext);
   const [showSpecification, setShowSpecification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [screenLoader, setScreenLoader] = useState(true);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
