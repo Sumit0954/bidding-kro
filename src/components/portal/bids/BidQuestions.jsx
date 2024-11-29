@@ -44,7 +44,7 @@ const BidQuestions = () => {
 
       retrieveBid();
     }
-  }, [id]);
+  }, [id , , questions?.length]);
 
   const { control, reset } = useForm({
     defaultValues: {
@@ -66,6 +66,8 @@ const BidQuestions = () => {
     reset({ questions });
     setFormCount(questions?.length);
   }, [questions, reset]);
+
+  console.log(formCount)
 
   const handleQuestions = () => {
     if (formCount < MAX_QUESTION_COUNT) {
@@ -162,7 +164,7 @@ const BidQuestions = () => {
                   }
                   disabled={bidStatus === "cancelled" ? true : false}
                 >
-                  Upload Documents
+                  {formCount > 0 ? " Next" : "Skip"}
                 </button>
               </div>
             </div>

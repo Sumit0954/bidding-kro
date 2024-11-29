@@ -511,7 +511,6 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 100,
     Cell: (data) => {
-      console.log(data?.row?.original, "data?.row?.original");
       const bidId = data?.row?.original?.bid?.id;
 
       const dispatch = useDispatch();
@@ -688,7 +687,7 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 100,
     Cell: (data) => {
-      // console.log(data?.row?.original, "ol");
+      console.log("status : ", data?.row?.original);
       return (
         <div
           className={`status-column ${data?.row?.original?.sample?.approval_status}`}
@@ -704,7 +703,11 @@ export const invited_bids_column = [
             textTransform: "uppercase",
           }}
         >
-          {data?.row?.original?.sample?.approval_status}
+          {(data?.row?.original?.sample?.invite_status === "pending" &&
+          data?.row?.original?.sample?.approval_status === "pending") || ( data?.row?.original?.sample?.invite_status === "declined" )
+          || data?.row?.original?.status === "revoked"
+            ? " - "
+            : data?.row?.original?.sample?.approval_status}
         </div>
       );
     },

@@ -9,6 +9,7 @@ import {
   Typography,
   Badge,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -117,7 +118,7 @@ const BidDetailsPage = () => {
       setDeleteDetails({ open: false, title: "", message: "" });
     }
   };
-
+  console.log("bidDetails : ", bidDetails);
   const breadcrumbs = [
     <NavLink
       underline="hover"
@@ -204,113 +205,183 @@ const BidDetailsPage = () => {
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
         <div className="d-flex align-items-center justify-content-end gap-3">
+          {type === "related" || type === "invited" ? null : (
+            <>
+              {bidDetails?.status === "active" ? (
+                <Tooltip title={"Your Bid Is Active Now"} arrow>
+                  <div style={{ display: "inline-block" }}>
+                    <button
+                      className={cn("btn", "button", "approve")}
+                      type="button"
+                      disabled
+                    >
+                      Active
+                    </button>
+                  </div>
+                </Tooltip>
+              ) : (
+                <Tooltip title={"Activate Your Bid"} arrow>
+                  <button
+                    className={cn("btn", "button")}
+                    type="button"
+                    onClick={() => setActivateBid(true)}
+                    disabled={bidDetails?.status === "cancelled" ? true : false}
+                  >
+                    Activate Bid
+                  </button>
+                </Tooltip>
+              )}
+              <Tooltip
+                title={
+                  isInviteDisabled
+                    ? bidDetails?.type === "L1"
+                      ? "! Please Fill Out  Live Bid Dates to Invite suppliers"
+                      : "! Please Fill Out  Sample Dates to Invite suppliers"
+                    : "Invite Supplier for this Bid"
+                }
+                arrow
+              >
+                <div style={{ display: "inline-block" }}>
+                  <button
+                    className={cn("btn", "button")}
+                    type="button"
+                    onClick={() =>
+                      navigate(`/portal/companies/${bidDetails?.id}`)
+                    }
+                    disabled={isInviteDisabled}
+                  >
+                    Invite Suppliers
+                  </button>
+                </div>
+              </Tooltip>
+              {participant?.participants.length > 0 ? (
+                <Tooltip title={"Make Amendments On This Bid"} arrow>
+                  <button
+                    className={cn("btn", "button")}
+                    type="button"
+                    onClick={() => setAddAmendment(true)}
+                    disabled={
+                      bidDetails?.status === "cancelled" ||
+                      bidDetails?.amendment?.length === 3
+                        ? true
+                        : false
+                    }
+                  >
+                    Amendments
+                  </button>
+                </Tooltip>
+              ) : (
+                <Tooltip title={"Edit This Bid"} arrow>
+                  <button
+                    type="submit"
+                    className={cn("btn", "button")}
+                    onClick={() =>
+                      navigate(`/portal/bids/categories/${bidDetails.id}`)
+                    }
+                    disabled={bidDetails?.status === "cancelled" ? true : false}
+                  >
+                    Edit Bid
+                  </button>
+                </Tooltip>
+              )}
+              <Tooltip title={"Cencel This Bid"} arrow>
+                <button
+                  type="submit"
+                  className={cn("btn", "button", "reject")}
+                  onClick={() =>
+                    setDeleteDetails({
+                      open: true,
+                      title: "Cancel Bid",
+                      message: `Are you sure you want to cancel this ${bidDetails?.title} ? This action cannot be undone.`,
+                    })
+                  }
+                  disabled={bidDetails?.status === "cancelled" ? true : false}
+                >
+                  Cancel Bid
+                </button>
+              </Tooltip>
+            </>
+          )}
+
           <ReactToPrint
             content={() => componentRef.current}
             documentTitle={bidDetails?.formatted_number}
             trigger={() => (
-              <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<PrintOutlined />}
-                sx={{
-                  width: "8rem",
-                  backgroundColor: "var(--primary-color)",
-                  "&:hover": {
-                    backgroundColor: "var(--secondary-color)",
-                  },
-                }}
-              >
-                Print
-              </Button>
+              <Tooltip title={"Print The Page"} arrow>
+                <IconButton
+                  sx={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: "var(--primary-color)",
+                  }}
+                >
+                  <PrintOutlined
+                    style={{ fontSize: "28px", fontWeight: "bold" }}
+                  />
+                </IconButton>
+              </Tooltip>
             )}
             removeAfterPrint
           />
-
-          {type === "related" || type === "invited" ? null : (
-            <>
-              <button
-                className={cn("btn", "button")}
-                type="button"
-                onClick={() => navigate(`/portal/companies/${bidDetails?.id}`)}
-                disabled={isInviteDisabled}
-              >
-                Invite Suppliers
-              </button>
-              {bidDetails?.status === "active" ? (
-                <button
-                  className={cn("btn", "button", "approve")}
-                  type="button"
-                  disabled
-                >
-                  Active
-                </button>
-              ) : (
-                <button
-                  className={cn("btn", "button")}
-                  type="button"
-                  onClick={() => setActivateBid(true)}
-                  disabled={bidDetails?.status === "cancelled" ? true : false}
-                >
-                  Activate Bid
-                </button>
-              )}
-
-              {participant?.participants.length > 0 ? (
-                <button
-                  className={cn("btn", "button")}
-                  type="button"
-                  onClick={() => setAddAmendment(true)}
-                  disabled={
-                    bidDetails?.status === "cancelled" ||
-                    bidDetails?.amendment?.length === 3
-                      ? true
-                      : false
-                  }
-                >
-                  Amendments
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className={cn("btn", "button")}
-                  onClick={() =>
-                    navigate(`/portal/bids/categories/${bidDetails.id}`)
-                  }
-                  disabled={bidDetails?.status === "cancelled" ? true : false}
-                >
-                  Edit Bid
-                </button>
-              )}
-
-              <button
-                type="submit"
-                className={cn("btn", "button", "reject")}
-                onClick={() =>
-                  setDeleteDetails({
-                    open: true,
-                    title: "Cancel Bid",
-                    message: `Are you sure you want to cancel this ${bidDetails?.title} ? This action cannot be undone.`,
-                  })
-                }
-                disabled={bidDetails?.status === "cancelled" ? true : false}
-              >
-                Cancel Bid
-              </button>
-            </>
-          )}
         </div>
       </div>
+      {type === "invited" || type === "related" ? null : (
+        <>
+          <>
+            {bidDetails?.status === "pending" && (
+              <Alert severity="warning" className="my-3">
+                <AlertTitle sx={{ fontWeight: "bold" }}>
+                  Warning: Bid Activation Required
+                </AlertTitle>
+                Your bid is not yet activated. Please activate your bid for
+                further process.
+              </Alert>
+            )}
 
-      {bidDetails?.status === "pending" && (
-        <Alert severity="warning" className="my-3">
-          <AlertTitle sx={{ fontWeight: "bold" }}>
-            Warning: Bid Activation Required
-          </AlertTitle>
-          Your bid is not yet activated. Please activate your bid for further
-          process.
-        </Alert>
+            {bidDetails?.status === "active" &&
+              bidDetails?.type === "L1" &&
+              bidDetails?.bid_close_date === null && (
+                <Alert severity="warning" className="my-3">
+                  <AlertTitle sx={{ fontWeight: "bold" }}>
+                    Warning: Live Bid Dates Required
+                  </AlertTitle>
+                  Live bid dates are not yet submitted. Please set the dates to
+                  invite suppliers for the bid.{" "}
+                  <span
+                    onClick={() => dispatch(setActiveTab(3))}
+                    style={{
+                      color: "darkblue",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Click here
+                  </span>
+                </Alert>
+              )}
+            {bidDetails?.status === "active" &&
+              bidDetails?.type === "QCBS" &&
+              bidDetails?.sample_receive_end_date === null && (
+                <Alert severity="warning" className="my-3">
+                  <AlertTitle sx={{ fontWeight: "bold" }}>
+                    Warning: Sample Receiving Dates Required
+                  </AlertTitle>
+                  Live bid dates are not yet submitted. Please set the dates to
+                  invite suppliers for the bid.{" "}
+                  <span
+                    onClick={() => dispatch(setActiveTab(4))}
+                    style={{
+                      color: "darkblue",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Click here
+                  </span>
+                </Alert>
+              )}
+          </>
+        </>
       )}
 
       <Box sx={{ width: "100%" }}>
@@ -322,8 +393,12 @@ const BidDetailsPage = () => {
         >
           {type === "invited"
             ? [
-                <Tab label="Summary" {...a11yProps(0)} key={0} />,
-                <Tab label="Documents" {...a11yProps(1)} key={1} />,
+                <Tooltip title={"See the summary of the bid"}>
+                  <Tab label="Summary" {...a11yProps(0)} key={0} />
+                </Tooltip>,
+                <Tooltip title={"See the Documents in the bid"}>
+                  <Tab label="Documents" {...a11yProps(1)} key={1} />
+                </Tooltip>,
                 // <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
                 // <Tab
                 //   label={
@@ -337,10 +412,11 @@ const BidDetailsPage = () => {
                 //   {...a11yProps(2)}
                 //   key={2}
                 // />,
-                <Tab
-                  label={
-                    <Box display="flex" alignItems="center" gap={1}>
-                      {/* {bidDetails?.participant?.status === "pending" ? (
+                <Tooltip title={"See Your Status of Bid Invite"}>
+                  <Tab
+                    label={
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {/* {bidDetails?.participant?.status === "pending" ? (
                         <Box
                           sx={{
                             width: "10px",
@@ -352,8 +428,34 @@ const BidDetailsPage = () => {
                         />
                       ) : null} */}
 
-                      {bidDetails?.type === "L1" ? (
-                        bidDetails?.participant?.status === "pending" ? (
+                        {bidDetails?.type === "L1" ? (
+                          bidDetails?.participant?.status === "pending" ? (
+                            <Box
+                              sx={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: "#FFBF00", // Yellow for pending
+                                animation: "blink 1s infinite",
+                              }}
+                            />
+                          ) : null
+                        ) : bidDetails?.participant?.sample?.approval_status ===
+                          "approved" ? (
+                          bidDetails?.participant?.status === "pending" &&
+                          bidDetails?.bid_open_date !== null ? (
+                            <Box
+                              sx={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: "#FFBF00", // Yellow for pending
+                                animation: "blink 1s infinite",
+                              }}
+                            />
+                          ) : null
+                        ) : bidDetails?.participant?.sample?.invite_status ===
+                          "pending" ? (
                           <Box
                             sx={{
                               width: "10px",
@@ -363,40 +465,15 @@ const BidDetailsPage = () => {
                               animation: "blink 1s infinite",
                             }}
                           />
-                        ) : null
-                      ) : bidDetails?.participant?.sample?.approval_status ===
-                        "approved" ? (
-                        bidDetails?.participant?.status === "pending" &&
-                        bidDetails?.bid_open_date !== null ? (
-                          <Box
-                            sx={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#FFBF00", // Yellow for pending
-                              animation: "blink 1s infinite",
-                            }}
-                          />
-                        ) : null
-                      ) : bidDetails?.participant?.sample?.invite_status ===
-                        "pending" ? (
-                        <Box
-                          sx={{
-                            width: "10px",
-                            height: "10px",
-                            borderRadius: "50%",
-                            backgroundColor: "#FFBF00", // Yellow for pending
-                            animation: "blink 1s infinite",
-                          }}
-                        />
-                      ) : null}
+                        ) : null}
 
-                      <span>Acceptance Status</span>
-                    </Box>
-                  }
-                  {...a11yProps(2)}
-                  key={2}
-                />,
+                        <span>Acceptance Status</span>
+                      </Box>
+                    }
+                    {...a11yProps(2)}
+                    key={2}
+                  />
+                </Tooltip>,
                 <Tab label="Questions" {...a11yProps(3)} key={3} />,
                 <Tab label="Remark" {...a11yProps(4)} key={4} />,
               ]

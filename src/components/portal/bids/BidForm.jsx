@@ -60,8 +60,6 @@ const BidForm = () => {
 
   const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
-  console.log(productData, "productData");
-  console.log(formData, "formData");
 
   useEffect(() => {
     if (!id && productData && productData.length > 0) {
