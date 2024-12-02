@@ -26,6 +26,7 @@ import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 import { dateValidator } from "../../../helpers/validation";
 import { useLocation } from "react-router-dom";
 import { useBidData } from "./BidCategories";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidForm = () => {
   const {
@@ -45,6 +46,7 @@ const BidForm = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [searchedBids, setSearchedBids] = useState([]);
+  const [screenLoader, setScreenLoader] = useState(true);
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
@@ -58,10 +60,12 @@ const BidForm = () => {
     .split("T")[0];
   // const { formData, productData } = location.state || {};
 
+
   const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
 
   useEffect(() => {
+
     if (!id && productData && productData.length > 0) {
       // If there's no `id`, concatenate all product names into a single string
       const concatenatedProductNames =
@@ -70,6 +74,7 @@ const BidForm = () => {
       // Set the 'title' field with the concatenated product names
       setValue("title", concatenatedProductNames);
     }
+
   }, [id, productData, setValue]);
 
   const updateBidCategories = async (id) => {
@@ -102,6 +107,7 @@ const BidForm = () => {
             severity: "error",
           });
         }
+   
       }
     }
   };
@@ -185,6 +191,7 @@ const BidForm = () => {
 
           // setBidId(response.data.id);
           updateBidCategories(response.data.id);
+
         }
       } catch (error) {
         setLoading(false);
@@ -219,6 +226,7 @@ const BidForm = () => {
             severity: "success",
           });
           updateBidCategories(id);
+          setScreenLoader(false)
           // navigate(`/portal/bids/products/${id}`);
         }
       } catch (error) {
@@ -253,6 +261,7 @@ const BidForm = () => {
             setCreatedAt(response.data.created_at);
             setTitleValue(response.data.title);
             setBidStatus(response.data.status);
+            setScreenLoader(false)
             reset({
               ...response.data,
               type: response.data.type_meta.id,
@@ -263,6 +272,8 @@ const BidForm = () => {
                 false
               ),
             });
+      
+            
           }
         } catch (error) {
           console.log(error);
@@ -364,6 +375,11 @@ const BidForm = () => {
   useEffect(() => {
     handleFormdata(id);
   }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader  />;
+  }
+
   return (
     <>
       <div className="container">

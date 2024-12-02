@@ -23,6 +23,7 @@ import {
 import { ExpandMore } from "@mui/icons-material";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 import { useBidData } from "./BidCategories";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidProducts = () => {
   const { control, handleSubmit, setError, setValue, reset } = useForm();
@@ -33,6 +34,7 @@ const BidProducts = () => {
   const [addFormOpen, setAddFormOpen] = useState(false); // To track if add product form is open
   const [productList, setProductList] = useState([]); // For fetched products
   const [expanded, setExpanded] = useState(null); // Track which form is open
+  const [screenLoader, setScreenLoader] = useState(true);
   // const { formData, productData } = useBidData();
   const [bidDetails, setBidDetails] = useState({});
   const { setAlert } = useContext(AlertContext);
@@ -57,6 +59,7 @@ const BidProducts = () => {
       if (response?.status === 200) {
         setProductList(response?.data);
         response.data.forEach((product, index) => prefillForm(product, index));
+        setScreenLoader(false)
       }
     } catch (error) {
       console.log("Error fetching product list", error);
@@ -103,6 +106,7 @@ const BidProducts = () => {
         reset(); // Reset form after submission
         setAddFormOpen(false); // Close the form after submission
         window.location.reload()
+        setScreenLoader(false)
       }
     } catch (error) {
       const { data } = error.response;
@@ -146,6 +150,7 @@ const BidProducts = () => {
       if (response?.status === 200) {
         window.location.reload()
         fetchProductList(); // Refetch list after edit
+        setScreenLoader(false)
       }
     } catch (error) {
     } finally {
@@ -165,6 +170,8 @@ const BidProducts = () => {
       if (response?.status === 204) {
         window.location.reload()
         fetchProductList(); // Refetch list after delete
+        setScreenLoader(false)
+
 
       }
     } catch (error) {
@@ -227,6 +234,8 @@ const BidProducts = () => {
           );
           if (response.status === 200) {
             setBidDetails(response?.data);
+            setScreenLoader(false)
+
           }
         } catch (error) {
           console.log(error);
@@ -251,6 +260,11 @@ const BidProducts = () => {
       });
     }
   };
+
+  if (screenLoader) {
+    return <ScreenLoader  />;
+  }
+
 
   return (
     <>

@@ -18,6 +18,7 @@ import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidDocuments = () => {
   const { id } = useParams();
@@ -29,6 +30,7 @@ const BidDocuments = () => {
   const [status, setStatus] = useState("");
   const [activateBid, setActivateBid] = useState(false);
   const [showThankyou, setShowThankyou] = useState(false);
+  const [screenLoader, setScreenLoader] = useState(true);
   const { userDetails } = useContext(UserDetailsContext);
 
   const { control, handleSubmit, setValue, watch, setError } = useForm({
@@ -38,7 +40,7 @@ const BidDocuments = () => {
   });
 
   const inputRef = useRef(null);
-
+  console.log("documents : ", documents);
   const onDrop = (acceptedFiles) => {
     const newFile = acceptedFiles[0];
     if (newFile) {
@@ -141,6 +143,7 @@ const BidDocuments = () => {
             severity: "success",
           });
           window.location.reload(); // Reload after successful deletion
+          setScreenLoader(false);
         }
       } catch (error) {
         const { data } = error.response;
@@ -221,6 +224,7 @@ const BidDocuments = () => {
           if (response.status === 200) {
             setStatus(response.data.status);
             setDocuments(response.data.document);
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -230,6 +234,10 @@ const BidDocuments = () => {
       retrieveBid();
     }
   }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
@@ -377,7 +385,7 @@ const BidDocuments = () => {
                 disabled={status === "cancelled"}
                 onClick={() => navigate(`/portal/bids/details/${id}`)}
               >
-                Skip
+                {documents?.length > 0 ? "proceed further" : "Skip"}
               </button>
             </div>
 
@@ -425,26 +433,3 @@ const BidDocuments = () => {
 };
 
 export default BidDocuments;
-
-const FilePreview = ({ file }) => {
-  const renderPreview = () => {
-    if (!file) return null;
-    const fileType = file.type;
-
-    if (fileType.includes("image")) {
-      // Preview for image files
-      return (
-        <>
-          <div className={styles["image-preview"]}>
-            <img src={file.preview} alt={file.name} />
-          </div>
-        </>
-      );
-    } else {
-      // Default fallback for unsupported file types
-      return <p>{file.name}</p>;
-    }
-  };
-
-  return <div>{renderPreview()}</div>;
-};
