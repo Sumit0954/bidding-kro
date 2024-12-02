@@ -17,6 +17,7 @@ const InvitationModal = ({
   companyDetail,
   listtype,
   onActionComplete,
+  onComplete,
 }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -69,6 +70,10 @@ const InvitationModal = ({
             if (response?.status === 204) {
               console.log("Bid deleted successfully");
               dispatch(setActiveTab(2));
+
+              if (onActionComplete) {
+                onActionComplete();
+              }
 
               window.location.reload();
               // Optional: Trigger a refresh or redirect as needed

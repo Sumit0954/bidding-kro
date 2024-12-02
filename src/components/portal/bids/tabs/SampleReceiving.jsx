@@ -31,6 +31,7 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { useLocation, useParams } from "react-router-dom";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const SampleReceiving = ({ participant, onActionComplete }) => {
   const {
@@ -53,6 +54,7 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
   // const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
 
   const [sampleClosingDate, setSampleClosingDate] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
   const type = new URLSearchParams(useLocation().search).get("type");
 
   const found = participant?.participants.some(
@@ -140,6 +142,7 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
           );
           if (response.status === 200) {
             setBidDetails(response?.data);
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -294,6 +297,11 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
   //     );
   //   }
   // };
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
+
   return (
     <>
       <div className="container">

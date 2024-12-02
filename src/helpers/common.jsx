@@ -72,7 +72,7 @@ export const getCategoryLevel = () => {
     0: {
       name: "industry",
       label: "Industry",
-      placeholder: "Choose Industry",
+      placeholder: "Choose Industry Of Supplier",
       rules: "Industry is required.",
     },
     1: {

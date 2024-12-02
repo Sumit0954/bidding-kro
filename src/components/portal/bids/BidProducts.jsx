@@ -23,6 +23,7 @@ import {
 import { ExpandMore } from "@mui/icons-material";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 import { useBidData } from "./BidCategories";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidProducts = () => {
   const { control, handleSubmit, setError, setValue, reset } = useForm();
@@ -30,22 +31,21 @@ const BidProducts = () => {
   const { id } = useParams(); // id is bid_id
   const [loading, setLoading] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
+  const [addFormOpen, setAddFormOpen] = useState(false); // To track if add product form is open
+  const [productList, setProductList] = useState([]); // For fetched products
+  const [expanded, setExpanded] = useState(null); // Track which form is open
+  const [screenLoader, setScreenLoader] = useState(true);
   // const { formData, productData } = useBidData();
+  const [bidDetails, setBidDetails] = useState({});
   const { setAlert } = useContext(AlertContext);
-  const MAX_PRODUCTS = 5;
 
   const location = useLocation();
-  console.log(location.state, "location.state");
   // const { productData } = location.state || {};
 
   const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
 
-  const [addFormOpen, setAddFormOpen] = useState(false); // To track if add product form is open
-  const [productList, setProductList] = useState([]); // For fetched products
-  const [expanded, setExpanded] = useState(null); // Track which form is open
-
-  console.log(productData, "productData");
+  const MAX_PRODUCTS = productData?.length;
 
   // Function to fetch product list
   const fetchProductList = async () => {
@@ -59,6 +59,7 @@ const BidProducts = () => {
       if (response?.status === 200) {
         setProductList(response?.data);
         response.data.forEach((product, index) => prefillForm(product, index));
+        setScreenLoader(false)
       }
     } catch (error) {
       console.log("Error fetching product list", error);
@@ -104,6 +105,8 @@ const BidProducts = () => {
         fetchProductList();
         reset(); // Reset form after submission
         setAddFormOpen(false); // Close the form after submission
+        window.location.reload()
+        setScreenLoader(false)
       }
     } catch (error) {
       const { data } = error.response;
@@ -145,11 +148,11 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 200) {
+        window.location.reload()
         fetchProductList(); // Refetch list after edit
-        console.log("product Updated successfully");
+        setScreenLoader(false)
       }
     } catch (error) {
-      console.log("Error editing product", error);
     } finally {
       setLoading(false);
     }
@@ -165,7 +168,11 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 204) {
+        window.location.reload()
         fetchProductList(); // Refetch list after delete
+        setScreenLoader(false)
+
+
       }
     } catch (error) {
       console.log("Error deleting product", error);
@@ -215,6 +222,50 @@ const BidProducts = () => {
     value: product.name, // keep 'value' as expected
   }));
 
+  useEffect(() => {
+    if (id) {
+      const retrieveBid = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setBidDetails(response?.data);
+            setScreenLoader(false)
+
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      retrieveBid();
+    }
+  }, [id]);
+
+
+  const procedFurther = () => {
+    if (bidDetails?.product?.length > 0) {
+      setSubmitLoader(false);
+      navigate(`/portal/bids/create/deatils/${id}`);
+    } else {
+      setSubmitLoader(false);
+      setAlert({
+        isVisible: true,
+        message: "Please Select Product For The Bid",
+        severity: "error",
+      });
+    }
+  };
+
+  if (screenLoader) {
+    return <ScreenLoader  />;
+  }
+
+
   return (
     <>
       <div className="container">
@@ -231,7 +282,7 @@ const BidProducts = () => {
                   productList?.length >= MAX_PRODUCTS ? "disable" : ""
                 )}
                 onClick={() => setAddFormOpen(true)}
-                disabled={productList.length >= MAX_PRODUCTS}
+                disabled={productList.length >= MAX_PRODUCTS ? true : false}
               >
                 + Add Product
               </button>
@@ -478,10 +529,7 @@ const BidProducts = () => {
                   type="submit"
                   className={cn("btn", "button")}
                   // disabled={bidStatus === "cancelled" ? true : false}
-                  onClick={() => {
-                    setSubmitLoader(true);
-                    navigate(`/portal/bids/create/deatils/${id}`);
-                  }}
+                  onClick={() => procedFurther()}
                 >
                   {/* {id ? "Update Bid" : "Create Bid"} */}
                   Save & Next

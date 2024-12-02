@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./BidDocuments.module.scss";
 import { Controller, useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
@@ -18,6 +18,7 @@ import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidDocuments = () => {
   const { id } = useParams();
@@ -29,6 +30,7 @@ const BidDocuments = () => {
   const [status, setStatus] = useState("");
   const [activateBid, setActivateBid] = useState(false);
   const [showThankyou, setShowThankyou] = useState(false);
+  const [screenLoader, setScreenLoader] = useState(true);
   const { userDetails } = useContext(UserDetailsContext);
 
   const { control, handleSubmit, setValue, watch, setError } = useForm({
@@ -37,6 +39,8 @@ const BidDocuments = () => {
     },
   });
 
+  const inputRef = useRef(null);
+  console.log("documents : ", documents);
   const onDrop = (acceptedFiles) => {
     const newFile = acceptedFiles[0];
     if (newFile) {
@@ -111,9 +115,15 @@ const BidDocuments = () => {
   const handleDeleteDocument = (data) => {
     setDeleteDetails({
       open: true,
-      document: data, // Store the document to be deleted
+      document: data,
       message: `Are you sure you want to delete the document? This action cannot be undone.`,
     });
+  };
+
+  const handleBrowseClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
   };
 
   const confirmDeleteDocument = async () => {
@@ -133,6 +143,7 @@ const BidDocuments = () => {
             severity: "success",
           });
           window.location.reload(); // Reload after successful deletion
+          setScreenLoader(false);
         }
       } catch (error) {
         const { data } = error.response;
@@ -213,6 +224,7 @@ const BidDocuments = () => {
           if (response.status === 200) {
             setStatus(response.data.status);
             setDocuments(response.data.document);
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -222,6 +234,10 @@ const BidDocuments = () => {
       retrieveBid();
     }
   }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
@@ -268,32 +284,10 @@ const BidDocuments = () => {
                             htmlFor="document"
                             className={cn("cursor", styles["img-drop-content"])}
                           >
-                            <Input
+                            <input
                               {...getInputProps()}
-                              sx={{
-                                display: "none",
-                              }}
-                              onChange={(e) => {
-                                const newFile = e.target.files[0];
-                                setError("document", {
-                                  type: "manual",
-                                  message: "",
-                                });
-                                if (newFile) {
-                                  const reader = new FileReader();
-                                  reader.onloadend = () => {
-                                    const fileWithPreview = Object.assign(
-                                      newFile,
-                                      {
-                                        preview: reader.result,
-                                      }
-                                    );
-                                    setFile(fileWithPreview);
-                                    field.onChange(fileWithPreview);
-                                  };
-                                  reader.readAsDataURL(newFile);
-                                }
-                              }}
+                              ref={inputRef}
+                              style={{ display: "none" }}
                             />
                             <img
                               className={styles["upload-icon"]}
@@ -311,15 +305,16 @@ const BidDocuments = () => {
                             <button
                               className="btn button"
                               type="button"
+                              onClick={handleBrowseClick}
                               disabled={status === "cancelled" ? true : false}
                             >
-                              Click To Browse
+                              Click To Upload
                             </button>
                           </label>
                         </Box>
                         {error && (
                           <span className="error">
-                            {error.message || "Error"}{" "}
+                            {error.message || "Error"}
                           </span>
                         )}
                       </Box>
@@ -329,21 +324,14 @@ const BidDocuments = () => {
 
                 {file && (
                   <div>
-                    <h5>File selected! Now, click the "Upload" button to upload your file {file.name}</h5>
+                    <h5>
+                      File selected! Now, click the "Upload" button to upload
+                      your file {file.name}
+                    </h5>
                   </div>
                 )}
 
                 <div className={cn("my-3", styles["btn-container"])}>
-                  <button
-                    className={cn("btn", "button")}
-                    type="button"
-                    onClick={() =>
-                      navigate(`/portal/bids/create/questions/${id}`)
-                    }
-                  >
-                    Back
-                  </button>
-
                   {loading ? (
                     <ButtonLoader size={60} />
                   ) : (
@@ -380,15 +368,24 @@ const BidDocuments = () => {
               />
             </div>
 
-            <div className={cn("my-3", styles["btn-container"])}>
+            <div
+              className={cn("my-3", styles["btn-container"])}
+              style={{ display: "flex", justifyContent: "end", gap: "1rem" }}
+            >
               <button
-                style={{ float: "right" }}
+                className={cn("btn", "button")}
+                type="button"
+                onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
+              >
+                Back
+              </button>
+              <button
                 className={cn("btn", "button")}
                 type="submit"
-                disabled={status === "cancelled" ? true : false}
+                disabled={status === "cancelled"}
                 onClick={() => navigate(`/portal/bids/details/${id}`)}
               >
-                Procced further
+                {documents?.length > 0 ? "proceed further" : "Skip"}
               </button>
             </div>
 
@@ -436,26 +433,3 @@ const BidDocuments = () => {
 };
 
 export default BidDocuments;
-
-const FilePreview = ({ file }) => {
-  const renderPreview = () => {
-    if (!file) return null;
-    const fileType = file.type;
-
-    if (fileType.includes("image")) {
-      // Preview for image files
-      return (
-        <>
-          <div className={styles["image-preview"]}>
-            <img src={file.preview} alt={file.name} />
-          </div>
-        </>
-      );
-    } else {
-      // Default fallback for unsupported file types
-      return <p>{file.name}</p>;
-    }
-  };
-
-  return <div>{renderPreview()}</div>;
-};

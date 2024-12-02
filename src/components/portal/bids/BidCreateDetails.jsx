@@ -9,6 +9,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { useLocation } from "react-router-dom";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidCreateDetails = () => {
   const {
@@ -27,6 +28,7 @@ const BidCreateDetails = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [bidStatus, setBidStatus] = useState("");
+  const [screenLoader, setScreenLoader] = useState(true);
   const { action, id } = useParams();
 
   const submitForm = async (data) => {
@@ -93,6 +95,7 @@ const BidCreateDetails = () => {
           delivery_terms: response.data.delivery_terms || "",
           payment_terms: response.data.payment_terms || "",
         });
+        setScreenLoader(false)
       }
     } catch (error) {
       console.log(error);
@@ -102,6 +105,10 @@ const BidCreateDetails = () => {
   useEffect(() => {
     handleFormdata(id);
   }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader  />;
+  }
 
   return (
     <>

@@ -6,6 +6,16 @@
     list-style: none;
     padding: 20px 10px;
 
+    .item-link.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    // .item-link.disabled .item-name {
+    //   text-decoration: line-through;
+    // }
+
     .item-link {
       text-decoration: none;
       font-weight: bold;
@@ -20,25 +30,25 @@
         margin-bottom: 10px;
       }
 
-      &:hover{
+      &:hover {
         color: var(--primary-color);
 
-        .sidebar-item{
+        .sidebar-item {
           background-color: var(--white);
 
-          .item-icon{
+          .item-icon {
             filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
           }
         }
       }
 
-      &.active{
+      &.active {
         color: var(--primary-color);
-      
-        .sidebar-item{
+
+        .sidebar-item {
           background-color: var(--white);
-      
-          .item-icon{
+
+          .item-icon {
             filter: invert(75%) sepia(20%) saturate(1744%) hue-rotate(172deg) brightness(95%) contrast(110%);
           }
         }
@@ -46,5 +56,3 @@
     }
   }
 }
-
-

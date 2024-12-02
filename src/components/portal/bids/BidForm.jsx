@@ -26,6 +26,7 @@ import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 import { dateValidator } from "../../../helpers/validation";
 import { useLocation } from "react-router-dom";
 import { useBidData } from "./BidCategories";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidForm = () => {
   const {
@@ -45,6 +46,7 @@ const BidForm = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [searchedBids, setSearchedBids] = useState([]);
+  const [screenLoader, setScreenLoader] = useState(false);
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
@@ -60,8 +62,6 @@ const BidForm = () => {
 
   const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
-  console.log(productData, "productData");
-  console.log(formData, "formData");
 
   useEffect(() => {
     if (!id && productData && productData.length > 0) {
@@ -221,6 +221,7 @@ const BidForm = () => {
             severity: "success",
           });
           updateBidCategories(id);
+          setScreenLoader(false);
           // navigate(`/portal/bids/products/${id}`);
         }
       } catch (error) {
@@ -255,6 +256,7 @@ const BidForm = () => {
             setCreatedAt(response.data.created_at);
             setTitleValue(response.data.title);
             setBidStatus(response.data.status);
+
             reset({
               ...response.data,
               type: response.data.type_meta.id,
@@ -265,6 +267,8 @@ const BidForm = () => {
                 false
               ),
             });
+
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -366,6 +370,11 @@ const BidForm = () => {
   useEffect(() => {
     handleFormdata(id);
   }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
+
   return (
     <>
       <div className="container">

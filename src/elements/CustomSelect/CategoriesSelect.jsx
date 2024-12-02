@@ -84,7 +84,7 @@ const CategoriesSelect = ({
         {searchEnabled && (
           <SearchBar
             name="product_search"
-            placeholder="Search Your Product"
+            placeholder="Search Your Product For The Bid"
             control={control}
             rootCategory={rootCategory}
             value={undefined}

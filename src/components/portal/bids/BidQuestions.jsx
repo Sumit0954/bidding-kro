@@ -16,12 +16,14 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidQuestions = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState([{ question: "" }]);
   const [bidStatus, setBidStatus] = useState("");
+  const [screenLoader, setScreenLoader] = useState(true);
 
   useEffect(() => {
     if (id) {
@@ -36,6 +38,7 @@ const BidQuestions = () => {
           if (response.status === 200) {
             setBidStatus(response.data.status);
             setQuestions(response.data.question);
+            setScreenLoader(false)
           }
         } catch (error) {
           console.log(error);
@@ -44,7 +47,7 @@ const BidQuestions = () => {
 
       retrieveBid();
     }
-  }, [id]);
+  }, [id , , questions?.length]);
 
   const { control, reset } = useForm({
     defaultValues: {
@@ -65,7 +68,10 @@ const BidQuestions = () => {
   useEffect(() => {
     reset({ questions });
     setFormCount(questions?.length);
+    // setScreenLoader(false)
   }, [questions, reset]);
+
+  console.log(formCount)
 
   const handleQuestions = () => {
     if (formCount < MAX_QUESTION_COUNT) {
@@ -91,6 +97,7 @@ const BidQuestions = () => {
             message: `Question ${index + 1} has been deleted.`,
             severity: "success",
           });
+          setScreenLoader(false)
         }
       } catch (error) {
         const { data } = error.response;
@@ -109,7 +116,9 @@ const BidQuestions = () => {
       setFormCount(formCount - 1);
     }
   };
-
+  if (screenLoader) {
+    return <ScreenLoader  />;
+  }
   return (
     <>
       <div className="container">
@@ -162,7 +171,7 @@ const BidQuestions = () => {
                   }
                   disabled={bidStatus === "cancelled" ? true : false}
                 >
-                  Upload Documents
+                  {formCount > 0 ? " Next" : "Skip"}
                 </button>
               </div>
             </div>
