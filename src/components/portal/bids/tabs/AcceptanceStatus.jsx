@@ -770,7 +770,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
         {type === "invited" && (
           <Box className={styles["btn-contanier"]}>
             {participant?.status === "accepted" ||
-            participant?.status === "revoked" ||
+            // participant?.status === "revoked" ||
             participant?.status === "declined" ||
             (bidDetails?.type === "QCBS" &&
               ((participant?.sample?.invite_status === "accepted" &&

@@ -31,6 +31,7 @@ const PendingRequests = ({
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [requestBids, setRequestBids] = useState([]);
+  const [refresh, setRefresh] = useState(0);
 
   const columns = Pending_request_column();
 
@@ -40,6 +41,10 @@ const PendingRequests = ({
     setInvitation(true);
     console.log("data.row.original", data.row.original);
     setCompanyDetail(data.row.original);
+  };
+
+  const handleRefresh = () => {
+    setRefresh((prevKey) => prevKey + 1); // Increment the refresh key
   };
 
   useEffect(() => {
@@ -60,7 +65,7 @@ const PendingRequests = ({
     };
 
     getCompanyList();
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     if (id) {
@@ -82,7 +87,7 @@ const PendingRequests = ({
 
       getParticipants();
     }
-  }, [id]);
+  }, [id, refresh]);
 
   useEffect(() => {
     const getRequestList = async () => {
@@ -100,7 +105,7 @@ const PendingRequests = ({
       } catch (error) {}
     };
     getRequestList();
-  }, []);
+  }, [refresh]);
 
   const addAction = (cell) => {
     console.log("Cell Data : ", cell);
@@ -218,6 +223,7 @@ const PendingRequests = ({
           companyDetail={companyDetail}
           listtype={listtype}
           onActionComplete={onActionComplete}
+          onComplete={handleRefresh}
         />
       )}
     </>

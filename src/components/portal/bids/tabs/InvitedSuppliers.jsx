@@ -29,8 +29,9 @@ import CustomInput from "../../../../elements/CustomInput/CustomInput";
 import DateSubmittedModal from "../../../../elements/CustomModal/DateSubmittedModal";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../../../store/tabSlice";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
-const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
+const InvitedSuppliers = ({ onActionComplete, id, type }) => {
   const {
     control,
     handleSubmit,
@@ -40,10 +41,13 @@ const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
   } = useForm();
   const dispatch = useDispatch();
   const [createdAt, setCreatedAt] = useState("");
+  const [screenLoader, setScreenLoader] = useState(true);
   const [showSubmittedDated, setShowSubmittedDated] = useState(false);
   const [revokesupplier, setRevokeSupplier] = useState(false);
   const [bidDetails, setBidDetails] = useState({});
   const [loading, setLoading] = useState(false);
+  const [participant, setParticipant] = useState();
+  const [refresh, setRefresh] = useState(0);
   const minDate = getMinMaxDate(2, 10, createdAt)[0]
     .toISOString()
     .split("T")[0];
@@ -66,6 +70,34 @@ const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
   const filteredParticipants = participant?.participants.filter(
     (p) => p.sample?.approval_status === "approved"
   );
+
+  const handleRefresh = () => {
+    setRefresh((prevKey) => prevKey + 1); // Increment the refresh key
+  };
+
+  useEffect(() => {
+    if (id) {
+      const getParticipants = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            const participants = response.data.participants;
+            setParticipant(response.data);
+            setScreenLoader(false);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      getParticipants();
+    }
+  }, [id, refresh]);
 
   useEffect(() => {
     if (id) {
@@ -109,6 +141,8 @@ const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
           message: `${alertmessage} Successfully revoked`,
           severity: "success",
         });
+        setDeleteDetails({ open: false, title: "", message: "", action: "" });
+        handleRefresh();
       }
     } catch (error) {
       const { data } = error.response;
@@ -236,6 +270,10 @@ const InvitedSuppliers = ({ participant, onActionComplete, id, type }) => {
       });
     }
   };
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>

@@ -512,6 +512,7 @@ const BidDetailsPage = () => {
                     label={
                       <Box display="flex" alignItems="center" gap={1}>
                         {bidDetails?.type === "L1" &&
+                        bidDetails?.status === "active" &&
                         bidDetails?.bid_open_date == null ? (
                           <Box
                             sx={{
@@ -556,7 +557,8 @@ const BidDetailsPage = () => {
                           // label="Sample Receiving"
                           label={
                             <Box display="flex" alignItems="center" gap={1}>
-                              {bidDetails?.sample_receive_start_date == null ? (
+                              {bidDetails?.status === "active" &&
+                              bidDetails?.sample_receive_start_date == null ? (
                                 <Box
                                   sx={{
                                     width: "10px",
@@ -568,7 +570,8 @@ const BidDetailsPage = () => {
                                 />
                               ) : null}
 
-                              <span>Sample Receiving</span>
+                              {/* <span>Sample Receiving</span> */}
+                              <span>QCBS Status</span>
                             </Box>
                           }
                           {...a11yProps(4)}
@@ -641,8 +644,8 @@ const BidDetailsPage = () => {
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <InvitedSuppliers
-              bidDetails={bidDetails}
-              participant={participant}
+              // bidDetails={bidDetails}
+              // participant={participant}
               // onActionComplete={() => setValue(2)}
               // onActionComplete={() => dispatch(setActiveTab(2))}
               onActionComplete={handleRefresh}
