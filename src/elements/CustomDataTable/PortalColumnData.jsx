@@ -546,41 +546,47 @@ export const invited_bids_column = [
             }}
           ></div> */}
 
-          <div
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor:
-                data?.row?.original?.bid?.type === "L1"
-                  ? data?.row?.original?.status === "pending"
+          {data?.row?.original?.bid?.status === "active" ? (
+            <div
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor:
+                  data?.row?.original?.bid?.type === "L1"
+                    ? data?.row?.original?.status === "pending"
+                      ? "#FFBF00" // Yellow for pending
+                      : data?.row?.original?.status === "accepted"
+                      ? "#22bb33" // Green for accepted
+                      : "#ccc" // Default gray
+                    : data?.row?.original?.sample?.approval_status ===
+                      "approved"
+                    ? data?.row?.original?.status === "pending" &&
+                      data?.row?.original?.bid?.bid_open_date !== null
+                      ? "#FFBF00" // Yellow for pending
+                      : data?.row?.original?.status === "accepted"
+                      ? "#22bb33" // Green for accepted
+                      : "#ccc" // Default gray
+                    : data?.row?.original?.sample?.invite_status === "pending"
                     ? "#FFBF00" // Yellow for pending
-                    : data?.row?.original?.status === "accepted"
+                    : data?.row?.original?.sample?.invite_status === "accepted"
                     ? "#22bb33" // Green for accepted
-                    : "#ccc" // Default gray
-                  : data?.row?.original?.sample?.approval_status === "approved"
-                  ? data?.row?.original?.status === "pending" &&
-                    data?.row?.original?.bid?.bid_open_date !== null
-                    ? "#FFBF00" // Yellow for pending
-                    : data?.row?.original?.status === "accepted"
-                    ? "#22bb33" // Green for accepted
-                    : "#ccc" // Default gray
-                  : data?.row?.original?.sample?.invite_status === "pending"
-                  ? "#FFBF00" // Yellow for pending
-                  : data?.row?.original?.sample?.invite_status === "accepted"
-                  ? "#22bb33" // Green for accepted
-                  : "#ccc", // Default gray
-              animation:
-                (data?.row?.original?.bid?.type === "L1" &&
-                  data?.row?.original?.status === "pending") ||
-                (data?.row?.original?.sample?.approval_status === "approved" &&
-                  data?.row?.original?.status === "pending" &&
-                  data?.row?.original?.bid?.bid_open_date !== null) ||
-                data?.row?.original?.sample?.invite_status === "pending"
-                  ? "blink 1s infinite"
-                  : "none",
-            }}
-          ></div>
+                    : "#ccc", // Default gray
+                animation:
+                  (data?.row?.original?.bid?.type === "L1" &&
+                    data?.row?.original?.status === "pending") ||
+                  (data?.row?.original?.sample?.approval_status ===
+                    "approved" &&
+                    data?.row?.original?.status === "pending" &&
+                    data?.row?.original?.bid?.bid_open_date !== null) ||
+                  data?.row?.original?.sample?.invite_status === "pending"
+                    ? "blink 1s infinite"
+                    : "none",
+              }}
+            ></div>
+          ) : (
+            <></>
+          )}
 
           <style>
             {`
@@ -605,7 +611,9 @@ export const invited_bids_column = [
               className={`status-column ${data?.row?.original?.status}`}
               style={{
                 color: `${
-                  data?.row?.original?.bid?.type === "L1"
+                  data?.row?.original?.bid?.status === "cancelled"
+                    ? "red"
+                    : data?.row?.original?.bid?.type === "L1"
                     ? data?.row?.original?.status === "accepted"
                       ? "#22bb33" // Green for accepted
                       : data?.row?.original?.status === "pending"
@@ -630,7 +638,9 @@ export const invited_bids_column = [
                 }`,
                 textDecoration: "none",
                 fontWeight: `${
-                  data?.row?.original?.bid?.type === "L1"
+                  data?.row?.original?.bid?.status === "cancelled"
+                    ? "bold"
+                    : data?.row?.original?.bid?.type === "L1"
                     ? data?.row?.original?.status === "pending"
                       ? "bold"
                       : ""
@@ -647,7 +657,9 @@ export const invited_bids_column = [
                 textTransform: "uppercase",
               }}
             >
-              {data?.row?.original?.bid?.type === "L1"
+              {data?.row?.original?.bid?.status === "cancelled"
+                ? data?.row?.original?.bid?.status
+                : data?.row?.original?.bid?.type === "L1"
                 ? data?.row?.original?.status
                 : data?.row?.original?.sample?.approval_status === "approved" &&
                   data?.row?.original?.bid?.bid_open_date !== null
@@ -704,8 +716,9 @@ export const invited_bids_column = [
           }}
         >
           {(data?.row?.original?.sample?.invite_status === "pending" &&
-          data?.row?.original?.sample?.approval_status === "pending") || ( data?.row?.original?.sample?.invite_status === "declined" )
-          || data?.row?.original?.status === "revoked"
+            data?.row?.original?.sample?.approval_status === "pending") ||
+          data?.row?.original?.sample?.invite_status === "declined" ||
+          data?.row?.original?.status === "revoked"
             ? " - "
             : data?.row?.original?.sample?.approval_status}
         </div>
@@ -1375,7 +1388,7 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
     },
   },
   {
-    Header: "Action",
+    Header: "Sample Approval Status",
     accessor: "mobile_number",
     align: "left",
     disablePadding: false,

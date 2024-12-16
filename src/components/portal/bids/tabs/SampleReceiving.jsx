@@ -32,6 +32,8 @@ import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { useLocation, useParams } from "react-router-dom";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveTab } from "../../../../store/tabSlice";
 
 const SampleReceiving = ({ participant, onActionComplete }) => {
   const {
@@ -51,6 +53,8 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
     .split("T")[0];
   const [loading, setLoading] = useState(false);
   const [bidDetails, setBidDetails] = useState({});
+  const dispatch = useDispatch();
+
   // const [status, setStatus] = useState("Not Approved"); // Default value set to "Not Received"
 
   const [sampleClosingDate, setSampleClosingDate] = useState();
@@ -436,6 +440,31 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
             />
           </AccordionDetails>
         </Accordion>
+
+        {found && (
+          <Accordion
+            defaultExpanded
+            square={true}
+            classes={{
+              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography classes={{ root: "custom-accordion-heading" }}>
+                Invited Suppliers
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <DataTable
+                propsColumn={SampleBidInvitationscolumn}
+                propsData={filteredParticipants || []}
+                // action={addSampleRecivedAction}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+
         <div className="row">
           {bidDetails?.bid_close_date === null ? (
             <>
@@ -515,28 +544,26 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
             <></>
           )}
         </div>
-        {found && (
-          <Accordion
-            defaultExpanded
-            square={true}
-            classes={{
-              root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        {isApproved ? (
+          <div
+            className={styles["btn-container"]}
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              // gap: "10px",
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography classes={{ root: "custom-accordion-heading" }}>
-                Invited Suppliers
-              </Typography>
-            </AccordionSummary>
-
-            <AccordionDetails>
-              <DataTable
-                propsColumn={SampleBidInvitationscolumn}
-                propsData={filteredParticipants || []}
-                // action={addSampleRecivedAction}
-              />
-            </AccordionDetails>
-          </Accordion>
+            <button
+              type="button"
+              className={cn("btn", "button")}
+              onClick={() => dispatch(setActiveTab(3))}
+            >
+              Invited Suppliers for Live Bid
+            </button>
+          </div>
+        ) : (
+          <></>
         )}
       </div>
     </>

@@ -103,12 +103,12 @@ const CustomInput = ({
               <span className="error">{error.message || "Error"} </span>
             )}
 
-            {inputType === "password" && isFocused && showPasswordMsg &&(
+            {inputType === "password" && isFocused && showPasswordMsg && (
               <div className={cn(styles["password-message"])}>
                 <p>Requirements for choosing password :</p>
                 <ul>
                   <li className="bullet-points">
-                    Your password must be at least 12 characters long.
+                    Your password must be at least 8 characters long.
                   </li>
                   <li className="bullet-points">
                     Your password must have 1 uppercase character.

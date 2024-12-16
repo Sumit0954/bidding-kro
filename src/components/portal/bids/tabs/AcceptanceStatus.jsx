@@ -21,6 +21,7 @@ import { NavLink } from "react-router-dom";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
+import { dateTimeFormatter } from "../../../../helpers/formatter";
 
 const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   const { setAlert } = useContext(AlertContext);
@@ -134,7 +135,28 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
         classname={cn("row", styles["acceptance-box"])}
         sx={{ marginTop: "2rem", marginLeft: "8px" }}
       >
-        {bidDetails?.type === "L1" ? (
+        {bidDetails?.status === "cancelled" ? (
+          <Box sx={{ marginBottom: "2rem" }}>
+            {/* Heading */}
+            <Typography variant="h4" gutterBottom>
+              Bid Cancellation Notice
+            </Typography>
+
+            {/* Paragraph 2 */}
+            <Box mb={2}>
+              <Typography variant="body1">
+                We regret to inform you that the bid has been canceled by the
+                bid owner. As a result, all activities related to this bid,
+                including the submission of product samples and the bidding
+                process, have been halted. We understand this may be
+                disappointing news, and we sincerely apologize for any
+                inconvenience caused. If you have any questions or require
+                further assistance, please do not hesitate to contact our
+                support team. We appreciate your patience and understanding.
+              </Typography>
+            </Box>
+          </Box>
+        ) : bidDetails?.type === "L1" ? (
           participant.status === "pending" ? (
             // PENDING CONTENT
             <>
@@ -521,14 +543,14 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
                       Live Bid Opening date :{" "}
-                      {bidDetails?.sample_receive_start_date}
+                      {dateTimeFormatter(bidDetails?.bid_open_date)}
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
                       Live Bid Closing date :{" "}
-                      {bidDetails?.sample_receive_end_date}
+                      {dateTimeFormatter(bidDetails?.bid_close_date)}
                     </ListItem>
                   </List>
                   <Typography variant="body1">
@@ -767,7 +789,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
           </>
         )}
 
-        {type === "invited" && (
+        {bidDetails?.status !== "cancelled" && type === "invited" && (
           <Box className={styles["btn-contanier"]}>
             {participant?.status === "accepted" ||
             // participant?.status === "revoked" ||

@@ -119,7 +119,6 @@ const Summary = ({ bidDetails }) => {
 
   const dispatch = useDispatch();
 
-
   const handleViewRequestClick = (tabvalue) => {
     dispatch(setActiveTab(tabvalue)); // Set the active tab
   };
@@ -171,6 +170,15 @@ const Summary = ({ bidDetails }) => {
         ? [
             {
               label: "Revoked",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+      ...(bidDetails?.status === "cancelled"
+        ? [
+            {
+              label: "Cancelled",
               icon: <CancelOutlined style={{ color: "red" }} />,
               status: "error",
             },
@@ -289,10 +297,17 @@ const Summary = ({ bidDetails }) => {
             },
           ]
         : []),
+      ...(bidDetails?.status === "cancelled"
+        ? [
+            {
+              label: "Cancelled",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
     ];
   }
-
-
 
   return (
     <>
@@ -392,7 +407,9 @@ const Summary = ({ bidDetails }) => {
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
-              <h6 className={styles["col-heading"]}>Opening Date and Time</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Opening Date and Time
+              </h6>
               <p className={styles["col-data"]}>
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_open_date)
@@ -400,7 +417,9 @@ const Summary = ({ bidDetails }) => {
               </p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Closing Date and Time</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Closing Date and Time
+              </h6>
               <p className={styles["col-data"]}>
                 {bidDetails?.bid_close_date
                   ? dateTimeFormatter(bidDetails?.bid_close_date)
@@ -416,38 +435,36 @@ const Summary = ({ bidDetails }) => {
               </p>
             </div>
           </div>
-          {bidDetails.type === "QCBS" &&
-            type === "invited" &&
-            bidDetails?.participant?.sample?.invite_status === "accepted" && (
-              <>
-                <Divider classes={{ root: "custom-divider" }} />
-                <div className="row">
-                  <div className="col">
-                    <h6 className={styles["col-heading"]}>
-                      Sample Receiving Opening Date
-                    </h6>
-                    <p className={styles["col-data"]}>
-                      {bidDetails?.bid_close_date
-                        ? dateTimeFormatter(
-                            bidDetails?.sample_receive_start_date
-                          )
-                        : "-"}
-                    </p>
-                  </div>
-                  <div className="col">
-                    <h6 className={styles["col-heading"]}>
-                      Sample Receiving Closing Date
-                    </h6>
-                    <p className={styles["col-data"]}>
-                      {bidDetails?.bid_close_date
-                        ? dateTimeFormatter(bidDetails?.sample_receive_end_date)
-                        : "-"}
-                    </p>
-                  </div>
-                  <div className="col"></div>
+          {bidDetails.type === "QCBS" && (
+            // type === "invited" &&
+            // bidDetails?.participant?.sample?.invite_status === "accepted" &&
+            <>
+              <Divider classes={{ root: "custom-divider" }} />
+              <div className="row">
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>
+                    Sample Receiving Opening Date
+                  </h6>
+                  <p className={styles["col-data"]}>
+                    {bidDetails?.sample_receive_start_date
+                      ? dateTimeFormatter(bidDetails?.sample_receive_start_date)
+                      : "-"}
+                  </p>
                 </div>
-              </>
-            )}
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>
+                    Sample Receiving Closing Date
+                  </h6>
+                  <p className={styles["col-data"]}>
+                    {bidDetails?.sample_receive_end_date
+                      ? dateTimeFormatter(bidDetails?.sample_receive_end_date)
+                      : "-"}
+                  </p>
+                </div>
+                <div className="col"></div>
+              </div>
+            </>
+          )}
         </AccordionDetails>
       </Accordion>
 
@@ -867,28 +884,48 @@ const Summary = ({ bidDetails }) => {
               <div className={cn("mt-3", styles["note-list"])}>
                 <ul>
                   <li>
-                    <strong onClick={()=>handleViewRequestClick(1)} className={styles["navigator"]}>Documents Panel:</strong> View and download all
-                    documents uploaded by the buyer. This panel keeps you
-                    informed of all bid-related documentation you need for
-                    reference and compliance.
+                    <strong
+                      onClick={() => handleViewRequestClick(1)}
+                      className={styles["navigator"]}
+                    >
+                      Documents Panel:
+                    </strong>{" "}
+                    View and download all documents uploaded by the buyer. This
+                    panel keeps you informed of all bid-related documentation
+                    you need for reference and compliance.
                   </li>
                   <li>
-                    <strong onClick={()=>handleViewRequestClick(2)} className={styles["navigator"]}>Acceptance Status:</strong> Monitor the status of
-                    your bid acceptance from the supplier’s end. This panel
-                    shows whether your bid has been accepted, rejected, or is
-                    still pending with the buyer.
+                    <strong
+                      onClick={() => handleViewRequestClick(2)}
+                      className={styles["navigator"]}
+                    >
+                      Acceptance Status:
+                    </strong>{" "}
+                    Monitor the status of your bid acceptance from the
+                    supplier’s end. This panel shows whether your bid has been
+                    accepted, rejected, or is still pending with the buyer.
                   </li>
                   <li>
-                    <strong onClick={()=>handleViewRequestClick(3)} className={styles["navigator"]}>Questions:</strong> Find questions from the buyer
-                    directed to you, the supplier. Here, you can view and
-                    respond to buyer inquiries to ensure clarity and enhance bid
-                    collaboration.
+                    <strong
+                      onClick={() => handleViewRequestClick(3)}
+                      className={styles["navigator"]}
+                    >
+                      Questions:
+                    </strong>{" "}
+                    Find questions from the buyer directed to you, the supplier.
+                    Here, you can view and respond to buyer inquiries to ensure
+                    clarity and enhance bid collaboration.
                   </li>
                   <li>
-                    <strong onClick={()=>handleViewRequestClick(4)} className={styles["navigator"]}>Remarks:</strong> Leave your remarks or feedback for
-                    the buyer regarding the bid. This feature allows you to
-                    communicate any observations, requests, or comments
-                    directly.
+                    <strong
+                      onClick={() => handleViewRequestClick(4)}
+                      className={styles["navigator"]}
+                    >
+                      Remarks:
+                    </strong>{" "}
+                    Leave your remarks or feedback for the buyer regarding the
+                    bid. This feature allows you to communicate any
+                    observations, requests, or comments directly.
                   </li>
                 </ul>
               </div>

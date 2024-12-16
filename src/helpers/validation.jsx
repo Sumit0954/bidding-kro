@@ -16,8 +16,8 @@ export const websiteValidator = {
 
 export const passwordValidator = async (password) => {
   // -1 = false and 0 = true
-  if (password.length < 12) {
-    return "Password must be 12 characters or more.";
+  if (password.length < 8) {
+    return "Password must be 8 characters or more.";
   } else if (password.search(/^(?=.*[^A-Za-z0-9])/) === -1) {
     return "Password must have at least 1 special character!";
   } else if (password.search(/^(?=(.*\d){1,})/) === -1) {
