@@ -26,8 +26,11 @@ import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
+// import { PrintOutlined } from "@mui/icons-material";
+// import ReactToPrint from "react-to-print";
 import { PrintOutlined } from "@mui/icons-material";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
+
 import PrintableBidDetails from "../../../components/portal/bids/PrintableBidDetails";
 import Questions from "../../../components/portal/bids/tabs/Questions";
 import InvitedSuppliers from "../../../components/portal/bids/tabs/InvitedSuppliers";
@@ -43,6 +46,7 @@ import CompanyList from "../../../components/portal/companies/CompanyList";
 import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
+// import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidDetailsPage = () => {
@@ -303,7 +307,7 @@ const BidDetailsPage = () => {
             </>
           )}
 
-          <ReactToPrint
+          {/* <useReactToPrint
             content={() => componentRef.current}
             documentTitle={bidDetails?.formatted_number}
             trigger={() => (
@@ -322,7 +326,7 @@ const BidDetailsPage = () => {
               </Tooltip>
             )}
             removeAfterPrint
-          />
+          /> */}
         </div>
       </div>
       {type === "invited" || type === "related" ? null : (

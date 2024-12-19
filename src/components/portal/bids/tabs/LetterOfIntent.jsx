@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandMore, PrintOutlined } from "@mui/icons-material";
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
 
 const LetterOfIntent = ({ bidDetails }) => {
   const componentRef = useRef(null);
@@ -35,7 +35,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                 >
                   LETTER OF INTENT FOR BID AWARD
                 </Typography>
-                <ReactToPrint
+                {/* <ReactToPrint
                   content={() => componentRef.current}
                   documentTitle={bidDetails?.formatted_number}
                   trigger={() => (
@@ -44,7 +44,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                     </IconButton>
                   )}
                   removeAfterPrint
-                />
+                /> */}
               </div>
               <Typography>Date: 28/09/2024</Typography>
               <Typography>Reference Number: LOI-8K-2024-00123</Typography>

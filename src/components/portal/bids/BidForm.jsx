@@ -9,7 +9,7 @@ import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTim
 import {
   getMinMaxDate,
   getProductUnits,
-  bidType,
+  // bidType,
   getBidTypes,
 } from "../../../helpers/common";
 import { useNavigate, useParams } from "react-router-dom";

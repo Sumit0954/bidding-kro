@@ -12,7 +12,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 // API BASEPATH Globally
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

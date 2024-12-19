@@ -3,7 +3,12 @@ import _sendAPIRequest from "../helpers/api";
 import { PortalApiUrls } from "../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../contexts/AlertProvider";
 
-const RazorpayPaymentHandler = ({ userData, setActivateBid, setShowThankyou, id }) => {
+const RazorpayPaymentHandler = ({
+  userData,
+  setActivateBid,
+  setShowThankyou,
+  id,
+}) => {
   const { first_name, last_name, email, mobile_number } = userData.user;
   const { setAlert } = useContext(AlertContext);
 
@@ -58,7 +63,7 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid, setShowThankyou, id 
       const { razorpay_order_id } = order.data;
 
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
         currency: "INR",
         name: "Bidding Karo",
         order_id: razorpay_order_id,
@@ -76,8 +81,8 @@ const RazorpayPaymentHandler = ({ userData, setActivateBid, setShowThankyou, id 
             true
           );
 
-          if(result.status === 204){
-            setShowThankyou(true)
+          if (result.status === 204) {
+            setShowThankyou(true);
           }
         },
         prefill: {

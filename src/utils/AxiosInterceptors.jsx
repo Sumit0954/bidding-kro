@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Create an axios instance that you wish to apply the interceptor to
 export const axiosInstance = axios.create({ baseURL: BASE_URL });
@@ -66,7 +66,7 @@ export const login = async (data, role) => {
 };
 
 // Logging out
-export const logout = async ({redirectPath}) => {
+export const logout = async ({ redirectPath }) => {
   // remove tokens to storage
   localStorage.clear();
   window.location.href = redirectPath;
