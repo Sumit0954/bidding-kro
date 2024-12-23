@@ -25,35 +25,19 @@ const BidList = ({ listType }) => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
 
-  // To Created Bid List
   const getCreatedBidList = async () => {
-    // console.log(
-    //   selectedCategory,
-    //   "selectedCategoryselectedCategoryselectedCategory"
-    // );
     const categoryArray = Array.isArray(selectedCategory)
       ? selectedCategory
       : [selectedCategory];
 
-    // Create URLSearchParams instance
     const params = new URLSearchParams();
 
-    // // Append each category value to the params object
-    // categoryArray.forEach((category) => {
-    //   if (category !== undefined) {
-    //     params.append("category", category); // This will format as category=7553&category=8262
-    //   }
-    // });
     categoryArray.forEach((category) => {
-      if (category !== undefined) {
+      if (category !== undefined && category !== "") {
         params.append("category", category); // This will append without the []
       }
     });
     try {
-      // const params = {
-      //   category: selectedCategory,
-      // };
-
       const response = await _sendAPIRequest(
         "GET",
         PortalApiUrls.CREATED_LIST_BIDS,
@@ -193,7 +177,7 @@ const BidList = ({ listType }) => {
   };
 
   const requestAction = (cell) => {
-    const is_requested = cell.row.original.is_requested
+    const is_requested = cell.row.original.is_requested;
     if (cell.column.id === "action") {
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
@@ -204,7 +188,7 @@ const BidList = ({ listType }) => {
             onClick={() => handlerequest(cell)}
             disabled={is_requested && true}
           >
-            {is_requested === true ? "Requested" : "invite Request"}   
+            {is_requested === true ? "Requested" : "invite Request"}
           </button>
         </TableCell>
       );
@@ -218,7 +202,6 @@ const BidList = ({ listType }) => {
     }
   };
 
- 
   return (
     <>
       {listType === "created" && (
