@@ -48,6 +48,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
 // import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import Analysis from "../../../components/portal/bids/tabs/Award";
+import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -480,6 +482,7 @@ const BidDetailsPage = () => {
                 </Tooltip>,
                 <Tab label="Questions" {...a11yProps(3)} key={3} />,
                 <Tab label="Remark" {...a11yProps(4)} key={4} />,
+                <Tab label="Bid Result" {...a11yProps(5)} key={5} />,
               ]
             : [
                 <Tab label="Summary" {...a11yProps(0)} key={0} />,
@@ -538,21 +541,16 @@ const BidDetailsPage = () => {
                   />
                 ),
 
+
                 bidDetails?.type === "L1"
                   ? [
-                      // <Tab
-                      //   label="Invite Suppliers"
-                      //   {...a11yProps(2)}
-                      //   key={2}
-                      //   disabled={shouldDisableTab}
-                      // />,
-                      // <Tab label="Bids" {...a11yProps(3)} key={3} />,
-                      // <Tab label="Analysis" {...a11yProps(4)} key={4} />,
-                      // <Tab
-                      //   label="Letter Of Intent"
-                      //   {...a11yProps(5)}
-                      //   key={5}
-                      // />,
+                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
+                      <Tab label="Analysis" {...a11yProps(4)} key={4} />,
+                      <Tab
+                        label="Letter Of Intent"
+                        {...a11yProps(5)}
+                        key={5}
+                      />,
                       // <Tab label="Feedback" {...a11yProps(6)} key={6} />,
                     ]
                   : [
@@ -588,13 +586,13 @@ const BidDetailsPage = () => {
                       //   key={2}
                       //   disabled={shouldDisableTab}
                       // />,
-                      // <Tab label="Bids" {...a11yProps(4)} key={4} />,
-                      // <Tab label="Analysis" {...a11yProps(5)} key={5} />,
-                      // <Tab
-                      //   label="Letter Of Intent"
-                      //   {...a11yProps(6)}
-                      //   key={6}
-                      // />,
+                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
+                      <Tab label="Analysis" {...a11yProps(5)} key={5} />,
+                      <Tab
+                        label="Letter Of Intent"
+                        {...a11yProps(6)}
+                        key={6}
+                      />,
                       // <Tab label="Feedback" {...a11yProps(7)} key={7} />,
                     ],
               ]}
@@ -621,6 +619,9 @@ const BidDetailsPage = () => {
           </TabPanel>
           <TabPanel value={activeTab} index={4}>
             <Remark bidDetails={bidDetails} />
+          </TabPanel>
+          <TabPanel value={activeTab} index={5}>
+            <Bidresult bidDetails={bidDetails}/>
           </TabPanel>
         </>
       ) : (
@@ -663,7 +664,7 @@ const BidDetailsPage = () => {
                 <Bids />
               </TabPanel>
               <TabPanel value={activeTab} index={5}>
-                <Award />
+                <Analysis />
               </TabPanel>
               <TabPanel value={activeTab} index={6}>
                 <LetterOfIntent bidDetails={bidDetails} />

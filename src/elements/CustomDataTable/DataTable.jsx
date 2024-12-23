@@ -12,10 +12,12 @@ import {
   TableRow,
   TableSortLabel,
   TextField,
+  ThemeProvider,
   Toolbar,
   // Tooltip,
   Typography,
   alpha,
+  createTheme,
 } from "@mui/material";
 
 import { useTable } from "react-table";
@@ -204,6 +206,20 @@ function EnhancedTableSearchBar(props) {
   );
 }
 
+const theme = createTheme({
+  components: {
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "&:hover": {
+            backgroundColor: "#e7effe !important",  // Override the default hover color
+          },
+        },
+      },
+    },
+  },
+});
+
 const DataTable = ({
   propsColumn,
   propsData,
@@ -292,6 +308,7 @@ const DataTable = ({
 
   return (
     <>
+      <ThemeProvider theme={theme}>
       <Box className={styles[customClassName]}>
         <Paper className={styles["paper-root"]}>
           <EnhancedTableToolbar
@@ -353,6 +370,7 @@ const DataTable = ({
           />
         </Paper>
       </Box>
+      </ThemeProvider>
     </>
   );
 };

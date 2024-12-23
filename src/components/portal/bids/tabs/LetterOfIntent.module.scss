@@ -49,8 +49,25 @@
     border-bottom:  4px solid black;
 }
 
+.no-print{
+  justify-content: end;
+}
+
+
 @media print {
   .no-print {
     display: none !important;
   }
+}
+
+.feedback-button {
+  background-color: #FFC107;
+}
+
+.award-btn{
+  background-color: var(--primary-color) !important;
+}
+
+.award-btn:hover{
+  background-color: var(--secondary-color) !important;
 }

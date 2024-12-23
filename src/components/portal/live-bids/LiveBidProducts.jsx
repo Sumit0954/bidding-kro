@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -25,108 +25,39 @@ import styles from "./LiveBidProducts.module.scss";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Search } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
+import DataTable from "../../../elements/CustomDataTable/DataTable";
+
+import { ProductBid_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import ProductSpecificationModal from "../../../elements/CustomModal/ProductSpecificationModal";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 const LiveBidProducts = ({ product, type }) => {
-  console.log("type : ", type);
-  return type === "supplier" ? (
-    <>
-      <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ mb: 1 }}
-        >
-          <Typography variant="h6" fontWeight="bold">
-            {product.name}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="primary"
-            sx={{ cursor: "pointer" }}
-          >
-            View Details
-          </Typography>
-        </Grid>
-        <Grid container spacing={2} alignItems="center">
-          <Grid
-            item
-            xs={12}
-            md={4}
-            sx={{ display: "flex", alignItems: "center" }}
-          >
-            <AccessTimeIcon fontSize="small" sx={{ mr: 0.5, color: "gray" }} />
-            <Typography variant="body2" color="textSecondary">
-              Remaining Time: {product.remainingTime}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Typography variant="body2" color="textSecondary">
-              Quantity
-            </Typography>
-            <Typography variant="h6">{product.quantity}</Typography>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Typography variant="body2" color="textSecondary">
-              Reserve Bid
-            </Typography>
-            <Typography variant="h6">₹{product.reserveBid}</Typography>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Typography variant="body2" color="textSecondary">
-              Current Bid
-            </Typography>
-            <Typography variant="h6">₹{product.currentBid}</Typography>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Typography variant="body2" color="textSecondary">
-              Previous Bid
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              ₹{product.previousBid}
-              {product.isBestBid && (
-                <span
-                  style={{
-                    color: "gold",
-                    fontSize: "1.2rem",
-                    marginLeft: "5px",
-                  }}
-                >
-                  ★
-                </span>
-              )}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={10}>
-            <TextField
-              variant="outlined"
-              fullWidth
-              size="small"
-              placeholder="Enter your amount here..."
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              variant="contained"
-              color="success"
-              fullWidth
-              className={styles["place-bid-btn"]}
-            >
-              PLACE BID
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-    </>
-  ) : (
+  const [showSpecification, setShowSpecification] = useState(false);
+  const [btnLoader, setBtnLoader] = useState(false);
+
+  return type === "created" ? (
     <>
       <Box sx={{ maxWidth: "100%", margin: "auto", padding: 2 }}>
         {/* Top Information Box */}
-
-        <Card variant="outlined" sx={{ marginBottom: 2 }}>
+        <Card variant="outlined" sx={{ marginBottom: 2, position: "relative" }}>
           <CardContent>
+            {/* View Details Button */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+              }}
+            >
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() => setShowSpecification(true)}
+              >
+                View Details
+              </Button>
+            </Box>
+
+            {/* Content */}
             <Typography
               variant="h6"
               color="green"
@@ -134,7 +65,6 @@ const LiveBidProducts = ({ product, type }) => {
             >
               Cotton Yarn
             </Typography>
-            <Typography color="red">Remaining Time: 1:15</Typography>
 
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
               <Grid item xs={4}>
@@ -192,12 +122,6 @@ const LiveBidProducts = ({ product, type }) => {
                 </Box>
               </Grid>
             </Grid>
-
-            <Box sx={{ textAlign: "right", marginTop: 1 }}>
-              <Button variant="text" color="primary">
-                View Details
-              </Button>
-            </Box>
           </CardContent>
         </Card>
 
@@ -209,61 +133,194 @@ const LiveBidProducts = ({ product, type }) => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Bid Position
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Company Name
-                    </TableCell>
-                    <TableCell style={{ fontWeight: "bold" }}>
-                      Bid Amount
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {[
-                    {
-                      position: "L1",
-                      company: "Arvind Limited",
-                      amount: "₹5000",
-                    },
-                    {
-                      position: "L2",
-                      company: "Raymond Limited",
-                      amount: "₹4000",
-                    },
-                    {
-                      position: "L3",
-                      company: "Alok Industries Limited",
-                      amount: "₹1500",
-                    },
-                    {
-                      position: "L4",
-                      company: "Bombay Dyeing and Manufact...",
-                      amount: "₹4300",
-                    },
-                    { position: "L5", company: "Loyal Group", amount: "₹3800" },
-                  ].map((bidder, index) => (
-                    <TableRow key={index} sx={{ mb: 2 }}>
-                      <TableCell>{bidder.position}</TableCell>
-                      <TableCell>
-                        <Button variant="text" color="primary">
-                          {bidder.company}
-                        </Button>
-                      </TableCell>
-                      <TableCell>{bidder.amount}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <DataTable
+              propsColumn={ProductBid_column}
+              propsData={[]}
+              customClassName="portal-data-table"
+            />
           </AccordionDetails>
         </Accordion>
       </Box>
+
+      {showSpecification && (
+        <ProductSpecificationModal
+          showSpecification={showSpecification}
+          setShowSpecification={setShowSpecification}
+          // selectedProduct={selectedProduct}
+        />
+      )}
+    </>
+  ) : (
+    <>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2,
+          mb: 2,
+          backgroundColor:
+            product.remainingTime === "0:00" ? "lightgray" : "white", // Disable Paper background
+          opacity: product.remainingTime === "0:00" ? 0.5 : 1, // Dim the Paper when disabled
+          pointerEvents: product.remainingTime === "0:00" ? "none" : "auto", // Disable interactions
+        }}
+      >
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mb: 1 }}
+        >
+          <Typography variant="h6" fontWeight="bold">
+            {product.name}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="primary"
+            sx={{ cursor: "pointer" }}
+            onClick={() => setShowSpecification(true)}
+          >
+            View Details
+          </Typography>
+        </Grid>
+        <Grid container spacing={2} alignItems="center">
+          {/* Chances Left Section */}
+          <Grid item xs={12} md={12}>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ mb: 1, textAlign: "right", fontStyle: "italic" }}
+            >
+              Chances Left:{" "}
+              {product.supplierChancesTotal - product.supplierChancesUsed} /{" "}
+              {product.supplierChancesTotal}
+            </Typography>
+          </Grid>
+
+          {/* Existing UI */}
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{ display: "flex", alignItems: "center" }}
+          >
+            <AccessTimeIcon fontSize="small" sx={{ mr: 0.5, color: "gray" }} />
+            <Typography variant="body2" color="textSecondary">
+              Remaining Time: {product.remainingTime}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Box
+              sx={{
+                textAlign: "center",
+                border: "1px dashed gray",
+                padding: 1,
+              }}
+            >
+              <Typography variant="body2" color="textSecondary">
+                Quantity
+              </Typography>
+              <Typography variant="h6">{product.quantity}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Box
+              sx={{
+                textAlign: "center",
+                border: "1px dashed gray",
+                padding: 1,
+              }}
+            >
+              <Typography variant="body2" color="textSecondary">
+                Reserve Bid
+              </Typography>
+              <Typography variant="h6">₹{product.reserveBid}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Box
+              sx={{
+                textAlign: "center",
+                border: "1px dashed gray",
+                padding: 1,
+              }}
+            >
+              <Typography variant="body2" color="textSecondary">
+                Current Bid Price
+              </Typography>
+              <Typography variant="h6">₹{product.currentBid}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Box
+              sx={{
+                textAlign: "center",
+                border: "1px dashed gray",
+                padding: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center", // Ensures vertical centering
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="body2" color="textSecondary">
+                Your Bid Price
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                ₹{product.previousBid}
+                {product.isBestBid && (
+                  <span
+                    className={styles["best-bid"]}
+                    aria-label="Best Bid Star"
+                  >
+                    ★
+                  </span>
+                )}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={10}>
+            {product.remainingTime === "0:00" ? (
+              <></>
+            ) : (
+              <TextField
+                variant="outlined"
+                fullWidth
+                size="small"
+                placeholder="Enter your amount here..."
+              />
+            )}
+          </Grid>
+
+          <Grid item xs={12} md={2}>
+            {btnLoader ? (
+              <ButtonLoader size={60} />
+            ) : (
+              <Button
+                variant="contained"
+                color="success"
+                fullWidth={true}
+                className={styles["place-bid-btn"]}
+              >
+                {product.remainingTime === "0:00" ? "Bid closed" : "PLACE BID"}
+              </Button>
+            )}
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {showSpecification && (
+        <ProductSpecificationModal
+          showSpecification={showSpecification}
+          setShowSpecification={setShowSpecification}
+          // selectedProduct={selectedProduct}
+        />
+      )}
     </>
   );
 };

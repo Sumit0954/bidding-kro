@@ -1,5 +1,8 @@
+import ReactToPrint from "react-to-print";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 import React, { useRef, useState } from "react";
 import styles from "./LetterOfIntent.module.scss";
+import cn from "classnames"
 import {
   Accordion,
   AccordionDetails,
@@ -10,28 +13,33 @@ import {
   Typography,
 } from "@mui/material";
 import { ExpandMore, PrintOutlined } from "@mui/icons-material";
-// import ReactToPrint from "react-to-print";
-
-const LetterOfIntent = ({ bidDetails }) => {
+import DataTable from "../../../../elements/CustomDataTable/DataTable";
+import { ProductBid_column2 } from "../../../../elements/CustomDataTable/PortalColumnData";
+const Bidresult = ({ bidDetails }) => {
   const componentRef = useRef(null);
-  const [expanded, setExpanded] = useState(true);
-  const [screenLoader, setScreenLoader] = useState(false);
-  const [addInvitaion, setInvitation] = useState(false);
-
-  if (screenLoader) {
-    return <ScreenLoader />;
-  }
-
-  const handleAccordionChange = () => {
-    setExpanded(!expanded);
-  };
   return (
     <>
+      <Box
+        classname={cn("row", styles["result-box"])}
+        sx={{ marginTop: "2rem", marginLeft: "8px" }}
+
+      >
+        <Typography>
+          Dear <strong>Arvind Limited</strong>, <br />
+          We are pleased to inform you that your company has been selected as
+          the preferred supplier for the following products, following the
+          conclusion of the live bidding process.Congratulations! You have
+          emerged as the L1 bidder in this process, showcasing competitive
+          pricing and value. We are pleased to inform you that you have been
+          awarded the project. This marks the beginning of what we hope will be
+          a successful collaboration. Please review the terms and prepare to
+          commence as per the outlined schedule. We look forward to your
+          commitment and quality delivery.
+        </Typography>
+      </Box>
+
       <br />
-      <div className={styles["heading"]}>
-        <Typography variant="h6">Company Name</Typography>
-      </div>
-      <Accordion defaultExpanded onChange={handleAccordionChange}>
+      <Accordion defaultExpanded>
         <AccordionSummary>
           <div
             style={{
@@ -39,20 +47,17 @@ const LetterOfIntent = ({ bidDetails }) => {
               justifyContent: "space-between",
               width: "100%",
             }}
-            expandIcon={!expanded && <ExpandMoreRounded />}
           >
-            <Typography>Arvind Limited</Typography>
+            <Typography>Buyer's Name</Typography>
             {/* Add the Feedback Button */}
-            {expanded && (
-              <Button
-                variant="contained"
-                color="primary"
-                className={styles["feedback-button"]}
-                onClick={()=>setInvitation(true)}
-              >
-                feedback
-              </Button>
-            )}
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              className={styles["feedback-button"]}
+            >
+              Feedback
+            </Button>
           </div>
         </AccordionSummary>
         <AccordionDetails>
@@ -66,7 +71,12 @@ const LetterOfIntent = ({ bidDetails }) => {
                 >
                   LETTER OF INTENT FOR BID AWARD
                 </Typography>
-                {/* <ReactToPrint
+
+                <Typography
+                  variant="h6"
+                  className={styles["bid-letter-contnet"]}
+                ></Typography>
+                <ReactToPrint
                   content={() => componentRef.current}
                   documentTitle={bidDetails?.formatted_number}
                   trigger={() => (
@@ -75,7 +85,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                     </IconButton>
                   )}
                   removeAfterPrint
-                /> */}
+                />
               </div>
               <Typography>Date: 28/09/2024</Typography>
               <Typography>Reference Number: LOI-8K-2024-00123</Typography>
@@ -200,9 +210,11 @@ const LetterOfIntent = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {addInvitaion && <FeedbackModal addInvitaion={addInvitaion}/>}
+      <DataTable
+      propsColumn={ProductBid_column2}
+      propsData={[]}
+      />
     </>
   );
 };
-
-export default LetterOfIntent;
+export default Bidresult;

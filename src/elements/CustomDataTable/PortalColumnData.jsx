@@ -1519,3 +1519,129 @@ export const Sample_Bid_Invitations_result_log = [
     },
   },
 ];
+
+export const ProductBid_column = [
+  {
+    Header: "Bid Position",
+    accessor: "position",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Company Name",
+    accessor: "Company_Name",
+    align: "center",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Bid Amount",
+    accessor: "amount",
+    align: "right",
+    disablePadding: false,
+    width: 160,
+  },
+];
+
+export const Bid_pricing_column = [
+  {
+    Header: "Product Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 230,
+
+  },
+  {
+    Header: "Quantity",
+    accessor: "quantity",
+    align: "left",
+    disablePadding: false,
+    width: 190,
+  },
+  {
+    Header: "Reserve Price",
+    accessor: "buyers_amount",
+    align: "left",
+    disablePadding: false,
+    width: 200,
+  },
+  {
+    Header: "Supplier Bid Price",
+    accessor: "supplier_amount",
+    align: "left",
+    disablePadding: false,
+    width: 200,
+  },
+  {
+    Header: "Bid Rank",
+    accessor: "rank",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+  },
+];
+
+export const ProductBid_column2 = [
+  {
+    Header: "Bid Position",
+    accessor: "position",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Company Name",
+    accessor: "Company_Name",
+    align: "center",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Bid Amount",
+    accessor: "amount",
+    align: "right",
+    disablePadding: false,
+    width: 160,
+  },
+];
+
+
+// export const Bid_pricing_column = [
+//   {
+//     Header: "Product Title",
+//     accessor: "title",
+//     align: "left", // Text, so left-aligned
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Quantity",
+//     accessor: "quantity",
+//     align: "right", // Numeric, so right-aligned
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Reserve Price",
+//     accessor: "buyers_amount",
+//     align: "right", // Numeric, so right-aligned
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Supplier Bid Price",
+//     accessor: "supplier_amount",
+//     align: "right", // Numeric, so right-aligned
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Bid Rank",
+//     accessor: "rank",
+//     align: "center", // Ranks look better centered
+//     disablePadding: false,
+//     width: 160,
+//   }
+// ];

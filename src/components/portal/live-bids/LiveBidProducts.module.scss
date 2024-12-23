@@ -1,26 +1,45 @@
-.place-bid-btn{
-    background-color: var(--primary-color) !important;
+.place-bid-btn {
+  background-color: var(--primary-color) !important;
 }
 
-.place-bid-btn:hover{
-	background-color: var(--secondary-color) !important;
+.place-bid-btn:hover {
+  background-color: var(--secondary-color) !important;
 }
 
-.product-name{
-    color: var(--primary-color) !important;
+.product-name {
+  color: var(--primary-color) !important;
 }
 
-.quantity{
-    font-weight: bolder !important;
-    color: var(--primary-color) !important;
+.quantity {
+  font-weight: bolder !important;
+  color: var(--primary-color) !important;
 }
 
-.reserve-Bid{
-    font-weight: bolder !important;
-    color: var(--primary-color) !important;
+.reserve-Bid {
+  font-weight: bolder !important;
+  color: var(--primary-color) !important;
 }
 
-.current-Bid{
-    font-weight: bolder !important;
-    color: var(--primary-color) !important;
+.current-Bid {
+  font-weight: bolder !important;
+  color: var(--primary-color) !important;
+}
+
+.best-bid {
+  color: gold;
+  font-size: 1.2rem; /* Slightly reduced to fit better */
+  margin-left: 5px; /* Consistent spacing with text */
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4); /* Moderate scaling to maintain balance */
+  }
+  100% {
+    transform: scale(1);
+  }
 }

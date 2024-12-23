@@ -37,3 +37,24 @@
 .loi-table thead {
   background-color: var(--primary-color);
 }
+
+.custom-row > td {
+  padding: 12px 16px;
+}
+
+.award-btn{
+  background-color: var(--primary-color) !important;
+}
+
+.award-btn:hover{
+  background-color: var(--secondary-color) !important;
+}
+
+#hammer-icon {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hammer-click {
+  transform: rotate(-15deg) translateY(-5px);
+}
+

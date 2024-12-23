@@ -6,7 +6,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { Box, Tab, Tabs } from "@mui/material";
 import Livebids from "../../../components/portal/live-bids/Livebids";
 
-const LiveBidsDetailPage = () => {
+const LiveBids = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -44,7 +44,7 @@ const LiveBidsDetailPage = () => {
   );
 };
 
-export default LiveBidsDetailPage;
+export default LiveBids;
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Livebids.module.scss";
 import cn from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -11,9 +11,11 @@ import {
   Grid,
   ButtonBase,
 } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
+import GavelIcon from "@mui/icons-material/Gavel";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 const Livebids = ({ listType }) => {
+  const [btnLoader, setBtnLoader] = useState(false);
+
   const navigate = useNavigate();
   const bids = [
     {
@@ -41,12 +43,17 @@ const Livebids = ({ listType }) => {
   ];
   return (
     <>
-      <Box
-        sx={{ p: 2, bgcolor: "#f0f4f8" }}
-        onClick={() => navigate("/portal/liveBids/details")}
-      >
+      <Box sx={{ p: 2, bgcolor: "#f0f4f8" }}>
         {bids.map((bid) => (
-          <Card key={bid.id} sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}>
+          <Card
+            key={bid.id}
+            sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}
+            onClick={() =>
+              listType === "Invited"
+                ? navigate(`/portal/liveBids/details`)
+                : navigate("/portal/liveBids/details/?type=created")
+            }
+          >
             <CardContent>
               <Grid container spacing={2}>
                 {/* Bid Information */}
@@ -83,65 +90,134 @@ const Livebids = ({ listType }) => {
                   alignItems="center"
                   justifyContent="center"
                 >
+                  <Typography
+                    variant="subtitle1"
+                    color="text.secondary"
+                    sx={{ mb: 1, fontWeight: "bold" }}
+                  >
+                    Bid Ends In:
+                  </Typography>
                   <Grid
                     container
-                    spacing={1}
+                    spacing={2}
                     justifyContent="center"
                     sx={{ mb: 2 }}
                   >
+                    {/* Hours */}
                     <Box
                       sx={{
                         textAlign: "center",
-                        p: 1,
-                        border: "1px solid #ddd",
-                        borderRadius: 1,
-                        width: "70px",
+                        p: 2,
+                        width: "100px",
+                        height: "86px",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #57c2a0",
+                        clipPath:
+                          "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography
+                        variant="h6"
+                        color="text.primary"
+                        sx={{ fontWeight: "bolder" }}
+                      >
                         {String(bid.hours).padStart(2, "0")}
                       </Typography>
-                      <Typography variant="caption">Hours</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: "bolder" }}
+                      >
+                        Hours
+                      </Typography>
                     </Box>
+
+                    {/* Minutes */}
                     <Box
                       sx={{
                         textAlign: "center",
-                        p: 1,
-                        border: "1px solid #ddd",
-                        borderRadius: 1,
-                        width: "70px",
+                        p: 2,
+                        width: "100px",
+                        height: "86px",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #57c2a0",
+                        clipPath:
+                          "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography
+                        variant="h6"
+                        color="text.primary"
+                        sx={{ fontWeight: "bolder" }}
+                      >
                         {String(bid.minutes).padStart(2, "0")}
                       </Typography>
-                      <Typography variant="caption">Minutes</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: "bolder" }}
+                      >
+                        Minutes
+                      </Typography>
                     </Box>
+
+                    {/* Seconds */}
                     <Box
                       sx={{
                         textAlign: "center",
-                        p: 1,
-                        border: "1px solid #ddd",
-                        borderRadius: 1,
-                        width: "70px",
+                        p: 2,
+                        width: "100px",
+                        height: "86px",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #57c2a0",
+                        clipPath:
+                          "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography
+                        variant="h6"
+                        color="text.primary"
+                        sx={{ fontWeight: "bolder" }}
+                      >
                         {String(bid.seconds).padStart(2, "0")}
                       </Typography>
-                      <Typography variant="caption">Seconds</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ fontWeight: "bolder" }}
+                      >
+                        Seconds
+                      </Typography>
                     </Box>
                   </Grid>
-                  {listType === "Invited" && (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      className={styles["place-bid-btn"]}
-                      endIcon={<AccessTimeIcon />}
-                      onClick={() => navigate("/portal/liveBids/details/?type=supplier")}
-                    >
-                      Place a Bid
-                    </Button>
+                  {btnLoader ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <>
+                      {listType === "Invited" && (
+                        <Button
+                          variant="contained"
+                          color="success"
+                          className={styles["place-bid-btn"]}
+                          endIcon={<GavelIcon />}
+                          onClick={(event) => {
+                            event.stopPropagation(); // Prevent the parent onClick from firing
+                            navigate(`/portal/liveBids/details`);
+                          }}
+                        >
+                          Place a Bid
+                        </Button>
+                      )}
+                    </>
                   )}
                 </Grid>
               </Grid>
