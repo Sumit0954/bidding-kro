@@ -49,7 +49,8 @@ export const getProductUnits = () => {
     { lable: "Cylinder (cy)", value: "cy" },
   ];
 
-  return units;
+  // return units;
+  return units.sort((a, b) => a.lable.localeCompare(b.lable));
 };
 
 export const getLableByValue = (value) => {

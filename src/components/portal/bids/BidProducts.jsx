@@ -59,7 +59,7 @@ const BidProducts = () => {
       if (response?.status === 200) {
         setProductList(response?.data);
         response.data.forEach((product, index) => prefillForm(product, index));
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log("Error fetching product list", error);
@@ -75,6 +75,7 @@ const BidProducts = () => {
     setValue(`product_quantity${index}`, product.quantity);
     setValue(`product_unit${index}`, product.unit);
     setValue(`reserved_price${index}`, product.reserved_price);
+    setValue(`min_decrement_amount${index}`, product.min_decrement_amount);
     setValue(`Product_specification${index}`, product.specification);
   };
 
@@ -87,6 +88,7 @@ const BidProducts = () => {
     formData.append("quantity", data.product_quantity);
     formData.append("unit", data.product_unit);
     formData.append("reserved_price", data.reserved_price);
+    formData.append("min_decrement_amount", data.min_decrement_amount);
     formData.append(
       "specification",
       data.Product_specification || "No specification provided."
@@ -105,8 +107,8 @@ const BidProducts = () => {
         fetchProductList();
         reset(); // Reset form after submission
         setAddFormOpen(false); // Close the form after submission
-        window.location.reload()
-        setScreenLoader(false)
+        window.location.reload();
+        setScreenLoader(false);
       }
     } catch (error) {
       const { data } = error.response;
@@ -134,6 +136,10 @@ const BidProducts = () => {
     formData.append("quantity", data[`product_quantity${index}`]);
     formData.append("unit", data[`product_unit${index}`]);
     formData.append("reserved_price", data[`reserved_price${index}`]);
+    formData.append(
+      "min_decrement_amount",
+      data[`min_decrement_amount${index}`]
+    );
     formData.append("specification", data[`Product_specification${index}`]);
 
     for (let pair of formData.entries()) {
@@ -148,9 +154,9 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 200) {
-        window.location.reload()
+        window.location.reload();
         fetchProductList(); // Refetch list after edit
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
     } finally {
@@ -168,11 +174,9 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 204) {
-        window.location.reload()
+        window.location.reload();
         fetchProductList(); // Refetch list after delete
-        setScreenLoader(false)
-
-
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log("Error deleting product", error);
@@ -234,8 +238,7 @@ const BidProducts = () => {
           );
           if (response.status === 200) {
             setBidDetails(response?.data);
-            setScreenLoader(false)
-
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -245,7 +248,6 @@ const BidProducts = () => {
       retrieveBid();
     }
   }, [id]);
-
 
   const procedFurther = () => {
     if (bidDetails?.product?.length > 0) {
@@ -262,9 +264,8 @@ const BidProducts = () => {
   };
 
   if (screenLoader) {
-    return <ScreenLoader  />;
+    return <ScreenLoader />;
   }
-
 
   return (
     <>
@@ -363,11 +364,11 @@ const BidProducts = () => {
                             <CustomInput
                               control={control}
                               label="Price Diffrence"
-                              name={`price_diffrence`}
+                              name={`min_decrement_amount${index}`}
                               placeholder="Price Diffrence"
-                              // rules={{
-                              //   required: "Price Diffrence is required.",
-                              // }}
+                              rules={{
+                                required: "Price Diffrence is required.",
+                              }}
                             />
                           </div>
                         </div>
@@ -481,11 +482,11 @@ const BidProducts = () => {
                         <CustomInput
                           control={control}
                           label="Price Diffrence"
-                          name={`price_diffrence`}
+                          name="min_decrement_amount"
                           placeholder="Price Diffrence"
-                          // rules={{
-                          //   required: "Price Diffrence is required.",
-                          // }}
+                          rules={{
+                            required: "Price Diffrence is required.",
+                          }}
                         />
                       </div>
                     </div>

@@ -10,6 +10,8 @@ import { BrowserRouter } from "react-router-dom";
 import { BidDataProvider } from "./components/portal/bids/BidCategories";
 import { Provider } from "react-redux";
 import store from "./store";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // API BASEPATH Globally
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -18,9 +20,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <BidDataProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </LocalizationProvider>
     </BidDataProvider>
   </Provider>
 );

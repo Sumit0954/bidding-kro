@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import _sendAPIRequest, { setErrors } from "../../../../helpers/api";
 import DateTimeRangePicker from "../../../../elements/CustomDateTimePickers/DateTimeRangePicker";
 import { dateValidator } from "../../../../helpers/validation";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { TimePicker } from "@mui/x-date-pickers";
 import cn from "classnames";
 import styles from "./InvitedSuppliers.module.scss";
 import { getMinMaxDate } from "../../../../helpers/common";
@@ -54,6 +57,9 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
   const maxDate = getMinMaxDate(1, 10, createdAt)[1]
     .toISOString()
     .split("T")[0];
+
+  const [bidDate, setBidDate] = useState(null);
+  const [timeRange, setTimeRange] = useState({ start: null, end: null });
 
   const bidStartDate = watch("bid_start_date");
   const bidEndDate = watch("bid_end_date");
@@ -229,25 +235,82 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
     }
   }, [id, type, bidDetails?.bid_open_date]);
 
-  const formData = new URLSearchParams();
-  formData.append("bid_open_date", bidStartDate);
-  formData.append("bid_close_date", bidEndDate);
+  // const formData = new URLSearchParams();
+  // formData.append("bid_open_date", bidStartDate);
+  // formData.append("bid_close_date", bidEndDate);
 
-  const submitdate = async () => {
-    setLoading(true);
+  // const submitdate = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await _sendAPIRequest(
+  //       "PATCH",
+  //       `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+  //       formData,
+  //       true
+  //     );
+
+  //     if (response.status === 200) {
+  //       setLoading(false);
+  //       setAlert({
+  //         isVisible: true,
+  //         message: "Your Bid Dates have been submitted",
+  //         severity: "success",
+  //       });
+  //       setBidDetails((prevDetails) => ({
+  //         ...prevDetails,
+  //         bid_open_date: bidStartDate,
+  //         bid_close_date: bidEndDate,
+  //       }));
+  //       if (onActionComplete) {
+  //         onActionComplete();
+  //       }
+  //       dispatch(setActiveTab(3));
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     setAlert({
+  //       isVisible: true,
+  //       message:
+  //         error?.response?.data?.error || "An unexpected error occurred.",
+  //       severity: "error",
+  //     });
+  //   }
+  // };
+
+  const handleTimeChange = (field, value) => {
+    setTimeRange((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const onSubmit = async () => {
+    if (!bidDate || !timeRange.start || !timeRange.end) {
+      setAlert({
+        isVisible: true,
+        message: "Please select a valid date and time range.",
+        severity: "error",
+      });
+      return;
+    }
+
+    const bidOpenDate = dayjs(`${bidDate}T${timeRange.start}`).toISOString();
+    const bidCloseDate = dayjs(`${bidDate}T${timeRange.end}`).toISOString();
+
+    const formData = new URLSearchParams();
+    formData.append("bid_open_date", bidOpenDate);
+    formData.append("bid_close_date", bidCloseDate);
+
     try {
+      setLoading(true);
       const response = await _sendAPIRequest(
         "PATCH",
-        `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
+        `${PortalApiUrls.UPDATE_BID}${bidDetails.id}/`,
         formData,
         true
       );
-
+      setLoading(false);
       if (response.status === 200) {
-        setLoading(false);
         setAlert({
           isVisible: true,
-          message: "Your Bid Dates have been submitted",
+          message: "Bid dates updated successfully.",
           severity: "success",
         });
         setBidDetails((prevDetails) => ({
@@ -264,8 +327,7 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       setLoading(false);
       setAlert({
         isVisible: true,
-        message:
-          error?.response?.data?.error || "An unexpected error occurred.",
+        message: error.response?.data?.error || "An error occurred.",
         severity: "error",
       });
     }
@@ -280,58 +342,116 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       <div className="container">
         <div className="row">
           {bidDetails?.type === "L1" && bidDetails?.bid_open_date === null ? (
-            <form onSubmit={handleSubmit(submitdate)}>
-              <div className="row">
-                <div className="col-lg-6">
-                  <DateTimeRangePicker
-                    control={control}
-                    label="Opening Date & Time"
-                    name="bid_start_date"
-                    rules={{
-                      required: "Opening Date & Time is required.",
-                      validate: (value) =>
-                        dateValidator(value, minDate, maxDate),
+            // <form onSubmit={handleSubmit(submitdate)}>
+            //   <div className="row">
+            //     <div className="col-lg-6">
+            //       <DateTimeRangePicker
+            //         control={control}
+            //         label="Opening Date & Time"
+            //         name="bid_start_date"
+            //         rules={{
+            //           required: "Opening Date & Time is required.",
+            //           validate: (value) =>
+            //             dateValidator(value, minDate, maxDate),
+            //         }}
+            //         textFieldProps={{
+            //           min: `${minDate}T12:00`,
+            //           max: `${maxDate}T17:00`,
+            //         }}
+            //         clearErrors={clearErrors}
+            //       />
+            //     </div>
+            //     <div className="col-lg-6">
+            //       <DateTimeRangePicker
+            //         control={control}
+            //         label="Closing Date & Time"
+            //         name={"bid_end_date"}
+            //         rules={{
+            //           required: "Closing Date & Time is required.",
+            //           validate: (value) =>
+            //             dateValidator(value, minDate, maxDate),
+            //         }}
+            //         textFieldProps={{
+            //           min: `${minDate}T12:00`,
+            //           max: `${maxDate}T17:00`,
+            //         }}
+            //         clearErrors={clearErrors}
+            //       />
+            //     </div>
+            //   </div>
+            //   <div className="row mt-3">
+            //     <div className="col-12">
+            //       {loading ? (
+            //         <ButtonLoader size={60} />
+            //       ) : (
+            //         <Button
+            //           type="submit"
+            //           variant="contained"
+            //           className={styles["form-button"]}
+            //           onClick={() => setShowSubmittedDated(true)}
+            //         >
+            //           Submit
+            //         </Button>
+            //       )}
+            //     </div>
+            //   </div>
+            // </form>
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="row" style={{ marginTop: "10px" }}>
+                <Box display="flex" flexDirection="row" gap={3}>
+                  <DatePicker
+                    label="Live Bid Date"
+                    value={bidDate ? dayjs(bidDate) : null}
+                    minDate={dayjs()} // Prevent selecting past dates
+                    format="DD-MM-YYYY" // Display date in DD-MM-YYYY format
+                    onChange={(value) =>
+                      setBidDate(value?.format("YYYY-MM-DD") || null)
+                    }
+                    // slotProps={{ textField: { fullWidth: true, } }}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        required: true,
+                        "aria-label": "Live Bid Date Picker",
+                      },
                     }}
-                    textFieldProps={{
-                      min: `${minDate}T12:00`,
-                      max: `${maxDate}T17:00`,
-                    }}
-                    clearErrors={clearErrors}
                   />
-                </div>
-                <div className="col-lg-6">
-                  <DateTimeRangePicker
-                    control={control}
-                    label="Closing Date & Time"
-                    name={"bid_end_date"}
-                    rules={{
-                      required: "Closing Date & Time is required.",
-                      validate: (value) =>
-                        dateValidator(value, minDate, maxDate),
-                    }}
-                    textFieldProps={{
-                      min: `${minDate}T12:00`,
-                      max: `${maxDate}T17:00`,
-                    }}
-                    clearErrors={clearErrors}
+                  <TimePicker
+                    label="Start Time"
+                    value={
+                      timeRange.start
+                        ? dayjs(`${bidDate}T${timeRange.start}`)
+                        : null
+                    }
+                    minutesStep={15}
+                    onChange={(value) =>
+                      handleTimeChange("start", value?.format("HH:mm") || null)
+                    }
+                    slotProps={{ textField: { fullWidth: true } }}
                   />
-                </div>
-              </div>
-              <div className="row mt-3">
-                <div className="col-12">
-                  {loading ? (
-                    <ButtonLoader size={60} />
-                  ) : (
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      className={styles["form-button"]}
-                      onClick={() => setShowSubmittedDated(true)}
-                    >
-                      Submit
-                    </Button>
-                  )}
-                </div>
+                  <TimePicker
+                    label="End Time"
+                    value={
+                      timeRange.end
+                        ? dayjs(`${bidDate}T${timeRange.end}`)
+                        : null
+                    }
+                    minutesStep={15}
+                    onChange={(value) =>
+                      handleTimeChange("end", value?.format("HH:mm") || null)
+                    }
+                    slotProps={{ textField: { fullWidth: true } }}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? "Submitting..." : "Submit"}
+                  </Button>
+                </Box>
               </div>
             </form>
           ) : (
@@ -433,16 +553,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
           handleClick={handleDeleteConfirmation}
         />
       )}
-
-      {/* {showSubmittedDated && (
-        <DateSubmittedModal
-          showSubmittedDated={showSubmittedDated}
-          setShowSubmittedDated={setShowSubmittedDated}
-          heading={"Date Submitted Successfully!"}
-          description={`You have successfully submitted the live bid. You can now activate the bid to invite the suppliers.`}
-          showLogin={false}
-        />
-      )} */}
     </>
   );
 };
