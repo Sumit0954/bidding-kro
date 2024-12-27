@@ -80,7 +80,6 @@ const BidDetailsPage = () => {
   const activeTab = useSelector((state) => state.tab.activeTab);
 
   const handleChange = (event, newValue) => {
-    // setValue(newValue);
     dispatch(setActiveTab(newValue));
   };
 
@@ -211,7 +210,9 @@ const BidDetailsPage = () => {
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
         <div className="d-flex align-items-center justify-content-end gap-3">
-          {type === "related" || type === "invited" ? null : (
+          {type === "related" ||
+          type === "invited" ||
+          bidDetails?.status === "live" ? null : (
             <>
               {bidDetails?.status === "active" ? (
                 <Tooltip title={"Your Bid Is Active Now"} arrow>
@@ -405,35 +406,10 @@ const BidDetailsPage = () => {
                 <Tooltip title={"See the Documents in the bid"}>
                   <Tab label="Documents" {...a11yProps(1)} key={1} />
                 </Tooltip>,
-                // <Tab label="Acceptance Status" {...a11yProps(2)} key={2} />,
-                // <Tab
-                //   label={
-                //     <Box display="flex" alignItems="center" gap={1}>
-                //       {bidDetails?.participant?.status === "pending" ? (
-                //         <Badge color="success" variant="dot" />
-                //       ) : null}
-                //       <span>Acceptance Status</span>
-                //     </Box>
-                //   }
-                //   {...a11yProps(2)}
-                //   key={2}
-                // />,
                 <Tooltip title={"See Your Status of Bid Invite"}>
                   <Tab
                     label={
                       <Box display="flex" alignItems="center" gap={1}>
-                        {/* {bidDetails?.participant?.status === "pending" ? (
-                        <Box
-                          sx={{
-                            width: "10px",
-                            height: "10px",
-                            borderRadius: "50%",
-                            backgroundColor: "#FFBF00", // Green for pending
-                            animation: "blink 1s infinite",
-                          }}
-                        />
-                      ) : null} */}
-
                         {bidDetails?.type === "L1" ? (
                           bidDetails?.participant?.status === "pending" ? (
                             <Box
@@ -480,13 +456,26 @@ const BidDetailsPage = () => {
                     key={2}
                   />
                 </Tooltip>,
-                <Tab label="Questions" {...a11yProps(3)} key={3} />,
-                <Tab label="Remark" {...a11yProps(4)} key={4} />,
-                <Tab label="Bid Result" {...a11yProps(5)} key={5} />,
+                <Tooltip title={"See Questions asked by buyer"}>
+                  <Tab label="Questions" {...a11yProps(3)} key={3} />
+                </Tooltip>,
+                <Tooltip title={"Set the remark for this bid"}>
+                  <Tab label="Remark" {...a11yProps(4)} key={4} />
+                </Tooltip>,
+
+                <Tooltip title={"See the result of this bid"}>
+                  {bidDetails?.status === "live" && (
+                    <Tab label="Bid Result" {...a11yProps(5)} key={5} />
+                  )}
+                </Tooltip>,
               ]
             : [
-                <Tab label="Summary" {...a11yProps(0)} key={0} />,
-                <Tab label="Documents" {...a11yProps(1)} key={1} />,
+                <Tooltip title={"See the summary of the bid"}>
+                  <Tab label="Summary" {...a11yProps(0)} key={0} />
+                </Tooltip>,
+                <Tooltip title={"See the Documents in the bid"}>
+                  <Tab label="Documents" {...a11yProps(1)} key={1} />
+                </Tooltip>,
 
                 type !== "related" && (
                   <Tab
@@ -540,7 +529,6 @@ const BidDetailsPage = () => {
                     disabled={shouldDisableTab}
                   />
                 ),
-
 
                 bidDetails?.type === "L1"
                   ? [
@@ -621,7 +609,7 @@ const BidDetailsPage = () => {
             <Remark bidDetails={bidDetails} />
           </TabPanel>
           <TabPanel value={activeTab} index={5}>
-            <Bidresult bidDetails={bidDetails}/>
+            <Bidresult bidDetails={bidDetails} />
           </TabPanel>
         </>
       ) : (

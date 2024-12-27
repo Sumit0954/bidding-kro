@@ -1,8 +1,8 @@
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 import React, { useRef, useState } from "react";
 import styles from "./LetterOfIntent.module.scss";
-import cn from "classnames"
+import cn from "classnames";
 import {
   Accordion,
   AccordionDetails,
@@ -10,6 +10,7 @@ import {
   Box,
   Button,
   IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ExpandMore, PrintOutlined } from "@mui/icons-material";
@@ -17,12 +18,17 @@ import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import { ProductBid_column2 } from "../../../../elements/CustomDataTable/PortalColumnData";
 const Bidresult = ({ bidDetails }) => {
   const componentRef = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: bidDetails?.formatted_number,
+    removeAfterPrint: true,
+  });
   return (
     <>
       <Box
         classname={cn("row", styles["result-box"])}
         sx={{ marginTop: "2rem", marginLeft: "8px" }}
-
       >
         <Typography>
           Dear <strong>Arvind Limited</strong>, <br />
@@ -76,16 +82,20 @@ const Bidresult = ({ bidDetails }) => {
                   variant="h6"
                   className={styles["bid-letter-contnet"]}
                 ></Typography>
-                <ReactToPrint
-                  content={() => componentRef.current}
-                  documentTitle={bidDetails?.formatted_number}
-                  trigger={() => (
-                    <IconButton className={styles["no-print"]}>
-                      <PrintOutlined />
-                    </IconButton>
-                  )}
-                  removeAfterPrint
-                />
+                <Tooltip title="Print The Page" arrow>
+                  <IconButton
+                    onClick={handlePrint}
+                    sx={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      color: "var(--primary-color)",
+                    }}
+                  >
+                    <PrintOutlined
+                      style={{ fontSize: "28px", fontWeight: "bold" }}
+                    />
+                  </IconButton>
+                </Tooltip>
               </div>
               <Typography>Date: 28/09/2024</Typography>
               <Typography>Reference Number: LOI-8K-2024-00123</Typography>
@@ -210,10 +220,7 @@ const Bidresult = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      <DataTable
-      propsColumn={ProductBid_column2}
-      propsData={[]}
-      />
+      <DataTable propsColumn={ProductBid_column2} propsData={[]} />
     </>
   );
 };
