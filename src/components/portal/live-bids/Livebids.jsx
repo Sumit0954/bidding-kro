@@ -104,8 +104,8 @@ const Livebids = ({ listType }) => {
                   sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}
                   onClick={() =>
                     listType === "Invited"
-                      ? navigate(`/portal/liveBids/details`)
-                      : navigate("/portal/liveBids/details/?type=created")
+                      ? navigate(`/portal/liveBids/details/?id=${bid.id}`)
+                      : navigate(`/portal/liveBids/details/?type=created&id=${bid.id}`)
                   }
                 >
                   <CardContent>

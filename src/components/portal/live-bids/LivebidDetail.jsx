@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -15,45 +15,53 @@ import LiveBidProducts from "./LiveBidProducts";
 import styles from "./LivebidDetail.module.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import cn from "classnames";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 function LivebidDetail() {
   const type = new URLSearchParams(useLocation().search).get("type");
+  const bidId = new URLSearchParams(useLocation().search).get("id");
   const [isGlobalTermsAccepted, setIsGlobalTermsAccepted] = useState(false);
-  const navigate = useNavigate();
-  const products = [
-    {
-      name: "Cotton Denim Fabric",
-      remainingTime: "13:50",
-      quantity: "100 Ton (T)",
-      reserveBid: 4500,
-      currentBid: 4200,
-      previousBid: 4200,
-      isBestBid: true,
-      supplierChancesTotal: 3,
-      supplierChancesUsed: 1,
-    },
-    {
-      name: "Cotton Yarn",
-      remainingTime: "1:50",
-      quantity: "100 Ton (T)",
-      reserveBid: 4500,
-      currentBid: 4400,
-      previousBid: 4300,
-      isBestBid: false,
-      supplierChancesTotal: 3,
-      supplierChancesUsed: 1,
-    },
-    {
-      name: "Cotton Denim Fabric",
-      remainingTime: "0:00",
-      quantity: "100 Ton (T)",
-      reserveBid: 3200,
-      currentBid: 3200,
-      previousBid: 2800,
-      isBestBid: false,
-      supplierChancesTotal: 3,
-      supplierChancesUsed: 1,
-    },
-  ];
+  const [bidProducts, setBidProduct] = useState([]);
+
+  const [IsAgreed, setIsAgreed] = useState(
+    JSON.parse(localStorage.getItem("isAgreed")) || false
+  );
+
+  const handleCheckboxChange = (e) => {
+    const newValue = e.target.checked;
+    setIsAgreed(newValue);
+    localStorage.setItem("isAgreed", JSON.stringify(newValue));
+  };
+
+  useEffect(() => {
+    const storedValue = JSON.parse(localStorage.getItem("isAgreed"));
+    if (storedValue !== IsAgreed) {
+      setIsAgreed(storedValue);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const retrieveliveBidProducts = async () => {
+        const url =
+          type === "created"
+            ? PortalApiUrls.LIVE_BID_PRODUCTS_BUYER
+            : PortalApiUrls.LIVE_BID_PRODUCTS_SUPPLIER;
+        const response = await _sendAPIRequest(
+          "GET",
+          `${url}${bidId}`,
+          "",
+          true
+        );
+
+        if (response.status === 200) {
+          console.log(response.data, " : reponse");
+          setBidProduct(response.data);
+        }
+      };
+      retrieveliveBidProducts();
+    } catch (error) {}
+  }, []);
 
   return (
     <>
@@ -94,31 +102,34 @@ function LivebidDetail() {
         </Typography>
 
         <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Checkbox
-              checked={isGlobalTermsAccepted}
-              onChange={(e) => setIsGlobalTermsAccepted(e.target.checked)}
-            />
-            <span>
-              I agree to the{" "}
-              <a
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent any default link behavior
-                  console.log("Terms and Conditions Clicked");
-                  onclick()
-                }}
-                className={styles["terms_and_conditions"]}
-              >
-                terms and conditions
-              </a>{" "}
-              for all bids
-            </span>
-          </Box>
+          {type === "invited" && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Checkbox checked={IsAgreed} onChange={handleCheckboxChange} />
+              <span>
+                I agree to the{" "}
+                <a
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent any default link behavior
+                    console.log("Terms and Conditions Clicked");
+                    onclick();
+                  }}
+                  className={styles["terms_and_conditions"]}
+                >
+                  terms and conditions
+                </a>{" "}
+                for all bids
+              </span>
+            </Box>
+          )}
         </Box>
 
         {/* Product Bid Cards */}
-        {products.map((product, index) => (
-          <LiveBidProducts key={index} product={product} type={type} />
+        {bidProducts.map((liveBidproduct, index) => (
+          <LiveBidProducts
+            key={index}
+            liveBidproduct={liveBidproduct}
+            type={type}
+          />
         ))}
       </Container>
     </>

@@ -64,4 +64,6 @@ export const PortalApiUrls = Object.freeze({
   SET_LIVE_DATES: "/bid/customer/set_date/",
   LIVE_BID_LIST_FOR_BUYER : "/bid/live/customer/",
   LIVE_BID_LIST_FOR_SUPPLIER : "/bid/live/customer/invited/",
+  LIVE_BID_PRODUCTS_BUYER : "/bid/live/customer/product/",
+  LIVE_BID_PRODUCTS_SUPPLIER :"/bid/live/customer/product/invited/"
 });

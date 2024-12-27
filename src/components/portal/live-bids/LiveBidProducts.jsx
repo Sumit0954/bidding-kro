@@ -30,7 +30,7 @@ import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { ProductBid_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import ProductSpecificationModal from "../../../elements/CustomModal/ProductSpecificationModal";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
-const LiveBidProducts = ({ product, type }) => {
+const LiveBidProducts = ({ liveBidproduct, type }) => {
   const [showSpecification, setShowSpecification] = useState(false);
   const [btnLoader, setBtnLoader] = useState(false);
 
@@ -63,7 +63,7 @@ const LiveBidProducts = ({ product, type }) => {
               color="green"
               className={styles["product-name"]}
             >
-              Cotton Yarn
+              {liveBidproduct?.product?.title}
             </Typography>
 
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
@@ -81,7 +81,7 @@ const LiveBidProducts = ({ product, type }) => {
                     color="green"
                     className={styles["quantity"]}
                   >
-                    100 Ton (T)
+                    {liveBidproduct?.product?.quantity} Ton (T)
                   </Typography>
                 </Box>
               </Grid>
@@ -99,7 +99,7 @@ const LiveBidProducts = ({ product, type }) => {
                     color="green"
                     className={styles["reserve-Bid"]}
                   >
-                    ₹4,500
+                    ₹ {liveBidproduct?.product?.reserved_price}
                   </Typography>
                 </Box>
               </Grid>
@@ -117,7 +117,7 @@ const LiveBidProducts = ({ product, type }) => {
                     color="green"
                     className={styles["current-Bid"]}
                   >
-                    ₹4,200
+                    ₹ {liveBidproduct?.lowest_bid_amount}
                   </Typography>
                 </Box>
               </Grid>
@@ -146,7 +146,7 @@ const LiveBidProducts = ({ product, type }) => {
         <ProductSpecificationModal
           showSpecification={showSpecification}
           setShowSpecification={setShowSpecification}
-          // selectedProduct={selectedProduct}
+          selectedProduct={liveBidproduct?.product}
         />
       )}
     </>
@@ -157,20 +157,11 @@ const LiveBidProducts = ({ product, type }) => {
         sx={{
           p: 2,
           mb: 2,
-          backgroundColor:
-            product.remainingTime === "0:00" ? "lightgray" : "white", // Disable Paper background
-          opacity: product.remainingTime === "0:00" ? 0.5 : 1, // Dim the Paper when disabled
-          pointerEvents: product.remainingTime === "0:00" ? "none" : "auto", // Disable interactions
         }}
       >
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ mb: 1 }}
-        >
-          <Typography variant="h6" fontWeight="bold">
-            {product.name}
+        <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
+          <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
+            {liveBidproduct?.product?.title}
           </Typography>
           <Typography
             variant="body2"
@@ -181,84 +172,94 @@ const LiveBidProducts = ({ product, type }) => {
             View Details
           </Typography>
         </Grid>
-        <Grid container spacing={2} alignItems="center">
-          {/* Chances Left Section */}
-          <Grid item xs={12} md={12}>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mb: 1, textAlign: "right", fontStyle: "italic" }}
+        >
+          Chances Left: 0
+        </Typography>
+        <Grid container alignItems="center" spacing={2}>
+          {/* Remaining Time Section */}
+          <Grid item xs={12}>
             <Typography
               variant="body2"
-              color="textSecondary"
-              sx={{ mb: 1, textAlign: "right", fontStyle: "italic" }}
+              sx={{ display: "flex", alignItems: "center", mb: 1 }}
             >
-              Chances Left:{" "}
-              {product.supplierChancesTotal - product.supplierChancesUsed} /{" "}
-              {product.supplierChancesTotal}
+              <AccessTimeIcon
+                fontSize="small"
+                sx={{ mr: 0.5, color: "gray" }}
+              />
+              Remaining Time: 4 min
             </Typography>
           </Grid>
 
-          {/* Existing UI */}
-          <Grid
-            item
-            xs={12}
-            md={4}
-            sx={{ display: "flex", alignItems: "center" }}
-          >
-            <AccessTimeIcon fontSize="small" sx={{ mr: 0.5, color: "gray" }} />
-            <Typography variant="body2" color="textSecondary">
-              Remaining Time: {product.remainingTime}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={2}>
+          {/* Quantity Section */}
+          <Grid item xs={12} md={3}>
             <Box
               sx={{
                 textAlign: "center",
                 border: "1px dashed gray",
-                padding: 1,
+                p: 1.5,
+                borderRadius: "8px",
               }}
             >
               <Typography variant="body2" color="textSecondary">
                 Quantity
               </Typography>
-              <Typography variant="h6">{product.quantity}</Typography>
+              <Typography variant="h6">
+                {liveBidproduct?.product?.quantity}
+              </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
+
+          {/* Reserve Bid Section */}
+          <Grid item xs={12} md={3}>
             <Box
               sx={{
                 textAlign: "center",
                 border: "1px dashed gray",
-                padding: 1,
+                p: 1.5,
+                borderRadius: "8px",
               }}
             >
               <Typography variant="body2" color="textSecondary">
                 Reserve Bid
               </Typography>
-              <Typography variant="h6">₹{product.reserveBid}</Typography>
+              <Typography variant="h6">
+                ₹ {liveBidproduct?.product?.reserved_price}
+              </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
+
+          {/* Current Bid Price Section */}
+          <Grid item xs={12} md={3}>
             <Box
               sx={{
                 textAlign: "center",
                 border: "1px dashed gray",
-                padding: 1,
+                p: 1.5,
+                borderRadius: "8px",
               }}
             >
               <Typography variant="body2" color="textSecondary">
                 Current Bid Price
               </Typography>
-              <Typography variant="h6">₹{product.currentBid}</Typography>
+              <Typography variant="h6">
+                ₹ {liveBidproduct?.lowest_bid_amount}
+              </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
+
+          {/* Your Bid Price Section */}
+          <Grid item xs={12} md={3}>
             <Box
               sx={{
                 textAlign: "center",
                 border: "1px dashed gray",
-                padding: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center", // Ensures vertical centering
-                alignItems: "center",
+                p: 1.5,
+                borderRadius: "8px",
+                backgroundColor: "#f0f8ff",
               }}
             >
               <Typography variant="body2" color="textSecondary">
@@ -270,13 +271,20 @@ const LiveBidProducts = ({ product, type }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  color:
+                    liveBidproduct?.participant?.position === 1 ? "062d72" : "",
                 }}
               >
-                ₹{product.previousBid}
-                {product.isBestBid && (
+                {liveBidproduct?.participant === null
+                  ? "-"
+                  : `₹ ${liveBidproduct?.participant?.amount}`}
+                {liveBidproduct?.participant?.position === 1 && (
                   <span
-                    className={styles["best-bid"]}
-                    aria-label="Best Bid Star"
+                    style={{
+                      color: "gold",
+                      marginLeft: "4px",
+                      fontWeight: "bold",
+                    }}
                   >
                     ★
                   </span>
@@ -284,19 +292,16 @@ const LiveBidProducts = ({ product, type }) => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} md={10}>
-            {product.remainingTime === "0:00" ? (
-              <></>
-            ) : (
-              <TextField
-                variant="outlined"
-                fullWidth
-                size="small"
-                placeholder="Enter your amount here..."
-              />
-            )}
-          </Grid>
 
+          {/* Text Input and Button */}
+          <Grid item xs={12} md={10}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              size="small"
+              placeholder="Enter your amount here..."
+            />
+          </Grid>
           <Grid item xs={12} md={2}>
             {btnLoader ? (
               <ButtonLoader size={60} />
@@ -304,23 +309,20 @@ const LiveBidProducts = ({ product, type }) => {
               <Button
                 variant="contained"
                 color="success"
-                fullWidth={true}
-                className={styles["place-bid-btn"]}
+                fullWidth
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  backgroundColor: "#062d72",
+                  ":hover": { backgroundColor: "#05baee" },
+                }}
               >
-                {product.remainingTime === "0:00" ? "Bid closed" : "PLACE BID"}
+                Place bid
               </Button>
             )}
           </Grid>
         </Grid>
       </Paper>
-
-      {showSpecification && (
-        <ProductSpecificationModal
-          showSpecification={showSpecification}
-          setShowSpecification={setShowSpecification}
-          // selectedProduct={selectedProduct}
-        />
-      )}
     </>
   );
 };
