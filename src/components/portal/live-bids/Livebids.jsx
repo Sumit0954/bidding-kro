@@ -10,6 +10,7 @@ import {
   Button,
   Grid,
   ButtonBase,
+  Tooltip,
 } from "@mui/material";
 import GavelIcon from "@mui/icons-material/Gavel";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
@@ -17,6 +18,7 @@ import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import NoliveBidImg from "../../../assets/images/portal/bids/no_live_bid.png";
+import { truncateString } from "../../../helpers/formatter";
 const Livebids = ({ listType }) => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [btnLoader, setBtnLoader] = useState(false);
@@ -39,7 +41,6 @@ const Livebids = ({ listType }) => {
         );
         if (response.status === 200) {
           setLiveBids(response?.data);
-          console.log(response?.data);
           setScreenLoader(false);
         }
       };
@@ -104,8 +105,8 @@ const Livebids = ({ listType }) => {
                   sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}
                   onClick={() =>
                     listType === "Invited"
-                      ? navigate(`/portal/liveBids/details/?id=${bid.id}`)
-                      : navigate(`/portal/liveBids/details/?type=created&id=${bid.id}`)
+                      ? navigate(`/portal/liveBids/details/?id=${bid.id}`,{ state: { bid } })
+                      : navigate(`/portal/liveBids/details/?type=created&id=${bid.id}`,{ state: { bid } })
                   }
                 >
                   <CardContent>
@@ -117,13 +118,15 @@ const Livebids = ({ listType }) => {
                           Placed Bid Count#:{" "}
                           {/* <strong>{String(bid.bidCount).padStart(2, "0")}</strong> */}
                         </Typography>
+                        <Tooltip title={bid?.title}>
                         <Typography
                           variant="h5"
                           color="primary"
                           sx={{ fontWeight: "bold", mt: 1 }}
                         >
-                          {bid?.title}
+                          {truncateString(bid?.title,30)}
                         </Typography>
+                        </Tooltip>
                         <Typography variant="subtitle1" color="textSecondary">
                           By <strong>{bid?.company?.name}</strong>
                         </Typography>

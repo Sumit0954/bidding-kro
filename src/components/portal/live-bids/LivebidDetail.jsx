@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Typography,
@@ -17,15 +17,56 @@ import { useLocation, useNavigate } from "react-router-dom";
 import cn from "classnames";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import TermAndConditionModal from "../../../elements/CustomModal/TermAndConditionModal";
+import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 function LivebidDetail() {
   const type = new URLSearchParams(useLocation().search).get("type");
   const bidId = new URLSearchParams(useLocation().search).get("id");
-  const [isGlobalTermsAccepted, setIsGlobalTermsAccepted] = useState(false);
   const [bidProducts, setBidProduct] = useState([]);
-
+  const [screenLoader, setScreenLoader] = useState(true);
+  const [isTermandConfitionOpen, setIsTermandConfitionOpen] = useState(false);
+  const location = useLocation();
   const [IsAgreed, setIsAgreed] = useState(
     JSON.parse(localStorage.getItem("isAgreed")) || false
   );
+
+  const { bid } = location.state || {};
+
+  const hoursRef = useRef();
+  const minutesRef = useRef();
+  const secondsRef = useRef();
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const closeTime = new Date(bid?.bid_close_date);
+      const difference = closeTime - now;
+
+      if (difference > 0) {
+        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((difference / (1000 * 60)) % 60);
+        const seconds = Math.floor((difference / 1000) % 60);
+
+        // Update DOM directly to avoid re-renders
+        if (hoursRef.current)
+          hoursRef.current.textContent = String(hours).padStart(2, "0");
+        if (minutesRef.current)
+          minutesRef.current.textContent = String(minutes).padStart(2, "0");
+        if (secondsRef.current)
+          secondsRef.current.textContent = String(seconds).padStart(2, "0");
+      } else {
+        // Bid is closed
+        if (hoursRef.current) hoursRef.current.textContent = "00";
+        if (minutesRef.current) minutesRef.current.textContent = "00";
+        if (secondsRef.current) secondsRef.current.textContent = "00";
+      }
+    };
+
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer); // Cleanup on component unmount
+  }, [bid?.bid_close_date]);
 
   const handleCheckboxChange = (e) => {
     const newValue = e.target.checked;
@@ -55,13 +96,20 @@ function LivebidDetail() {
         );
 
         if (response.status === 200) {
-          console.log(response.data, " : reponse");
           setBidProduct(response.data);
+          setScreenLoader(false);
         }
       };
       retrieveliveBidProducts();
     } catch (error) {}
-  }, []);
+  }, [IsAgreed]);
+
+  console.log(bidProducts)
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
+
 
   return (
     <>
@@ -74,21 +122,20 @@ function LivebidDetail() {
           sx={{ mb: -3 }}
         >
           <Typography variant="h5" fontWeight="bold">
-            Supply of Cotton Material
+            {truncateString(bid?.title,30)}
           </Typography>
           {/* Bid End Date Container */}
-          <Box
-            textAlign="center"
-            sx={{
-              border: "2px dashed black",
-              p: 1, // Adds padding around the box content, adjust as needed
-            }}
-          >
-            <Typography variant="subtitle2" color="textSecondary">
+          <Box textAlign="center" className={styles["bidEndTime"]}>
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+              fontWeight={"bold"}
+            >
               Bid Ends
             </Typography>
             <Typography variant="h5" fontWeight="bold" color="primary">
-              05 : 58 : 27
+              <span ref={hoursRef}>00</span> : <span ref={minutesRef}>00</span>{" "}
+              : <span ref={secondsRef}>00</span>
             </Typography>
             <Typography variant="caption" color="textSecondary">
               Hours Minutes Seconds
@@ -98,20 +145,25 @@ function LivebidDetail() {
 
         {/* Information Section */}
         <Typography variant="subtitle1" sx={{ mb: 3 }}>
-          Bid ID: EB24000036 | Buyer: Arvind Limited | Published: 10 April, 2024
+          Bid ID: <strong>EB240000{bid?.id}</strong> |{" "}
+          {type !== "created" && `Buyer: ${bid?.company?.name} |`} Published:{" "}
+          {dateTimeFormatter(bid?.created_at)}
         </Typography>
 
         <Box sx={{ mb: 2 }}>
-          {type === "invited" && (
+          {type !== "created" && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Checkbox checked={IsAgreed} onChange={handleCheckboxChange} />
+              <Checkbox
+                checked={IsAgreed}
+                onChange={handleCheckboxChange}
+                disabled={IsAgreed}
+              />
               <span>
                 I agree to the{" "}
                 <a
                   onClick={(e) => {
                     e.preventDefault(); // Prevent any default link behavior
-                    console.log("Terms and Conditions Clicked");
-                    onclick();
+                    setIsTermandConfitionOpen(true);
                   }}
                   className={styles["terms_and_conditions"]}
                 >
@@ -129,8 +181,18 @@ function LivebidDetail() {
             key={index}
             liveBidproduct={liveBidproduct}
             type={type}
+            IsAgreed={IsAgreed}
           />
         ))}
+
+        {isTermandConfitionOpen && (
+          <TermAndConditionModal
+            isTermandConfitionOpen={isTermandConfitionOpen}
+            setIsTermandConfitionOpen={setIsTermandConfitionOpen}
+            setIsAgreed={setIsAgreed}
+            IsAgreed={IsAgreed}
+          />
+        )}
       </Container>
     </>
   );

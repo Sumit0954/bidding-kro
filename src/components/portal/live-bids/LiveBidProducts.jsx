@@ -166,7 +166,7 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
           <Typography
             variant="body2"
             color="primary"
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer" , textTransform : "uppercase" }}
             onClick={() => setShowSpecification(true)}
           >
             View Details
@@ -322,6 +322,13 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
             )}
           </Grid>
         </Grid>
+        {showSpecification && (
+          <ProductSpecificationModal
+            showSpecification={showSpecification}
+            setShowSpecification={setShowSpecification}
+            selectedProduct={liveBidproduct?.product}
+          />
+        )}
       </Paper>
     </>
   );
