@@ -99,6 +99,18 @@ export const getCategoryLevel = () => {
   return propsData;
 };
 
+export const getStarColor = (position) => {
+  if (position === 1) {
+    return "gold"; // Golden color for position 1
+  } else if (position === 2) {
+    return "silver"; // Silver color for position 2
+  } else if (position === 3) {
+    return "bronze"; // Bronze color for position 3
+  } else {
+    return "bronze"; // bronze color for other positions
+  }
+};
+
 export const getBidTypes = () => {
   const type = [
     { lable: "L1 - Commercial Bid Selection", value: "L1" },
