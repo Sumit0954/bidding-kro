@@ -25,8 +25,14 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import dayjs from "dayjs";
 import { getStarColor } from "../../../helpers/common";
 
-const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
-
+const LiveBidProducts = ({
+  liveBidproduct,
+  type,
+  onUpdate,
+  timeUpFlag,
+  timeInSec,
+}) => {
+  console.log(liveBidproduct, "liveBidproduct");
 
   const [showSpecification, setShowSpecification] = useState(false);
   const [btnLoader, setBtnLoader] = useState(false);
@@ -50,7 +56,15 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
 
   useEffect(() => {
     // Parse the updated_at value and calculate the end time
-    const endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+    let endTime;
+
+    if (timeInSec <= 300) {
+      endTime = dayjs(liveBidproduct.updated_at)
+        .add(timeInSec, "second")
+        .toDate();
+    } else {
+      endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+    }
 
     const updateRemainingTime = () => {
       const now = new Date();
@@ -80,18 +94,30 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
       );
     };
 
-    const lastUpdateTime = () => {
-      const UpdateAt = new Date(liveBidproduct.updated_at);
+    // const lastUpdateTime = () => {
+    //   const UpdateAt = new Date(liveBidproduct.updated_at);
 
-      // Format the time to HH:MM format
-      const formattedTime = UpdateAt.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      setlastUpdated(formattedTime);
-    };
+    //   // Format the time to HH:MM format
+    //   const formattedTime = UpdateAt.toLocaleTimeString([], {
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //   });
+    //   setlastUpdated(formattedTime);
+    // };
 
     // Set interval to update remaining time every second
+
+    const lastUpdateTime = () => {
+      const now = new Date();
+      const updatedAt = new Date(liveBidproduct.updated_at);
+
+      // Calculate the difference in seconds
+      const secondsAgo = Math.floor((now - updatedAt) / 1000);
+
+      // Update the state with the calculated value
+      setlastUpdated(secondsAgo);
+    };
+
     const timerInterval = setInterval(updateRemainingTime, 1000);
     updateRemainingTime();
     lastUpdateTime();
@@ -196,7 +222,7 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
                     mt: 1,
                   }}
                 >
-                  Last Bid Update: {lastUpdated || "No updates yet"}
+                  Last Bid placed: {lastUpdated || "No updates yet"} sec ago
                 </Typography>
               </Grid>
             </Grid>
@@ -364,7 +390,7 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
                 mt: 0.5,
               }}
             >
-              Last Bid Update: {lastUpdated || "No updates yet"}
+              Last Bid placed: {lastUpdated || "No updates yet"} sec ago
             </Typography>
           </Grid>
         </Grid>

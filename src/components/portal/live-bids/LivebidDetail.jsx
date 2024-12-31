@@ -20,6 +20,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import TermAndConditionModal from "../../../elements/CustomModal/TermAndConditionModal";
 import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import { difference } from "lodash";
 
 function LivebidDetail() {
   const type = new URLSearchParams(useLocation().search).get("type");
@@ -28,6 +29,7 @@ function LivebidDetail() {
   const [screenLoader, setScreenLoader] = useState(true);
   const [isTermandConfitionOpen, setIsTermandConfitionOpen] = useState(false);
   const location = useLocation();
+  const [timeInSec, setTimeInSec] = useState(0);
 
   const [timeUpFlag, setTimeUpFlag] = useState(false);
 
@@ -46,6 +48,10 @@ function LivebidDetail() {
       const now = new Date();
       const closeTime = new Date(bid?.bid_close_date);
       const difference = closeTime - now;
+
+      const countSeconds = Math.floor(difference / 1000);
+
+      setTimeInSec(countSeconds);
 
       if (difference > 0) {
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
@@ -103,10 +109,10 @@ function LivebidDetail() {
     }
   };
 
-  // Fetch data on mount and every 15 seconds
+  // Fetch data on mount and every 10 seconds
   useEffect(() => {
     fetchLiveBidData(); // Initial fetch
-    const interval = setInterval(fetchLiveBidData, 15000); // Fetch every 15 seconds
+    const interval = setInterval(fetchLiveBidData, 10000); // Fetch every 10 seconds
 
     return () => clearInterval(interval); // Cleanup interval
   }, []);
@@ -139,7 +145,6 @@ function LivebidDetail() {
   //   } catch (error) {}
   // }, []);
 
-
   if (screenLoader) {
     return <ScreenLoader />;
   }
@@ -164,7 +169,7 @@ function LivebidDetail() {
               color="textSecondary"
               fontWeight={"bold"}
             >
-              Bid Ends
+              Bid Ends in
             </Typography>
             <Typography variant="h5" fontWeight="bold" color="primary">
               <span ref={hoursRef}>00</span> : <span ref={minutesRef}>00</span>{" "}
@@ -182,6 +187,13 @@ function LivebidDetail() {
           {type !== "created" && `Buyer: ${bid?.company?.name} |`} Published:{" "}
           {dateTimeFormatter(bid?.created_at)}
         </Typography>
+
+        {difference === 0 && (
+          <Alert severity="warning" className="my-3">
+            <AlertTitle sx={{ fontWeight: "bold" }}>Note: Bid Ends</AlertTitle>
+            Results will be shared on your mail shortly.
+          </Alert>
+        )}
 
         <Box sx={{ mb: 2 }}>
           {type !== "created" && (
@@ -217,6 +229,7 @@ function LivebidDetail() {
             IsAgreed={IsAgreed}
             onUpdate={handleDataUpdate}
             timeUpFlag={timeUpFlag}
+            timeInSec={timeInSec}
           />
         ))}
 
