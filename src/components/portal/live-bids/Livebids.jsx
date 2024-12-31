@@ -27,6 +27,8 @@ const Livebids = ({ listType }) => {
   const remainingTimeRef = useRef({});
   const navigate = useNavigate();
 
+  console.log(listType, " : listType");
+
   // fetching the api for the list of live bids
   useEffect(() => {
     try {
@@ -94,7 +96,7 @@ const Livebids = ({ listType }) => {
     <>
       {liveBids?.length > 0 ? (
         <>
-          <Box sx={{ p: 2, bgcolor: "#f0f4f8" }}>
+          <Box sx={{ p: 2, bgcolor: "#f9fafc" }}>
             {liveBids.map((bid) => {
               const { hours, minutes, seconds } = calculateRemainingTime(
                 bid?.bid_close_date
@@ -102,38 +104,72 @@ const Livebids = ({ listType }) => {
               return (
                 <Card
                   key={bid.id}
-                  sx={{ mb: 2, borderRadius: 2, boxShadow: 2 }}
+                  sx={{
+                    mb: 3,
+                    borderRadius: 3,
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                    overflow: "hidden",
+                    transition: "transform 0.3s",
+                    ":hover": { transform: "scale(1.02)" },
+                  }}
                   onClick={() =>
                     listType === "Invited"
-                      ? navigate(`/portal/liveBids/details/?id=${bid.id}`,{ state: { bid } })
-                      : navigate(`/portal/liveBids/details/?type=created&id=${bid.id}`,{ state: { bid } })
+                      ? navigate(`/portal/liveBids/details/?id=${bid.id}`, {
+                          state: { bid },
+                        })
+                      : navigate(
+                          `/portal/liveBids/details/?type=created&id=${bid.id}`,
+                          { state: { bid } }
+                        )
                   }
                 >
                   <CardContent>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                       {/* Bid Information */}
                       <Grid item xs={8}>
-                        <Typography variant="body2" color="textSecondary">
-                          Bid ID: <strong>{bid?.formatted_number}</strong> |
-                          Placed Bid Count#:{" "}
-                          {/* <strong>{String(bid.bidCount).padStart(2, "0")}</strong> */}
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ mb: 1 }}
+                        >
+                          Bid ID: <strong>{bid?.formatted_number}</strong>
+                          {listType === "Created" ? null : (
+                            <>
+                              | Place Bid Count:
+                              <strong>{String("6").padStart(2, "0")}</strong>
+                            </>
+                          )}
                         </Typography>
                         <Tooltip title={bid?.title}>
-                        <Typography
-                          variant="h5"
-                          color="primary"
-                          sx={{ fontWeight: "bold", mt: 1 }}
-                        >
-                          {truncateString(bid?.title,30)}
-                        </Typography>
+                          <Typography
+                            variant="h5"
+                            sx={{
+                              fontWeight: "bold",
+                              color: "#333",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {truncateString(bid?.title, 40)}
+                          </Typography>
                         </Tooltip>
-                        <Typography variant="subtitle1" color="textSecondary">
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            color: "#666",
+                            mb: 1,
+                            fontWeight: "medium",
+                          }}
+                        >
                           By <strong>{bid?.company?.name}</strong>
                         </Typography>
                         <Typography
                           variant="body2"
-                          color="textSecondary"
-                          sx={{ mt: 1 }}
+                          sx={{
+                            color: "#555",
+                            lineHeight: 1.6,
+                          }}
                         >
                           {bid?.description.replace(/<p>|<\/p>/g, "")}
                         </Typography>
@@ -147,135 +183,70 @@ const Livebids = ({ listType }) => {
                         direction="column"
                         alignItems="center"
                         justifyContent="center"
+                        sx={{ textAlign: "center" }}
                       >
                         <Typography
                           variant="subtitle1"
-                          color="text.secondary"
-                          sx={{ mb: 1, fontWeight: "bold" }}
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#333",
+                            mb: 1,
+                            textTransform: "uppercase",
+                          }}
                         >
                           Bid Ends In:
                         </Typography>
                         <Grid
                           container
-                          spacing={2}
+                          spacing={1}
                           justifyContent="center"
                           sx={{ mb: 2 }}
                         >
-                          {/* Hours */}
-                          <Box
-                            sx={{
-                              textAlign: "center",
-                              p: 2,
-                              width: "100px",
-                              height: "86px",
-                              backgroundColor: "#ffffff",
-                              border: "1px solid #57c2a0",
-                              clipPath:
-                                "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="h6"
-                              color="text.primary"
-                              sx={{ fontWeight: "bolder" }}
+                          {[
+                            { label: "Hrs", value: hours },
+                            { label: "Min", value: minutes },
+                            { label: "Sec", value: seconds },
+                          ].map((time, index) => (
+                            <Box
+                              key={index}
+                              className={styles["countDown_timer"]}
                             >
-                              {hours}
-                            </Typography>
-                            <Typography
-                              variant=" "
-                              sx={{ fontWeight: "bolder" }}
-                            >
-                              Hours
-                            </Typography>
-                          </Box>
-
-                          {/* Minutes */}
-                          <Box
-                            sx={{
-                              textAlign: "center",
-                              p: 2,
-                              width: "100px",
-                              height: "86px",
-                              backgroundColor: "#ffffff",
-                              border: "1px solid #57c2a0",
-                              clipPath:
-                                "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="h6"
-                              color="text.primary"
-                              sx={{ fontWeight: "bolder" }}
-                            >
-                              {minutes}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{ fontWeight: "bolder" }}
-                            >
-                              Minutes
-                            </Typography>
-                          </Box>
-
-                          {/* Seconds */}
-                          <Box
-                            sx={{
-                              textAlign: "center",
-                              p: 2,
-                              width: "100px",
-                              height: "86px",
-                              backgroundColor: "#ffffff",
-                              border: "1px solid #57c2a0",
-                              clipPath:
-                                "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography
-                              variant="h6"
-                              color="text.primary"
-                              sx={{ fontWeight: "bolder" }}
-                            >
-                              {seconds}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{ fontWeight: "bolder" }}
-                            >
-                              Seconds
-                            </Typography>
-                          </Box>
+                              <Typography
+                                className={styles["countDown_value"]}
+                                variant="h5"
+                              >
+                                {time.value}
+                              </Typography>
+                              <Typography
+                                className={styles["countDown_label"]}
+                                variant="caption"
+                              >
+                                {time.label}
+                              </Typography>
+                            </Box>
+                          ))}
                         </Grid>
                         {btnLoader ? (
                           <ButtonLoader size={60} />
                         ) : (
-                          <>
-                            {listType === "Invited" && (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                className={styles["place-bid-btn"]}
-                                endIcon={<GavelIcon />}
-                                onClick={(event) => {
-                                  event.stopPropagation(); // Prevent the parent onClick from firing
-                                  navigate(`/portal/liveBids/details`);
-                                }}
-                              >
-                                Place a Bid
-                              </Button>
-                            )}
-                          </>
+                          listType === "Invited" && (
+                            <Button
+                              variant="contained"
+                              className={styles["place-bid-btn"]}
+                              endIcon={<GavelIcon />}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                navigate(
+                                  `/portal/liveBids/details/?id=${bid.id}`,
+                                  {
+                                    state: { bid },
+                                  }
+                                );
+                              }}
+                            >
+                              Place a Bid
+                            </Button>
+                          )
                         )}
                       </Grid>
                     </Grid>
