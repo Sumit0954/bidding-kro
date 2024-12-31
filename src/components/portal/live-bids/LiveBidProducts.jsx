@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   Container,
   Typography,
@@ -35,7 +35,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import dayjs from "dayjs";
 import { getStarColor } from "../../../helpers/common";
 
-const LiveBidProducts = ({ liveBidproduct, type }) => {
+const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
   console.log(liveBidproduct, "liveBidproduct");
 
   const [showSpecification, setShowSpecification] = useState(false);
@@ -44,8 +44,19 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
   const { setAlert } = useContext(AlertContext);
   const [remainingTime, setRemainingTime] = useState("");
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const isTimeUpRef = useRef(false);
 
   const totalChances = 3;
+
+  const sorted_participant = Array.isArray(liveBidproduct?.participant)
+    ? [...liveBidproduct.participant].sort((a, b) => a.position - b.position)
+    : [];
+
+  useEffect(() => {
+    if (timeUpFlag) {
+      setIsTimeUp(true); // Disable the input if time is up
+    }
+  }, [timeUpFlag]);
 
   useEffect(() => {
     // Parse the updated_at value and calculate the end time
@@ -58,6 +69,13 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
       if (diff <= 0) {
         setRemainingTime("00:00"); // Stop timer when time runs out
         setIsTimeUp(true);
+
+        // Trigger `onUpdate` only once
+        if (!isTimeUpRef.current) {
+          isTimeUpRef.current = true; // Mark as triggered
+          onUpdate(); // Call the `onUpdate` function
+        }
+
         return;
       }
 
@@ -111,6 +129,7 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
           message: "Bid placed successfully!",
           severity: "success",
         });
+        onUpdate();
         // Optionally, refresh or update data here
       }
     } catch (error) {
@@ -172,7 +191,8 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
                     color="green"
                     className={styles["quantity"]}
                   >
-                    {liveBidproduct?.product?.quantity} Ton (T)
+                    {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "}
+                    {liveBidproduct?.product?.unit}
                   </Typography>
                 </Box>
               </Grid>
@@ -184,13 +204,18 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
                     padding: 1,
                   }}
                 >
-                  <Typography variant="subtitle2">Reserve Bid</Typography>
+                  <Typography variant="subtitle2">
+                    Reserve Bid / Unit
+                  </Typography>
                   <Typography
                     variant="h6"
                     color="green"
                     className={styles["reserve-Bid"]}
                   >
-                    ₹ {liveBidproduct?.product?.reserved_price}
+                    ₹{" "}
+                    {Number(liveBidproduct?.product?.reserved_price)?.toFixed(
+                      0
+                    )}
                   </Typography>
                 </Box>
               </Grid>
@@ -226,8 +251,9 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
           <AccordionDetails>
             <DataTable
               propsColumn={ProductBid_column}
-              propsData={[]}
+              propsData={sorted_participant}
               customClassName="portal-data-table"
+              hideToolbar={true}
             />
           </AccordionDetails>
         </Accordion>
@@ -257,7 +283,7 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
           <Typography
             variant="body2"
             color="primary"
-            sx={{ cursor: "pointer" , textTransform : "uppercase" }}
+            sx={{ cursor: "pointer", textTransform: "uppercase" }}
             onClick={() => setShowSpecification(true)}
           >
             View Details
@@ -313,7 +339,8 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
                 Quantity
               </Typography>
               <Typography variant="h6">
-                {liveBidproduct?.product?.quantity}
+                {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "}
+                {liveBidproduct?.product?.unit}
               </Typography>
             </Box>
           </Grid>
@@ -329,10 +356,10 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
               }}
             >
               <Typography variant="body2" color="textSecondary">
-                Reserve Bid
+                Reserve Bid / Unit
               </Typography>
               <Typography variant="h6">
-                ₹ {liveBidproduct?.product?.reserved_price}
+                ₹ {Number(liveBidproduct?.product?.reserved_price)?.toFixed(0)}
               </Typography>
             </Box>
           </Grid>
@@ -392,15 +419,15 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
                       fontWeight: "bold",
                       fontSize: "0.8rem",
                       marginLeft: "6px",
-                      width: "40px",
-                      height: "40px",
+                      width: "30px",
+                      height: "30px",
                       backgroundColor: getStarColor(
                         liveBidproduct?.participant?.position
                       ),
                       clipPath:
                         "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
                       textAlign: "center",
-                      lineHeight: "40px",
+                      lineHeight: "30px",
                       boxShadow: "0 0 5px rgba(0, 0, 0, 0.3)",
                     }}
                   >
@@ -419,7 +446,14 @@ const LiveBidProducts = ({ liveBidproduct, type }) => {
               size="small"
               placeholder="Enter your amount here..."
               value={bidAmount}
-              onChange={(e) => setBidAmount(e.target.value)}
+              // onChange={(e) => setBidAmount(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*\.?\d*$/.test(value)) {
+                  // Allows only numbers and one decimal point
+                  setBidAmount(value);
+                }
+              }}
               disabled={isTimeUp}
             />
           </Grid>

@@ -212,7 +212,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&:hover": {
-            backgroundColor: "#e7effe !important",  // Override the default hover color
+            backgroundColor: "#e7effe !important", // Override the default hover color
           },
         },
       },
@@ -229,6 +229,7 @@ const DataTable = ({
   customClassName = "",
   isSingleSelection = false,
   setSelectedRow,
+  hideToolbar = false,
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
@@ -309,67 +310,69 @@ const DataTable = ({
   return (
     <>
       <ThemeProvider theme={theme}>
-      <Box className={styles[customClassName]}>
-        <Paper className={styles["paper-root"]}>
-          <EnhancedTableToolbar
-            numSelected={0}
-            rowCount={rows.length}
-            setSearchQuery={setSearchQuery}
-          />
-          <TableContainer className={styles["data-table"]}>
-            <Table
-              sx={{ minWidth: 750, width: "100%" }}
-              aria-labelledby="tableTitle"
-              {...getTableProps()}
-            >
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
+        <Box className={styles[customClassName]}>
+          <Paper className={styles["paper-root"]}>
+            {!hideToolbar && (
+              <EnhancedTableToolbar
+                numSelected={0}
                 rowCount={rows.length}
-                headerGroups={headerGroups}
+                setSearchQuery={setSearchQuery}
               />
+            )}
+            <TableContainer className={styles["data-table"]}>
+              <Table
+                sx={{ minWidth: 750, width: "100%" }}
+                aria-labelledby="tableTitle"
+                {...getTableProps()}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows.length}
+                  headerGroups={headerGroups}
+                />
 
-              <TableBody {...getTableBodyProps()}>
-                {visibleRows.map((row, index) => {
-                  prepareRow(row);
+                <TableBody {...getTableBodyProps()}>
+                  {visibleRows.map((row, index) => {
+                    prepareRow(row);
 
-                  return (
-                    <TableRow
-                      {...row.getRowProps()}
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      {row.cells.map((cell) => {
-                        return action(cell);
-                      })}
+                    return (
+                      <TableRow
+                        {...row.getRowProps()}
+                        hover
+                        tabIndex={-1}
+                        key={row.id}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        {row.cells.map((cell) => {
+                          return action(cell);
+                        })}
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow>
+                      <TableCell />
                     </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow>
-                    <TableCell />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            classes={{
-              root: styles["custom-table-pagination"],
-            }}
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Box>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              classes={{
+                root: styles["custom-table-pagination"],
+              }}
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </Box>
       </ThemeProvider>
     </>
   );

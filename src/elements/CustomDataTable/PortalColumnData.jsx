@@ -1524,23 +1524,23 @@ export const ProductBid_column = [
   {
     Header: "Bid Position",
     accessor: "position",
-    align: "left",
+    // align: "left",
     disablePadding: false,
-    width: 160,
+    // width: 160,
   },
   {
     Header: "Company Name",
-    accessor: "Company_Name",
-    align: "center",
+    accessor: "company.name",
+    // align: "center",
     disablePadding: false,
-    width: 160,
+    // width: 160,
   },
   {
     Header: "Bid Amount",
     accessor: "amount",
-    align: "right",
+    // align: "right",
     disablePadding: false,
-    width: 160,
+    // width: 160,
   },
 ];
 
@@ -1551,7 +1551,6 @@ export const Bid_pricing_column = [
     align: "left",
     disablePadding: false,
     width: 230,
-
   },
   {
     Header: "Quantity",
@@ -1606,7 +1605,6 @@ export const ProductBid_column2 = [
     width: 160,
   },
 ];
-
 
 // export const Bid_pricing_column = [
 //   {

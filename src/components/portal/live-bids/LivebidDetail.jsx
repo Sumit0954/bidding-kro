@@ -20,6 +20,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import TermAndConditionModal from "../../../elements/CustomModal/TermAndConditionModal";
 import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+
 function LivebidDetail() {
   const type = new URLSearchParams(useLocation().search).get("type");
   const bidId = new URLSearchParams(useLocation().search).get("id");
@@ -27,6 +28,9 @@ function LivebidDetail() {
   const [screenLoader, setScreenLoader] = useState(true);
   const [isTermandConfitionOpen, setIsTermandConfitionOpen] = useState(false);
   const location = useLocation();
+
+  const [timeUpFlag, setTimeUpFlag] = useState(false);
+
   const [IsAgreed, setIsAgreed] = useState(
     JSON.parse(localStorage.getItem("isAgreed")) || false
   );
@@ -60,6 +64,8 @@ function LivebidDetail() {
         if (hoursRef.current) hoursRef.current.textContent = "00";
         if (minutesRef.current) minutesRef.current.textContent = "00";
         if (secondsRef.current) secondsRef.current.textContent = "00";
+
+        setTimeUpFlag(true);
       }
     };
 
@@ -81,35 +87,63 @@ function LivebidDetail() {
     }
   }, []);
 
-  useEffect(() => {
+  const fetchLiveBidData = async () => {
     try {
-      const retrieveliveBidProducts = async () => {
-        const url =
-          type === "created"
-            ? PortalApiUrls.LIVE_BID_PRODUCTS_BUYER
-            : PortalApiUrls.LIVE_BID_PRODUCTS_SUPPLIER;
-        const response = await _sendAPIRequest(
-          "GET",
-          `${url}${bidId}`,
-          "",
-          true
-        );
+      const url =
+        type === "created"
+          ? PortalApiUrls.LIVE_BID_PRODUCTS_BUYER
+          : PortalApiUrls.LIVE_BID_PRODUCTS_SUPPLIER;
+      const response = await _sendAPIRequest("GET", `${url}${bidId}`, "", true);
+      if (response.status === 200) {
+        setBidProduct(response.data);
+        setScreenLoader(false);
+      }
+    } catch (error) {
+      console.error("Error fetching live bid data:", error);
+    }
+  };
 
-        if (response.status === 200) {
-          setBidProduct(response.data);
-          setScreenLoader(false);
-        }
-      };
-      retrieveliveBidProducts();
-    } catch (error) {}
-  }, [IsAgreed]);
+  // Fetch data on mount and every 15 seconds
+  useEffect(() => {
+    fetchLiveBidData(); // Initial fetch
+    const interval = setInterval(fetchLiveBidData, 15000); // Fetch every 15 seconds
 
-  console.log(bidProducts)
+    return () => clearInterval(interval); // Cleanup interval
+  }, []);
+
+  // Callback to refresh data
+  const handleDataUpdate = () => {
+    fetchLiveBidData();
+  };
+
+  // useEffect(() => {
+  //   try {
+  //     const retrieveliveBidProducts = async () => {
+  //       const url =
+  //         type === "created"
+  //           ? PortalApiUrls.LIVE_BID_PRODUCTS_BUYER
+  //           : PortalApiUrls.LIVE_BID_PRODUCTS_SUPPLIER;
+  //       const response = await _sendAPIRequest(
+  //         "GET",
+  //         `${url}${bidId}`,
+  //         "",
+  //         true
+  //       );
+
+  //       if (response.status === 200) {
+  //         setBidProduct(response.data);
+  //         setScreenLoader(false);
+  //       }
+  //     };
+  //     retrieveliveBidProducts();
+  //   } catch (error) {}
+  // }, []);
+
+  console.log(bidProducts);
 
   if (screenLoader) {
     return <ScreenLoader />;
   }
-
 
   return (
     <>
@@ -122,7 +156,7 @@ function LivebidDetail() {
           sx={{ mb: -3 }}
         >
           <Typography variant="h5" fontWeight="bold">
-            {truncateString(bid?.title,30)}
+            {truncateString(bid?.title, 50)}
           </Typography>
           {/* Bid End Date Container */}
           <Box textAlign="center" className={styles["bidEndTime"]}>
@@ -182,6 +216,8 @@ function LivebidDetail() {
             liveBidproduct={liveBidproduct}
             type={type}
             IsAgreed={IsAgreed}
+            onUpdate={handleDataUpdate}
+            timeUpFlag={timeUpFlag}
           />
         ))}
 
