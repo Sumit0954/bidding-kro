@@ -3,20 +3,15 @@ import {
   AlertTitle,
   Box,
   Breadcrumbs,
-  Button,
   Tab,
   Tabs,
   Typography,
-  Badge,
   Tooltip,
-  IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import Summary from "../../../components/portal/bids/tabs/Summary";
 import Documents from "../../../components/portal/bids/tabs/Documents";
-// import Award from "../../../components/portal/bids/Award";
-// import Bids from "../../../components/portal/bids/Bids";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
 import AmendmentModal from "../../../elements/CustomModal/AmendmentModal";
@@ -26,11 +21,6 @@ import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
-// import { PrintOutlined } from "@mui/icons-material";
-// import ReactToPrint from "react-to-print";
-import { PrintOutlined } from "@mui/icons-material";
-import { useReactToPrint } from "react-to-print";
-
 import PrintableBidDetails from "../../../components/portal/bids/PrintableBidDetails";
 import Questions from "../../../components/portal/bids/tabs/Questions";
 import InvitedSuppliers from "../../../components/portal/bids/tabs/InvitedSuppliers";
@@ -42,11 +32,9 @@ import Award from "../../../components/portal/bids/tabs/Award";
 import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
 import * as React from "react";
-import CompanyList from "../../../components/portal/companies/CompanyList";
 import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
-// import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";

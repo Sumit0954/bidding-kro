@@ -27,7 +27,6 @@ const Livebids = ({ listType }) => {
   const remainingTimeRef = useRef({});
   const navigate = useNavigate();
 
-  console.log(listType, " : listType");
 
   // fetching the api for the list of live bids
   useEffect(() => {
@@ -124,9 +123,9 @@ const Livebids = ({ listType }) => {
                   }
                 >
                   <CardContent>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                       {/* Bid Information */}
-                      <Grid item xs={8}>
+                      <Grid item xs={12} md={8}>
                         <Typography
                           variant="body2"
                           color="textSecondary"
@@ -142,7 +141,7 @@ const Livebids = ({ listType }) => {
                         </Typography>
                         <Tooltip title={bid?.title}>
                           <Typography
-                            variant="h5"
+                            variant="h6"
                             sx={{
                               fontWeight: "bold",
                               color: "#333",
@@ -178,7 +177,8 @@ const Livebids = ({ listType }) => {
                       {/* Countdown Timer and Button */}
                       <Grid
                         item
-                        xs={4}
+                        xs={12}
+                        md={4}
                         container
                         direction="column"
                         alignItems="center"
@@ -213,13 +213,11 @@ const Livebids = ({ listType }) => {
                             >
                               <Typography
                                 className={styles["countDown_value"]}
-                                variant="h5"
                               >
                                 {time.value}
                               </Typography>
                               <Typography
                                 className={styles["countDown_label"]}
-                                variant="caption"
                               >
                                 {time.label}
                               </Typography>
@@ -255,6 +253,7 @@ const Livebids = ({ listType }) => {
               );
             })}
           </Box>
+          ;
         </>
       ) : (
         <>

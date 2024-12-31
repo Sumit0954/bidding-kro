@@ -139,7 +139,6 @@ function LivebidDetail() {
   //   } catch (error) {}
   // }, []);
 
-  console.log(bidProducts);
 
   if (screenLoader) {
     return <ScreenLoader />;

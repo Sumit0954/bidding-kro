@@ -33,9 +33,52 @@
 .countDown_value {
   font-size: 16px; /* Adjust font size for medium size */
   color: var(--primary-color);
+  font-weight: bolder !important;
 }
 
 .countDown_label {
-  font-size: 12px; /* Adjust font size for label */
-  color: var(--primary-color);
+  font-size: 12px !important; /* Adjust font size for label */
+  font-weight :900;
 }
+
+@media (max-width: 600px) {
+  .countDown_timer {
+    width: 50px; /* Smaller size for mobile */
+    height: 50px;
+  }
+
+  .countDown_value {
+    font-size: 8px; /* Adjust font size */
+
+  }
+
+  .countDown_label {
+    font-size: 8px; /* Smaller label font */
+  }
+
+  .place-bid-btn {
+    font-size: 12px; /* Smaller button font */
+    padding: 6px 16px; /* Adjust padding */
+  }
+}
+
+@media (max-width: 400px) {
+  .countDown_timer {
+    width: 40px;
+    height: 40px;
+  }
+
+  .countDown_value {
+    font-size: 12px;
+  }
+
+  .countDown_label {
+    font-size: 8px;
+  }
+
+  .place-bid-btn {
+    font-size: 10px;
+    padding: 4px 12px;
+  }
+}
+

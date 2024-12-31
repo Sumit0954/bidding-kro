@@ -12,7 +12,6 @@ import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 
-
 const ProductSpecificationModal = ({
   showSpecification,
   setShowSpecification,
@@ -21,7 +20,7 @@ const ProductSpecificationModal = ({
   const handleClose = () => {
     setShowSpecification(false);
   };
-  console.log(selectedProduct);
+  console.log(selectedProduct?.min_decrement_amount);
   return (
     <>
       <Modal
@@ -61,6 +60,18 @@ const ProductSpecificationModal = ({
                 <Box className="row mb-2">
                   <Box className="col text-start">
                     {selectedProduct.specification.replace(/<\/?p>/g, "")}
+                  </Box>
+                </Box>
+              </span>
+              <Box className="row">
+                <Box className={cn("col text-start ", styles["title"])}>
+                  Minimum Increment:
+                </Box>
+              </Box>
+              <span>
+                <Box className="row mb-2">
+                  <Box className="col text-start">
+                  ₹ {selectedProduct?.min_decrement_amount}
                   </Box>
                 </Box>
               </span>

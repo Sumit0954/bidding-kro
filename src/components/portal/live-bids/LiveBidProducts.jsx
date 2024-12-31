@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
-  Container,
   Typography,
   Box,
   Paper,
@@ -12,19 +11,10 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  ButtonBase,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import styles from "./LiveBidProducts.module.scss";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Search } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { ProductBid_column } from "../../../elements/CustomDataTable/PortalColumnData";
@@ -36,7 +26,7 @@ import dayjs from "dayjs";
 import { getStarColor } from "../../../helpers/common";
 
 const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
-  console.log(liveBidproduct, "liveBidproduct");
+
 
   const [showSpecification, setShowSpecification] = useState(false);
   const [btnLoader, setBtnLoader] = useState(false);
@@ -45,7 +35,7 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
   const [remainingTime, setRemainingTime] = useState("");
   const [isTimeUp, setIsTimeUp] = useState(false);
   const isTimeUpRef = useRef(false);
-
+  const [lastUpdated, setlastUpdated] = useState();
   const totalChances = 3;
 
   const sorted_participant = Array.isArray(liveBidproduct?.participant)
@@ -90,9 +80,21 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
       );
     };
 
+    const lastUpdateTime = () => {
+      const UpdateAt = new Date(liveBidproduct.updated_at);
+
+      // Format the time to HH:MM format
+      const formattedTime = UpdateAt.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      setlastUpdated(formattedTime);
+    };
+
     // Set interval to update remaining time every second
     const timerInterval = setInterval(updateRemainingTime, 1000);
-    updateRemainingTime(); // Initial call to set time
+    updateRemainingTime();
+    lastUpdateTime();
 
     return () => clearInterval(timerInterval); // Cleanup on unmount
   }, [liveBidproduct.updated_at]);
@@ -151,67 +153,89 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
         <Card variant="outlined" sx={{ marginBottom: 2, position: "relative" }}>
           <CardContent>
             {/* View Details Button */}
-            <Box
-              sx={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-              }}
-            >
-              <Button
-                variant="text"
-                color="primary"
-                onClick={() => setShowSpecification(true)}
-              >
-                View Details
-              </Button>
-            </Box>
-
-            {/* Content */}
-            <Typography
-              variant="h6"
-              color="green"
-              className={styles["product-name"]}
-            >
-              {liveBidproduct?.product?.title}
-            </Typography>
+            <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
+              <Grid item>
+                <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
+                  {liveBidproduct?.product?.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontStyle: "italic",
+                    color: remainingTime === "00:00" ? "red" : "green",
+                    mt: 0.5,
+                  }}
+                >
+                  <AccessTimeIcon
+                    fontSize="small"
+                    sx={{
+                      mr: 0.5,
+                      color: remainingTime === "00:00" ? "red" : "green",
+                    }}
+                  />
+                  Remaining Time: {remainingTime}
+                </Typography>
+              </Grid>
+              <Grid item sx={{ textAlign: "right" }}>
+                <Typography
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textTransform: "uppercase" }}
+                  onClick={() => setShowSpecification(true)}
+                >
+                  View Details
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontStyle: "italic",
+                    color: "gray",
+                    mt: 0.5,
+                    mt: 1,
+                  }}
+                >
+                  Last Bid Update: {lastUpdated || "No updates yet"}
+                </Typography>
+              </Grid>
+            </Grid>
 
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
-              <Grid item xs={4}>
+              {/* Quantity Section */}
+              <Grid item xs={12} md={4}>
                 <Box
                   sx={{
                     textAlign: "center",
                     border: "1px dashed gray",
-                    padding: 1,
+                    p: 1.5,
+                    borderRadius: "8px",
                   }}
                 >
-                  <Typography variant="subtitle2">Quantity</Typography>
-                  <Typography
-                    variant="h6"
-                    color="green"
-                    className={styles["quantity"]}
-                  >
+                  <Typography variant="body2" color="textSecondary">
+                    Quantity
+                  </Typography>
+                  <Typography variant="h6" className={styles["headTitle"]}>
                     {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "}
                     {liveBidproduct?.product?.unit}
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={4}>
+
+              {/* Reserve Bid Section */}
+              <Grid item xs={12} md={4}>
                 <Box
                   sx={{
                     textAlign: "center",
                     border: "1px dashed gray",
-                    padding: 1,
+                    p: 1.5,
+                    borderRadius: "8px",
                   }}
                 >
-                  <Typography variant="subtitle2">
+                  <Typography variant="body2" color="textSecondary">
                     Reserve Bid / Unit
                   </Typography>
-                  <Typography
-                    variant="h6"
-                    color="green"
-                    className={styles["reserve-Bid"]}
-                  >
+                  <Typography variant="h6" className={styles["headTitle"]}>
                     ₹{" "}
                     {Number(liveBidproduct?.product?.reserved_price)?.toFixed(
                       0
@@ -219,19 +243,28 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={4}>
+
+              {/* Your Bid Price Section */}
+              <Grid item xs={12} md={4}>
                 <Box
                   sx={{
                     textAlign: "center",
                     border: "1px dashed gray",
-                    padding: 1,
+                    p: 1.5,
+                    borderRadius: "8px",
                   }}
                 >
-                  <Typography variant="subtitle2">Current Bid</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Current Bid Price
+                  </Typography>
                   <Typography
                     variant="h6"
-                    color="green"
-                    className={styles["current-Bid"]}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    className={styles["headTitle"]}
                   >
                     ₹ {liveBidproduct?.lowest_bid_amount}
                   </Typography>
@@ -242,7 +275,7 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
         </Card>
 
         {/* Accordion for Current Bidders */}
-        <Accordion sx={{ position: "relative", bottom: "15px" }}>
+        <Accordion sx={{ marginTop: -3 }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
               Current Bidders
@@ -276,42 +309,20 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
           mb: 2,
         }}
       >
+        {/* Title Section */}
         <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
-          <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
-            {liveBidproduct?.product?.title}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="primary"
-            sx={{ cursor: "pointer", textTransform: "uppercase" }}
-            onClick={() => setShowSpecification(true)}
-          >
-            View Details
-          </Typography>
-        </Grid>
-        <Typography
-          variant="body2"
-          // color="textSecondary"
-          sx={{
-            mb: 1,
-            textAlign: "right",
-            fontStyle: "italic",
-            color: liveBidproduct?.participant?.count === 3 ? "red" : "green",
-          }}
-        >
-          Chances Left: {totalChances - liveBidproduct?.participant?.count || 0}{" "}
-          / 3
-        </Typography>
-        <Grid container alignItems="center" spacing={2}>
-          {/* Remaining Time Section */}
-          <Grid item xs={12}>
+          <Grid item>
+            <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
+              {liveBidproduct?.product?.title}
+            </Typography>
             <Typography
               variant="body2"
               sx={{
                 display: "flex",
                 alignItems: "center",
-                mb: 1,
+                fontStyle: "italic",
                 color: remainingTime === "00:00" ? "red" : "green",
+                mt: 0.5,
               }}
             >
               <AccessTimeIcon
@@ -321,10 +332,44 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
                   color: remainingTime === "00:00" ? "red" : "green",
                 }}
               />
-              Remaining Time : {remainingTime}
+              Remaining Time: {remainingTime}
             </Typography>
           </Grid>
+          <Grid item sx={{ textAlign: "right" }}>
+            <Typography
+              variant="body2"
+              color="primary"
+              sx={{ cursor: "pointer", textTransform: "uppercase" }}
+              onClick={() => setShowSpecification(true)}
+            >
+              View Details
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontStyle: "italic",
+                color:
+                  liveBidproduct?.participant?.count === 3 ? "red" : "green",
+                mt: 1,
+              }}
+            >
+              Chances Left:{" "}
+              {totalChances - liveBidproduct?.participant?.count || 0} / 3
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontStyle: "italic",
+                color: "gray",
+                mt: 0.5,
+              }}
+            >
+              Last Bid Update: {lastUpdated || "No updates yet"}
+            </Typography>
+          </Grid>
+        </Grid>
 
+        <Grid container alignItems="center" spacing={2}>
           {/* Quantity Section */}
           <Grid item xs={12} md={3}>
             <Box
@@ -438,47 +483,74 @@ const LiveBidProducts = ({ liveBidproduct, type, onUpdate, timeUpFlag }) => {
             </Box>
           </Grid>
 
-          {/* Text Input and Button */}
-          <Grid item xs={12} md={10}>
-            <TextField
-              variant="outlined"
-              fullWidth
-              size="small"
-              placeholder="Enter your amount here..."
-              value={bidAmount}
-              // onChange={(e) => setBidAmount(e.target.value)}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (/^\d*\.?\d*$/.test(value)) {
-                  // Allows only numbers and one decimal point
-                  setBidAmount(value);
-                }
-              }}
-              disabled={isTimeUp}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            {btnLoader ? (
-              <ButtonLoader size={60} />
-            ) : (
-              <Button
-                type="submit"
-                variant="contained"
-                color="success"
-                fullWidth
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  backgroundColor: "#062d72",
-                  ":hover": { backgroundColor: "#05baee" },
-                }}
-                onClick={handlePlaceBid}
-                disabled={isTimeUp}
-              >
-                Place bid
-              </Button>
-            )}
-          </Grid>
+          {isTimeUp === true ? (
+            <>
+              <Grid item xs={12}>
+                {btnLoader ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    fullWidth
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      height: "100%",
+                      backgroundColor: "#062d72",
+                      ":hover": { backgroundColor: "#05baee" },
+                    }}
+                    onClick={handlePlaceBid}
+                    disabled={isTimeUp}
+                  >
+                    Bid Closed
+                  </Button>
+                )}
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid item xs={12} md={10}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  placeholder="Enter your amount here..."
+                  value={bidAmount}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*\.?\d*$/.test(value)) {
+                      setBidAmount(value);
+                    }
+                  }}
+                  disabled={isTimeUp}
+                />
+              </Grid>
+              <Grid item xs={12} md={2}>
+                {btnLoader ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    fullWidth
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      backgroundColor: "#062d72",
+                      ":hover": { backgroundColor: "#05baee" },
+                    }}
+                    onClick={handlePlaceBid}
+                    disabled={isTimeUp}
+                  >
+                    Place bid
+                  </Button>
+                )}
+              </Grid>
+            </>
+          )}
         </Grid>
         {showSpecification && (
           <ProductSpecificationModal

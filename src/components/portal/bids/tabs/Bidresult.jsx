@@ -13,7 +13,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ExpandMore, PrintOutlined } from "@mui/icons-material";
+import { PrintOutlined } from "@mui/icons-material";
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import { ProductBid_column2 } from "../../../../elements/CustomDataTable/PortalColumnData";
 const Bidresult = ({ bidDetails }) => {
