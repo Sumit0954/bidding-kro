@@ -59,10 +59,13 @@ const LiveBidProducts = ({
     let endTime;
 
     if (timeInSec <= 300) {
+      // alert("hi");
       endTime = dayjs(liveBidproduct.updated_at)
         .add(timeInSec, "second")
         .toDate();
     } else {
+      // alert("bye");
+
       endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
     }
 
@@ -120,10 +123,10 @@ const LiveBidProducts = ({
 
     const timerInterval = setInterval(updateRemainingTime, 1000);
     updateRemainingTime();
-    lastUpdateTime();
+    // lastUpdateTime();
 
     return () => clearInterval(timerInterval); // Cleanup on unmount
-  }, [liveBidproduct.updated_at]);
+  }, [liveBidproduct.updated_attimeInSec, onUpdate]);
 
   const handlePlaceBid = async () => {
     console.log("Button clicked!");
@@ -218,7 +221,6 @@ const LiveBidProducts = ({
                   sx={{
                     fontStyle: "italic",
                     color: "gray",
-                    mt: 0.5,
                     mt: 1,
                   }}
                 >

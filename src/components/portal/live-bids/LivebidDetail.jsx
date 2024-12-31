@@ -44,6 +44,7 @@ function LivebidDetail() {
   const secondsRef = useRef();
 
   useEffect(() => {
+    console.log(bid?.bid_close_date, "bid?.bid_close_date");
     const calculateTimeLeft = () => {
       const now = new Date();
       const closeTime = new Date(bid?.bid_close_date);
