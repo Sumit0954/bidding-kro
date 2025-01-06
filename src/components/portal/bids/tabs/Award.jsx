@@ -45,7 +45,7 @@ const Analysis = ({ bidDetails }) => {
   const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event, id) => {
-    setSelectedSupplier(event.target.value);
+    setSelectedSupplier(id);
     setParticipantId(id);
   };
 
@@ -66,11 +66,11 @@ const Analysis = ({ bidDetails }) => {
       );
       if (response.status === 200) {
         setBidders(response.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
-      console.log(error)
-      setScreenLoader(false)
+      console.log(error);
+      setScreenLoader(false);
     }
   };
 
@@ -86,7 +86,7 @@ const Analysis = ({ bidDetails }) => {
 
         if (response) {
           setOpen(true);
-          setAwardStatus(response.status)
+          setAwardStatus(response.status);
         }
       } catch (error) {}
     } else {
@@ -112,7 +112,7 @@ const Analysis = ({ bidDetails }) => {
           message: `Product Cencelled`,
           severity: "success",
         });
-        setAwardStatus(response.status)
+        setAwardStatus(response.status);
       }
     } catch (error) {
       setAlert({
@@ -130,7 +130,7 @@ const Analysis = ({ bidDetails }) => {
   if (screenLoader) {
     return <ScreenLoader />;
   }
-  console.log("re-render")
+  console.log("re-render");
   return (
     <>
       <br />
@@ -313,7 +313,7 @@ const Analysis = ({ bidDetails }) => {
                         >
                           <TableCell>
                             <Radio
-                              checked={selectedSupplier === supplier?.company}
+                              checked={selectedSupplier === supplier?.id}
                               disabled={
                                 awardBidder?.award_status === "cancelled"
                               }
