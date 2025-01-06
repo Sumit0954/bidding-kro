@@ -203,6 +203,7 @@ const BidDetailsPage = () => {
           {type === "related" ||
           type === "invited" ||
           bidDetails?.status === "completed" ||
+          bidDetails?.status === "closed" ||
           bidDetails?.status === "live" ? (
             <Tooltip
               title={`This Bid Is  ${
@@ -215,7 +216,7 @@ const BidDetailsPage = () => {
                   className={cn("btn", "button", "approve")}
                   type="button"
                   disabled
-                  onClick={()=>navigate("/portal/liveBids")}
+                  onClick={() => navigate("/portal/liveBids")}
                 >
                   {bidDetails?.status}
                 </button>
@@ -652,11 +653,9 @@ const BidDetailsPage = () => {
               listtype={"InviteRequest"}
               onActionComplete={handleRefresh}
             />
-        
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <InvitedSuppliers
-             
               onActionComplete={handleRefresh}
               id={id}
               type={type}
