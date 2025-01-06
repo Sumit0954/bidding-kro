@@ -25,12 +25,30 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import dayjs from "dayjs";
 import { getStarColor } from "../../../helpers/common";
 
+const calculateEndTime = (bidCloseTime, liveBidproduct, timeInSec) => {
+  const now = new Date();
+  const closeTime = new Date(bidCloseTime);
+
+  // Calculate the difference in milliseconds
+  const difference = closeTime - now;
+
+  if (difference > 5 * 60 * 1000) {
+    // If the difference is greater than 5 minutes
+    return dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+  } else {
+    // If the difference is less than or equal to 5 minutes
+    return dayjs(liveBidproduct.updated_at)
+      .add(difference / 1000, "second") // Add the exact difference in seconds
+      .toDate();
+  }
+};
+
 const LiveBidProducts = ({
   liveBidproduct,
   type,
   onUpdate,
   timeUpFlag,
-  timeInSec,
+  bidCloseTime,
 }) => {
   console.log(liveBidproduct, "liveBidproduct");
 
@@ -42,6 +60,7 @@ const LiveBidProducts = ({
   const [isTimeUp, setIsTimeUp] = useState(false);
   const isTimeUpRef = useRef(false);
   const [lastUpdated, setlastUpdated] = useState();
+  const [endTime, setEndTime] = useState(null);
   const totalChances = 3;
 
   const sorted_participant = Array.isArray(liveBidproduct?.participant)
@@ -55,26 +74,126 @@ const LiveBidProducts = ({
   }, [timeUpFlag]);
 
   useEffect(() => {
-    // Parse the updated_at value and calculate the end time
-    let endTime;
-
-    if (timeInSec <= 300) {
-      // alert("hi");
-      endTime = dayjs(liveBidproduct.updated_at)
-        .add(timeInSec, "second")
-        .toDate();
-    } else {
-      // alert("bye");
-
-      endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+    if (remainingTime == "00:00") {
+      console.log(remainingTime, "remainingTimeremainingTime");
+      // setIsTimeUp(true); // Disable the input if time is up
     }
+  }, [remainingTime]);
+
+  // useEffect(() => {
+  //   // console.log(isTimeUp, "istimeup");
+  //   // // Parse the updated_at value and calculate the end time
+
+  //   // const now = new Date();
+  //   //   const closeTime = new Date(bidCloseTime);
+  //   //   const difference = closeTime - now;
+
+  //   // const endTime =
+  //   //   timeInSec <= 300
+  //   //     ? dayjs(liveBidproduct.updated_at).add(timeInSec, "second").toDate()
+  //   //     : dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+
+  //   const now = new Date();
+  //   const closeTime = new Date(bidCloseTime);
+
+  //   // Calculate the difference in milliseconds
+  //   const difference = closeTime - now;
+
+  //   // Calculate the end time conditionally
+  //   let endTime;
+  //   if (difference > 5 * 60 * 1000) {
+  //     // If the difference is greater than 5 minutes
+  //     endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
+  //   } else {
+  //     // If the difference is less than or equal to 5 minutes
+  //     endTime = dayjs(liveBidproduct.updated_at)
+  //       .add(difference / 1000, "second") // Add the exact difference in seconds
+  //       .toDate();
+  //   }
+
+  //   const updateRemainingTime = () => {
+  //     const now = new Date();
+  //     const diff = endTime - now;
+
+  //     if (diff <= 0) {
+  //       setRemainingTime("00:00"); // Stop timer when time runs out
+  //       // setIsTimeUp(true);
+
+  //       // Trigger `onUpdate` only once
+  //       if (!isTimeUpRef.current) {
+  //         isTimeUpRef.current = true; // Mark as triggered
+  //         onUpdate(); // Call the `onUpdate` function
+  //       }
+
+  //       return;
+  //     }
+
+  //     const minutes = Math.floor(diff / (1000 * 60));
+  //     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  //     setRemainingTime(
+  //       `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+  //         2,
+  //         "0"
+  //       )}`
+  //     );
+  //   };
+
+  //   const lastUpdateTime = () => {
+  //     const now = new Date();
+  //     const updatedAt = new Date(liveBidproduct.updated_at);
+
+  //     // Calculate the difference in seconds and round to the nearest 10 seconds
+  //     const secondsAgo = Math.floor((now - updatedAt) / 1000);
+  //     const roundedSeconds = Math.floor(secondsAgo / 10) * 10;
+
+  //     // Format minutes and seconds
+  //     const minutes = Math.floor(roundedSeconds / 60);
+  //     const seconds = roundedSeconds % 60;
+
+  //     // Update the state with formatted time
+  //     const formattedTime =
+  //       minutes > 0
+  //         ? `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+  //             2,
+  //             "0"
+  //           )} ago`
+  //         : `${roundedSeconds} seconds ago`;
+
+  //     setlastUpdated(formattedTime);
+  //   };
+
+  //   const timerInterval = setInterval(updateRemainingTime, 1000);
+
+  //   // Update last update time every 10 seconds
+  //   const lastUpdateInterval = setInterval(lastUpdateTime, 10000);
+
+  //   updateRemainingTime();
+  //   lastUpdateTime();
+
+  //   return () => {
+  //     clearInterval(timerInterval); // Cleanup remaining time interval
+  //     clearInterval(lastUpdateInterval); // Cleanup last update time interval
+  //   };
+  // }, [liveBidproduct.updated_at, onUpdate, bidCloseTime]);
+
+  // Calculate and store `endTime`
+  useEffect(() => {
+    const calculatedEndTime = calculateEndTime(bidCloseTime, liveBidproduct);
+    setEndTime(calculatedEndTime);
+    console.log(remainingTime, "remainingTimeremainingTime");
+  }, [bidCloseTime, liveBidproduct]);
+
+  // Update Remaining Time
+  useEffect(() => {
+    if (!endTime) return;
 
     const updateRemainingTime = () => {
       const now = new Date();
       const diff = endTime - now;
 
       if (diff <= 0) {
-        setRemainingTime("00:00"); // Stop timer when time runs out
+        setRemainingTime("00:00");
         setIsTimeUp(true);
 
         // Trigger `onUpdate` only once
@@ -82,7 +201,6 @@ const LiveBidProducts = ({
           isTimeUpRef.current = true; // Mark as triggered
           onUpdate(); // Call the `onUpdate` function
         }
-
         return;
       }
 
@@ -97,36 +215,42 @@ const LiveBidProducts = ({
       );
     };
 
-    // const lastUpdateTime = () => {
-    //   const UpdateAt = new Date(liveBidproduct.updated_at);
+    const timerInterval = setInterval(updateRemainingTime, 1000);
+    updateRemainingTime(); // Call immediately on mount
 
-    //   // Format the time to HH:MM format
-    //   const formattedTime = UpdateAt.toLocaleTimeString([], {
-    //     hour: "2-digit",
-    //     minute: "2-digit",
-    //   });
-    //   setlastUpdated(formattedTime);
-    // };
+    return () => clearInterval(timerInterval); // Cleanup timer
+  }, [endTime, onUpdate]);
 
-    // Set interval to update remaining time every second
-
+  // Update Last Updated Time
+  useEffect(() => {
     const lastUpdateTime = () => {
       const now = new Date();
       const updatedAt = new Date(liveBidproduct.updated_at);
 
-      // Calculate the difference in seconds
+      // Calculate the difference in seconds and round to the nearest 10 seconds
       const secondsAgo = Math.floor((now - updatedAt) / 1000);
+      const roundedSeconds = Math.floor(secondsAgo / 10) * 10;
 
-      // Update the state with the calculated value
-      setlastUpdated(secondsAgo);
+      // Format minutes and seconds
+      const minutes = Math.floor(roundedSeconds / 60);
+      const seconds = roundedSeconds % 60;
+
+      const formattedTime =
+        minutes > 0
+          ? `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+              2,
+              "0"
+            )} ago`
+          : `${roundedSeconds} seconds ago`;
+
+      setlastUpdated(formattedTime);
     };
 
-    const timerInterval = setInterval(updateRemainingTime, 1000);
-    updateRemainingTime();
-    // lastUpdateTime();
+    const lastUpdateInterval = setInterval(lastUpdateTime, 10000);
+    lastUpdateTime(); // Call immediately on mount
 
-    return () => clearInterval(timerInterval); // Cleanup on unmount
-  }, [liveBidproduct.updated_attimeInSec, onUpdate]);
+    return () => clearInterval(lastUpdateInterval); // Cleanup timer
+  }, [liveBidproduct?.updated_at]);
 
   const handlePlaceBid = async () => {
     console.log("Button clicked!");
@@ -160,6 +284,7 @@ const LiveBidProducts = ({
           message: "Bid placed successfully!",
           severity: "success",
         });
+        setBidAmount("");
         onUpdate();
         // Optionally, refresh or update data here
       }
@@ -224,7 +349,7 @@ const LiveBidProducts = ({
                     mt: 1,
                   }}
                 >
-                  Last Bid placed: {lastUpdated || "No updates yet"} sec ago
+                  Last Bid placed: {lastUpdated || "No updates yet"}
                 </Typography>
               </Grid>
             </Grid>
@@ -244,7 +369,10 @@ const LiveBidProducts = ({
                     Quantity
                   </Typography>
                   <Typography variant="h6" className={styles["headTitle"]}>
-                    {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "}
+                    {Number(liveBidproduct?.product?.quantity) % 1 === 0
+                      ? Number(liveBidproduct?.product?.quantity).toFixed(0) // Show as integer if no decimals
+                      : liveBidproduct?.product?.quantity}{" "}
+                    {/* {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "} */}
                     {liveBidproduct?.product?.unit}
                   </Typography>
                 </Box>
@@ -335,6 +463,7 @@ const LiveBidProducts = ({
         sx={{
           p: 2,
           mb: 2,
+          backgroundColor: isTimeUp ? "lightgrey" : "white",
         }}
       >
         {/* Title Section */}
@@ -382,7 +511,8 @@ const LiveBidProducts = ({
               }}
             >
               Chances Left:{" "}
-              {totalChances - liveBidproduct?.participant?.count || 0} / 3
+              {totalChances - liveBidproduct?.participant?.count || 0} /{" "}
+              {totalChances}
             </Typography>
             <Typography
               variant="body2"
@@ -392,7 +522,7 @@ const LiveBidProducts = ({
                 mt: 0.5,
               }}
             >
-              Last Bid placed: {lastUpdated || "No updates yet"} sec ago
+              Last Bid placed: {lastUpdated || "No updates yet"}
             </Typography>
           </Grid>
         </Grid>
@@ -411,8 +541,11 @@ const LiveBidProducts = ({
               <Typography variant="body2" color="textSecondary">
                 Quantity
               </Typography>
-              <Typography variant="h6">
-                {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "}
+              <Typography variant="h6" className={styles["headTitle"]}>
+                {Number(liveBidproduct?.product?.quantity) % 1 === 0
+                  ? Number(liveBidproduct?.product?.quantity).toFixed(0) // Show as integer if no decimals
+                  : liveBidproduct?.product?.quantity}{" "}
+                {/* {Number(liveBidproduct?.product?.quantity)?.toFixed(0)}{" "} */}
                 {liveBidproduct?.product?.unit}
               </Typography>
             </Box>
@@ -431,7 +564,7 @@ const LiveBidProducts = ({
               <Typography variant="body2" color="textSecondary">
                 Reserve Bid / Unit
               </Typography>
-              <Typography variant="h6">
+              <Typography variant="h6" className={styles["headTitle"]}>
                 ₹ {Number(liveBidproduct?.product?.reserved_price)?.toFixed(0)}
               </Typography>
             </Box>
@@ -450,8 +583,8 @@ const LiveBidProducts = ({
               <Typography variant="body2" color="textSecondary">
                 Current Bid Price
               </Typography>
-              <Typography variant="h6">
-                ₹ {liveBidproduct?.lowest_bid_amount}
+              <Typography variant="h6" className={styles["headTitle"]}>
+                ₹ {Number(liveBidproduct?.lowest_bid_amount)?.toFixed(0)}
               </Typography>
             </Box>
           </Grid>
@@ -464,7 +597,7 @@ const LiveBidProducts = ({
                 border: "1px dashed gray",
                 p: 1.5,
                 borderRadius: "8px",
-                backgroundColor: "#f0f8ff",
+                // backgroundColor: "#f0f8ff",
               }}
             >
               <Typography variant="body2" color="textSecondary">
@@ -479,10 +612,14 @@ const LiveBidProducts = ({
                   color:
                     liveBidproduct?.participant?.position === 1 ? "062d72" : "",
                 }}
+                className={styles["headTitle"]}
               >
                 {liveBidproduct?.participant === null
                   ? "-"
-                  : `₹ ${liveBidproduct?.participant?.amount}`}
+                  : `₹ ${Number(liveBidproduct?.participant?.amount)?.toFixed(
+                      0
+                    )}`}
+
                 {liveBidproduct?.participant?.position && (
                   <span
                     style={{
@@ -511,7 +648,7 @@ const LiveBidProducts = ({
             </Box>
           </Grid>
 
-          {isTimeUp === true ? (
+          {isTimeUp ? (
             <>
               <Grid item xs={12}>
                 {btnLoader ? (
@@ -529,8 +666,8 @@ const LiveBidProducts = ({
                       backgroundColor: "#062d72",
                       ":hover": { backgroundColor: "#05baee" },
                     }}
-                    onClick={handlePlaceBid}
-                    disabled={isTimeUp}
+                    // onClick={handlePlaceBid}
+                    // disabled={isTimeUp}
                   >
                     Bid Closed
                   </Button>
@@ -548,7 +685,7 @@ const LiveBidProducts = ({
                   value={bidAmount}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (/^\d*\.?\d*$/.test(value)) {
+                    if (/^\d*$/.test(value)) {
                       setBidAmount(value);
                     }
                   }}
