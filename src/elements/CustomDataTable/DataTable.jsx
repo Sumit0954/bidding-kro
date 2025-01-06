@@ -145,27 +145,14 @@ function EnhancedTableToolbar(props) {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: "1 1 100%" }}
+          sx={{ flex: "1 1 100%" , color : "#062d72" , fontWeight : "bolder" }}
           variant="subtitle1"
           id="tableTitle"
           component="div"
         >
-          <button className={cn("btn", "button")}>
-            Showing {rowCount} results
-          </button>
+          Showing {rowCount} results
         </Typography>
       )}
-
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Delete />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <EnhancedTableSearchBar setSearchQuery={setSearchQuery} />
-      )} */}
-
       <EnhancedTableSearchBar setSearchQuery={setSearchQuery} />
     </Toolbar>
   );

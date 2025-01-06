@@ -399,58 +399,100 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row" style={{ marginTop: "10px" }}>
-                <Box display="flex" flexDirection="row" gap={3}>
-                  <DatePicker
-                    label="Live Bid Date"
-                    value={bidDate ? dayjs(bidDate) : null}
-                    minDate={dayjs()} // Prevent selecting past dates
-                    format="DD-MM-YYYY" // Display date in DD-MM-YYYY format
-                    onChange={(value) =>
-                      setBidDate(value?.format("YYYY-MM-DD") || null)
-                    }
-                    // slotProps={{ textField: { fullWidth: true, } }}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        required: true,
-                        "aria-label": "Live Bid Date Picker",
-                      },
-                    }}
-                  />
-                  <TimePicker
-                    label="Start Time"
-                    value={
-                      timeRange.start
-                        ? dayjs(`${bidDate}T${timeRange.start}`)
-                        : null
-                    }
-                    minutesStep={15}
-                    onChange={(value) =>
-                      handleTimeChange("start", value?.format("HH:mm") || null)
-                    }
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                  <TimePicker
-                    label="End Time"
-                    value={
-                      timeRange.end
-                        ? dayjs(`${bidDate}T${timeRange.end}`)
-                        : null
-                    }
-                    minutesStep={15}
-                    onChange={(value) =>
-                      handleTimeChange("end", value?.format("HH:mm") || null)
-                    }
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? "Submitting..." : "Submit"}
-                  </Button>
+                <Box display="flex" flexDirection="row" gap={2} width="100%">
+                 
+                  <Box flex="1" style={{ maxWidth: "25%" }}>
+                    <DatePicker
+                      label="Live Bid Date *"
+                      value={bidDate ? dayjs(bidDate) : null}
+                      minDate={dayjs()} 
+                      format="DD/MM/YYYY" 
+                      onChange={(value) =>
+                        setBidDate(value?.format("YYYY-MM-DD") || null)
+                      }
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          required: true,
+                          style: {
+                            height: "40px", 
+                            fontSize: "14px", 
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+
+               
+                  <Box flex="1" style={{ maxWidth: "25%" }}>
+                    <TimePicker
+                      label="Start Time"
+                      value={
+                        timeRange.start
+                          ? dayjs(`${bidDate}T${timeRange.start}`)
+                          : null
+                      }
+                      minutesStep={15}
+                      onChange={(value) =>
+                        handleTimeChange(
+                          "start",
+                          value?.format("HH:mm") || null
+                        )
+                      }
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          style: {
+                            height: "40px", 
+                            fontSize: "14px", 
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+
+               
+                  <Box flex="1" style={{ maxWidth: "25%" }}>
+                    <TimePicker
+                      label="End Time"
+                      value={
+                        timeRange.end
+                          ? dayjs(`${bidDate}T${timeRange.end}`)
+                          : null
+                      }
+                      minutesStep={15}
+                      onChange={(value) =>
+                        handleTimeChange("end", value?.format("HH:mm") || null)
+                      }
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          style: {
+                            height: "40px", 
+                            fontSize: "14px", 
+                          },
+                        },
+                      }}
+                    />
+                  </Box>
+
+       
+                  <Box flex="1" style={{ maxWidth: "25%" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      disabled={loading}
+                      style={{
+                        width: "100%",
+                        height: "56px", 
+                        fontSize: "14px", 
+                      }}
+                      className={styles["form-button"]}
+                    >
+                      {loading ? "Submitting..." : "Submit"}
+                    </Button>
+                  </Box>
                 </Box>
               </div>
             </form>

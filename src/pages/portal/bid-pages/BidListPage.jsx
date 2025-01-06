@@ -114,12 +114,19 @@ const BidListPage = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="bid-list-tabs"
+            sx={{
+              "@media (max-width: 600px)": {
+                width: "100%", // Tabs take full width only on mobile
+                marginBottom: "1rem", // Adds spacing below tabs for mobile
+              },
+            }}
           >
             <Tab label="Created Bids" {...a11yProps(0)} />
             <Tab label="Invited Bids" {...a11yProps(1)} />
@@ -132,12 +139,31 @@ const BidListPage = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
+                "@media (max-width: 600px)": {
+                  width: "100%", // Button takes full width on mobile
+                  justifyContent: "center", // Center-align for mobile
+                  marginTop: "1rem", // Add spacing below tabs on mobile
+                },
               }}
             >
               <NavLink
-                // to={"/portal/bids/create"}
                 to={"/portal/bids/categories"}
                 className={cn("btn", "button")}
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#002f6c",
+                  color: "#fff",
+                  borderRadius: "4px",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  display: "inline-block",
+                  "@media (max-width: 600px)": {
+                    width: "100%",
+                  },
+                   width: "100%"
+                }}
               >
                 + Create Bid
               </NavLink>
@@ -145,39 +171,8 @@ const BidListPage = () => {
           )}
         </Box>
 
-        {/* <div className="row">
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              name="Industry"
-              placeholder="Industry"
-              options={categories[0]}
-              handleChange={handleCategorySelection}
-              multiple={false}
-            />
-          </div>
-          <div className="col-lg-9">
-            <SearchBar
-              name="product_search"
-              placeholder="Search Your Category"
-              control={control}
-              rootCategory={rootCategory}
-              value={undefined}
-              ancestors={false}
-              onAncestorsChange={handleOptionChange}
-              disabled={!rootCategory}
-              multiple={true}
-
-            />
-          </div>
-        </div> */}
-
         <TabPanel value={value} index={0}>
-          <BidList
-            listType={"created"}
-            // setSelectedRow={setSelectedRow}
-            // selectedCategory={selectedCategory}
-          />
+          <BidList listType={"created"} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <BidList listType={"invited"} />

@@ -1,18 +1,15 @@
-.terms_and_conditions{
-    color: blue;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.terms_and_conditions:hover{
+.Linker {
+  color: blue;
+  cursor: pointer;
+  text-decoration: none;
+  &.Linker:hover {
     text-decoration: underline;
+  }
 }
 
-.bidEndTime{
-    padding: 1px;
-    position: relative;
-    border: 2px dashed black;
-    padding: 10px;
+.bidEndTime {
+  padding: 1px;
+  position: relative;
+  border: 2px dashed black;
+  padding: 10px;
 }
-
-

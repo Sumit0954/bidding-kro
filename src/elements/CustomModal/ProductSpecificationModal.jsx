@@ -1,5 +1,6 @@
 import {
   Box,
+  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -11,6 +12,7 @@ import styles from "./Modal.module.scss";
 import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ProductSpecificationModal = ({
   showSpecification,
@@ -31,7 +33,15 @@ const ProductSpecificationModal = ({
         <Box className={cn("container", styles["modal-container"])}>
           <Box className="row">
             <Box className={styles["modal-section"]}>
-              <Box className={styles["modal-header"]}>
+              {/* Modal Header */}
+              <Box
+                className={styles["modal-header"]}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Typography
                   className={cn(styles["invite-modal-title"])}
                   id="modal-modal-title"
@@ -40,7 +50,23 @@ const ProductSpecificationModal = ({
                 >
                   Product Specification
                 </Typography>
+                {/* Close Button */}
+
+                <IconButton
+                  aria-label="close"
+                  onClick={() => handleClose(false)}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    float: "right", // Align to top-right corner
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
               </Box>
+
+              {/* Product Details */}
               <Box className="row">
                 <Box className={cn("col text-start ", styles["title"])}>
                   Product :
@@ -71,7 +97,7 @@ const ProductSpecificationModal = ({
               <span>
                 <Box className="row mb-2">
                   <Box className="col text-start">
-                  ₹ {selectedProduct?.min_decrement_amount}
+                    ₹ {selectedProduct?.min_decrement_amount}
                   </Box>
                 </Box>
               </span>

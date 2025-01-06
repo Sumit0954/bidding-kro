@@ -56,3 +56,24 @@
     }
   }
 }
+
+
+
+/* Responsive view for mobile screens */
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: 80px; /* Shrink sidebar width on mobile */
+  }
+
+  .item-name {
+    display: none; /* Hide item names on mobile */
+  }
+
+  .sidebar-item {
+    justify-content: center; /* Center-align icons */
+  }
+
+  .item-icon {
+    margin-right: 0; /* Remove margin for icons */
+  }
+}

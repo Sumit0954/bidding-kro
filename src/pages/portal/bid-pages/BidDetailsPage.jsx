@@ -7,6 +7,7 @@ import {
   Tabs,
   Typography,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -38,6 +39,7 @@ import { setActiveTab } from "../../../store/tabSlice";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
+import { PrintOutlined } from "@mui/icons-material";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -111,7 +113,7 @@ const BidDetailsPage = () => {
       setDeleteDetails({ open: false, title: "", message: "" });
     }
   };
-  console.log("bidDetails : ", bidDetails);
+
   const breadcrumbs = [
     <NavLink
       underline="hover"
@@ -200,7 +202,41 @@ const BidDetailsPage = () => {
         <div className="d-flex align-items-center justify-content-end gap-3">
           {type === "related" ||
           type === "invited" ||
-          bidDetails?.status === "live" ? null : (
+          bidDetails?.status === "completed" ||
+          bidDetails?.status === "live" ? (
+            <Tooltip
+              title={`This Bid Is  ${
+                bidDetails?.status === "completed" ? "Completed" : "Live"
+              }`}
+              arrow
+            >
+              <div style={{ display: "inline-block", position: "relative" }}>
+                <button
+                  className={cn("btn", "button", "approve")}
+                  type="button"
+                  disabled
+                  onClick={()=>navigate("/portal/liveBids")}
+                >
+                  {bidDetails?.status}
+                </button>
+
+                {bidDetails?.status === "live" && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-5px",
+                      right: "-5px",
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: "#FFBF00", // Yellow color for "live"
+                      animation: "blink 1s infinite",
+                    }}
+                  />
+                )}
+              </div>
+            </Tooltip>
+          ) : (
             <>
               {bidDetails?.status === "active" ? (
                 <Tooltip title={"Your Bid Is Active Now"} arrow>
@@ -452,7 +488,7 @@ const BidDetailsPage = () => {
                 </Tooltip>,
 
                 <Tooltip title={"See the result of this bid"}>
-                  {bidDetails?.status === "live" && (
+                  {bidDetails?.status === "completed" && (
                     <Tab label="Bid Result" {...a11yProps(5)} key={5} />
                   )}
                 </Tooltip>,
@@ -520,7 +556,7 @@ const BidDetailsPage = () => {
 
                 bidDetails?.type === "L1"
                   ? [
-                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
+                      <Tab label="Bidders" {...a11yProps(4)} key={4} />,
                       <Tab label="Analysis" {...a11yProps(4)} key={4} />,
                       <Tab
                         label="Letter Of Intent"
@@ -616,19 +652,11 @@ const BidDetailsPage = () => {
               listtype={"InviteRequest"}
               onActionComplete={handleRefresh}
             />
-            {/* <CompanyList
-              bidDetails={bidDetails}
-              id={id}
-              tab={value}
-              listtype={"InviteRequest"}
-            /> */}
+        
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <InvitedSuppliers
-              // bidDetails={bidDetails}
-              // participant={participant}
-              // onActionComplete={() => setValue(2)}
-              // onActionComplete={() => dispatch(setActiveTab(2))}
+             
               onActionComplete={handleRefresh}
               id={id}
               type={type}
@@ -637,10 +665,10 @@ const BidDetailsPage = () => {
           {bidDetails?.type === "L1" ? (
             <>
               <TabPanel value={activeTab} index={4}>
-                <Bids />
+                <Bids bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={5}>
-                <Analysis />
+                <Analysis bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={6}>
                 <LetterOfIntent bidDetails={bidDetails} />
@@ -659,10 +687,10 @@ const BidDetailsPage = () => {
                 />
               </TabPanel>
               <TabPanel value={activeTab} index={5}>
-                <Bids />
+                <Bids bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={6}>
-                <Award />
+                <Analysis bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={7}>
                 <LetterOfIntent bidDetails={bidDetails} />

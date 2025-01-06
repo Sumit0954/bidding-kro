@@ -137,7 +137,6 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
       true
     );
     if (response?.status === 204) {
-      console.log("Bid deleted successfully");
       dispatch(setActiveTab(2));
       // window.location.reload();
       // Optional: Trigger a refresh or redirect as needed
@@ -277,7 +276,6 @@ export const created_bids_column = [
     disablePadding: false,
     width: 120, // Change to uniform width
     Cell: (data) => {
-      // console.log(data?.row?.original, "data?.row?.original");
       return data?.row?.original?.bid_open_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
         : " - ";
@@ -699,7 +697,6 @@ export const invited_bids_column = [
     hideSortIcon: true,
     width: 100,
     Cell: (data) => {
-      console.log("status : ", data?.row?.original);
       return (
         <div
           className={`status-column ${data?.row?.original?.sample?.approval_status}`}
@@ -1280,7 +1277,6 @@ export const PreviousBids_column = [
     disablePadding: false,
     width: 180,
     Cell: (data) => {
-      // console.log("data?.row?.original", data?.row?.original);
       return dateTimeFormatter(data?.row?.original?.bid_close_date);
     },
   },
@@ -1292,7 +1288,6 @@ export const PreviousBids_column = [
     width: 100,
     hideSortIcon: true,
     Cell: (data) => {
-      // console.log("data?.row?.original", data?.row?.original);
       return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
     },
   },
@@ -1551,6 +1546,9 @@ export const Bid_pricing_column = [
     align: "left",
     disablePadding: false,
     width: 230,
+    Cell: (data) => {
+      return data?.row?.original?.product?.title;
+    },
   },
   {
     Header: "Quantity",
@@ -1558,6 +1556,9 @@ export const Bid_pricing_column = [
     align: "left",
     disablePadding: false,
     width: 190,
+    Cell: (data) => {
+      return data?.row?.original?.product?.quantity;
+    },
   },
   {
     Header: "Reserve Price",
@@ -1565,13 +1566,19 @@ export const Bid_pricing_column = [
     align: "left",
     disablePadding: false,
     width: 200,
+    Cell: (data) => {
+      return data?.row?.original?.product?.reserved_price;
+    },
   },
   {
     Header: "Supplier Bid Price",
-    accessor: "supplier_amount",
+    accessor: "amount",
     align: "left",
     disablePadding: false,
     width: 200,
+    Cell: (data) => {
+      return data?.row?.original?.amount;
+    },
   },
   {
     Header: "Bid Rank",
@@ -1579,31 +1586,56 @@ export const Bid_pricing_column = [
     align: "left",
     disablePadding: false,
     width: 110,
+    Cell: (data) => {
+      return data?.row?.original?.position;
+    },
   },
 ];
 
 export const ProductBid_column2 = [
   {
-    Header: "Bid Position",
-    accessor: "position",
+    Header: "Product Title",
+    accessor: "title",
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell : (data)=>{
+      return data?.row?.original?.product?.title
+    }
   },
   {
-    Header: "Company Name",
-    accessor: "Company_Name",
-    align: "center",
+    Header: "Reserve Price",
+    accessor: "price",
+    align: "left",
     disablePadding: false,
-    width: 160,
+    width: 220,
+    Cell : (data)=>{
+      return data?.row?.original?.product?.reserved_price
+    }
   },
   {
     Header: "Bid Amount",
     accessor: "amount",
-    align: "right",
+    align: "left",
     disablePadding: false,
-    width: 160,
+    width: 210,
+    Cell : (data)=>{
+     
+      return data?.row?.original?.amount
+    }
   },
+  {
+    Header: "Bid Position",
+    accessor: "position",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+    Cell : (data)=>{
+      console.log(data)
+      return data?.row?.original?.position
+    }
+  },
+  
 ];
 
 // export const Bid_pricing_column = [

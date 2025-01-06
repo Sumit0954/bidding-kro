@@ -67,4 +67,11 @@ export const PortalApiUrls = Object.freeze({
   LIVE_BID_PRODUCTS_BUYER: "/bid/live/customer/product/",
   LIVE_BID_PRODUCTS_SUPPLIER: "/bid/live/customer/product/invited/",
   PLACE_A_BID: "/bid/live/customer/place_bid/",
+  LIVE_BID_BIDDERS: "/bid/result/customer/participant/",
+  LIVE_BID_PRODUCT_FOR_AWARD: "/bid/result/customer/product/",
+  LIVE_BID_AWARD_BUYER: "/bid/result/customer/award/",
+  LIVE_BID_CENCEL_PRODUCT: "/bid/result/customer/product/cancel/",
+  LIVE_BID_LETTER_OF_INTENT_FOR_BUYER: "/bid/result/letter/",
+  LIVE_BID_LETTER_OF_INTENT_FOR_SUPPLIER: "/bid/result/letter/invited/",
+  LIVE_BID_RESULT_FOR_SUPPLIER: "/bid/result/customer/invited/",
 });
