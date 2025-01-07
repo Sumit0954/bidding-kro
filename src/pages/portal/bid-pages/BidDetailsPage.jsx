@@ -489,9 +489,10 @@ const BidDetailsPage = () => {
                 </Tooltip>,
 
                 <Tooltip title={"See the result of this bid"}>
-                  {bidDetails?.status === "completed" && (
-                    <Tab label="Bid Result" {...a11yProps(5)} key={5} />
-                  )}
+                  {bidDetails?.status === "completed" ||
+                    (bidDetails?.status === "closed" && (
+                      <Tab label="Bid Result" {...a11yProps(5)} key={5} />
+                    ))}
                 </Tooltip>,
               ]
             : [

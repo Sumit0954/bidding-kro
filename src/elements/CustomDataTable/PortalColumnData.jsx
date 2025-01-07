@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import styles from "./DataTable.module.scss";
 import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { convertFileSize } from "../../helpers/common";
@@ -918,7 +918,11 @@ export const companies_column = [
     disablePadding: false,
     width: 160,
     Cell: (data) => {
-      return (
+      const { id } = useParams(); // Extract the id from useParams()
+
+      return id ? ( // Check if id exists
+        <span>{data?.row?.original?.name}</span> // Display plain text if id is absent
+      ) : (
         <NavLink
           className={styles["table-link"]}
           to={`/portal/companies/details/${data?.row?.original?.id}`}
@@ -928,6 +932,7 @@ export const companies_column = [
       );
     },
   },
+
   {
     Header: "Company Email",
     accessor: "business_email",
@@ -1599,9 +1604,9 @@ export const ProductBid_column2 = [
     align: "left",
     disablePadding: false,
     width: 160,
-    Cell : (data)=>{
-      return data?.row?.original?.product?.title
-    }
+    Cell: (data) => {
+      return data?.row?.original?.product?.title;
+    },
   },
   {
     Header: "Reserve Price",
@@ -1609,9 +1614,9 @@ export const ProductBid_column2 = [
     align: "left",
     disablePadding: false,
     width: 220,
-    Cell : (data)=>{
-      return data?.row?.original?.product?.reserved_price
-    }
+    Cell: (data) => {
+      return data?.row?.original?.product?.reserved_price;
+    },
   },
   {
     Header: "Bid Amount",
@@ -1619,10 +1624,9 @@ export const ProductBid_column2 = [
     align: "left",
     disablePadding: false,
     width: 210,
-    Cell : (data)=>{
-     
-      return data?.row?.original?.amount
-    }
+    Cell: (data) => {
+      return data?.row?.original?.amount;
+    },
   },
   {
     Header: "Bid Position",
@@ -1630,12 +1634,11 @@ export const ProductBid_column2 = [
     align: "left",
     disablePadding: false,
     width: 110,
-    Cell : (data)=>{
-      console.log(data)
-      return data?.row?.original?.position
-    }
+    Cell: (data) => {
+      console.log(data);
+      return data?.row?.original?.position;
+    },
   },
-  
 ];
 
 // export const Bid_pricing_column = [
