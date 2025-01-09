@@ -31,6 +31,7 @@ import cn from "classnames";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
+import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 const Analysis = ({ bidDetails }) => {
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [btnLoader, setBtnLoader] = useState(false);
@@ -39,19 +40,56 @@ const Analysis = ({ bidDetails }) => {
   const [expandedIndex, setExpandedIndex] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [bidders, setBidders] = useState([]);
-  const [participantId, setParticipantId] = useState();
   const [awardStatus, setAwardStatus] = useState();
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    alertmessage: "",
+    id: null,
+    handleAction: "",
+  });
 
   const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event, id) => {
     setSelectedSupplier(id);
-    setParticipantId(id);
   };
 
-  const handleAccordionChange = (index) => {
+  const handleAccordionChange = (index, event) => {
+    if (event.target.tagName === "BUTTON" || event.target.closest("button")) {
+      return;
+    }
     setIsExpanded(!isExpanded);
     setExpandedIndex((prevIndex) => (prevIndex === index ? false : index));
+  };
+
+  const handleCencelProduct = (choice) => {
+    if (choice) {
+      cencelProduct(deleteDetails?.id, deleteDetails.alertmessage);
+    } else {
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        alertmessage: "",
+        id: null,
+      });
+    }
+  };
+
+  const handleProductAward = (choice) => {
+    if (choice) {
+      awardSupplier();
+    } else {
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        alertmessage: "",
+        id: null,
+      });
+    }
   };
 
   const handleClose = () => setOpen(false);
@@ -68,23 +106,21 @@ const Analysis = ({ bidDetails }) => {
         setBidders(response.data);
         setScreenLoader(false);
       }
-    } catch (error) {
-      console.log(error);
-      setScreenLoader(false);
-    }
+    } catch (error) {}
   };
 
   const awardSupplier = async () => {
-    if (participantId) {
+    if (selectedSupplier) {
       try {
         const response = await _sendAPIRequest(
           "PUT",
-          PortalApiUrls.LIVE_BID_AWARD_BUYER + `${participantId}/`,
+          PortalApiUrls.LIVE_BID_AWARD_BUYER + `${selectedSupplier}/`,
           "",
           true
         );
 
         if (response) {
+          setDeleteDetails({ open: false });
           setOpen(true);
           setAwardStatus(response.status);
         }
@@ -107,6 +143,7 @@ const Analysis = ({ bidDetails }) => {
         true
       );
       if (response.status === 204) {
+        setDeleteDetails({ open: false });
         setAlert({
           isVisible: true,
           message: `Product Cencelled`,
@@ -130,6 +167,7 @@ const Analysis = ({ bidDetails }) => {
   if (screenLoader) {
     return <ScreenLoader />;
   }
+
   console.log("re-render");
   return (
     <>
@@ -141,9 +179,8 @@ const Analysis = ({ bidDetails }) => {
         return (
           <>
             <Accordion
-              // disabled={awardBidder?.award_status === "cancelled"}
               expanded={expandedIndex === index}
-              onChange={() => handleAccordionChange(index)}
+              onChange={(event) => handleAccordionChange(index, event)}
               key={index}
               defaultExpanded={false}
               sx={{
@@ -175,41 +212,43 @@ const Analysis = ({ bidDetails }) => {
                     awardBidder.award_status === "pending" ? (
                       <>
                         <Button
-                          variant="contained"
+                          variant="outlined"
                           disabled={awardBidder?.award_status === "cancelled"}
-                          sx={{
-                            backgroundColor: `${
-                              awardBidder?.award_status === "pending"
-                                ? "#FFC107"
-                                : awardBidder?.award_status === "cancelled"
-                                ? "red"
-                                : "#22bb33"
-                            }`, // Retain background color
-                            color: "white", // Keep text color consistent
-                            boxShadow: "none", // Remove box shadow for disabled state
-                            pointerEvents: `${
-                              awardBidder?.award_status === "cancelled"
-                                ? "none"
-                                : "auto"
-                            }`, // Disable pointer events for disabled button
-                            "&:hover": {
-                              backgroundColor: `${
-                                awardBidder?.award_status === "cancelled"
-                                  ? "red" // Retain background on hover for disabled
-                                  : undefined
-                              }`,
-                            },
-                            "&.Mui-disabled": {
-                              backgroundColor: `${
-                                awardBidder?.award_status === "cancelled"
-                                  ? "red"
-                                  : undefined
-                              }`, // Keep disabled background same as active
-                              color: "white", // Ensure text remains visible
-                            },
+                          color="secondary"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setDeleteDetails({
+                              open: true,
+                              title: "Cancel Product Confirmation",
+                              message: `Are you sure you want to cancel ${awardBidder?.product} Product?`,
+                              alertmessage: `${awardBidder?.product} Cencelled Successfully`,
+                              id: awardBidder?.id,
+                              handleAction: "cencelProduct",
+                            });
                           }}
+                          className={cn("btn", "button", "reject")}
                         >
-                          {awardBidder?.award_status}
+                          {awardBidder?.award_status === "cancelled"
+                            ? "Cancelled"
+                            : "Cancel Product"}
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setDeleteDetails({
+                              open: selectedSupplier && true,
+                              title: "Award Supplier",
+                              message: `Are you sure you want to award this supplier`,
+                              alertmessage: "Product awarded Successfully",
+                              id: awardBidder?.id,
+                              handleAction: "awardSupplier",
+                            });
+                          }}
+                          className={styles["award-btn"]}
+                        >
+                          Award Supplier
                         </Button>
                       </>
                     ) : isExpanded === true &&
@@ -220,8 +259,17 @@ const Analysis = ({ bidDetails }) => {
                           variant="outlined"
                           disabled={awardBidder?.award_status === "cancelled"}
                           color="secondary"
-                          onClick={() => {
-                            cencelProduct(awardBidder?.id);
+                          onClick={(event) => {
+                            // cencelProduct(awardBidder?.id);
+                            event.stopPropagation();
+                            setDeleteDetails({
+                              open: true,
+                              title: "Cencel Product confirmation",
+                              message: `Are you sure you want to cancel ${awardBidder?.product} Product?`,
+                              alertmessage: `${awardBidder?.product} Cencelled Successfully`,
+                              id: awardBidder?.id,
+                              handleAction: "cencelProduct",
+                            });
                           }}
                           className={cn("btn", "button", "reject")}
                         >
@@ -232,8 +280,16 @@ const Analysis = ({ bidDetails }) => {
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={() => {
-                            awardSupplier();
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setDeleteDetails({
+                              open: selectedSupplier && true,
+                              title: "Award Supplier",
+                              message: `Are you sure you want to award this supplier`,
+                              alertmessage: "Product awarded Successfully",
+                              id: awardBidder?.id,
+                              handleAction: "awardSupplier",
+                            });
                           }}
                           className={styles["award-btn"]}
                         >
@@ -298,42 +354,53 @@ const Analysis = ({ bidDetails }) => {
                           SUPPLIERS NAMES
                         </TableCell>
                         <TableCell
-                          align="right"
+                          align="centers"
                           sx={{ fontWeight: "bold", color: "#052c65" }}
                         >
                           BID AMOUNT
                         </TableCell>
+                        <TableCell
+                          align="right"
+                          sx={{ fontWeight: "bold", color: "#052c65" }}
+                        >
+                          BID POSITION
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {awardBidder?.participant.map((supplier, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{ "& td": { padding: "12px 16px" } }}
-                        >
-                          <TableCell>
-                            <Radio
-                              checked={selectedSupplier === supplier?.id}
-                              disabled={
-                                awardBidder?.award_status === "cancelled"
-                              }
-                              onChange={(event) =>
-                                handleChange(event, supplier.id)
-                              }
-                              value={supplier?.company}
-                              name="supplier"
-                              inputProps={{ "aria-label": supplier?.company }}
-                              sx={{
-                                "&.Mui-checked": { color: "#062d72" },
-                              }}
-                            />
-                            {supplier?.company}
-                          </TableCell>
-                          <TableCell align="right">
-                            ₹ {supplier?.amount}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {awardBidder?.participant
+                        .sort((a, b) => a.amount - b.amount) // Sort in increasing order
+                        .map((supplier, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{ "& td": { padding: "12px 16px" } }}
+                          >
+                            <TableCell>
+                              <Radio
+                                checked={selectedSupplier === supplier?.id}
+                                disabled={
+                                  awardBidder?.award_status === "cancelled"
+                                }
+                                onChange={(event) =>
+                                  handleChange(event, supplier.id)
+                                }
+                                value={supplier?.company}
+                                name="supplier"
+                                inputProps={{ "aria-label": supplier?.company }}
+                                sx={{
+                                  "&.Mui-checked": { color: "#062d72" },
+                                }}
+                              />
+                              {supplier?.company}
+                            </TableCell>
+                            <TableCell align="left">
+                              ₹ {supplier?.amount}
+                            </TableCell>
+                            <TableCell align="right">
+                              {supplier?.position}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -344,6 +411,18 @@ const Analysis = ({ bidDetails }) => {
       })}
 
       <AwardPopUp open={open} handleClose={handleClose} />
+      
+      {deleteDetails?.open && (
+        <DeleteDialog
+          title={deleteDetails.title}
+          message={deleteDetails.message}
+          handleClick={
+            deleteDetails.handleAction === "cencelProduct"
+              ? handleCencelProduct
+              : handleProductAward
+          }
+        />
+      )}
     </>
   );
 };

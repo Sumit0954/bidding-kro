@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import SearchBar from "../../../elements/CustomSelect/SearchBar";
 import RequestModal from "../../../elements/CustomModal/RequestModal";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidList = ({ listType }) => {
   const [sendRequest, setSendRequest] = useState(false);
@@ -24,6 +25,7 @@ const BidList = ({ listType }) => {
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
+  const [screenLoader , setScreenLoader] = useState(true)
 
   const getCreatedBidList = async () => {
     const categoryArray = Array.isArray(selectedCategory)
@@ -46,6 +48,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setCreatedBids(response.data);
+        setScreenLoader(false)
       }
     } catch (error) {
       // console.log(error);
@@ -63,6 +66,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setInviteBids(response.data);
+        setScreenLoader(false)
       }
     } catch (error) {
       // console.log(error);
@@ -80,6 +84,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setRelatedBids(response.data);
+        setScreenLoader(false)
       }
     } catch (error) {}
   };
@@ -201,6 +206,11 @@ const BidList = ({ listType }) => {
       );
     }
   };
+
+  if(screenLoader){
+    return <ScreenLoader />
+  }
+
 
   return (
     <>

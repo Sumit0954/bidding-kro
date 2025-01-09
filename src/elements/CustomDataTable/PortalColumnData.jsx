@@ -159,7 +159,7 @@ export const created_bids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 150, // Change to uniform width
+    width: 120, // Change to uniform width
     Cell: (data) => {
       const hasRequest = data?.row?.original?.has_bid_request;
       const bidId = data?.row?.original?.id;
@@ -274,7 +274,7 @@ export const created_bids_column = [
     accessor: "bid_open_date",
     align: "left",
     disablePadding: false,
-    width: 120, // Change to uniform width
+    width: 150, // Change to uniform width
     Cell: (data) => {
       return data?.row?.original?.bid_open_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_open_date)}`
@@ -286,7 +286,7 @@ export const created_bids_column = [
     accessor: "bid_close_date",
     align: "left",
     disablePadding: false,
-    width: 100, // Change to uniform width
+    width: 150, // Change to uniform width
     Cell: (data) => {
       return data?.row?.original?.bid_close_date
         ? `${dateTimeFormatter(data?.row?.original?.bid_close_date)}`
@@ -326,7 +326,11 @@ export const created_bids_column = [
                   ? "#FFBF00" // Yellow for pending
                   : data?.row?.original?.status === "cancelled"
                   ? "red" // Red for canceled
-                  : "black" // Default
+                  : data?.row?.original?.status === "completed"
+                  ? "#55a630"
+                  : data?.row?.original?.status === "live"
+                  ? "#003459"
+                  : "#80b918"
               }`,
               textTransform: "uppercase",
               fontWeight: "bold",
@@ -403,7 +407,7 @@ export const invited_bids_column = [
     accessor: "bid.formatted_number",
     align: "left",
     disablePadding: false,
-    width: 100,
+    width: 95,
     Cell: (data) => {
       return data.row.original.bid.formatted_number;
     },
@@ -413,7 +417,7 @@ export const invited_bids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 130,
     Cell: (data) => {
       const bidId = data?.row?.original?.bid?.id;
 
@@ -464,7 +468,7 @@ export const invited_bids_column = [
     accessor: "Company_Name",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 120,
     Cell: (data) => {
       return data?.row?.original?.bid?.company?.name;
     },
@@ -474,7 +478,7 @@ export const invited_bids_column = [
     accessor: "bid_start_date",
     align: "left",
     disablePadding: false,
-    width: 120,
+    width: 150,
     Cell: (data) => {
       return (
         <>
@@ -490,7 +494,7 @@ export const invited_bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 120,
+    width: 140,
     Cell: (data) => {
       return (
         <>
@@ -507,7 +511,7 @@ export const invited_bids_column = [
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
-    width: 100,
+    width: 80,
     Cell: (data) => {
       const bidId = data?.row?.original?.bid?.id;
 
@@ -528,22 +532,6 @@ export const invited_bids_column = [
             gap: "0.5rem",
           }}
         >
-          {/* <div
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor:
-                data?.row?.original?.bid?.type === "L1"
-                  ? data?.row?.original?.status === "pending"
-                    ? "#22bb33"
-                    : "#ccc"
-                  : data?.row?.original?.sample?.invite_status === "pending"
-                  ? "#22bb33"
-                  : "#ccc",
-            }}
-          ></div> */}
-
           {data?.row?.original?.bid?.status === "active" ? (
             <div
               style={{
@@ -796,7 +784,7 @@ export const related_bids_column = [
     accessor: "bid_end_date",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 145,
     Cell: (data) => {
       return (
         <>
@@ -813,7 +801,7 @@ export const related_bids_column = [
     align: "center",
     disablePadding: false,
     hideSortIcon: true,
-    width: 150,
+    width: 140,
     Cell: (data) => {
       return (
         <div
@@ -1509,6 +1497,8 @@ export const Sample_Bid_Invitations_result_log = [
             color: `${
               data?.row?.original?.sample?.invite_status === "accepted"
                 ? "#22bb33"
+                : data?.row?.original?.sample?.invite_status === "declined"
+                ? "red"
                 : "darkyellow"
             }`,
           }}
@@ -1641,40 +1631,78 @@ export const ProductBid_column2 = [
   },
 ];
 
-// export const Bid_pricing_column = [
-//   {
-//     Header: "Product Title",
-//     accessor: "title",
-//     align: "left", // Text, so left-aligned
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Quantity",
-//     accessor: "quantity",
-//     align: "right", // Numeric, so right-aligned
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Reserve Price",
-//     accessor: "buyers_amount",
-//     align: "right", // Numeric, so right-aligned
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Supplier Bid Price",
-//     accessor: "supplier_amount",
-//     align: "right", // Numeric, so right-aligned
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Bid Rank",
-//     accessor: "rank",
-//     align: "center", // Ranks look better centered
-//     disablePadding: false,
-//     width: 160,
-//   }
-// ];
+export const RecentBids_column = [
+  {
+    Header: "Bid ID",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Bid Name",
+    accessor: "price",
+    align: "left",
+    disablePadding: false,
+    width: 220,
+  },
+  {
+    Header: "Opening Date",
+    accessor: "O_date",
+    align: "left",
+    disablePadding: false,
+    width: 210,
+  },
+  {
+    Header: "Closing Date",
+    accessor: "C_date",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+  },
+];
+
+export const Best_company_column = [
+  {
+    Header: "Company Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Owner Name",
+    accessor: "owner_name",
+    align: "left",
+    disablePadding: false,
+    width: 220,
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    width: 210,
+  },
+  {
+    Header: "Mobile",
+    accessor: "phone",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+  },
+  {
+    Header: "City",
+    accessor: "city",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+  },
+];

@@ -92,7 +92,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
             true
           );
           if (response.status === 200) {
-            const participants = response.data.participants;
             setParticipant(response.data);
             setScreenLoader(false);
           }
@@ -175,14 +174,17 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
 
   const addAction = (cell) => {
     if (cell.column.id === "action") {
-      // const found = participants.some(
-      //   (participant) => participant.company.id === cell.row.original.id
-      // );
-
+      console.log(cell, " : Decline or not");
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
             className={styles["table-link"]}
+            disabled={
+              bidDetails.status === "completed" ||
+              bidDetails.status === "closed" ||
+              bidDetails.status === "live" ||
+              cell.row.original.status === "declined"
+            }
             onClick={() =>
               setDeleteDetails({
                 open: true,
@@ -193,7 +195,12 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
               })
             }
           >
-            Revoke
+            {bidDetails.status === "completed" ||
+            bidDetails.status === "closed" ||
+            bidDetails.status === "live" ||
+            cell.row.original.status === "declined"
+              ? "-"
+              : "Revoke"}
           </button>
         </TableCell>
       );
@@ -400,13 +407,12 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row" style={{ marginTop: "10px" }}>
                 <Box display="flex" flexDirection="row" gap={2} width="100%">
-                 
                   <Box flex="1" style={{ maxWidth: "25%" }}>
                     <DatePicker
                       label="Live Bid Date *"
                       value={bidDate ? dayjs(bidDate) : null}
-                      minDate={dayjs()} 
-                      format="DD/MM/YYYY" 
+                      minDate={dayjs()}
+                      format="DD/MM/YYYY"
                       onChange={(value) =>
                         setBidDate(value?.format("YYYY-MM-DD") || null)
                       }
@@ -415,15 +421,14 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
                           fullWidth: true,
                           required: true,
                           style: {
-                            height: "40px", 
-                            fontSize: "14px", 
+                            height: "40px",
+                            fontSize: "14px",
                           },
                         },
                       }}
                     />
                   </Box>
 
-               
                   <Box flex="1" style={{ maxWidth: "25%" }}>
                     <TimePicker
                       label="Start Time"
@@ -443,15 +448,14 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
                         textField: {
                           fullWidth: true,
                           style: {
-                            height: "40px", 
-                            fontSize: "14px", 
+                            height: "40px",
+                            fontSize: "14px",
                           },
                         },
                       }}
                     />
                   </Box>
 
-               
                   <Box flex="1" style={{ maxWidth: "25%" }}>
                     <TimePicker
                       label="End Time"
@@ -468,15 +472,14 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
                         textField: {
                           fullWidth: true,
                           style: {
-                            height: "40px", 
-                            fontSize: "14px", 
+                            height: "40px",
+                            fontSize: "14px",
                           },
                         },
                       }}
                     />
                   </Box>
 
-       
                   <Box flex="1" style={{ maxWidth: "25%" }}>
                     <Button
                       variant="contained"
@@ -485,8 +488,8 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
                       disabled={loading}
                       style={{
                         width: "100%",
-                        height: "56px", 
-                        fontSize: "14px", 
+                        height: "56px",
+                        fontSize: "14px",
                       }}
                       className={styles["form-button"]}
                     >

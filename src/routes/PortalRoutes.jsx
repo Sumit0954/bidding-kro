@@ -28,6 +28,7 @@ import AcceptanceStatus from "../components/portal/bids/tabs/AcceptanceStatus";
 import LiveBidsDetailPage from "../pages/portal/live-bids-pages/LiveBidsDetailPage";
 import LivebidDetail from "../components/portal/live-bids/LivebidDetail";
 import LiveBids from "../pages/portal/live-bids-pages/LiveBidsDetailPage";
+import Messages from "../pages/portal/messsages/Messages";
 
 const PortalRoutes = () => {
   return (
@@ -158,6 +159,10 @@ const PortalRoutes = () => {
                     <Route
                       path="/liveBids/details"
                       element={<LayoutPage Component={LivebidDetail} />}
+                    />
+                     <Route
+                      path="/messages"
+                      element={<LayoutPage Component={Messages} />}
                     />
                   </Route>
                 </Routes>

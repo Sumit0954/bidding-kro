@@ -75,7 +75,7 @@ const Summary = ({ bidDetails }) => {
 
       getParticipants();
     }
-  }, [bidDetails]);
+  }, [bidDetails, bidDetails?.participant?.status]);
   const revokeParticipant = async (company_id) => {
     try {
       const response = await _sendAPIRequest(
@@ -122,7 +122,7 @@ const Summary = ({ bidDetails }) => {
   const handleViewRequestClick = (tabvalue) => {
     dispatch(setActiveTab(tabvalue)); // Set the active tab
   };
-
+  console.log(bidDetails?.participant?.status, ": status");
   let steps = [];
   if (bidDetails.type === "L1") {
     steps = [
@@ -135,7 +135,9 @@ const Summary = ({ bidDetails }) => {
                 bidDetails?.participant?.status === "accepted" ||
                 bidDetails?.participant?.status === "declined" ||
                 bidDetails?.participant?.status === "revoked" ||
-                bidDetails?.participant?.status === "pending"
+                bidDetails?.participant?.status === "pending" ||
+                bidDetails?.participant?.status === "participated" ||
+                bidDetails?.participant?.status === "awarded"
                   ? "green"
                   : "#FFC107"
               }`,
@@ -146,7 +148,9 @@ const Summary = ({ bidDetails }) => {
       },
       {
         label: `${
-          bidDetails?.participant?.status === "accepted"
+          bidDetails?.participant?.status === "accepted" ||
+          bidDetails?.participant?.status === "participated" ||
+          bidDetails?.participant?.status === "awarded"
             ? "Accepted"
             : bidDetails?.participant?.status === "declined"
             ? "Declined"
@@ -155,7 +159,9 @@ const Summary = ({ bidDetails }) => {
             : "Pending"
         }`,
         icon:
-          bidDetails?.participant?.status === "accepted" ? (
+          bidDetails?.participant?.status === "accepted" ||
+          bidDetails?.participant?.status === "participated" ||
+          bidDetails?.participant?.status === "awarded" ? (
             <CheckCircleOutline style={{ color: "green" }} />
           ) : bidDetails?.participant?.status === "declined" ? (
             <CancelOutlined style={{ color: "red" }} />
@@ -184,6 +190,25 @@ const Summary = ({ bidDetails }) => {
             },
           ]
         : []),
+      ...(bidDetails?.participant?.status === "participated" ||
+      bidDetails?.participant?.status === "awarded"
+        ? [
+            {
+              label: "Participated",
+              icon: <CheckCircleOutline style={{ color: "green" }} />,
+              status: "success",
+            },
+          ]
+        : []),
+      ...(bidDetails?.participant?.status === "awarded"
+        ? [
+            {
+              label: "Awarded",
+              icon: <CheckCircleOutline style={{ color: "green" }} />,
+              status: "success",
+            },
+          ]
+        : []),
     ];
   } else {
     steps = [
@@ -196,7 +221,9 @@ const Summary = ({ bidDetails }) => {
                 bidDetails?.participant?.status === "accepted" ||
                 bidDetails?.participant?.status === "declined" ||
                 bidDetails?.participant?.status === "revoked" ||
-                bidDetails?.participant?.status === "pending"
+                bidDetails?.participant?.status === "pending" ||
+                bidDetails?.participant?.status === "participated" ||
+                bidDetails?.participant?.status === "awarded"
                   ? "green"
                   : "grey"
               }`,
@@ -227,7 +254,6 @@ const Summary = ({ bidDetails }) => {
           ),
         status: "complete",
       },
-
       ...(bidDetails?.participant?.sample?.invite_status === "declined"
         ? []
         : [
@@ -268,7 +294,9 @@ const Summary = ({ bidDetails }) => {
                 bidDetails?.participant?.status === "pending"
                   ? "Pending"
                   : bidDetails?.participant?.status === "accepted" ||
-                    bidDetails?.participant?.status === "revoked"
+                    bidDetails?.participant?.status === "revoked" ||
+                    bidDetails?.participant?.status === "participated" ||
+                    bidDetails?.participant?.status === "awarded"
                   ? "Accepted"
                   : bidDetails?.participant?.status === "declined"
                   ? "Declined"
@@ -277,7 +305,9 @@ const Summary = ({ bidDetails }) => {
                 bidDetails?.participant?.status === "pending" ? (
                   <HourglassEmpty style={{ color: "#FFBF00" }} />
                 ) : bidDetails?.participant?.status === "accepted" ||
-                  bidDetails?.participant?.status === "revoked" ? (
+                  bidDetails?.participant?.status === "revoked" ||
+                  bidDetails?.participant?.status === "participated" ||
+                  bidDetails?.participant?.status === "awarded" ? (
                   <CheckCircleOutline style={{ color: "green" }} />
                 ) : bidDetails?.participant?.status === "declined" ? (
                   <CancelOutlined style={{ color: "red" }} />
@@ -287,7 +317,6 @@ const Summary = ({ bidDetails }) => {
               status: "complete",
             },
           ]),
-
       ...(bidDetails?.participant?.status === "revoked"
         ? [
             {
@@ -301,6 +330,35 @@ const Summary = ({ bidDetails }) => {
         ? [
             {
               label: "Cancelled",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
+            },
+          ]
+        : []),
+      ...(bidDetails?.participant?.status === "participated" ||
+      bidDetails?.participant?.status === "awarded"
+        ? [
+            {
+              label: "Participated",
+              icon: <CheckCircleOutline style={{ color: "green" }} />,
+              status: "success",
+            },
+          ]
+        : []),
+      ...(bidDetails?.participant?.status === "awarded"
+        ? [
+            {
+              label: "Awarded",
+              icon: <CheckCircleOutline style={{ color: "green" }} />,
+              status: "success",
+            },
+          ]
+        : []),
+      ...(bidDetails?.participant?.status !== "awarded" &&
+      bidDetails?.status === "completed"
+        ? [
+            {
+              label: "Not Awarded",
               icon: <CancelOutlined style={{ color: "red" }} />,
               status: "error",
             },

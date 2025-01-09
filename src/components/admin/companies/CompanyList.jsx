@@ -4,10 +4,11 @@ import { companies_column } from "../../../elements/CustomDataTable/AdminColumnD
 import { TableCell } from "@mui/material";
 import _sendApiRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
-
+  const [screenLoader , setScreenLoader] = useState(true)
   const addAction = (cell) => {
     return (
       <TableCell {...cell.getCellProps()}> {cell.render("Cell")} </TableCell>
@@ -24,6 +25,7 @@ const CompanyList = () => {
       );
       if (response.status === 200){
         setCompanies(response.data)
+        setScreenLoader(false)
       }
     } catch (error) {
       console.log(error);
@@ -34,6 +36,9 @@ const CompanyList = () => {
     getCompanyList();
   }, []);
 
+  if(screenLoader){
+    return <ScreenLoader />
+  }
   return (
     <>
       <DataTable

@@ -15,6 +15,7 @@ import cn from "classnames";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { useForm } from "react-hook-form";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const PendingRequests = ({
   bidDetails,
@@ -32,6 +33,7 @@ const PendingRequests = ({
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [requestBids, setRequestBids] = useState([]);
   const [refresh, setRefresh] = useState(0);
+  const [screenLoader , setScreenLoader] = useState(true)
 
   const columns = Pending_request_column();
 
@@ -58,6 +60,7 @@ const PendingRequests = ({
         );
         if (response.status === 200) {
           setCompanies(response?.data);
+          setScreenLoader(false)
         }
       } catch (error) {
         console.log(error);
@@ -79,6 +82,7 @@ const PendingRequests = ({
           );
           if (response.status === 200) {
             setParticipants(response.data.participants);
+            setScreenLoader(false)
           }
         } catch (error) {
           console.log(error);
@@ -88,6 +92,7 @@ const PendingRequests = ({
       getParticipants();
     }
   }, [id, refresh]);
+  
 
   useEffect(() => {
     const getRequestList = async () => {
@@ -101,6 +106,7 @@ const PendingRequests = ({
 
         if (response.status === 200) {
           setRequestBids(response?.data);
+          setScreenLoader(false)
         }
       } catch (error) {}
     };
@@ -183,6 +189,7 @@ const PendingRequests = ({
           ...prevCategories,
           [depth]: mappedCategories,
         }));
+        setScreenLoader(false)
       }
     } catch (error) {
       console.log(error);
@@ -203,6 +210,9 @@ const PendingRequests = ({
 
   useEffect(() => {}, [rootCategory]);
 
+  if(screenLoader){
+    return <ScreenLoader />
+  }
   return (
     <>
       <br />

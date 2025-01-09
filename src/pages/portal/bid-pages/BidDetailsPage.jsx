@@ -558,7 +558,7 @@ const BidDetailsPage = () => {
 
                 bidDetails?.type === "L1"
                   ? [
-                      <Tab label="Bidders" {...a11yProps(4)} key={4} />,
+                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
                       <Tab label="Analysis" {...a11yProps(4)} key={4} />,
                       <Tab
                         label="Letter Of Intent"
@@ -654,9 +654,19 @@ const BidDetailsPage = () => {
               listtype={"InviteRequest"}
               onActionComplete={handleRefresh}
             />
+            {/* <CompanyList
+              bidDetails={bidDetails}
+              id={id}
+              tab={value}
+              listtype={"InviteRequest"}
+            /> */}
           </TabPanel>
           <TabPanel value={activeTab} index={3}>
             <InvitedSuppliers
+              // bidDetails={bidDetails}
+              // participant={participant}
+              // onActionComplete={() => setValue(2)}
+              // onActionComplete={() => dispatch(setActiveTab(2))}
               onActionComplete={handleRefresh}
               id={id}
               type={type}

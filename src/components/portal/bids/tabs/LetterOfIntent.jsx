@@ -57,12 +57,12 @@ const LetterOfIntent = ({ bidDetails }) => {
   return (
     <>
       <br />
+      <div className={styles["heading"]}>
+        <Typography variant="h6">Company Name</Typography>
+      </div>
       {letterOfIntent.map((letter) => {
         return (
           <>
-            <div className={styles["heading"]}>
-              <Typography variant="h6">Company Name</Typography>
-            </div>
             <Accordion
               defaultExpanded
               onChange={handleAccordionChange}
@@ -90,16 +90,6 @@ const LetterOfIntent = ({ bidDetails }) => {
                       >
                         LETTER OF INTENT FOR BID AWARD
                       </Typography>
-                      {/* <ReactToPrint
-                  content={() => componentRef.current}
-                  documentTitle={bidDetails?.formatted_number}
-                  trigger={() => (
-                    <IconButton className={styles["no-print"]}>
-                      <PrintOutlined />
-                    </IconButton>
-                  )}
-                  removeAfterPrint
-                /> */}
                     </div>
                     <br />
                     <Typography>
@@ -137,6 +127,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                           <th>Company Name</th>
                           <th>Company Email</th>
                           <th>Contact</th>
+                          <th>GST No.</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -144,6 +135,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                           <td>{letter?.supplier?.name}</td>
                           <td>{letter?.supplier?.business_email}</td>
                           <td>{letter?.supplier?.business_mobile}</td>
+                          <td>08 ABCDE9999F1Z8</td>
                         </tr>
                       </tbody>
                     </table>
