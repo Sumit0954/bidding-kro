@@ -28,6 +28,7 @@ import { getStarColor } from "../../../helpers/common";
 const calculateEndTime = (bidCloseTime, liveBidproduct, timeInSec) => {
   const now = new Date();
   const closeTime = new Date(bidCloseTime);
+  const updatedAt = new Date(liveBidproduct.updated_at);
 
   // Calculate the difference in milliseconds
   const difference = closeTime - now;
@@ -37,8 +38,11 @@ const calculateEndTime = (bidCloseTime, liveBidproduct, timeInSec) => {
     return dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
   } else {
     // If the difference is less than or equal to 5 minutes
+    // return dayjs(liveBidproduct.updated_at)
+    //   .add(difference / 1000, "second") // Add the exact difference in seconds
+    //   .toDate();
     return dayjs(liveBidproduct.updated_at)
-      .add(difference / 1000, "second") // Add the exact difference in seconds
+      .add(closeTime - updatedAt, "millisecond") // Add the exact difference in seconds
       .toDate();
   }
 };
@@ -80,109 +84,12 @@ const LiveBidProducts = ({
     }
   }, [remainingTime]);
 
-  // useEffect(() => {
-  //   // console.log(isTimeUp, "istimeup");
-  //   // // Parse the updated_at value and calculate the end time
-
-  //   // const now = new Date();
-  //   //   const closeTime = new Date(bidCloseTime);
-  //   //   const difference = closeTime - now;
-
-  //   // const endTime =
-  //   //   timeInSec <= 300
-  //   //     ? dayjs(liveBidproduct.updated_at).add(timeInSec, "second").toDate()
-  //   //     : dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
-
-  //   const now = new Date();
-  //   const closeTime = new Date(bidCloseTime);
-
-  //   // Calculate the difference in milliseconds
-  //   const difference = closeTime - now;
-
-  //   // Calculate the end time conditionally
-  //   let endTime;
-  //   if (difference > 5 * 60 * 1000) {
-  //     // If the difference is greater than 5 minutes
-  //     endTime = dayjs(liveBidproduct.updated_at).add(5, "minute").toDate();
-  //   } else {
-  //     // If the difference is less than or equal to 5 minutes
-  //     endTime = dayjs(liveBidproduct.updated_at)
-  //       .add(difference / 1000, "second") // Add the exact difference in seconds
-  //       .toDate();
-  //   }
-
-  //   const updateRemainingTime = () => {
-  //     const now = new Date();
-  //     const diff = endTime - now;
-
-  //     if (diff <= 0) {
-  //       setRemainingTime("00:00"); // Stop timer when time runs out
-  //       // setIsTimeUp(true);
-
-  //       // Trigger `onUpdate` only once
-  //       if (!isTimeUpRef.current) {
-  //         isTimeUpRef.current = true; // Mark as triggered
-  //         onUpdate(); // Call the `onUpdate` function
-  //       }
-
-  //       return;
-  //     }
-
-  //     const minutes = Math.floor(diff / (1000 * 60));
-  //     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-  //     setRemainingTime(
-  //       `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
-  //         2,
-  //         "0"
-  //       )}`
-  //     );
-  //   };
-
-  //   const lastUpdateTime = () => {
-  //     const now = new Date();
-  //     const updatedAt = new Date(liveBidproduct.updated_at);
-
-  //     // Calculate the difference in seconds and round to the nearest 10 seconds
-  //     const secondsAgo = Math.floor((now - updatedAt) / 1000);
-  //     const roundedSeconds = Math.floor(secondsAgo / 10) * 10;
-
-  //     // Format minutes and seconds
-  //     const minutes = Math.floor(roundedSeconds / 60);
-  //     const seconds = roundedSeconds % 60;
-
-  //     // Update the state with formatted time
-  //     const formattedTime =
-  //       minutes > 0
-  //         ? `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
-  //             2,
-  //             "0"
-  //           )} ago`
-  //         : `${roundedSeconds} seconds ago`;
-
-  //     setlastUpdated(formattedTime);
-  //   };
-
-  //   const timerInterval = setInterval(updateRemainingTime, 1000);
-
-  //   // Update last update time every 10 seconds
-  //   const lastUpdateInterval = setInterval(lastUpdateTime, 10000);
-
-  //   updateRemainingTime();
-  //   lastUpdateTime();
-
-  //   return () => {
-  //     clearInterval(timerInterval); // Cleanup remaining time interval
-  //     clearInterval(lastUpdateInterval); // Cleanup last update time interval
-  //   };
-  // }, [liveBidproduct.updated_at, onUpdate, bidCloseTime]);
-
   // Calculate and store `endTime`
   useEffect(() => {
     const calculatedEndTime = calculateEndTime(bidCloseTime, liveBidproduct);
     setEndTime(calculatedEndTime);
     console.log(remainingTime, "remainingTimeremainingTime");
-  }, [bidCloseTime, liveBidproduct]);
+  }, [liveBidproduct.updated_at]);
 
   // Update Remaining Time
   useEffect(() => {
@@ -330,6 +237,17 @@ const LiveBidProducts = ({
                     }}
                   />
                   Remaining Time: {remainingTime}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontStyle: "italic",
+                    color: "green",
+                    mt: 0.5,
+                  }}
+                >
+                  Minimum Price Difference: ₹{" "}
+                  {liveBidproduct?.product?.min_decrement_amount}
                 </Typography>
               </Grid>
               <Grid item sx={{ textAlign: "right" }}>
@@ -490,6 +408,17 @@ const LiveBidProducts = ({
                 }}
               />
               Remaining Time: {remainingTime}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontStyle: "italic",
+                color: "green",
+                mt: 0.5,
+              }}
+            >
+              Minimum Price Difference: ₹{" "}
+              {liveBidproduct?.product?.min_decrement_amount}
             </Typography>
           </Grid>
           <Grid item sx={{ textAlign: "right" }}>

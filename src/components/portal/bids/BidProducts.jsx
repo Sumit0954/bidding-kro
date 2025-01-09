@@ -363,11 +363,12 @@ const BidProducts = () => {
                           <div className="col-lg-6">
                             <CustomInput
                               control={control}
-                              label="Price Diffrence"
+                              label="Minimum Price Difference"
                               name={`min_decrement_amount${index}`}
-                              placeholder="Price Diffrence"
+                              placeholder="Minimum Price Difference"
                               rules={{
-                                required: "Price Diffrence is required.",
+                                required:
+                                  "Minimum Price Difference is required.",
                               }}
                             />
                           </div>
@@ -481,11 +482,11 @@ const BidProducts = () => {
                       <div className="col-lg-6">
                         <CustomInput
                           control={control}
-                          label="Price Diffrence"
+                          label="Minimum Price Difference"
                           name="min_decrement_amount"
-                          placeholder="Price Diffrence"
+                          placeholder="Minimum Price Difference"
                           rules={{
-                            required: "Price Diffrence is required.",
+                            required: "Minimum Price Difference is required.",
                           }}
                         />
                       </div>

@@ -91,7 +91,7 @@ const ProductSpecificationModal = ({
               </span>
               <Box className="row">
                 <Box className={cn("col text-start ", styles["title"])}>
-                  Minimum Decrement Amount:
+                  Minimum Price Difference:
                 </Box>
               </Box>
               <span>
