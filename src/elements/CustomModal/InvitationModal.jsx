@@ -23,8 +23,6 @@ const InvitationModal = ({
   const { setAlert } = useContext(AlertContext);
   const dispatch = useDispatch();
 
-  console.log("bidDetails : ", companyDetail);
-
   const handleClose = () => {
     setInvitation(false);
   };
@@ -39,8 +37,7 @@ const InvitationModal = ({
           ? companyDetail?.id
           : companyDetail?.requestor?.id
       );
-      console.log("listtype : ", listtype);
-      console.log("Company details : ", companyDetail);
+
       const response = await _sendAPIRequest(
         "POST",
         PortalApiUrls.SEND_INVITE + `${bidDetails?.id}/`,
@@ -50,7 +47,6 @@ const InvitationModal = ({
       if (response.status === 204) {
         setLoading(false);
         setInvitation(false);
-        // window.location.reload();
         setAlert({
           isVisible: true,
           message: "Invitation successfully sent to the supplier.",
@@ -68,14 +64,12 @@ const InvitationModal = ({
               true
             );
             if (response?.status === 204) {
-              console.log("Bid deleted successfully");
               dispatch(setActiveTab(2));
 
               if (onActionComplete) {
                 onActionComplete();
               }
 
-              window.location.reload();
               // Optional: Trigger a refresh or redirect as needed
             }
           } catch (error) {

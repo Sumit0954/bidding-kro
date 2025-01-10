@@ -195,6 +195,7 @@ const BidDetailsPage = () => {
 
   return (
     <>
+      {/*BUTTONS IN BIDDETAILS  */}
       <div className="d-flex align-items-center justify-content-between mb-2">
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
@@ -357,6 +358,8 @@ const BidDetailsPage = () => {
           /> */}
         </div>
       </div>
+
+      {/*NOTE AND WARNINGS IN BIDDETAILS  */}
       {type === "invited" || type === "related" ? null : (
         <>
           <>
@@ -416,6 +419,7 @@ const BidDetailsPage = () => {
         </>
       )}
 
+      {/*TABS IN BIDDETAILS  */}
       <Box sx={{ width: "100%" }}>
         <Tabs
           // value={value}
@@ -489,10 +493,9 @@ const BidDetailsPage = () => {
                 </Tooltip>,
 
                 <Tooltip title={"See the result of this bid"}>
-                  {bidDetails?.status === "completed" ||
-                    (bidDetails?.status === "closed" && (
-                      <Tab label="Bid Result" {...a11yProps(5)} key={5} />
-                    ))}
+                  {bidDetails?.status === "completed" && (
+                    <Tab label="Bid Result" {...a11yProps(5)} key={5} />
+                  )}
                 </Tooltip>,
               ]
             : [
@@ -504,115 +507,138 @@ const BidDetailsPage = () => {
                 </Tooltip>,
 
                 type !== "related" && (
-                  <Tab
-                    // label="Pending Requests"
-                    label={
-                      <Box display="flex" alignItems="center" gap={1}>
-                        {bidDetails?.has_bid_request ? (
-                          <Box
-                            sx={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#FFBF00", // Green for pending
-                              animation: "blink 1s infinite",
-                            }}
-                          />
-                        ) : null}
+                  <Tooltip title={"See the pending request for this"}>
+                    <Tab
+                      // label="Pending Requests"
+                      label={
+                        <Box display="flex" alignItems="center" gap={1}>
+                          {bidDetails?.has_bid_request ? (
+                            <Box
+                              sx={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: "#FFBF00", // Green for pending
+                                animation: "blink 1s infinite",
+                              }}
+                            />
+                          ) : null}
 
-                        <span>Pending Requests</span>
-                      </Box>
-                    }
-                    {...a11yProps(2)}
-                    key={2}
-                  />
+                          <span>Pending Requests</span>
+                        </Box>
+                      }
+                      {...a11yProps(2)}
+                      key={2}
+                    />
+                  </Tooltip>
                 ),
 
                 type !== "related" && (
-                  <Tab
-                    // label="Invited Suppliers"
-                    label={
-                      <Box display="flex" alignItems="center" gap={1}>
-                        {bidDetails?.type === "L1" &&
-                        bidDetails?.status === "active" &&
-                        bidDetails?.bid_open_date == null ? (
-                          <Box
-                            sx={{
-                              width: "10px",
-                              height: "10px",
-                              borderRadius: "50%",
-                              backgroundColor: "#FFBF00", // Green for pending
-                              animation: "blink 1s infinite",
-                            }}
-                          />
-                        ) : null}
+                  <Tooltip title={"See the invited suppliers for this"}>
+                    <Tab
+                      label={
+                        <Box display="flex" alignItems="center" gap={1}>
+                          {bidDetails?.type === "L1" &&
+                          bidDetails?.status === "active" &&
+                          bidDetails?.bid_open_date == null ? (
+                            <Box
+                              sx={{
+                                width: "10px",
+                                height: "10px",
+                                borderRadius: "50%",
+                                backgroundColor: "#FFBF00", // Green for pending
+                                animation: "blink 1s infinite",
+                              }}
+                            />
+                          ) : null}
 
-                        <span>Invited Suppliers</span>
-                      </Box>
-                    }
-                    {...a11yProps(3)}
-                    key={3}
-                    disabled={shouldDisableTab}
-                  />
+                          <span>Invited Suppliers</span>
+                        </Box>
+                      }
+                      {...a11yProps(3)}
+                      key={3}
+                      disabled={shouldDisableTab}
+                    />
+                  </Tooltip>
                 ),
 
                 bidDetails?.type === "L1"
                   ? [
-                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
-                      <Tab label="Analysis" {...a11yProps(4)} key={4} />,
-                      <Tab
-                        label="Letter Of Intent"
-                        {...a11yProps(5)}
-                        key={5}
-                      />,
-                      // <Tab label="Feedback" {...a11yProps(6)} key={6} />,
+                      (bidDetails.status === "completed" ||
+                        bidDetails.status === "closed") && [
+                        <Tab label="Bidders" {...a11yProps(4)} key="bids" />,
+                        <Tab
+                          label="Analysis"
+                          {...a11yProps(5)}
+                          key="analysis"
+                        />,
+                      ],
+
+                      bidDetails.status === "completed" && [
+                        <Tab
+                          label="Letter Of Intent"
+                          {...a11yProps(5)}
+                          key={5}
+                        />,
+                      ],
                     ]
                   : [
                       type !== "related" && (
-                        <Tab
-                          // label="Sample Receiving"
-                          label={
-                            <Box display="flex" alignItems="center" gap={1}>
-                              {bidDetails?.status === "active" &&
-                              bidDetails?.sample_receive_start_date == null ? (
-                                <Box
-                                  sx={{
-                                    width: "10px",
-                                    height: "10px",
-                                    borderRadius: "50%",
-                                    backgroundColor: "#FFBF00", // Green for pending
-                                    animation: "blink 1s infinite",
-                                  }}
-                                />
-                              ) : null}
+                        <Tooltip title={"QCBS status of this bid"}>
+                          <Tab
+                            label={
+                              <Box display="flex" alignItems="center" gap={1}>
+                                {bidDetails?.status === "active" &&
+                                bidDetails?.sample_receive_start_date ==
+                                  null ? (
+                                  <Box
+                                    sx={{
+                                      width: "10px",
+                                      height: "10px",
+                                      borderRadius: "50%",
+                                      backgroundColor: "#FFBF00", // Green for pending
+                                      animation: "blink 1s infinite",
+                                    }}
+                                  />
+                                ) : null}
 
-                              {/* <span>Sample Receiving</span> */}
-                              <span>QCBS Status</span>
-                            </Box>
-                          }
-                          {...a11yProps(4)}
-                          key={4}
-                        />
+                                <span>QCBS Status</span>
+                              </Box>
+                            }
+                            {...a11yProps(4)}
+                            key={4}
+                          />
+                        </Tooltip>
                       ),
-                      // <Tab
-                      //   label="Invite Suppliers"
-                      //   {...a11yProps(2)}
-                      //   key={2}
-                      //   disabled={shouldDisableTab}
-                      // />,
-                      <Tab label="Bids" {...a11yProps(4)} key={4} />,
-                      <Tab label="Analysis" {...a11yProps(5)} key={5} />,
-                      <Tab
-                        label="Letter Of Intent"
-                        {...a11yProps(6)}
-                        key={6}
-                      />,
-                      // <Tab label="Feedback" {...a11yProps(7)} key={7} />,
+                      bidDetails.status === "closed" ||
+                      bidDetails.status === "completed"
+                        ? [
+                            <Tooltip title={"Bidders in this bid"}>
+                              <Tab label="Bidders" {...a11yProps(4)} key={4} />
+                            </Tooltip>,
+                            <Tooltip title={"Analysis screen"}>
+                              <Tab label="Analysis" {...a11yProps(5)} key={5} />
+                            </Tooltip>,
+                          ]
+                        : null,
+
+                      bidDetails.status === "completed"
+                        ? [
+                            <Tooltip title={"LOI of this bid"}>
+                              <Tab
+                                label="Letter Of Intent"
+                                {...a11yProps(6)}
+                                key={6}
+                              />
+                            </Tooltip>,
+                          ]
+                        : null,
                     ],
               ]}
         </Tabs>
       </Box>
 
+      {/*TABPANELS IN BIDDETAILS  */}
       {type === "invited" ? (
         <>
           <TabPanel value={activeTab} index={0}>
@@ -713,6 +739,7 @@ const BidDetailsPage = () => {
         </>
       )}
 
+      {/*AMENDMENT MODAL IN BIDDETAILS  */}
       {addAmendment && (
         <AmendmentModal
           addAmendment={addAmendment}
@@ -721,6 +748,7 @@ const BidDetailsPage = () => {
         />
       )}
 
+      {/*BID CENCELATION CONFIRMATION MODAL IN BIDDETAILS  */}
       {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}
@@ -729,6 +757,7 @@ const BidDetailsPage = () => {
         />
       )}
 
+      {/*RAZORPAY PAYEMENT IN BIDDETAILS  */}
       {activateBid && (
         <RazorpayPaymentHandler
           userData={userDetails}
@@ -738,6 +767,7 @@ const BidDetailsPage = () => {
         />
       )}
 
+      {/*PAYMENT SUCCESSFULL MODAL IN BIDDETAILS  */}
       {showThankyou && (
         <ThankyouModal
           showThankyou={showThankyou}
@@ -747,6 +777,8 @@ const BidDetailsPage = () => {
           showLogin={false}
         />
       )}
+
+      {/*PRINT BID MODAL IN BIDDETAILS  */}
       <div className="print-only">
         <PrintableBidDetails ref={componentRef} bidDetails={bidDetails} />
       </div>

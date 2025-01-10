@@ -38,6 +38,8 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
     setCompanyDetail(data.row.original);
   };
 
+  console.log(companies, " : companies");
+
   useEffect(() => {
     const getCompanyList = async () => {
       try {
@@ -78,7 +80,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
 
       getParticipants();
     }
-  }, [id]);
+  }, [id, addInvitaion]);
 
   useEffect(() => {
     const getRequestList = async () => {
@@ -185,9 +187,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
     setSelectedCategory(rootCategory);
   }, [rootCategory]);
 
-  // const handleOptionChange = (ancestors) => {
-  //   setSelectedCategory(ancestors);
-  // };
+
 
   useEffect(() => {}, [rootCategory]);
 

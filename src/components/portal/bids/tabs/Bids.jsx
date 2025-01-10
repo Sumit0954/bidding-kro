@@ -51,11 +51,11 @@ const Bids = ({ bidDetails }) => {
       );
       if (response.status === 200) {
         setLiveBidparticipants(response?.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log(error);
-      setScreenLoader(false)
+      setScreenLoader(false);
     }
   };
 
@@ -109,31 +109,47 @@ const Bids = ({ bidDetails }) => {
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  {participant.question.map((question, key) => {
-                    return (
-                      <>
-                        <Box sx={{ marginBottom: "20px" }}>
-                          <Typography
-                            variant="h6"
-                            sx={{ color: "#052c65", marginBottom: "8px" }}
-                          >
-                            {key + 1}. {question.text}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{ paddingLeft: "16px", color: "#4a4a4a" }}
-                          >
-                            -{" "}
-                            {`${
-                              question.answer === null
-                                ? "The supplier did not answer this question"
-                                : question.answer
-                            }`}
-                          </Typography>
-                        </Box>
-                      </>
-                    );
-                  })}
+                  {participant.question.length === 0 ? (
+                    <>
+                      <Box sx={{ marginBottom: "20px" }}>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: "#052c65", marginBottom: "8px" }}
+                        >
+                          . No questions have been asked to the supplier for
+                          this bid.
+                        </Typography>
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      {participant.question.map((question, key) => {
+                        return (
+                          <>
+                            <Box sx={{ marginBottom: "20px" }}>
+                              <Typography
+                                variant="h6"
+                                sx={{ color: "#052c65", marginBottom: "8px" }}
+                              >
+                                {key + 1}. {question.text}
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                sx={{ paddingLeft: "16px", color: "#4a4a4a" }}
+                              >
+                                -{" "}
+                                {`${
+                                  question.answer === null
+                                    ? "The supplier did not answer this question"
+                                    : question.answer
+                                }`}
+                              </Typography>
+                            </Box>
+                          </>
+                        );
+                      })}
+                    </>
+                  )}
                 </Box>
 
                 <Box hidden={tabIndex !== 1} sx={{ padding: "20px" }}>

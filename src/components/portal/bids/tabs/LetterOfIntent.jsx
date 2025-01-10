@@ -63,12 +63,8 @@ const LetterOfIntent = ({ bidDetails }) => {
       {letterOfIntent.map((letter) => {
         return (
           <>
-            <Accordion
-              defaultExpanded
-              onChange={handleAccordionChange}
-              expandIcon={<ExpandMoreRounded />}
-            >
-              <AccordionSummary>
+            <Accordion onChange={handleAccordionChange}>
+              <AccordionSummary expandIcon={<ExpandMoreRounded />}>
                 <div
                   style={{
                     display: "flex",
@@ -80,7 +76,6 @@ const LetterOfIntent = ({ bidDetails }) => {
                 </div>
               </AccordionSummary>
               <AccordionDetails>
-                {/* Wrap the content you want to print with the componentRef */}
                 <div ref={componentRef}>
                   <div className={styles["loi-content"]}>
                     <div className={styles["bid-Letter"]}>
@@ -100,7 +95,10 @@ const LetterOfIntent = ({ bidDetails }) => {
                       <strong>{letter?.bid?.formatted_number}</strong>
                     </Typography>
 
-                    <Typography variant="h6" sx={{ marginTop: "20px" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                    >
                       Buyer Information
                     </Typography>
                     <table className={styles["loi-table"]}>
@@ -120,7 +118,47 @@ const LetterOfIntent = ({ bidDetails }) => {
                       </tbody>
                     </table>
 
-                    <Typography variant="h6">Supplier Information</Typography>
+                    {letter?.buyer?.address?.length > 0 && (
+                      <>
+                        <Typography
+                          variant="h6"
+                          sx={{ marginTop: "20px", mb: 2, fontSize: "large" }}
+                        >
+                          Buyer Addresses
+                        </Typography>
+                        <table className={styles["loi-table"]}>
+                          <thead>
+                            <tr>
+                              <th>Address</th>
+                              <th>City</th>
+                              <th>Country</th>
+                              <th>Pincode</th>
+                              <th>State</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {letter?.buyer?.address?.map((address) => {
+                              return (
+                                <tr>
+                                  <td>{address?.address}</td>
+                                  <td>{address?.city}</td>
+                                  <td>{address?.country}</td>
+                                  <td>{address?.pincode}</td>
+                                  <td>{address?.state}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </>
+                    )}
+
+                    <Typography
+                      variant="h6"
+                      sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                    >
+                      Supplier Information
+                    </Typography>
                     <table className={styles["loi-table"]}>
                       <thead>
                         <tr>
@@ -135,8 +173,40 @@ const LetterOfIntent = ({ bidDetails }) => {
                           <td>{letter?.supplier?.name}</td>
                           <td>{letter?.supplier?.business_email}</td>
                           <td>{letter?.supplier?.business_mobile}</td>
-                          <td>08 ABCDE9999F1Z8</td>
+                          <td>{letter?.supplier?.gstin}</td>
                         </tr>
+                      </tbody>
+                    </table>
+
+                    <Typography
+                      variant="h6"
+                      sx={{ marginTop: "20px", mb: 2, fontSize: "large" }}
+                    >
+                      Supplier Addresses
+                    </Typography>
+
+                    <table className={styles["loi-table"]}>
+                      <thead>
+                        <tr>
+                          <th>Address</th>
+                          <th>City</th>
+                          <th>Country</th>
+                          <th>Pincode</th>
+                          <th>State</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {letter?.supplier?.address?.map((address) => {
+                          return (
+                            <tr>
+                              <td>{address?.address}</td>
+                              <td>{address?.city}</td>
+                              <td>{address?.country}</td>
+                              <td>{address?.pincode}</td>
+                              <td>{address?.state}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
 
@@ -148,7 +218,10 @@ const LetterOfIntent = ({ bidDetails }) => {
                       process.
                     </Typography>
 
-                    <Typography variant="h6" sx={{ marginTop: "20px" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                    >
                       Products
                     </Typography>
                     <table className={styles["loi-table"]}>

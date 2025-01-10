@@ -129,6 +129,8 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
     return <ScreenLoader component={"AcceptanceStatus"} />;
   }
 
+  console.log(participant.status, " : participant.status ");
+
   return (
     <>
       <Box
@@ -722,6 +724,35 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Typography variant="body1">
                   Thank you for your understanding, and we look forward to your
                   continued engagement with Bidding Kro.
+                </Typography>
+              </Box>
+            </Box>
+          </>
+        ) : participant?.sample?.approval_status === "approved" &&
+          participant?.status === "participated" ? (
+          // BID PARTICIPATION
+          <>
+            <Box sx={{ marginBottom: "2rem" }}>
+              {/* Heading */}
+              <Typography variant="h4" gutterBottom>
+                Notification of Bid Participation
+              </Typography>
+
+              {/* Paragraph 1 */}
+              <Box mb={2}>
+                <Typography variant="body1">
+                  We are pleased to inform you that your participation in the
+                  commercial bid has been successfully recorded. Thank you for
+                  accepting the bid invitation on the Bidding Kro platform.
+                </Typography>
+              </Box>
+
+              {/* Paragraph 3 */}
+              <Box>
+                <Typography variant="body1">
+                  Thank you for your continued trust in Bidding Kro. We look
+                  forward to sharing the results with you soon. Stay tuned for
+                  further updates.
                 </Typography>
               </Box>
             </Box>

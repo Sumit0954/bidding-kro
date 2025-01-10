@@ -122,7 +122,7 @@ const Summary = ({ bidDetails }) => {
   const handleViewRequestClick = (tabvalue) => {
     dispatch(setActiveTab(tabvalue)); // Set the active tab
   };
-  console.log(bidDetails?.participant?.status, ": status");
+
   let steps = [];
   if (bidDetails.type === "L1") {
     steps = [
@@ -206,6 +206,16 @@ const Summary = ({ bidDetails }) => {
               label: "Awarded",
               icon: <CheckCircleOutline style={{ color: "green" }} />,
               status: "success",
+            },
+          ]
+        : []),
+      ...(bidDetails?.participant?.status !== "awarded" &&
+      bidDetails?.status === "completed"
+        ? [
+            {
+              label: "Not Awarded",
+              icon: <CancelOutlined style={{ color: "red" }} />,
+              status: "error",
             },
           ]
         : []),

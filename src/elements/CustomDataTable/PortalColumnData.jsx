@@ -550,7 +550,7 @@ export const invited_bids_column = [
                     ? data?.row?.original?.status === "pending" &&
                       data?.row?.original?.bid?.bid_open_date !== null
                       ? "#FFBF00" // Yellow for pending
-                      : data?.row?.original?.status === "accepted"
+                      : data?.row?.original?.status === "accepted" 
                       ? "#22bb33" // Green for accepted
                       : "#ccc" // Default gray
                     : data?.row?.original?.sample?.invite_status === "pending"
@@ -604,10 +604,12 @@ export const invited_bids_column = [
                       ? "#22bb33" // Green for accepted
                       : data?.row?.original?.status === "pending"
                       ? "#FFBF00" // Yellow for pending
-                      : "red" // Default red for other status
+                      : data?.row?.original?.status === "revoked" ||  data?.row?.original?.status === "declined" 
+                      ? "red" // Yellow for pending
+                      : "green" // Default red for other status
                     : data?.row?.original?.sample?.approval_status ===
                       "approved"
-                    ? data?.row?.original?.status === "accepted"
+                    ? data?.row?.original?.status === "accepted" 
                       ? "#22bb33" // Green for accepted
                       : data?.row?.original?.status === "pending" &&
                         data?.row?.original?.bid?.bid_open_date !== null
@@ -615,7 +617,9 @@ export const invited_bids_column = [
                       : data?.row?.original?.status === "pending" &&
                         data?.row?.original?.bid?.bid_open_date === null
                       ? "#22bb33"
-                      : "red" // Default red for other status
+                      : data?.row?.original?.status === "revoked" 
+                      ? "red"
+                      : "green" // Default red for other status
                     : data?.row?.original?.sample?.invite_status === "accepted"
                     ? "#22bb33" // Green for accepted
                     : data?.row?.original?.sample?.invite_status === "pending"

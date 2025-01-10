@@ -40,7 +40,7 @@ const Analysis = ({ bidDetails }) => {
   const [expandedIndex, setExpandedIndex] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [bidders, setBidders] = useState([]);
-  const [awardStatus, setAwardStatus] = useState();
+  const [awardStatus, setAwardStatus] = useState(null);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -67,6 +67,7 @@ const Analysis = ({ bidDetails }) => {
   const handleCencelProduct = (choice) => {
     if (choice) {
       cencelProduct(deleteDetails?.id, deleteDetails.alertmessage);
+      setExpandedIndex(false)
     } else {
       setDeleteDetails({
         open: false,
@@ -81,6 +82,7 @@ const Analysis = ({ bidDetails }) => {
   const handleProductAward = (choice) => {
     if (choice) {
       awardSupplier();
+      setExpandedIndex(false)
     } else {
       setDeleteDetails({
         open: false,
