@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import _sendAPIRequest from "../../../../helpers/api";
-import DateTimeRangePicker from "../../../../elements/CustomDateTimePickers/DateTimeRangePicker";
+// import DateTimeRangePicker from "../../../../elements/CustomDateTimePickers/DateTimeRangePicker";
 import { dateValidator } from "../../../../helpers/validation";
 import cn from "classnames";
 import styles from "./SampleReceiving.module.scss";
@@ -28,7 +28,10 @@ import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../../contexts/AlertProvider";
-import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
+// import DatePicker from "../../../../elements/CustomDateTimePickers/DatePicker";
+import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { TimePicker } from "@mui/x-date-pickers";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { useLocation, useParams } from "react-router-dom";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
@@ -42,6 +45,8 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
     clearErrors,
     watch,
     formState: { dirtyFields },
+    setValue,
+    formState: { errors },
   } = useForm();
   const [createdAt, setCreatedAt] = useState("");
   const { id } = useParams();
@@ -223,50 +228,112 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
 
   // ------------------ SUBMIT LIVE DATES ----------------
 
-  const live_Bid_Opening_Dates = watch("bid_open_date");
-  const live_Bid_Closing_Dates = watch("bid_close_date");
+  const [bidDate, setBidDate] = useState(null);
+  const [timeRange, setTimeRange] = useState({ start: null, end: null });
 
-  const liveBidsFormdata = new URLSearchParams();
-  liveBidsFormdata.append("bid_open_date", live_Bid_Opening_Dates);
-  liveBidsFormdata.append("bid_close_date", live_Bid_Closing_Dates);
+  const bidStartDate = watch("bid_start_date");
+  const bidEndDate = watch("bid_end_date");
+
+  const handleTimeChange = (field, value) => {
+    setTimeRange((prev) => ({ ...prev, [field]: value }));
+  };
 
   const submitliveBidDates = async () => {
-    console.log("Dates");
-    setLoading(true);
+    if (!bidDate || !timeRange.start || !timeRange.end) {
+      setAlert({
+        isVisible: true,
+        message: "Please select a valid date and time range.",
+        severity: "error",
+      });
+      return;
+    }
+
+    const bidOpenDate = dayjs(`${bidDate}T${timeRange.start}`).toISOString();
+    const bidCloseDate = dayjs(`${bidDate}T${timeRange.end}`).toISOString();
+
+    const formData = new URLSearchParams();
+    formData.append("bid_open_date", bidOpenDate);
+    formData.append("bid_close_date", bidCloseDate);
+
     try {
+      setLoading(true);
       const response = await _sendAPIRequest(
-        "PUT",
-        `${PortalApiUrls.SET_LIVE_DATES}${bidDetails?.id}/`,
-        liveBidsFormdata,
+        "PATCH",
+        `${PortalApiUrls.UPDATE_BID}${bidDetails.id}/`,
+        formData,
         true
       );
+      setLoading(false);
       if (response.status === 200) {
-        setLoading(false);
         setAlert({
           isVisible: true,
-          message: "Live Bid Dates have been submitted",
+          message: "Bid dates updated successfully.",
           severity: "success",
         });
-
         setBidDetails((prevDetails) => ({
           ...prevDetails,
-          bid_open_date: live_Bid_Opening_Dates,
-          bid_close_date: live_Bid_Closing_Dates,
+          bid_open_date: bidStartDate,
+          bid_close_date: bidEndDate,
         }));
-
         if (onActionComplete) {
-          onActionComplete(); // Trigger the callback
+          onActionComplete();
         }
+        dispatch(setActiveTab(4));
       }
     } catch (error) {
       setLoading(false);
       setAlert({
         isVisible: true,
-        message: error.message,
-        severity: "er",
+        message: error.response?.data?.error || "An error occurred.",
+        severity: "error",
       });
     }
   };
+
+  // const live_Bid_Opening_Dates = watch("bid_open_date");
+  // const live_Bid_Closing_Dates = watch("bid_close_date");
+
+  // const liveBidsFormdata = new URLSearchParams();
+  // liveBidsFormdata.append("bid_open_date", live_Bid_Opening_Dates);
+  // liveBidsFormdata.append("bid_close_date", live_Bid_Closing_Dates);
+
+  // const submitliveBidDates = async () => {
+  //   console.log("Dates");
+  //   setLoading(true);
+  //   try {
+  //     const response = await _sendAPIRequest(
+  //       "PUT",
+  //       `${PortalApiUrls.SET_LIVE_DATES}${bidDetails?.id}/`,
+  //       liveBidsFormdata,
+  //       true
+  //     );
+  //     if (response.status === 200) {
+  //       setLoading(false);
+  //       setAlert({
+  //         isVisible: true,
+  //         message: "Live Bid Dates have been submitted",
+  //         severity: "success",
+  //       });
+
+  //       setBidDetails((prevDetails) => ({
+  //         ...prevDetails,
+  //         bid_open_date: live_Bid_Opening_Dates,
+  //         bid_close_date: live_Bid_Closing_Dates,
+  //       }));
+
+  //       if (onActionComplete) {
+  //         onActionComplete(); // Trigger the callback
+  //       }
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     setAlert({
+  //       isVisible: true,
+  //       message: error.message,
+  //       severity: "er",
+  //     });
+  //   }
+  // };
 
   // ------------------ SUBMIT LIVE DATES ---------------------
 
@@ -356,7 +423,7 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
         </Alert> */}
         <br />
         <div className="row">
-          <form
+          {/* <form
           // onSubmit={handleSubmit(submitSampledates)}
           >
             <div className="row">
@@ -412,6 +479,123 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
                   variant="contained"
                   className={styles["form-button"]}
                   onClick={submitSampledates}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </form> */}
+
+          <form>
+            <div className="row" style={{ width: "100%" }}>
+              <div className="col-lg-4">
+                <Controller
+                  name="sample_receive_start_date"
+                  control={control}
+                  defaultValue={bidDetails?.sample_receive_start_date || null}
+                  rules={{
+                    required: !bidDetails?.sample_receive_start_date
+                      ? "Opening Date is required."
+                      : false,
+                    validate: (value) => {
+                      if (!bidDetails?.sample_receive_start_date) {
+                        const date = dayjs(value);
+                        return date.isValid() || "Invalid date range";
+                      }
+                      return true; // Skip validation if the field is disabled
+                    },
+                  }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      label="Sample Receiving Opening Date"
+                      value={
+                        field.value
+                          ? dayjs(field.value)
+                          : bidDetails?.sample_receive_start_date
+                          ? dayjs(bidDetails.sample_receive_start_date)
+                          : null
+                      }
+                      minDate={dayjs()}
+                      onChange={(value) => {
+                        if (!bidDetails?.sample_receive_start_date) {
+                          const formattedValue = value
+                            ? value.format("YYYY-MM-DD")
+                            : null;
+                          field.onChange(formattedValue);
+                          setValue("sample_receive_start_date", formattedValue);
+                          clearErrors("sample_receive_start_date");
+                        }
+                      }}
+                      disabled={bidDetails?.sample_receive_start_date !== null}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          required: true,
+                          style: {
+                            height: "40px",
+                            fontSize: "14px",
+                          },
+                          error: !!errors.sample_receive_start_date,
+                          helperText: errors.sample_receive_start_date?.message,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-lg-4">
+                <Controller
+                  name="sample_receive_end_date"
+                  control={control}
+                  rules={{
+                    required: "Closing Date is required.",
+                    validate: (value) => {
+                      const date = dayjs(value);
+                      return date.isValid() || "Invalid date range";
+                    },
+                  }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      label="Sample Receiving Closing Date"
+                      value={
+                        field.value // Use field.value if it's set
+                          ? dayjs(field.value)
+                          : bidDetails?.sample_receive_end_date // Otherwise use the bidDetails value
+                          ? dayjs(bidDetails.sample_receive_end_date)
+                          : null
+                      }
+                      minDate={dayjs()}
+                      onChange={(value) => {
+                        const formattedValue = value
+                          ? value.format("YYYY-MM-DD")
+                          : null;
+                        setValue("sample_receive_end_date", formattedValue);
+                        clearErrors("sample_receive_end_date");
+                      }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          required: true,
+                          style: {
+                            height: "40px",
+                            fontSize: "14px",
+                          },
+                          error: !!errors.sample_receive_end_date,
+                          helperText: errors.sample_receive_end_date?.message,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="col-lg-4">
+                <Button
+                  variant="contained"
+                  style={{ width: "100%", height: "56px" }}
+                  // className={styles["form-button"]}
+                  onClick={handleSubmit(submitSampledates)}
                 >
                   Submit
                 </Button>
@@ -479,7 +663,7 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
                     </p>
                   </Alert>
                   <br />
-                  <form
+                  {/* <form
                   // onSubmit={handleSubmit(submitliveBidDates)}
                   >
                     <div className="row">
@@ -534,6 +718,113 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
                         )}
                       </div>
                     </div>
+                  </form> */}
+
+                  <form
+                  // onSubmit={handleSubmit(onSubmit)}
+                  >
+                    <div className="row" style={{ marginTop: "10px" }}>
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        gap={2}
+                        width="100%"
+                      >
+                        <Box flex="1" style={{ maxWidth: "25%" }}>
+                          <DatePicker
+                            label="Live Bid Date *"
+                            value={bidDate ? dayjs(bidDate) : null}
+                            minDate={dayjs()}
+                            format="DD/MM/YYYY"
+                            onChange={(value) =>
+                              setBidDate(value?.format("YYYY-MM-DD") || null)
+                            }
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                required: true,
+                                style: {
+                                  height: "40px",
+                                  fontSize: "14px",
+                                },
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box flex="1" style={{ maxWidth: "25%" }}>
+                          <TimePicker
+                            label="Start Time"
+                            value={
+                              timeRange.start
+                                ? dayjs(`${bidDate}T${timeRange.start}`)
+                                : null
+                            }
+                            minutesStep={15}
+                            onChange={(value) =>
+                              handleTimeChange(
+                                "start",
+                                value?.format("HH:mm") || null
+                              )
+                            }
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                style: {
+                                  height: "40px",
+                                  fontSize: "14px",
+                                },
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box flex="1" style={{ maxWidth: "25%" }}>
+                          <TimePicker
+                            label="End Time"
+                            value={
+                              timeRange.end
+                                ? dayjs(`${bidDate}T${timeRange.end}`)
+                                : null
+                            }
+                            minutesStep={15}
+                            onChange={(value) =>
+                              handleTimeChange(
+                                "end",
+                                value?.format("HH:mm") || null
+                              )
+                            }
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                style: {
+                                  height: "40px",
+                                  fontSize: "14px",
+                                },
+                              },
+                            }}
+                          />
+                        </Box>
+
+                        <Box flex="1" style={{ maxWidth: "25%" }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            // type="submit"
+                            disabled={loading}
+                            style={{
+                              width: "100%",
+                              height: "56px",
+                              fontSize: "14px",
+                            }}
+                            className={styles["form-button"]}
+                            onClick={submitliveBidDates}
+                          >
+                            {loading ? "Submitting..." : "Submit"}
+                          </Button>
+                        </Box>
+                      </Box>
+                    </div>
                   </form>
                 </>
               ) : (
@@ -552,6 +843,7 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
               justifyContent: "flex-end",
               alignItems: "center",
               // gap: "10px",
+              marginTop: "50px",
             }}
           >
             <button
