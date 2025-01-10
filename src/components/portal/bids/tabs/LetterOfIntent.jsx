@@ -180,7 +180,7 @@ const LetterOfIntent = ({ bidDetails }) => {
 
                     <Typography
                       variant="h6"
-                      sx={{ marginTop: "20px", mb: 2, fontSize: "large" }}
+                      sx={{ marginTop: "20px", mb: 2, fontSize: "large" , fontWeight : "bold" }}
                     >
                       Supplier Addresses
                     </Typography>

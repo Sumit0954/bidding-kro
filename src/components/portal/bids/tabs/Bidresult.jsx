@@ -33,12 +33,11 @@ const Bidresult = ({ bidDetails }) => {
       );
       if (response.status === 200) {
         setBidletter(response?.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
-      
     } catch (error) {
       console.log("error");
-      setScreenLoader(false)
+      setScreenLoader(false);
     }
   };
 
@@ -52,11 +51,11 @@ const Bidresult = ({ bidDetails }) => {
       );
       if (response.status === 200) {
         setBidresult(response?.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log(error);
-      setScreenLoader(false)
+      setScreenLoader(false);
     }
   };
 
@@ -137,7 +136,10 @@ const Bidresult = ({ bidDetails }) => {
                     Bid Number: <strong>{bidletter?.formatted_number}</strong>
                   </Typography>
 
-                  <Typography variant="h6" sx={{ marginTop: "20px" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                  >
                     Buyer Information
                   </Typography>
                   <table className={styles["loi-table"]}>
@@ -146,6 +148,7 @@ const Bidresult = ({ bidDetails }) => {
                         <th>Company Name</th>
                         <th>Company Email</th>
                         <th>Contact</th>
+                        <th>GST No.</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -153,17 +156,64 @@ const Bidresult = ({ bidDetails }) => {
                         <td>{bidletter?.buyer?.name}</td>
                         <td>{bidletter?.buyer?.business_email}</td>
                         <td>{bidletter?.buyer?.business_mobile}</td>
+                        <td>{bidletter?.buyer?.gstin}</td>
                       </tr>
                     </tbody>
                   </table>
 
-                  <Typography variant="h6">Supplier Information</Typography>
+                  {bidletter?.buyer?.address?.length > 0 && (
+                    <>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          marginTop: "20px",
+                          mb: 2,
+                          fontSize: "large",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Buyer Addresses
+                      </Typography>
+                      <table className={styles["loi-table"]}>
+                        <thead>
+                          <tr>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th>Pincode</th>
+                            <th>State</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {letter?.buyer?.address?.map((address) => {
+                            return (
+                              <tr>
+                                <td>{address?.address}</td>
+                                <td>{address?.city}</td>
+                                <td>{address?.country}</td>
+                                <td>{address?.pincode}</td>
+                                <td>{address?.state}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </>
+                  )}
+
+                  <Typography
+                    variant="h6"
+                    sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                  >
+                    Supplier Information
+                  </Typography>
                   <table className={styles["loi-table"]}>
                     <thead>
                       <tr>
                         <th>Company Name</th>
                         <th>Company Email</th>
                         <th>Contact</th>
+                        <th>GST No.</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -171,7 +221,45 @@ const Bidresult = ({ bidDetails }) => {
                         <td>{bidletter?.supplier?.name}</td>
                         <td>{bidletter?.supplier?.business_email}</td>
                         <td>{bidletter?.supplier?.business_mobile}</td>
+                        <td>{bidletter?.supplier?.gstin}</td>
                       </tr>
+                    </tbody>
+                  </table>
+
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      marginTop: "20px",
+                      mb: 2,
+                      fontSize: "large",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Supplier Addresses
+                  </Typography>
+
+                  <table className={styles["loi-table"]}>
+                    <thead>
+                      <tr>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Pincode</th>
+                        <th>State</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bidletter?.supplier?.address?.map((address) => {
+                        return (
+                          <tr>
+                            <td>{address?.address}</td>
+                            <td>{address?.city}</td>
+                            <td>{address?.country}</td>
+                            <td>{address?.pincode}</td>
+                            <td>{address?.state}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
 
@@ -183,7 +271,10 @@ const Bidresult = ({ bidDetails }) => {
                     process.
                   </Typography>
 
-                  <Typography variant="h6" sx={{ marginTop: "20px" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ marginTop: "20px", mb: 2, fontWeight: "bold" }}
+                  >
                     Products
                   </Typography>
                   <table className={styles["loi-table"]}>
