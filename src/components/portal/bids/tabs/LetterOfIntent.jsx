@@ -178,37 +178,46 @@ const LetterOfIntent = ({ bidDetails }) => {
                       </tbody>
                     </table>
 
-                    <Typography
-                      variant="h6"
-                      sx={{ marginTop: "20px", mb: 2, fontSize: "large" , fontWeight : "bold" }}
-                    >
-                      Supplier Addresses
-                    </Typography>
+                    {letter?.supplier?.address?.length > 0 && (
+                      <>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            marginTop: "20px",
+                            mb: 2,
+                            fontSize: "large",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Supplier Addresses
+                        </Typography>
 
-                    <table className={styles["loi-table"]}>
-                      <thead>
-                        <tr>
-                          <th>Address</th>
-                          <th>City</th>
-                          <th>Country</th>
-                          <th>Pincode</th>
-                          <th>State</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {letter?.supplier?.address?.map((address) => {
-                          return (
+                        <table className={styles["loi-table"]}>
+                          <thead>
                             <tr>
-                              <td>{address?.address}</td>
-                              <td>{address?.city}</td>
-                              <td>{address?.country}</td>
-                              <td>{address?.pincode}</td>
-                              <td>{address?.state}</td>
+                              <th>Address</th>
+                              <th>City</th>
+                              <th>Country</th>
+                              <th>Pincode</th>
+                              <th>State</th>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                          </thead>
+                          <tbody>
+                            {letter?.supplier?.address?.map((address) => {
+                              return (
+                                <tr>
+                                  <td>{address?.address}</td>
+                                  <td>{address?.city}</td>
+                                  <td>{address?.country}</td>
+                                  <td>{address?.pincode}</td>
+                                  <td>{address?.state}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </>
+                    )}
 
                     <Typography>
                       Dear <strong>{letter?.supplier?.name}</strong>, <br />
