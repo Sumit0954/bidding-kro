@@ -242,48 +242,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
     }
   }, [id, type, bidDetails?.bid_open_date]);
 
-  // const formData = new URLSearchParams();
-  // formData.append("bid_open_date", bidStartDate);
-  // formData.append("bid_close_date", bidEndDate);
-
-  // const submitdate = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await _sendAPIRequest(
-  //       "PATCH",
-  //       `${PortalApiUrls.UPDATE_BID}${bidDetails?.id}/`,
-  //       formData,
-  //       true
-  //     );
-
-  //     if (response.status === 200) {
-  //       setLoading(false);
-  //       setAlert({
-  //         isVisible: true,
-  //         message: "Your Bid Dates have been submitted",
-  //         severity: "success",
-  //       });
-  //       setBidDetails((prevDetails) => ({
-  //         ...prevDetails,
-  //         bid_open_date: bidStartDate,
-  //         bid_close_date: bidEndDate,
-  //       }));
-  //       if (onActionComplete) {
-  //         onActionComplete();
-  //       }
-  //       dispatch(setActiveTab(3));
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     setAlert({
-  //       isVisible: true,
-  //       message:
-  //         error?.response?.data?.error || "An unexpected error occurred.",
-  //       severity: "error",
-  //     });
-  //   }
-  // };
-
   const handleTimeChange = (field, value) => {
     setTimeRange((prev) => ({ ...prev, [field]: value }));
   };
@@ -349,61 +307,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       <div className="container">
         <div className="row">
           {bidDetails?.type === "L1" && bidDetails?.bid_open_date === null ? (
-            // <form onSubmit={handleSubmit(submitdate)}>
-            //   <div className="row">
-            //     <div className="col-lg-6">
-            //       <DateTimeRangePicker
-            //         control={control}
-            //         label="Opening Date & Time"
-            //         name="bid_start_date"
-            //         rules={{
-            //           required: "Opening Date & Time is required.",
-            //           validate: (value) =>
-            //             dateValidator(value, minDate, maxDate),
-            //         }}
-            //         textFieldProps={{
-            //           min: `${minDate}T12:00`,
-            //           max: `${maxDate}T17:00`,
-            //         }}
-            //         clearErrors={clearErrors}
-            //       />
-            //     </div>
-            //     <div className="col-lg-6">
-            //       <DateTimeRangePicker
-            //         control={control}
-            //         label="Closing Date & Time"
-            //         name={"bid_end_date"}
-            //         rules={{
-            //           required: "Closing Date & Time is required.",
-            //           validate: (value) =>
-            //             dateValidator(value, minDate, maxDate),
-            //         }}
-            //         textFieldProps={{
-            //           min: `${minDate}T12:00`,
-            //           max: `${maxDate}T17:00`,
-            //         }}
-            //         clearErrors={clearErrors}
-            //       />
-            //     </div>
-            //   </div>
-            //   <div className="row mt-3">
-            //     <div className="col-12">
-            //       {loading ? (
-            //         <ButtonLoader size={60} />
-            //       ) : (
-            //         <Button
-            //           type="submit"
-            //           variant="contained"
-            //           className={styles["form-button"]}
-            //           onClick={() => setShowSubmittedDated(true)}
-            //         >
-            //           Submit
-            //         </Button>
-            //       )}
-            //     </div>
-            //   </div>
-            // </form>
-
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="row" style={{ marginTop: "10px" }}>
                 <Box display="flex" flexDirection="row" gap={2} width="100%">

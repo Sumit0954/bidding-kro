@@ -401,8 +401,8 @@ const BidDetailsPage = () => {
                   <AlertTitle sx={{ fontWeight: "bold" }}>
                     Warning: Sample Receiving Dates Required
                   </AlertTitle>
-                  Live bid dates are not yet submitted. Please set the dates to
-                  invite suppliers for the bid.{" "}
+                  Sample Receiving Dates are not yet submitted. Please set the
+                  dates to invite suppliers for the bid.{" "}
                   <span
                     onClick={() => dispatch(setActiveTab(4))}
                     style={{
