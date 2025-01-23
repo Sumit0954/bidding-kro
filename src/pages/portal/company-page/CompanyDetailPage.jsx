@@ -8,11 +8,14 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import Reviews from "../../../components/portal/companies/Reviews";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const CompanyDetailPage = () => {
   const { id } = useParams();
   const [value, setValue] = useState(0);
   const [companyDetail, setCompanyDetail] = useState({});
+   const [screenLoader, setScreenLoader] = useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -23,8 +26,6 @@ const CompanyDetailPage = () => {
       ? title.substring(0, maxlength) + "..."
       : title;
   };
-
-  console.log("companyDetail : ", companyDetail);
 
   useEffect(() => {
     if (id) {
@@ -38,9 +39,11 @@ const CompanyDetailPage = () => {
           );
           if (response.status === 200) {
             setCompanyDetail(response.data);
+            setScreenLoader(false)
           }
         } catch (error) {
           console.log(error);
+          setScreenLoader
         }
       };
       getCompanyDetails();
@@ -62,24 +65,14 @@ const CompanyDetailPage = () => {
     </Typography>,
   ];
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <div className="d-flex align-items-center justify-content-between mb-2">
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
-        </div>
-        <div className="d-flex align-items-center justify-content-end gap-3">
-          {/* <Button
-            sx={{
-              color:"white",
-              backgroundColor: "var(--primary-color)",
-              "&:hover": {
-                backgroundColor: "var(--secondary-color)",
-              },
-            }}
-          >
-            Invite Company
-          </Button> */}
         </div>
       </div>
       <Box sx={{ width: "100%" }}>
@@ -90,6 +83,7 @@ const CompanyDetailPage = () => {
         >
           <Tab label="About" {...a11yProps(0)} />
           <Tab label="Previous Bids" {...a11yProps(1)} />
+          <Tab label="Reviews" {...a11yProps(2)} />
         </Tabs>
       </Box>
 
@@ -101,6 +95,9 @@ const CompanyDetailPage = () => {
           PreviousBids={PreviousBids}
           companyDetail={companyDetail}
         />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Reviews id={id} companyDetail={companyDetail} />
       </TabPanel>
     </>
   );

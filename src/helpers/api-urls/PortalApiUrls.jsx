@@ -74,4 +74,7 @@ export const PortalApiUrls = Object.freeze({
   LIVE_BID_LETTER_OF_INTENT_FOR_BUYER: "/bid/result/letter/",
   LIVE_BID_LETTER_OF_INTENT_FOR_SUPPLIER: "/bid/result/letter/invited/",
   LIVE_BID_RESULT_FOR_SUPPLIER: "/bid/result/customer/invited/",
+  BID_FEEDBACK : "/feedback/bid/",
+  RETRIEVE_FEEDACK : "/feedback/bid/",
+  RETRIVE_COMPANY_REVIEWS : "/feedback/company/"
 });

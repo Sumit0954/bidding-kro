@@ -96,9 +96,9 @@ const sidebarMenu = [
     title: "Companies",
     path: "/portal/companies",
   },
-  // {
-  //   icon: "/images/portal/layout/icons/building.svg",
-  //   title: "Messages",
-  //   path: "/portal/messages",
-  // },
+  {
+    icon: "/images/portal/layout/icons/building.svg",
+    title: "Messages",
+    path: "/portal/messages",
+  },
 ];

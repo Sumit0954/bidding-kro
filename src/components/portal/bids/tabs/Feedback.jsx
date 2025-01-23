@@ -1,73 +1,167 @@
-import React, { useState } from "react";
 import {
-  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-  Box,
-  TextField,
-  Button,
-  Rating,
-  Divider,
+  Paper,
+  Link,
 } from "@mui/material";
 import styles from "./Feedback.module.scss";
-const Feedback = () => {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+import { useEffect, useState } from "react";
+import FeedbackModal from "../../../../elements/CustomModal/FeedbackModal";
+import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
+import _sendAPIRequest from "../../../../helpers/api";
+import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
+const Feedback = ({ bidDetails }) => {
+  const [feedback, setfeedback] = useState(false);
+  const [participants, setParticipants] = useState([]);
+  const [rated_company, setRated_company] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log("Rating:", rating);
-    console.log("Comment:", comment);
+  const getBidParticipants = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.PARTICIPANTS_LIST +
+          `${bidDetails?.id}/?status=accepted&status=participated&status=awarded`,
+        "",
+        true
+      );
+
+      if (response?.status === 200) {
+        setParticipants(response?.data?.participants);
+        setScreenLoader(false);
+      }
+    } catch (error) {}
   };
+
+  const retriveFeedback = async () => {
+    if (Object.entries(compnayFeedback).length === 0) {
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.RETRIEVE_FEEDACK +
+            `${bidId}/?rated_company=${rated_company}`,
+          "",
+          true
+        );
+        if (response?.status === 200) {
+          setCompanyFerdback(response?.data);
+        }
+      } catch (error) {}
+    }
+  };
+
+  useEffect(() => {
+    getBidParticipants();
+    retriveFeedback();
+  }, []);
+
+  const filterParticiapnts = participants.filter((participants) => {
+    return participants?.sample?.invite_status === "accepted";
+  });
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
-    <br/>
-      <div className={styles["heading"]}>
-        <Typography variant="h5">Feedback</Typography>
-      </div>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        sx={{ height: "100vh", marginTop: "12px" }} // Ensures that the content is vertically centered in the viewport
-      >
-        <Typography
-          variant="h4"
-          gutterBottom
-          className={styles["feedback-heading"]}
-        >
-          Share Your Feedback
-        </Typography>
-        <Typography
-          variant="h6"
-          gutterBottom
-          className={styles["feedback-subheading"]}
-        >
-          Rate Our Experience: How Well Did We Meet Your Expectations?
-        </Typography>
-        <Rating
-          name="rating"
-          value={rating}
-          onChange={(event, newValue) => setRating(newValue)}
-          sx={{ mb: 2, fontSize: "3.5rem" }}
+      <TableContainer component={Paper} elevation={3} sx={{ mt: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Typography fontWeight="bold">S.No</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography fontWeight="bold">Company Name</Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Typography fontWeight="bold">Action</Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          {bidDetails?.type === "QCBS" ? (
+            <>
+              <TableBody>
+                {filterParticiapnts.map((supplier, index) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        "&:nth-of-type(odd)": { backgroundColor: "#f9f9f9" },
+                      }}
+                    >
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>
+                        <Link href="#" underline="hover" color="primary">
+                          {supplier?.company?.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">
+                        <button
+                          className={styles["feedback-btn"]}
+                          onClick={() => {
+                            setRated_company(supplier?.company?.id);
+                            setfeedback(true);
+                          }}
+                        >
+                          Feedback
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </>
+          ) : (
+            <>
+              <TableBody>
+                {participants.map((supplier, index) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        "&:nth-of-type(odd)": { backgroundColor: "#f9f9f9" },
+                      }}
+                    >
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>
+                        <Link href="#" underline="hover" color="primary">
+                          {supplier?.company?.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">
+                        <button
+                          className={styles["feedback-btn"]}
+                          onClick={() => {
+                            setRated_company(supplier?.company?.id);
+                            setfeedback(true);
+                          }}
+                        >
+                          Feedback
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </>
+          )}
+        </Table>
+      </TableContainer>
+
+      {feedback && (
+        <FeedbackModal
+          feedback={feedback}
+          setfeedback={setfeedback}
+          bidId={bidDetails?.id}
+          rated_company={rated_company}
         />
-        <TextField
-          label="Your Comment"
-          multiline
-          rows={4}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          sx={{ mb: 2, width: "100%" }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          className={styles["form-button"]}
-          sx={{ width: "100%" }}
-        >
-          Submit
-        </Button>
-      </Box>
+      )}
     </>
   );
 };

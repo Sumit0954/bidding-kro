@@ -1,27 +1,9 @@
-.feedback-heading {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 5px solid var(--primary-color);
-}
-.feedback-subheading {
-  font-size: 18.7px;
-}
-.form-button {
-  background-color: var(--primary-color) !important;
-}
+.feedback-btn{
+  color: #3366CC ;
+  border: none;
+  background-color: transparent;
 
-.form-button:hover {
-  background-color: var(--secondary-color) !important;
-}
-
-.heading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  background-color: var(--primary-color);
-  color: white;
-  font-weight: bolder;
+  &.feedback-btn:hover{
+    text-decoration: underline;
+  }
 }

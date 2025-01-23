@@ -27,6 +27,7 @@ const BidList = ({ listType }) => {
   const [selectedRow, setSelectedRow] = useState({});
   const [screenLoader , setScreenLoader] = useState(true)
 
+  // To Created Bid List
   const getCreatedBidList = async () => {
     const categoryArray = Array.isArray(selectedCategory)
       ? selectedCategory
@@ -97,7 +98,7 @@ const BidList = ({ listType }) => {
     getCreatedBidList();
     getInvitedBidList();
     getRelatedBidList();
-  }, []);
+  }, [sendRequest]);
 
   const addCreatedAction = (cell) => {
     return (
@@ -173,7 +174,6 @@ const BidList = ({ listType }) => {
   };
 
   useEffect(() => {
-    // console.log(rootCategory, "rootCategory updated");
   }, [rootCategory]);
 
   const handlerequest = (data) => {
@@ -275,7 +275,7 @@ const BidList = ({ listType }) => {
           setSendRequest={setSendRequest}
           bidDetails={bidDetails}
         />
-      )}
+      )} 
     </>
   );
 };

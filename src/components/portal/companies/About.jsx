@@ -1,22 +1,52 @@
 import styles from "./About.module.scss";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
   Chip,
   Divider,
   Stack,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { dateTimeFormatter } from "../../../helpers/formatter";
-import DOMPurify from "dompurify";
-import { getLableByValue } from "../../../helpers/common";
 import cn from "classnames";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import { useParams } from "react-router-dom";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import _sendAPIRequest from "../../../helpers/api";
 
-const About = ({ companyDetail }) => {
+const About = () => {
+  const [screenLoader, setScreenLoader] = useState(true);
+  const [companyDetail, setCompanyDetail] = useState({});
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      const getCompanyDetails = async () => {
+        try {
+          const response = await _sendAPIRequest(
+            "GET",
+            PortalApiUrls.RETRIEVE_COMPANY_DETAILS + `${id}/`,
+            "",
+            true
+          );
+          if (response.status === 200) {
+            setCompanyDetail(response.data);
+            setScreenLoader(false);
+          }
+        } catch (error) {
+          console.log(error);
+          setScreenLoader(false);
+        }
+      };
+      getCompanyDetails();
+    }
+  }, [id]);
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       {/* Summary */}
@@ -106,40 +136,7 @@ const About = ({ companyDetail }) => {
           </div>
         </AccordionDetails>
       </Accordion>
-      {/* Contacts */}
-      {/* <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Contacts
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className={cn("row", styles["contacts-row"])}>
-            <div className={cn("col", styles["contacts-col"])}>
-              <h6 className={styles["col-heading"]}>Name</h6>
-            </div>
-            <div className={cn("col", styles["contacts-col"])}>
-              <h6 className={styles["col-heading"]}>Designation</h6>
-            </div>
-            <div className={cn("col", styles["contacts-col"])}>
-              <h6 className={styles["col-heading"]}>Mobile</h6>
-            </div>
-            <div className={cn("col", styles["contacts-col"])}>
-              <h6 className={styles["col-heading"]}>Email</h6>
-            </div>
-            <div className={cn("col", styles["contacts-col"])}>
-              <h6 className={styles["col-heading"]}>WhatsApp</h6>
-            </div>
-          </div>
-          <Divider classes={{ root: "custom-divider" }} />
-        </AccordionDetails>
-      </Accordion> */}
+
       {/* Categories */}
       <Accordion
         defaultExpanded
@@ -186,7 +183,6 @@ const About = ({ companyDetail }) => {
         </AccordionSummary>
         <AccordionDetails>
           {companyDetail?.address?.map((item, index) => {
-            console.log(item, "item");
             return (
               <>
                 <div className="row">

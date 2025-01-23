@@ -1,20 +1,12 @@
-import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Rating,
-} from "@mui/material";
-import styles from "./FeedbackModal.module.scss"; // Replace with your CSS/SCSS module path
-import _sendAPIRequest from "../../helpers/api";
-import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import { Box, Button, Rating, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
+import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import { useContext, useEffect, useState } from "react";
-import { AlertContext } from "../../contexts/AlertProvider";
-import { ButtonLoader } from "../CustomLoader/Loader";
-
-const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
+import { AlertContext } from "../../../../contexts/AlertProvider";
+import styles from "./FeedbackSupplier.module.scss";
+import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
+import _sendAPIRequest from "../../../../helpers/api";
+const FeedbackSupplier = ({ bidDetails }) => {
   const { register, handleSubmit, control } = useForm();
   const [loading, setLoading] = useState(false);
   const [compnayFeedback, setCompanyFeedback] = useState({});
@@ -22,43 +14,41 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
 
   const givefeedBack = async (data) => {
     setLoading(true);
-    const feedbackdata = { ...data, rated_company: rated_company };
+    const feedbackdata = { ...data, rated_company: bidDetails?.company?.id };
+
     try {
       const response = await _sendAPIRequest(
         "POST",
-        PortalApiUrls?.BID_FEEDBACK + `${bidId}/`,
+        PortalApiUrls?.BID_FEEDBACK + `${bidDetails?.id}/`,
         feedbackdata,
         true
       );
 
       if (response.status === 201) {
-        setLoading(false);
-        setfeedback(false);
         setAlert({
           isVisible: true,
           message: "Successfully submitted feedback",
           severity: "success",
         });
+        setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
-      setfeedback(false);
       setAlert({
         isVisible: true,
         message: "Some error occurred while submitting the feedback",
         severity: "error",
       });
+      setLoading(false);
     }
   };
 
-  console.log(compnayFeedback);
   const retriveFeedback = async () => {
     if (Object.entries(compnayFeedback).length === 0) {
       try {
         const response = await _sendAPIRequest(
           "GET",
           PortalApiUrls.RETRIEVE_FEEDACK +
-            `${bidId}/?rated_company=${rated_company}`,
+            `${bidDetails?.id}/?rated_company=${bidDetails?.company?.id}`,
           "",
           true
         );
@@ -71,65 +61,68 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
 
   useEffect(() => {
     retriveFeedback();
-  }, []);
+  }, [loading]);
+
+  console.log(compnayFeedback, " : compnayFeedback");
 
   return (
-    <div>
-      <Modal
-        open={feedback}
-        aria-labelledby="feedback-modal-title"
-        onClose={() => setfeedback(false)}
+    <>
+      <Box
+        sx={{
+          display: "flex", // Flexbox for layout
+          justifyContent: "center", // Center horizontally
+          alignItems: "flex-start", // Align at the top
+          padding: 3, // Adjusted padding for smaller screens
+          width: "100%", // Ensure full width for smaller screens
+          boxSizing: "border-box",
+        }}
       >
         <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          className={styles["feedback"]}
+          component="form" // Mark this box as a form
+          onSubmit={handleSubmit(givefeedBack)}
           sx={{
-            position: "relative", // Ensures the close button is positioned correctly
+            width: "100%",
+            maxWidth: 1000, // Max width for larger screens
+            backgroundColor: "#ffffff", // White background
+            borderRadius: 2,
+            boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.15)",
+            padding: 3, // Adjusted padding for mobile
           }}
         >
-          {/* Header Section */}
-          <Box className={styles["feedback-heading"]}>
-            <Typography variant="h5" sx={{ color: "#fff", fontWeight: "bold" }}>
+          {/* Feedback Header */}
+          <Box
+            sx={{
+              textAlign: "center",
+              marginBottom: 3, // Adjusted spacing for smaller screens
+              backgroundColor: "#062d72", // Background color for the header
+              padding: "16px", // Padding inside the header
+              borderRadius: 2, // Rounded corners
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                color: "#ffffff", // Text color (white)
+              }}
+            >
               Feedback
             </Typography>
           </Box>
 
-          {/* Feedback Content */}
-          <Box
-            component="form"
-            onSubmit={handleSubmit(givefeedBack)}
-            sx={{
-              width: "100%",
-              textAlign: "center",
-              padding: "20px 10px",
-            }}
-          >
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{
-                fontWeight: "bold",
-                color: "#062d72",
-                marginBottom: "10px",
-              }}
-            >
+          {/* Rating Section */}
+          <Box sx={{ textAlign: "center", marginBottom: 3 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
               {Object.entries(compnayFeedback).length === 0
                 ? "Share Your Feedback"
                 : "Your Feedback Has Been Submitted"}
             </Typography>
-            <Typography
-              variant="body1"
-              gutterBottom
-              sx={{ color: "#333", marginBottom: "20px" }}
-            >
+            <Typography variant="body2" sx={{ marginY: 1 }}>
               {Object.entries(compnayFeedback).length === 0
                 ? "Rate Your Experience: How Well Did This Supplier Meet Your Expectations?"
                 : "Thank you for providing your feedback for this supplier!"}
             </Typography>
 
-            {/* Controlled Rating */}
             <Controller
               name="rating"
               control={control}
@@ -140,6 +133,7 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
               render={({ field, fieldState: { error } }) => (
                 <Box sx={{ textAlign: "center", mb: 2 }}>
                   <Rating
+                    {...field}
                     disabled={
                       Object.entries(compnayFeedback).length === 0
                         ? false
@@ -165,7 +159,10 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
                 </Box>
               )}
             />
+          </Box>
 
+          {/* Comments Section */}
+          <Box sx={{ marginBottom: 3 }}>
             <TextField
               label={`${
                 Object.entries(compnayFeedback).length === 0
@@ -192,39 +189,38 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
                 },
               }}
             />
+          </Box>
 
-            {Object.entries(compnayFeedback).length !== 0 && <></>}
-            {Object.entries(compnayFeedback).length === 0 ? (
-              <>
+          {/* Submit Button */}
+          {Object.entries(compnayFeedback).length === 0 ? (
+            <>
+              <Box sx={{ textAlign: "center" }}>
                 {loading === true ? (
                   <ButtonLoader size={80} />
                 ) : (
                   <Button
+                    className={styles["feedback_submit"]} // Custom class for styling
                     variant="contained"
-                    color="success"
                     type="submit"
-                    className={styles["feedback_submit"]}
                     sx={{
-                      width: "100%",
-                      padding: "10px 0",
-                      borderRadius: "10px",
-                      fontWeight: "bold",
-                      textTransform: "uppercase",
                       backgroundColor: "#062d72",
+                      "&:hover": {
+                        backgroundColor: "#041c4a",
+                      },
                     }}
                   >
                     Submit
                   </Button>
                 )}
-              </>
-            ) : (
-              <></>
-            )}
-          </Box>
+              </Box>
+            </>
+          ) : (
+            <></>
+          )}
         </Box>
-      </Modal>
-    </div>
+      </Box>
+    </>
   );
 };
 
-export default FeedbackModal;
+export default FeedbackSupplier;

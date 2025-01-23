@@ -25,14 +25,11 @@ const RequestModal = ({ sendRequest, setSendRequest, bidDetails }) => {
   const sendInviteRequest = async () => {
     setLoading(true);
     try {
-      // let formData = new FormData();
-      // formData.append("company", bidDetails?.id);
-
       const response = await _sendAPIRequest(
         "POST",
         PortalApiUrls.SEND_RELATED_REQUEST + `${bidDetails?.id}/`,
         " ",
-        true 
+        true
       );
       if (response.status === 204) {
         setLoading(false);
@@ -45,11 +42,11 @@ const RequestModal = ({ sendRequest, setSendRequest, bidDetails }) => {
       }
     } catch (error) {
       setLoading(false);
-        setAlert({
-          isVisible: true,
-          message: error.response.data.error,
-          severity: "error",
-        });
+      setAlert({
+        isVisible: true,
+        message: error.response.data.error,
+        severity: "error",
+      });
     }
   };
 
@@ -102,8 +99,14 @@ const RequestModal = ({ sendRequest, setSendRequest, bidDetails }) => {
                 className="row mb-2"
                 sx={{ display: "flex", alignItems: "center" }}
               >
-                <Box className="col text-start" sx={{ flex: 1 , borderRight: "2px solid var(--primary-color)",
-                    paddingRight: "10px",}}>
+                <Box
+                  className="col text-start"
+                  sx={{
+                    flex: 1,
+                    borderRight: "2px solid var(--primary-color)",
+                    paddingRight: "10px",
+                  }}
+                >
                   {bidDetails?.type}
                 </Box>
 

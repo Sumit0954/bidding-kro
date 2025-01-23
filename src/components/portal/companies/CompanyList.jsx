@@ -32,9 +32,9 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   const [requestBids, setRequestBids] = useState([]);
 
   const { control } = useForm();
+  
   const handleInvite = (data) => {
     setInvitation(true);
-    // console.log("data.row.original", data.row.original);
     setCompanyDetail(data.row.original);
   };
 
@@ -186,8 +186,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   useEffect(() => {
     setSelectedCategory(rootCategory);
   }, [rootCategory]);
-
-
 
   useEffect(() => {}, [rootCategory]);
 

@@ -164,7 +164,7 @@ const Analysis = ({ bidDetails }) => {
 
   useEffect(() => {
     fetchSupplierForAward();
-  }, [awardStatus]);
+  }, [awardStatus,deleteDetails.open]);
 
   if (screenLoader) {
     return <ScreenLoader />;

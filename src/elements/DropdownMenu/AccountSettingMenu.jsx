@@ -75,7 +75,7 @@ const AccountSettingMenu = ({
         </MenuItem>
 
         {from === "Portal" && (
-          <>
+          <div>
             <Divider className={styles["divider"]} />
 
             <NavLink
@@ -114,11 +114,9 @@ const AccountSettingMenu = ({
                 Settings
               </MenuItem>
             </NavLink>
-          </>
+          </div>
         )}
-
         <Divider className={cn("my-2", styles["divider"])} />
-
         <MenuItem
           onClick={() =>
             logout({

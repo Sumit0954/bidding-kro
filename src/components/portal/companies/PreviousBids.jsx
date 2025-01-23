@@ -8,12 +8,14 @@ import _sendAPIRequest from "../../../helpers/api";
 import { useEffect, useContext, useState, useCallback } from "react";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const PreviousBids = ({ companyDetail }) => {
   const { setAlert } = useContext(AlertContext);
   const [previousBidsData, setPreviousBidsData] = useState([]);
   const [filterBy, setFilterBy] = useState("spends");
   const [metaData, setMetaData] = useState({});
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const addAction = (cell) => {
     return (
@@ -33,6 +35,7 @@ const PreviousBids = ({ companyDetail }) => {
         console.log("response.data", response.data.meta);
         setPreviousBidsData(response.data?.bid);
         setMetaData(response.data?.meta);
+        setScreenLoader(false);
       }
     } catch (error) {
       setAlert({
@@ -40,6 +43,7 @@ const PreviousBids = ({ companyDetail }) => {
         message: "Failed to fetch previous bids. Please try again later.",
         severity: "error",
       });
+      setScreenLoader(false);
     }
   }, [companyDetail, filterBy, setAlert]);
 
@@ -53,6 +57,9 @@ const PreviousBids = ({ companyDetail }) => {
 
   const isSelected = (type) => filterBy === type;
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <Box className={styles["filter-points"]}>

@@ -21,7 +21,6 @@ const LetterOfIntent = ({ bidDetails }) => {
   const componentRef = useRef(null);
   const [expanded, setExpanded] = useState(true);
   const [screenLoader, setScreenLoader] = useState(true);
-  const [addInvitaion, setInvitation] = useState(false);
   const [letterOfIntent, setLetterOfIntent] = useState([]);
 
   const fetchLetterofIntent = async () => {

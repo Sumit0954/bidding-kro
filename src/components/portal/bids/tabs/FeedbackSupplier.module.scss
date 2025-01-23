@@ -1,0 +1,12 @@
+.feedback_submit {
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: #062d72 !important;
+  
+    &.feedback_submit:hover {
+      background-color: var(--secondary-color) !important;
+    }
+  }

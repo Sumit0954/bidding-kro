@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import styles from "./Dashboard.module.scss";
-import cn from "classnames";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import {
   Alert,
@@ -17,11 +16,20 @@ import {
 import { RecentBids_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { Best_company_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
-import { Group, TrendingUp } from "@mui/icons-material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import {
+  AttachMoney,
+  CheckCircle,
+  EmojiEvents,
+  HourglassEmpty,
+  PersonAdd,
+  PlayCircle,
+  SavingsTwoTone,
+} from "@mui/icons-material";
+import { DatePicker } from "@mui/x-date-pickers";
 
 function Dashboard() {
   const naviagte = useNavigate();
+
   const { noCompany } = useContext(UserDetailsContext);
   return (
     <>
@@ -47,8 +55,87 @@ function Dashboard() {
         </Alert>
       )}
 
-      {/* <Box className={styles["filter-points"]}>
+      <Box className={styles["filter-points"]}>
+        {/* userName and Datepicker */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: "#f9fbfc",
+            padding: "16px",
+            borderRadius: "8px",
+            flexWrap: "wrap", // Allow wrapping for smaller screens
+          }}
+        >
+          {/* userName & userPhoto  */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexBasis: { xs: "100%", sm: "auto" }, // Full width on extra small screens
+              marginBottom: { xs: 2, sm: 0 }, // Add spacing for stacked items
+            }}
+          >
+            <Avatar
+              alt="User Avatar"
+              src="/static/images/avatar/1.jpg"
+              sx={{
+                width: 48,
+                height: 48,
+                marginRight: "16px",
+              }}
+            >
+              X
+            </Avatar>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: "4px",
+                  fontSize: { xs: "1rem", sm: "1.25rem" }, // Adjust font size for small screens
+                }}
+              >
+                Hello, XYZ Industries
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{
+                  fontSize: { xs: "0.875rem", sm: "1rem" }, // Adjust font size
+                }}
+              >
+                Here's what's happening with your business today
+              </Typography>
+            </Box>
+          </Box>
+          {/* Date & time */}
+
+          <Box
+            sx={{
+              flexBasis: { xs: "100%", sm: "auto" }, // Full width on extra small screens
+              display: "flex",
+              justifyContent: { xs: "center", sm: "flex-end" }, // Center-align on small screens
+            }}
+          >
+            <DatePicker
+              sx={{
+                minWidth: 200,
+                backgroundColor: "#fff",
+                borderRadius: "4px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#062d72",
+                  },
+                },
+              }}
+            />
+          </Box>
+        </Box>
+        {/* dashboard and Datepicker */}
         <Grid container spacing={2}>
+          {/*  Total Spends */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -69,11 +156,11 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <TrendingUp sx={{ color: "#055160" }} />
+                <AttachMoney sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
-
+          {/*  Total Saving */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -83,7 +170,7 @@ function Dashboard() {
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Successful Bids
+                  Total Saving
                 </Typography>
                 <Typography
                   variant="h4"
@@ -94,11 +181,11 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <Group sx={{ color: "#055160" }} />
+                <SavingsTwoTone sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
-
+          {/*  Perspective Bids Available */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -108,7 +195,7 @@ function Dashboard() {
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Cancelled Bids
+                  Perspective Bids Available
                 </Typography>
                 <Typography
                   variant="h4"
@@ -119,11 +206,11 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <Group sx={{ color: "#055160" }} />
+                <CheckCircle sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
-
+          {/* Bids Invites pending for acceptance */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -133,7 +220,7 @@ function Dashboard() {
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Invited Bids
+                  Bids Invites pending for acceptance
                 </Typography>
                 <Typography
                   variant="h4"
@@ -144,11 +231,11 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <TrendingUp sx={{ color: "#055160" }} />
+                <HourglassEmpty sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
-
+          {/* Accepted bids pending for live */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -158,7 +245,7 @@ function Dashboard() {
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Participated Bids
+                  Accepted bids pending for live
                 </Typography>
                 <Typography
                   variant="h4"
@@ -169,11 +256,11 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <Group sx={{ color: "#055160" }} />
+                <HourglassEmpty sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
-
+          {/* Participated bids pending for LOI */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -183,7 +270,7 @@ function Dashboard() {
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Awarded Bids
+                  Participated bids pending for LOI
                 </Typography>
                 <Typography
                   variant="h4"
@@ -194,24 +281,126 @@ function Dashboard() {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <Group sx={{ color: "#055160" }} />
+                <HourglassEmpty sx={{ color: "#055160" }} />
+              </Box>
+            </Card>
+          </Grid>
+          {/* Inactive Bids pending for action */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <CardContent sx={{ flex: "1" }}>
+                <Typography variant="h6" component="div">
+                  Inactive Bids pending for action
+                </Typography>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
+                  10
+                </Typography>
+              </CardContent>
+              <Box sx={{ padding: "10px" }}>
+                <HourglassEmpty sx={{ color: "#055160" }} />
+              </Box>
+            </Card>
+          </Grid>
+          {/*  Bids pending for sending the invites */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <CardContent sx={{ flex: "1" }}>
+                <Typography variant="h6" component="div">
+                  Bids pending for sending the invites
+                </Typography>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
+                  10
+                </Typography>
+              </CardContent>
+              <Box sx={{ padding: "10px" }}>
+                <PersonAdd sx={{ color: "#055160" }} />
+              </Box>
+            </Card>
+          </Grid>
+          {/*  Created bids pending for Live */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <CardContent sx={{ flex: "1" }}>
+                <Typography variant="h6" component="div">
+                  Created bids pending for Live
+                </Typography>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
+                  10
+                </Typography>
+              </CardContent>
+              <Box sx={{ padding: "10px" }}>
+                <HourglassEmpty sx={{ color: "#055160" }} />
+              </Box>
+            </Card>
+          </Grid>
+          {/*  Closed Bids pending to be awarded */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <CardContent sx={{ flex: "1" }}>
+                <Typography variant="h6" component="div">
+                  Closed Bids pending to be awarded
+                </Typography>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{ color: "#055160" }}
+                >
+                  10
+                </Typography>
+              </CardContent>
+              <Box sx={{ padding: "10px" }}>
+                <EmojiEvents sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
         </Grid>
       </Box>
+
       <div className="container-fluid mt-5">
-        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Recent Bids
         </Typography>
         <DataTable propsColumn={RecentBids_column} propsData={[]} />
       </div>
+
       <div className="container-fluid mt-5">
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
           Best Companies
         </Typography>
         <DataTable propsColumn={Best_company_column} propsData={[]} />
-      </div> */}
+      </div>
     </>
   );
 }

@@ -29,6 +29,8 @@ import LiveBidsDetailPage from "../pages/portal/live-bids-pages/LiveBidsDetailPa
 import LivebidDetail from "../components/portal/live-bids/LivebidDetail";
 import LiveBids from "../pages/portal/live-bids-pages/LiveBidsDetailPage";
 import Messages from "../pages/portal/messsages/Messages";
+import MessagesList from "../pages/portal/messsages/MessagesList";
+import NotificationPage from "../pages/portal/NotificationPage";
 
 const PortalRoutes = () => {
   return (
@@ -49,6 +51,10 @@ const PortalRoutes = () => {
                     <Route
                       path="/user-profile"
                       element={<LayoutPage Component={UserProfilePage} />}
+                    />
+                    <Route
+                      path="/notifications"
+                      element={<LayoutPage Component={NotificationPage} />}
                     />
 
                     {/* Company Profile Routes Start */}
@@ -160,10 +166,11 @@ const PortalRoutes = () => {
                       path="/liveBids/details"
                       element={<LayoutPage Component={LivebidDetail} />}
                     />
-                     <Route
+                    <Route
                       path="/messages"
-                      element={<LayoutPage Component={Messages} />}
+                      element={<LayoutPage Component={MessagesList} />}
                     />
+                    
                   </Route>
                 </Routes>
                 <CallAlert />

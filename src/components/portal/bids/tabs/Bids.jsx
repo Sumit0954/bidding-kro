@@ -141,7 +141,7 @@ const Bids = ({ bidDetails }) => {
                                 {`${
                                   question.answer === null
                                     ? "The supplier did not answer this question"
-                                    : question.answer
+                                    : question.answer.text
                                 }`}
                               </Typography>
                             </Box>

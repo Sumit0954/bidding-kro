@@ -40,6 +40,7 @@ import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 import { PrintOutlined } from "@mui/icons-material";
+import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -497,6 +498,11 @@ const BidDetailsPage = () => {
                     <Tab label="Bid Result" {...a11yProps(5)} key={5} />
                   )}
                 </Tooltip>,
+                <Tooltip title={"Give the feedback to buyer"}>
+                  {bidDetails?.status === "completed" && (
+                    <Tab label="Feedback" {...a11yProps(6)} key={6} />
+                  )}
+                </Tooltip>,
               ]
             : [
                 <Tooltip title={"See the summary of the bid"}>
@@ -577,9 +583,12 @@ const BidDetailsPage = () => {
                       bidDetails.status === "completed" && [
                         <Tab
                           label="Letter Of Intent"
-                          {...a11yProps(5)}
-                          key={5}
+                          {...a11yProps(6)}
+                          key={6}
                         />,
+                      ],
+                      bidDetails.status === "completed" && [
+                        <Tab label="Feedback" {...a11yProps(7)} key={7} />,
                       ],
                     ]
                   : [
@@ -614,10 +623,10 @@ const BidDetailsPage = () => {
                       bidDetails.status === "completed"
                         ? [
                             <Tooltip title={"Bidders in this bid"}>
-                              <Tab label="Bidders" {...a11yProps(4)} key={4} />
+                              <Tab label="Bidders" {...a11yProps(5)} key={5} />
                             </Tooltip>,
                             <Tooltip title={"Analysis screen"}>
-                              <Tab label="Analysis" {...a11yProps(5)} key={5} />
+                              <Tab label="Analysis" {...a11yProps(6)} key={6} />
                             </Tooltip>,
                           ]
                         : null,
@@ -627,9 +636,16 @@ const BidDetailsPage = () => {
                             <Tooltip title={"LOI of this bid"}>
                               <Tab
                                 label="Letter Of Intent"
-                                {...a11yProps(6)}
-                                key={6}
+                                {...a11yProps(7)}
+                                key={7}
                               />
+                            </Tooltip>,
+                          ]
+                        : null,
+                      bidDetails.status === "completed"
+                        ? [
+                            <Tooltip title={"LOI of this bid"}>
+                              <Tab label="Feedback" {...a11yProps(8)} key={8} />
                             </Tooltip>,
                           ]
                         : null,
@@ -662,6 +678,9 @@ const BidDetailsPage = () => {
           </TabPanel>
           <TabPanel value={activeTab} index={5}>
             <Bidresult bidDetails={bidDetails} />
+          </TabPanel>
+          <TabPanel value={activeTab} index={6}>
+            <FeedbackSupplier bidDetails={bidDetails} />
           </TabPanel>
         </>
       ) : (
@@ -710,7 +729,7 @@ const BidDetailsPage = () => {
                 <LetterOfIntent bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={7}>
-                <Feedback />
+                <Feedback bidDetails={bidDetails} />
               </TabPanel>
             </>
           ) : (
@@ -732,7 +751,7 @@ const BidDetailsPage = () => {
                 <LetterOfIntent bidDetails={bidDetails} />
               </TabPanel>
               <TabPanel value={activeTab} index={8}>
-                <Feedback />
+                <Feedback bidDetails={bidDetails} />
               </TabPanel>
             </>
           )}
