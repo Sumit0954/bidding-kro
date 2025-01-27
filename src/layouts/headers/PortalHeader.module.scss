@@ -1,46 +1,47 @@
 .custom-navbar {
-	background-color: var(--white);
-	position: fixed !important;
-	width: 100%;
-	top: 0;
-	box-shadow: 0 0 8px #00000080;
-	z-index: 3;
+  background-color: var(--white);
+  position: fixed !important;
+  width: 100%;
+  top: 0;
+  box-shadow: 0 0 8px #00000080;
+  z-index: 3;
 
-	.logo-img {
-		height: 60px;
-	}
+  .logo-img {
+    height: 60px;
+  }
 
-	.custom-toggle {
-		border: none;
+  .custom-toggle {
+    border: none;
 
-		.custom-icon {
-			background: url(../../assets/images/website/home/toggle-icon.svg);
-		}
+    .custom-icon {
+      background: url(../../assets/images/website/home/toggle-icon.svg);
+    }
 
-		&:focus {
-			outline: unset;
-			box-shadow: none;
-		}
-	}
+    &:focus {
+      outline: unset;
+      box-shadow: none;
+    }
+  }
 
-	.custom-navbar-collapse{
-		justify-content: flex-end;
-		align-items: center;
+  .custom-navbar-collapse {
+    justify-content: flex-end;
+    align-items: center;
 
-		.icon-container{
-			display: flex;
-			align-items: center;
-			gap: 30px;
-			margin-right: 2rem;
-		}
-	}
+    .icon-container {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-right: 2rem;
+    }
+  }
 }
 
 @media screen and (max-width: 575px) {
-	.custom-navbar {
-		.logo-img {
-			height: 40px;
-		}
-	}
+  .custom-navbar {
+    .logo-img {
+      height: 40px;
+    }
+  }
 }
+
 

@@ -8,6 +8,7 @@ import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
 import { Badge, Box } from "@mui/material";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
+import { Inbox, Preferences } from "@novu/react";
 
 const PortalHeader = () => {
   const { userDetails } = useContext(UserDetailsContext);
@@ -58,19 +59,24 @@ const PortalHeader = () => {
             id="navbarTogglerDemo02"
           >
             <div className={styles["icon-container"]}>
-              <NavLink to={"/portal/notifications"} className={styles["icons"]}>
-                <Badge
-                  badgeContent={4} // This is the content of the badge, e.g., the number of notifications
-                  color="error" // Badge color
-                  overlap="circular" // Ensure the badge overlaps correctly with the icon
-                  anchorOrigin={{
-                    vertical: "top", // Position the badge at the top
-                    horizontal: "right", // Position it at the right
-                  }}
-                >
-                  <img src={NotificationIcon} alt="NotificationIcon" />
-                </Badge>
-              </NavLink>
+              <Inbox
+                applicationIdentifier="W3fmktGqBpaY"
+                subscriberId="f67be7819f447a4f816fdebfe9046063"
+                preferencesFilter={{ tags: ["general", "admin", "security"] }}
+                renderBell={(unreadCount) => (
+                  <Badge
+                    badgeContent={unreadCount}
+                    color="error"
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <img src={NotificationIcon} alt="NotificationIcon" />
+                  </Badge>
+                )}
+              />
 
               <Box className={cn("cursor")} onClick={handleClick}>
                 <img src={UserIcon} alt="NotificationIcon" />

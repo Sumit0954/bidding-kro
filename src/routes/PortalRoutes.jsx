@@ -30,7 +30,8 @@ import LivebidDetail from "../components/portal/live-bids/LivebidDetail";
 import LiveBids from "../pages/portal/live-bids-pages/LiveBidsDetailPage";
 import Messages from "../pages/portal/messsages/Messages";
 import MessagesList from "../pages/portal/messsages/MessagesList";
-import NotificationPage from "../pages/portal/NotificationPage";
+import TeamList from "../pages/portal/teams/TeamList";
+import AddteamForm from "../pages/portal/teams/AddteamForm";
 
 const PortalRoutes = () => {
   return (
@@ -51,10 +52,6 @@ const PortalRoutes = () => {
                     <Route
                       path="/user-profile"
                       element={<LayoutPage Component={UserProfilePage} />}
-                    />
-                    <Route
-                      path="/notifications"
-                      element={<LayoutPage Component={NotificationPage} />}
                     />
 
                     {/* Company Profile Routes Start */}
@@ -170,7 +167,14 @@ const PortalRoutes = () => {
                       path="/messages"
                       element={<LayoutPage Component={MessagesList} />}
                     />
-                    
+                     <Route
+                      path="/teams"
+                      element={<LayoutPage Component={TeamList} />}
+                    />
+                     <Route
+                      path="/teams/addMember"
+                      element={<LayoutPage Component={AddteamForm} />}
+                    />
                   </Route>
                 </Routes>
                 <CallAlert />

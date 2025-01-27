@@ -101,4 +101,9 @@ const sidebarMenu = [
     title: "Messages",
     path: "/portal/messages",
   },
+  {
+    icon: "/images/portal/layout/icons/building.svg",
+    title: "Team",
+    path: "/portal/teams",
+  },  
 ];

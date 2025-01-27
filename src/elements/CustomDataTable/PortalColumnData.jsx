@@ -550,7 +550,7 @@ export const invited_bids_column = [
                     ? data?.row?.original?.status === "pending" &&
                       data?.row?.original?.bid?.bid_open_date !== null
                       ? "#FFBF00" // Yellow for pending
-                      : data?.row?.original?.status === "accepted" 
+                      : data?.row?.original?.status === "accepted"
                       ? "#22bb33" // Green for accepted
                       : "#ccc" // Default gray
                     : data?.row?.original?.sample?.invite_status === "pending"
@@ -604,12 +604,13 @@ export const invited_bids_column = [
                       ? "#22bb33" // Green for accepted
                       : data?.row?.original?.status === "pending"
                       ? "#FFBF00" // Yellow for pending
-                      : data?.row?.original?.status === "revoked" ||  data?.row?.original?.status === "declined" 
+                      : data?.row?.original?.status === "revoked" ||
+                        data?.row?.original?.status === "declined"
                       ? "red" // Yellow for pending
                       : "green" // Default red for other status
                     : data?.row?.original?.sample?.approval_status ===
                       "approved"
-                    ? data?.row?.original?.status === "accepted" 
+                    ? data?.row?.original?.status === "accepted"
                       ? "#22bb33" // Green for accepted
                       : data?.row?.original?.status === "pending" &&
                         data?.row?.original?.bid?.bid_open_date !== null
@@ -617,7 +618,7 @@ export const invited_bids_column = [
                       : data?.row?.original?.status === "pending" &&
                         data?.row?.original?.bid?.bid_open_date === null
                       ? "#22bb33"
-                      : data?.row?.original?.status === "revoked" 
+                      : data?.row?.original?.status === "revoked"
                       ? "red"
                       : "green" // Default red for other status
                     : data?.row?.original?.sample?.invite_status === "accepted"
@@ -1708,5 +1709,44 @@ export const Best_company_column = [
     align: "left",
     disablePadding: false,
     width: 110,
+  },
+];
+
+export const Team_list_column = [
+  {
+    Header: "Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Mobile",
+    accessor: "mobile",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Role",
+    accessor: "role",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Action",
+    accessor: "action",
+    align: "center",
+    disablePadding: false,
+    width: 100,
+    hideSortIcon: true,
   },
 ];
