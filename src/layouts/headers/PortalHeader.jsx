@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./PortalHeader.module.scss";
 import { NavLink } from "react-router-dom";
@@ -9,6 +9,12 @@ import { Badge, Box } from "@mui/material";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 import { Inbox, Preferences } from "@novu/react";
+import {
+  onMessageListener,
+  requestFirebaseNotificationPermission,
+} from "../../firebaseMessaging";
+import _sendAPIRequest from "../../helpers/api";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 
 const PortalHeader = () => {
   const { userDetails } = useContext(UserDetailsContext);
@@ -16,6 +22,47 @@ const PortalHeader = () => {
   const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const RegisterFCMToken = async (token) => {
+    try {
+      const formData = new FormData();
+      formData.append("token", token);
+
+      const response = await _sendAPIRequest(
+        "PUT",
+        `${PortalApiUrls.REGISTER_FCM_TOKEN}`,
+        formData,
+        true
+      );
+      if (response.status === 200) {
+        console.log("Register FCM Token Sucessfully");
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  useEffect(() => {
+    requestFirebaseNotificationPermission()
+      .then((token) => {
+        if (token) {
+          console.log("Firebase Token Reload:", token);
+          const OldFCMToken = localStorage.getItem("FCMToken");
+          if (token != OldFCMToken) {
+            RegisterFCMToken(token);
+            localStorage.setItem("FCMToken", token);
+          }
+        }
+      })
+      .catch((err) => console.log("Notification permission error:", err));
+
+    // Listen for incoming messages
+    onMessageListener()
+      .then((payload) => {
+        console.log("New Notification:", payload);
+      })
+      .catch((err) => console.log("Error receiving message:", err));
+  }, []);
 
   const handleClick = (event) => {
     setIsActive(!isActive);
@@ -61,8 +108,8 @@ const PortalHeader = () => {
             <div className={styles["icon-container"]}>
               <Inbox
                 applicationIdentifier="W3fmktGqBpaY"
-                subscriberId="f67be7819f447a4f816fdebfe9046063"
-                preferencesFilter={{ tags: ["general", "admin", "security"] }}
+                subscriberId="00f2bbf3.2"
+                // preferencesFilter={{ tags: ["general", "admin", "security"] }}
                 renderBell={(unreadCount) => (
                   <Badge
                     badgeContent={unreadCount}

@@ -10,6 +10,9 @@ import {
 import { NavLink } from "react-router-dom";
 import cn from "classnames";
 import { logout } from "../../utils/AxiosInterceptors";
+import _sendAPIRequest from "../../helpers/api";
+import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const AccountSettingMenu = ({
   open,
@@ -21,6 +24,48 @@ const AccountSettingMenu = ({
 }) => {
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const requestNotificationPermission = async () => {
+    console.log("chck token");
+    try {
+      const messaging = getMessaging();
+
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
+      });
+      console.log("FCM Token:", token);
+      DeleteFCMToken(token);
+    } catch (error) {
+      console.error("Error getting FCM token:", error);
+    }
+  };
+
+  const DeleteFCMToken = async (token) => {
+    try {
+      const formData = new FormData();
+      formData.append("token", token);
+
+      const response = await _sendAPIRequest(
+        "DELETE",
+        `${PortalApiUrls.DELETE_FCM_TOKEN}`,
+        formData,
+        true
+      );
+      if (response.status === 204) {
+        console.log("Delete FCM Token Sucessfully");
+        logout({
+          redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+        });
+      } else {
+        logout({
+          redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+        });
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
   return (
@@ -119,9 +164,10 @@ const AccountSettingMenu = ({
         <Divider className={cn("my-2", styles["divider"])} />
         <MenuItem
           onClick={() =>
-            logout({
-              redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
-            })
+            // logout({
+            //   redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+            // })
+            requestNotificationPermission()
           }
         >
           <ListItemIcon>

@@ -16,6 +16,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 // API BASEPATH Globally
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      console.log("Service Worker registered:", registration);
+    })
+    .catch((error) => {
+      console.log("Service Worker registration failed:", error);
+    });
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>

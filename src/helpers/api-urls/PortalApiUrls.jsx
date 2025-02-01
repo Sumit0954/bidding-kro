@@ -1,6 +1,8 @@
 export const PortalApiUrls = Object.freeze({
   GET_USER_PROFILE: "/user/customer/profile/",
   UPDATE_USER_PROFILE: "/user/customer/profile/",
+  REGISTER_FCM_TOKEN: "/user/fcm_token/",
+  DELETE_FCM_TOKEN: "/user/fcm_token/",
   GET_ORGANIZATION_TYPE: "/company/choices/organization_type/",
   CREATE_COMPANY: "/company/customer/",
   UPDATE_COMPANY: "/company/customer/",
@@ -74,7 +76,7 @@ export const PortalApiUrls = Object.freeze({
   LIVE_BID_LETTER_OF_INTENT_FOR_BUYER: "/bid/result/letter/",
   LIVE_BID_LETTER_OF_INTENT_FOR_SUPPLIER: "/bid/result/letter/invited/",
   LIVE_BID_RESULT_FOR_SUPPLIER: "/bid/result/customer/invited/",
-  BID_FEEDBACK : "/feedback/bid/",
-  RETRIEVE_FEEDACK : "/feedback/bid/",
-  RETRIVE_COMPANY_REVIEWS : "/feedback/company/"
+  BID_FEEDBACK: "/feedback/bid/",
+  RETRIEVE_FEEDACK: "/feedback/bid/",
+  RETRIVE_COMPANY_REVIEWS: "/feedback/company/",
 });

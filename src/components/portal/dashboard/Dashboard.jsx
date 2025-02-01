@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styles from "./Dashboard.module.scss";
 import { useNavigate } from "react-router-dom";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
@@ -31,6 +31,41 @@ function Dashboard() {
   const naviagte = useNavigate();
 
   const { noCompany } = useContext(UserDetailsContext);
+
+  const [permissionStatus, setPermissionStatus] = useState(
+    Notification.permission
+  );
+
+  useEffect(() => {
+    console.log("Checking notification permission...");
+    // Function to check notification permission status
+    const checkPermission = () => {
+      setPermissionStatus(Notification.permission);
+    };
+
+    // Listen for permission changes (if applicable)
+    window.addEventListener("focus", checkPermission);
+
+    return () => {
+      window.removeEventListener("focus", checkPermission);
+    };
+  }, []);
+
+  const requestPermission = () => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        setPermissionStatus(permission);
+        if (permission === "granted") {
+          console.log("🔔 Notification permission granted!");
+        } else {
+          console.warn("⚠️ Notification permission denied!");
+        }
+      });
+    }
+  };
+
+  console.log("Permission Status:", permissionStatus);
+
   return (
     <>
       {noCompany && (
@@ -52,6 +87,37 @@ function Dashboard() {
           >
             Create Company Profile
           </Button>
+        </Alert>
+      )}
+
+      {permissionStatus === "default" && (
+        <Alert severity="warning" className="my-3 d-flex">
+          <AlertTitle sx={{ fontWeight: "bold" }}>
+            Warning: Notifications Disabled
+          </AlertTitle>
+          You have not allowed notification permissions. To receive important
+          updates, please enable notifications.
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => requestPermission()}
+            sx={{ marginLeft: "10px" }}
+            className={styles["create-comp-btn"]}
+          >
+            Enable Notifications
+          </Button>
+        </Alert>
+      )}
+
+      {permissionStatus === "denied" && (
+        <Alert severity="warning" className="my-3">
+          <AlertTitle sx={{ fontWeight: "bold" }}>
+            Warning: Notifications Permissions Denied
+          </AlertTitle>
+          You have denied notification permissions. To receive important
+          updates, please enable notifications.
+          <br />
+          <br />
         </Alert>
       )}
 
