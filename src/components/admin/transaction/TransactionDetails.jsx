@@ -84,6 +84,12 @@ const TransactionDetails = () => {
                 {transactionDetails?.bid?.title}
               </p>
             </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Owner Name</h6>
+              <p className={styles["col-data"]}>
+                {transactionDetails?.bid?.title}
+              </p>
+            </div>
           </div>
         </AccordionDetails>
       </Accordion>

@@ -36,7 +36,7 @@ const ForgotPassword = () => {
           WebsiteApiUrls.FORGOT_SEND_OTP,
           data
         );
-        if (response.status === 204) {
+        if (response.status === 200) {
           setLoading(false);
           setAlert({
             isVisible: true,

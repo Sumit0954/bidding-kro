@@ -16,6 +16,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import Badge from "@mui/material/Badge";
 import { truncateString } from "../../../helpers/formatter";
 import { Person2Outlined, PersonPinCircleOutlined } from "@mui/icons-material";
+import styles from "./Messages.module.scss";
 const MessagesList = () => {
   const [selectedUser, setSelectedUser] = useState(0);
 
@@ -195,15 +196,150 @@ const MessagesList = () => {
         },
       ],
     },
+    {
+      user: "FutureTech Solutions",
+      lastMessagetTime: "12/01/2025",
+      unReadMessageCount: 2,
+      messages: [
+        {
+          text: "Are your products compatible with Model X?",
+          type: "receiver",
+          time: "12/01/2025 02:00 PM",
+        },
+        {
+          text: "Yes, our products are fully compatible with Model X.",
+          type: "buyer",
+          time: "12/01/2025 02:05 PM",
+        },
+        {
+          text: "Great! Could you share the technical specifications?",
+          type: "receiver",
+          time: "12/01/2025 02:10 PM",
+        },
+        {
+          text: "I’ve sent the specifications to your email. Let me know if you need anything else.",
+          type: "buyer",
+          time: "12/01/2025 02:15 PM",
+        },
+      ],
+    },
+    {
+      user: "FutureTech Solutions",
+      lastMessagetTime: "12/01/2025",
+      unReadMessageCount: 2,
+      messages: [
+        {
+          text: "Are your products compatible with Model X?",
+          type: "receiver",
+          time: "12/01/2025 02:00 PM",
+        },
+        {
+          text: "Yes, our products are fully compatible with Model X.",
+          type: "buyer",
+          time: "12/01/2025 02:05 PM",
+        },
+        {
+          text: "Great! Could you share the technical specifications?",
+          type: "receiver",
+          time: "12/01/2025 02:10 PM",
+        },
+        {
+          text: "I’ve sent the specifications to your email. Let me know if you need anything else.",
+          type: "buyer",
+          time: "12/01/2025 02:15 PM",
+        },
+      ],
+    },
+    {
+      user: "FutureTech Solutions",
+      lastMessagetTime: "12/01/2025",
+      unReadMessageCount: 2,
+      messages: [
+        {
+          text: "Are your products compatible with Model X?",
+          type: "receiver",
+          time: "12/01/2025 02:00 PM",
+        },
+        {
+          text: "Yes, our products are fully compatible with Model X.",
+          type: "buyer",
+          time: "12/01/2025 02:05 PM",
+        },
+        {
+          text: "Great! Could you share the technical specifications?",
+          type: "receiver",
+          time: "12/01/2025 02:10 PM",
+        },
+        {
+          text: "I’ve sent the specifications to your email. Let me know if you need anything else.",
+          type: "buyer",
+          time: "12/01/2025 02:15 PM",
+        },
+      ],
+    },
+    {
+      user: "FutureTech Solutions",
+      lastMessagetTime: "12/01/2025",
+      unReadMessageCount: 2,
+      messages: [
+        {
+          text: "Are your products compatible with Model X?",
+          type: "receiver",
+          time: "12/01/2025 02:00 PM",
+        },
+        {
+          text: "Yes, our products are fully compatible with Model X.",
+          type: "buyer",
+          time: "12/01/2025 02:05 PM",
+        },
+        {
+          text: "Great! Could you share the technical specifications?",
+          type: "receiver",
+          time: "12/01/2025 02:10 PM",
+        },
+        {
+          text: "I’ve sent the specifications to your email. Let me know if you need anything else.",
+          type: "buyer",
+          time: "12/01/2025 02:15 PM",
+        },
+      ],
+    },
+    {
+      user: "FutureTech Solutions",
+      lastMessagetTime: "12/01/2025",
+      unReadMessageCount: 2,
+      messages: [
+        {
+          text: "Are your products compatible with Model X?",
+          type: "receiver",
+          time: "12/01/2025 02:00 PM",
+        },
+        {
+          text: "Yes, our products are fully compatible with Model X.",
+          type: "buyer",
+          time: "12/01/2025 02:05 PM",
+        },
+        {
+          text: "Great! Could you share the technical specifications?",
+          type: "receiver",
+          time: "12/01/2025 02:10 PM",
+        },
+        {
+          text: "I’ve sent the specifications to your email. Let me know if you need anything else.",
+          type: "buyer",
+          time: "12/01/2025 02:15 PM",
+        },
+      ],
+    },
   ];
 
   return (
     <>
-      <Box sx={{ display: "flex", height: "100vh" }}>
+      <Box sx={{ display: "flex" }}>
         {/* Sidebar */}
         <Box
           sx={{
-            width: "33%",
+            width: "32%",
             borderRight: "1px solid #ddd",
             background: "#f7f7f7",
           }}
@@ -217,7 +353,7 @@ const MessagesList = () => {
               background: "#f7f7f7",
             }}
           >
-            <IconButton color="primary">
+            <IconButton sx={{color : "#062d72"}}>
               <MessageIcon />
             </IconButton>
             <Typography
@@ -227,82 +363,79 @@ const MessagesList = () => {
               Messages
             </Typography>
           </Box>
+
           <List>
             {/* Example Chat Items */}
-
-            {messagesData.map((user, index) => {
-              return (
-                <>
-                  <ListItem
-                    button
-                    key={index}
-                    selected={selectedUser === index}
-                    onClick={() => setSelectedUser(index)}
-                    sx={{
-                      "&.Mui-selected": {
-                        backgroundColor: "#86b0f9",
-                      },
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar sx={{ backgroundColor: "#3f51b5" }}>
-                        <Person2Outlined />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={user.user}
-                      secondary={
-                        truncateString(
-                          user.messages[user.messages.length - 1]?.text,
-                          25
-                        ) || "No messages yet"
-                      }
-                    />
-
-                    <Box
+            <Box className={styles["chat-list-container"]}>
+              {messagesData.map((user, index) => {
+                return (
+                  <>
+                    <ListItem
+                      button
+                      selected={selectedUser === index}
+                      onClick={() => setSelectedUser(index)}
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
+                        "&.Mui-selected": {
+                          backgroundColor: "#86b0f9",
+                        },
                       }}
                     >
-                      {user.unReadMessageCount > 0 && (
-                        <Badge
-                          badgeContent={user.unReadMessageCount || 0}
-                          color="primary"
-                          sx={{
-                            "& .MuiBadge-badge": {
-                              position: "absolute",
-                              transform: "translateY(-50%)", // Adjust for proper vertical centering
-                              right: 22, // Align it to the right side
-                              top: 5,
-                            },
-                          }}
-                        />
-                      )}
-
-                      {/* Last message time */}
-                      <Typography
-                        variant="caption"
-                        sx={{ color: "black", marginTop: "23px" }}
+                      <ListItemAvatar>
+                        <Avatar sx={{ backgroundColor: "#062d72" }}>
+                          <Person2Outlined />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={user.user}
+                        secondary={
+                          truncateString(
+                            user.messages[user.messages.length - 1]?.text,
+                            25
+                          ) || "No messages yet"
+                        }
+                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-end",
+                        }}
                       >
-                        {user.lastMessagetTime}
-                      </Typography>
-                    </Box>
-                  </ListItem>
-                  <Divider />
-                </>
-              );
-            })}
+                        {user.unReadMessageCount > 0 && (
+                          <Badge
+                            badgeContent={user.unReadMessageCount || 0}
+                            color="primary"
+                            sx={{
+                              "& .MuiBadge-badge": {
+                                position: "absolute",
+                                transform: "translateY(-50%)", // Adjust for proper vertical centering
+                                right: 22, // Align it to the right side
+                                top: 5,
+                              },
+                            }}
+                          />
+                        )}
+                        {/* Last message time */}
+                        <Typography
+                          variant="caption"
+                          sx={{ color: "black", marginTop: "23px" }}
+                        >
+                          {user.lastMessagetTime}
+                        </Typography>
+                      </Box>
+                    </ListItem>
+                    <Divider />
+                  </>
+                );
+              })}
+            </Box>
           </List>
         </Box>
-
         <Box
           sx={{
             flexGrow: 1,
             display: "flex",
             flexDirection: "column",
-            height: "100vh",
           }}
         >
           {/* Message Header with Icon */}

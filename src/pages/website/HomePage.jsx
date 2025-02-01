@@ -7,11 +7,13 @@ import OurGallery from "../../components/website/home/OurGallery";
 // import BrandSlider from "../../components/website/home/BrandSlider";
 import ProcurementManagement from "../../components/website/home/ProcurementManagement";
 import Contact from "../../components/website/home/Contact";
+import Marquee from "../../components/website/home/Marquee";
 
 const HomePage = () => {
   return (
     <>
       <Banner />
+      {/* <Marquee /> */}
       <Services />
       <SupplierPortal />
       <BiddingChallenges />

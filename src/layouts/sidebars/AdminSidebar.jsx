@@ -56,4 +56,9 @@ const sidebarMenu = [
     title: "Blog Management",
     path: "/admin/blogs",
   },
+  {
+    icon: "/images/admin/layout/icons/Administrator3.svg",
+    title: "Admin Management",
+    path: "/admin/management",
+  },
 ];

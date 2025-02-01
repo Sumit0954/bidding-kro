@@ -3,7 +3,7 @@ import CompanyList from "../../components/admin/companies/CompanyList";
 
 const CompanyListPage = () => {
   return (
-    <>
+    <>  
       <CompanyList />
     </>
   );

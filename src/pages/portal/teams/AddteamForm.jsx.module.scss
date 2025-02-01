@@ -28,3 +28,23 @@
     background-color: var(--secondary-color) !important;
   }
 }
+
+.first_last_name_fields {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px; /* equivalent to mb: 2 (2 * 8px) */
+  margin-top: 16px; /* equivalent to mt: 2 (2 * 8px) */
+}
+
+.email_mobile_role_fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

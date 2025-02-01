@@ -1,0 +1,36 @@
+.breadcrumb-container {
+  margin-bottom: 20px; // Adjust the value as needed
+}
+
+.adminInfo {
+  margin-bottom: 15px;
+  .box {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+
+    // Additional styles can go here if needed
+  }
+}
+
+.form-btn {
+  background-color: var(--primary-color) !important;
+
+  &.form-btn:hover {
+    background-color: var(--secondary-color) !important;
+  }
+}
+
+.custom-checkbox {
+  color: red; // Unchecked color
+}
+
+.custom-checkbox-checked {
+  color: red; // Checked color
+}
+

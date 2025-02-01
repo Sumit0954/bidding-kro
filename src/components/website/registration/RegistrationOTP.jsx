@@ -47,11 +47,21 @@ const RegistrationOTP = () => {
     const mobile_number = addCountryCode(registerData.mobile_number);
 
     try {
-      const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
-        mobile_number: mobile_number,
-      });
-      if (response.status === 204) {
+      const response = await _sendApiRequest(
+        "POST",
+        WebsiteApiUrls.RESEND_OTP,
+        {
+          mobile_number: mobile_number,
+        }
+      );
+      if (response.status === 200) {
         setInitialCount(45);
+        setAlert({
+          isVisible: true,
+          message: "OTP has been send to your phone number ",
+          severity: "success",
+        });
+
         setOtp(new Array(4).fill(""));
       }
     } catch (error) {
@@ -72,6 +82,7 @@ const RegistrationOTP = () => {
       );
       if (response.status === 201) {
         setLoading(false);
+
         setShowThankyou(true);
       }
     } catch (error) {

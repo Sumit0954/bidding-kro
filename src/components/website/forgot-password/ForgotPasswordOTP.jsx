@@ -49,7 +49,12 @@ const ForgotPasswordOTP = () => {
         WebsiteApiUrls.FORGOT_SEND_OTP,
         { mobile_number: mobile_number }
       );
-      if (response.status === 204) {
+      if (response.status === 200) {
+        setAlert({
+          isVisible: true,
+          message: "OTP has been send to your phone number",
+          severity: "success",
+        });
         setInitialCount(45);
         setOtp(new Array(4).fill(""));
       }
@@ -143,7 +148,7 @@ const ForgotPasswordOTP = () => {
 
                 <p className={styles["otp-message"]}>Enter 4-digit OTP</p>
 
-                <div className={cn('row', styles['btn-container'])}>
+                <div className={cn("row", styles["btn-container"])}>
                   <div className="col">
                     {initialCount > 0 ? (
                       <button

@@ -1,49 +1,21 @@
 import { Box, Typography, TextField, IconButton, Avatar } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-
+import styles from "./Messages.module.scss";
+import { Person2Outlined } from "@mui/icons-material";
 const Messages = ({ user }) => {
   return (
     <>
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-          position: "fixed",
-          width: "55%",
-        }}
-      >
+      <Box className={styles["chat-box"]}>
         {/* Chat Header */}
-        <Box
-          sx={{
-            borderBottom: "1px solid #ddd",
-            p: 2,
-            display: "flex",
-            alignItems: "center",
-            background: "#f7f7f7",
-          }}
-        >
-          <Avatar sx={{ marginRight: 1, backgroundColor: "#3f51b5" }}>
-            {user.user.charAt(0)}
+        <Box className={styles["chat-box-header"]}>
+          <Avatar sx={{ marginRight: 1, backgroundColor: "#062d72" }}>
+            <Person2Outlined />
           </Avatar>
           <Typography variant="h6">{user.user}</Typography>
         </Box>
 
         {/* Chat Messages */}
-        <Box
-          sx={{
-            flexGrow: 1,
-            overflowY: "auto",
-            p: 2,
-            pb: 10, // <-- Ensures space for the input box
-            display: "flex",
-            flexDirection: "column",
-            backgroundColor: "lightgrey",
-            scrollBehavior: "smooth",
-          }}
-          id="chat-container" // Add an ID for scrolling
-        >
+        <Box className={styles["chat-container"]}>
           {user.messages.map((msg, index) => (
             <Box
               key={index}
@@ -92,7 +64,7 @@ const Messages = ({ user }) => {
             size="small"
             sx={{ marginRight: 1 }}
           />
-          <IconButton color="primary">
+          <IconButton sx={{ color: "#062d72" }}>
             <SendIcon />
           </IconButton>
         </Box>

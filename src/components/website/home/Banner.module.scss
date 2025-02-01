@@ -1,17 +1,15 @@
 .banner {
-	border-bottom: 10px solid var(--secondary-color);
-
-	.banner-img {
-		height: 350px;
-		width: 100%;
-	}
+  .banner-img {
+    height: 350px;
+    width: 100%;
+  }
 }
 
 @media screen and (min-width: 320px) {
-	.banner {
-		.banner-img {
-			height: 100%;
-			width: 100%;
-		}
-	}
+  .banner {
+    .banner-img {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }

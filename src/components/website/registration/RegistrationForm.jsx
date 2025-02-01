@@ -38,7 +38,7 @@ const RegistrationForm = () => {
       const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
         mobile_number: mobile_number,
       });
-      if (response.status === 204) {
+      if (response.status === 200) {
         setLoading(false);
         setAlert({
           isVisible: true,

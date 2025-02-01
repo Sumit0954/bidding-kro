@@ -109,7 +109,11 @@ const PortalHeader = () => {
               <Inbox
                 applicationIdentifier="W3fmktGqBpaY"
                 subscriberId="00f2bbf3.2"
-                // preferencesFilter={{ tags: ["general", "admin", "security"] }}
+                backendUrl="https://eu.api.novu.co"
+                socketUrl="https://eu.ws.novu.co"
+                onNotificationClick={(notification) => {
+                  window.location.href = notification.redirect.url;
+                }}
                 renderBell={(unreadCount) => (
                   <Badge
                     badgeContent={unreadCount}
@@ -120,7 +124,12 @@ const PortalHeader = () => {
                       horizontal: "right",
                     }}
                   >
-                    <img src={NotificationIcon} alt="NotificationIcon" />
+                    <img
+                      src={NotificationIcon}
+                      alt="Notification Icon"
+                      width={32}
+                      height={32}
+                    />
                   </Badge>
                 )}
               />

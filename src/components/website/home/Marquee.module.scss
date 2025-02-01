@@ -1,0 +1,49 @@
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    #004aad,
+    #0088cc
+  ); /* IndiaMART-style gradient */
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 12px 0;
+  white-space: nowrap;
+  position: relative;
+  border-top: 3px solid #ff9800; /* Highlighted top border */
+  border-bottom: 3px solid #ff9800;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+  transition: transform 0.3s ease-in-out;
+}
+
+.marquee-content span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon {
+  color: #ffd700; /* Gold color for icons */
+  font-size: 22px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover */
+.marquee-wrapper:hover .marquee-content {
+  animation-play-state: paused;
+}

@@ -87,7 +87,7 @@ const sidebarMenu = [
     path: "/portal/bids",
   },
   {
-    icon: "/images/portal/layout/icons/bid-list-icon.svg",
+    icon: "/images/portal/layout/icons/live.svg",
     title: "Live Bids",
     path: "/portal/liveBids",
   },
@@ -97,13 +97,13 @@ const sidebarMenu = [
     path: "/portal/companies",
   },
   {
-    icon: "/images/portal/layout/icons/building.svg",
+    icon: "/images/portal/layout/icons/icons8-message.svg",
     title: "Messages",
     path: "/portal/messages",
   },
   {
-    icon: "/images/portal/layout/icons/building.svg",
+    icon: "/images/portal/layout/icons/teams-2.svg",
     title: "Team",
     path: "/portal/teams",
-  },  
+  },
 ];

@@ -5,7 +5,7 @@ import BidPriceForm from "../../components/admin/transaction/BidPriceForm";
 const TransactionListPage = () => {
   return (
     <>
-      <BidPriceForm />
+      {/* <BidPriceForm /> */}
       <TransactionList />
     </>
   );

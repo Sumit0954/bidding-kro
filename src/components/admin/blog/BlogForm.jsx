@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from './BlogForm.module.scss'
+import styles from "./BlogForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
 import { useForm } from "react-hook-form";
@@ -107,7 +107,10 @@ const BlogForm = () => {
                 </div>
 
                 <div className="row mb-5">
-                  <div className={cn("col-lg-6", styles["image-section"])}>
+                  <div
+                    className={cn("col-lg-6", styles["image-section"])}
+                    style={{ width: "50%" }}
+                  >
                     <label>Cover Image</label>
                     <div className={styles["img-container"]}>
                       <div className={styles["img-box"]}>
@@ -148,7 +151,10 @@ const BlogForm = () => {
                     </div>
                   </div>
 
-                  <div className={cn("col-lg-6", styles["image-section"])}>
+                  <div
+                    className={cn("col-lg-6", styles["image-section"])}
+                    style={{ width: "50%" }}
+                  >
                     <label>Banner Image</label>
                     <div className={styles["img-container"]}>
                       <div className={styles["img-box"]}>

@@ -1,5 +1,6 @@
 export const WebsiteApiUrls = Object.freeze({
   SEND_OTP: "/user/customer/register/send_otp/",
+  RESEND_OTP: "/user/customer/resend_otp/",
   REGISTER: "/user/customer/register/",
   VERIFY_EMAIL: "/user/customer/verify_email/",
   RESEND_VERIFY_EMAIL: "/user/customer/register/resend_email/",

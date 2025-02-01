@@ -20,19 +20,6 @@ import { Cancel, CheckCircle, Group } from "@mui/icons-material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd"; // You can choose any icon you like
 import styles from "./AddteamForm.jsx.module.scss";
 const AddteamForm = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    mobile: "",
-    role: "",
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const roles = ["Owner", "Manager", "Executive", "QA"];
 
   const permissions = [
@@ -55,61 +42,36 @@ const AddteamForm = () => {
       >
         INVITE TEAM MEMBER
       </Typography>
-      {/* Email and Mobile fields */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          mb: 2,
-        }}
-      >
+      {/* First and Last Name fields */}
+      <Box className={styles["first_last_name_fields"]}>
         <TextField
           label="First Name"
           variant="outlined"
           name="first_name"
-          value={formData.firstName}
-          onChange={handleInputChange}
           required
           className={styles["addMember-fields"]}
           sx={{
-            width: { xs: "100%", sm: "50%" }, // 100% width on small screens, 50% on larger screens
+            width: { xs: "100%", sm: "24%" },
           }}
         />
         <TextField
           label="last Name"
           variant="outlined"
           name="last_name"
-          value={formData.lastName}
-          onChange={handleInputChange}
           required
           className={styles["addMember-fields"]}
           sx={{
-            width: { xs: "100%", sm: "50%" }, // 100% width on small screens, 50% on larger screens
+            width: { xs: "100%", sm: "24%" },
           }}
         />
       </Box>
 
-      {/* Email and Mobile fields */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
+      {/* Email , Mobile & role fields  */}
+      <Box className={styles["email_mobile_role_fields"]}>
         <TextField
           label="Email"
           variant="outlined"
           name="email"
-          value={formData.email}
-          onChange={handleInputChange}
           required
           className={styles["addMember-fields"]}
           sx={{
@@ -120,8 +82,6 @@ const AddteamForm = () => {
           label="Mobile"
           variant="outlined"
           name="mobile"
-          value={formData.mobile}
-          onChange={handleInputChange}
           required
           className={styles["addMember-fields"]}
           sx={{
@@ -136,8 +96,6 @@ const AddteamForm = () => {
           <InputLabel>Role</InputLabel>
           <Select
             name="role"
-            value={formData.role}
-            onChange={handleInputChange}
             label="Role"
             className={styles["addMember-fields"]}
           >

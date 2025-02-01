@@ -12,6 +12,7 @@
     "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^7.23.3",
     "@mui/x-date-pickers-pro": "^7.23.6",
+    "@novu/notification-center": "^2.0.0",
     "@novu/react": "^2.6.3",
     "@reduxjs/toolkit": "^2.5.0",
     "@testing-library/jest-dom": "^6.6.3",

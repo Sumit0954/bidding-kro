@@ -16,6 +16,8 @@ import TransactionDetailsPage from "../pages/admin/TransactionDetailsPage";
 import TransactionPaymentPage from "../pages/admin/TransactionPaymentPage";
 import QueryListPage from "../pages/admin/QueryListPage";
 import QueryDetailPage from "../pages/admin/QueryDetailPage";
+import AdminManagementPage from "../pages/admin/AdminManagementPage";
+import AdminManagementForm from "../components/admin/adminMangement/AdminManagementForm";
 
 const AdminRoutes = () => {
   return (
@@ -68,6 +70,14 @@ const AdminRoutes = () => {
                 <Route
                   path="/blog/:action/:blog_id"
                   element={<LayoutPage Component={BlogFromPage} />}
+                />
+                <Route
+                  path="/management"
+                  element={<LayoutPage Component={AdminManagementPage} />}
+                />
+                <Route
+                  path="/management/addmanagementform"
+                  element={<LayoutPage Component={AdminManagementForm} />}
                 />
               </Route>
             </Routes>

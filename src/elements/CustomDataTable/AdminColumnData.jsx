@@ -131,7 +131,7 @@ export const queries_column = [
     align: "left",
     disablePadding: false,
   },
-]
+];
 
 export const blogs_column = [
   {
@@ -164,4 +164,23 @@ export const blogs_column = [
   },
 ];
 
-
+export const Admin_list_column = [
+  {
+    Header: "Mamber Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "center",
+    disablePadding: false,
+  },
+  {
+    Header: "Actions",
+    accessor: "action",
+    align: "right",
+    disablePadding: false,
+  },
+];

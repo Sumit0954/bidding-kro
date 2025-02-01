@@ -1,5 +1,5 @@
-import styles from './Banner.module.scss'
-import HomeBanner from '../../../assets/images/website/home/bidding-home-banner.jpeg'
+import styles from "./Banner.module.scss";
+import HomeBanner from "../../../assets/images/website/home/bidding-home-banner.jpeg";
 
 const Banner = () => {
   return (
@@ -12,7 +12,7 @@ const Banner = () => {
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Banner
+export default Banner;
