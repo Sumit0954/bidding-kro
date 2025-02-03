@@ -287,8 +287,8 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
     try {
       setLoading(true);
       const response = await _sendAPIRequest(
-        "PATCH",
-        `${PortalApiUrls.UPDATE_BID}${bidDetails.id}/`,
+        "PUT",
+        `${PortalApiUrls.BID_SET_DATE}${bidDetails.id}/`,
         formData,
         true
       );

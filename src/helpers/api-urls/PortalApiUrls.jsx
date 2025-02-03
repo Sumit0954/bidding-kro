@@ -44,6 +44,7 @@ export const PortalApiUrls = Object.freeze({
   RETRIEVE_CREATED_BID: "/bid/customer/",
   RETRIEVE_INVITED_BID: "/bid/customer/invited/",
   UPDATE_BID: "/bid/customer/",
+  BID_SET_DATE: "/bid/customer/set_date/",
   CREATE_AMENDMENT: "/bid/customer/amendment/",
   CREATE_ORDER: "/payment/customer/order/",
   VERIFY_PAYMENT: "/payment/customer/verify/",
