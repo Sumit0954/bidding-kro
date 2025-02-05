@@ -163,12 +163,23 @@ const AccountSettingMenu = ({
         )}
         <Divider className={cn("my-2", styles["divider"])} />
         <MenuItem
-          onClick={() =>
-            // logout({
-            //   redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
-            // })
-            requestNotificationPermission()
-          }
+          // onClick={() =>
+          //   // logout({
+          //   //   redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+          //   // })
+          //   requestNotificationPermission()
+          // }
+
+          onClick={() => {
+            const OldFCMToken = localStorage.getItem("FCMToken");
+            if (OldFCMToken) {
+              requestNotificationPermission();
+            } else {
+              logout({
+                redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
+              });
+            }
+          }}
         >
           <ListItemIcon>
             <Logout fontSize="medium" />

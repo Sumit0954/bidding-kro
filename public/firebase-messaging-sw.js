@@ -59,9 +59,9 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", function (event) {
   console.log("Notification Clicked!", event);
   event.notification.close();
-
+  const clickActionUrl = event.notification?.data?.url
+    ? event.notification?.data?.url
+    : "http://localhost:3000/portal/";
   // Open the app when clicked
-  event.waitUntil(
-    clients.openWindow("http://localhost:3000/portal/messages") // Update with your app's URL
-  );
+  event.waitUntil(clients.openWindow(clickActionUrl));
 });

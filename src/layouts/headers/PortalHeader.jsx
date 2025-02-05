@@ -23,6 +23,14 @@ const PortalHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
+  const [subscriberId, setSubscriberId] = useState(null);
+
+  useEffect(() => {
+    if (userDetails?.novu_subscriber_id) {
+      setSubscriberId(userDetails.novu_subscriber_id);
+    }
+  }, [userDetails?.novu_subscriber_id]);
+
   const RegisterFCMToken = async (token) => {
     try {
       const formData = new FormData();
@@ -106,33 +114,35 @@ const PortalHeader = () => {
             id="navbarTogglerDemo02"
           >
             <div className={styles["icon-container"]}>
-              <Inbox
-                applicationIdentifier="W3fmktGqBpaY"
-                subscriberId="00f2bbf3.2"
-                backendUrl="https://eu.api.novu.co"
-                socketUrl="https://eu.ws.novu.co"
-                onNotificationClick={(notification) => {
-                  window.location.href = notification.redirect.url;
-                }}
-                renderBell={(unreadCount) => (
-                  <Badge
-                    badgeContent={unreadCount}
-                    color="error"
-                    overlap="circular"
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                  >
-                    <img
-                      src={NotificationIcon}
-                      alt="Notification Icon"
-                      width={32}
-                      height={32}
-                    />
-                  </Badge>
-                )}
-              />
+              {subscriberId && (
+                <Inbox
+                  applicationIdentifier="W3fmktGqBpaY"
+                  subscriberId={subscriberId}
+                  backendUrl="https://eu.api.novu.co"
+                  socketUrl="https://eu.ws.novu.co"
+                  onNotificationClick={(notification) => {
+                    window.location.href = notification.redirect.url;
+                  }}
+                  renderBell={(unreadCount) => (
+                    <Badge
+                      badgeContent={unreadCount}
+                      color="error"
+                      overlap="circular"
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                    >
+                      <img
+                        src={NotificationIcon}
+                        alt="Notification Icon"
+                        width={32}
+                        height={32}
+                      />
+                    </Badge>
+                  )}
+                />
+              )}
 
               <Box className={cn("cursor")} onClick={handleClick}>
                 <img src={UserIcon} alt="NotificationIcon" />
