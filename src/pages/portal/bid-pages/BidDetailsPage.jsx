@@ -58,6 +58,15 @@ const BidDetailsPage = () => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // const urlActiveTab = new URLSearchParams(useLocation().search).get("activeTab");
+  const decodedSearch = decodeURIComponent(window.location.search).replace(
+    /&amp;/g,
+    "&"
+  ); // Decode the URL
+  const urlParams = new URLSearchParams(decodedSearch);
+  // const urlParams = new URLSearchParams(location.search);
+  const urlActiveTab = Number(urlParams.get("activeTab"));
+
   const isQCBSBid = bidDetails?.type === "QCBS";
 
   const isSampleNotApproved = !participant?.participants.some(
@@ -72,7 +81,16 @@ const BidDetailsPage = () => {
 
   const handleChange = (event, newValue) => {
     dispatch(setActiveTab(newValue));
+    urlParams.set("activeTab", newValue);
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
+
+  useEffect(() => {
+    console.log(urlActiveTab, "urlActiveTab");
+    if (urlActiveTab) {
+      dispatch(setActiveTab(urlActiveTab));
+    }
+  }, []);
 
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1); // Increment the refresh key
@@ -172,6 +190,7 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             const participants = response.data.participants;
+            console.log(response.data, "response.data");
             setParticipant(response.data);
           }
         } catch (error) {
@@ -182,6 +201,27 @@ const BidDetailsPage = () => {
       getParticipants();
     }
   }, [bidDetails?.id, refreshKey]);
+
+  useEffect(() => {
+    getPar();
+  }, []);
+
+  const getPar = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        console.log("data :", response.data);
+        setParticipant(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const isInviteDisabled =
     bidDetails?.status !== "active" ||

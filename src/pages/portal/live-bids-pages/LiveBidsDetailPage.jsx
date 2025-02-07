@@ -1,5 +1,5 @@
 import CompanyList from "../../../components/portal/companies/CompanyList";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -8,10 +8,22 @@ import Livebids from "../../../components/portal/live-bids/Livebids";
 
 const LiveBids = () => {
   const [value, setValue] = useState(0);
+  const navigate = useNavigate();
+  const urlParams = new URLSearchParams(location.search);
+  const urlliveTab = Number(urlParams.get("liveTab"));
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    urlParams.set("liveTab", newValue);
+    navigate({ search: urlParams.toString() }, { replace: true });
   };
+
+  useEffect(() => {
+    console.log(urlliveTab, "urlliveTab");
+    if (urlliveTab) {
+      setValue(urlliveTab);
+    }
+  }, []);
 
   return (
     <>
@@ -34,10 +46,10 @@ const LiveBids = () => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-        <Livebids listType = "Created"/>
+          <Livebids listType="Created" />
         </TabPanel>
         <TabPanel value={value} index={1}>
-        <Livebids listType = "Invited"/>
+          <Livebids listType="Invited" />
         </TabPanel>
       </Box>
     </>
