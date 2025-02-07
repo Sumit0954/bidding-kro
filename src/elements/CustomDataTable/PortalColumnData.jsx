@@ -1630,8 +1630,28 @@ export const ProductBid_column2 = [
     disablePadding: false,
     width: 110,
     Cell: (data) => {
-      console.log(data);
       return data?.row?.original?.position;
+    },
+  },
+  {
+    Header: "Result",
+    accessor: "result",
+    align: "left",
+    disablePadding: false,
+    width: 110,
+    Cell: (data) => {
+      console.log(data, " : data");
+      return (
+        <strong
+          style={{
+            color: data?.row?.original?.is_awarded === true ? "green" : "red",
+          }}
+        >
+          {data?.row?.original?.is_awarded === true
+            ? "Awarded"
+            : " Not Awarded"}
+        </strong>
+      );
     },
   },
 ];

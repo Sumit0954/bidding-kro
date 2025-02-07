@@ -48,6 +48,7 @@ const BidProducts = () => {
   const MAX_PRODUCTS = productData?.length;
 
   // Function to fetch product list
+
   const fetchProductList = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -68,7 +69,7 @@ const BidProducts = () => {
 
   useEffect(() => {
     fetchProductList();
-  }, [id]);
+  }, [id, productList?.length]);
 
   const prefillForm = (product, index) => {
     setValue(`product_title${index}`, product.title);
@@ -107,7 +108,7 @@ const BidProducts = () => {
         fetchProductList();
         reset(); // Reset form after submission
         setAddFormOpen(false); // Close the form after submission
-        window.location.reload();
+
         setScreenLoader(false);
       }
     } catch (error) {
@@ -154,7 +155,6 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 200) {
-        window.location.reload();
         fetchProductList(); // Refetch list after edit
         setScreenLoader(false);
       }
@@ -174,7 +174,6 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 204) {
-        window.location.reload();
         fetchProductList(); // Refetch list after delete
         setScreenLoader(false);
       }
@@ -250,7 +249,7 @@ const BidProducts = () => {
   }, [id]);
 
   const procedFurther = () => {
-    if (bidDetails?.product?.length > 0) {
+    if (productList?.length > 0) {
       setSubmitLoader(false);
       navigate(`/portal/bids/create/deatils/${id}`);
     } else {
@@ -390,13 +389,14 @@ const BidProducts = () => {
                             <>
                               <button
                                 type="submit"
-                                className="btn btn-primary me-2"
+                                className={cn("btn", "button")}
+                                style={{ marginRight: " 5px" }}
                               >
                                 Save Changes
                               </button>
                               <button
                                 type="button"
-                                className="btn btn-danger"
+                                className={cn("btn", "button", "reject")}
                                 // onClick={() => deleteProduct(item.id)}
                                 onClick={() => openDeleteDialog(item.id)}
                               >

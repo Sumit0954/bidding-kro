@@ -21,9 +21,14 @@ const PortalHeader = () => {
   const { companyDetails } = useContext(CompanyDetailsContext);
   const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [subscriberId, setSubscriberId] = useState(null);
   const open = Boolean(anchorEl);
 
-  const [subscriberId, setSubscriberId] = useState(null);
+  useEffect(() => {
+    if (userDetails?.novu_subscriber_id) {
+      setSubscriberId(userDetails.novu_subscriber_id);
+    }
+  }, [userDetails?.novu_subscriber_id]);
 
   useEffect(() => {
     if (userDetails?.novu_subscriber_id) {

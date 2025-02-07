@@ -22,13 +22,18 @@ import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 import { dateTimeFormatter } from "../../../../helpers/formatter";
+import TermAndConditionModal from "../../../../elements/CustomModal/TermAndConditionModal";
 
 const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   const { setAlert } = useContext(AlertContext);
+  const [isTermandConfitionOpen, setIsTermandConfitionOpen] = useState(false);
   const [loadingAction, setLoadingAction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [participant, setParticipant] = useState({});
   const [screenLoader, setScreenLoader] = useState(true);
+  const [isAgreed, setIsAgreed] = useState(
+    JSON.parse(localStorage.getItem("isAgreed")) || false
+  );
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -50,7 +55,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   );
 
   // invite action :  accepted / decline
-
+  console.log(bidDetails?.status, "  bid status");
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
@@ -81,7 +86,6 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
       );
       if (response.status === 204) {
         setLoading(false);
-        // setDeleteDetails({ open: false, title: "", message: "", action: "" });
         setAlert({
           isVisible: true,
           message:
@@ -109,7 +113,13 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
       setAlert({
         isVisible: true,
         message:
-          error?.response?.data?.error || "An unexpected error occurred.",
+          bidDetails?.status === "live"
+            ? "This is bid now live"
+            : bidDetails?.status === "completed"
+            ? "This is bid has been completed"
+            : bidDetails?.status === "closed"
+            ? "This is bid has been closed"
+            : `You can not ${action} this bid`,
         severity: "error",
       });
     }
@@ -117,7 +127,6 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
 
   // invite action confirmation
   const handleInvitation = (choice) => {
-    console.log(deleteDetails.action, "deleteDetails.action");
     if (choice) {
       handleAction(deleteDetails.action);
     } else {
@@ -128,8 +137,6 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
   if (screenLoader) {
     return <ScreenLoader component={"AcceptanceStatus"} />;
   }
-
-  console.log(participant.status, " : participant.status ");
 
   return (
     <>
@@ -819,7 +826,27 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
             </Box>
           </>
         )}
+        {/* Terms and Conditions Checkbox */}
+        <Box
+          display="flex"
+          alignItems="center"
+          style={{ marginTop: "5px", marginBottom: "5px" }}
+        >
+          <span>
+            Please Agree to our{" "}
+            <a
+              style={{ color: "blue", cursor: "pointer" }} // Ensure it's styled correctly
+              onClick={(e) => {
+                e.preventDefault();
 
+                console.log("Terms and conditions link clicked");
+                setIsTermandConfitionOpen(true);
+              }}
+            >
+              terms and conditions
+            </a>
+          </span>
+        </Box>
         {bidDetails?.status !== "cancelled" && type === "invited" && (
           <Box className={styles["btn-contanier"]}>
             {participant?.status === "accepted" ||
@@ -912,6 +939,15 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
               />
             )}
           </Box>
+        )}
+
+        {isTermandConfitionOpen && (
+          <TermAndConditionModal
+            isTermandConfitionOpen={isTermandConfitionOpen}
+            setIsTermandConfitionOpen={setIsTermandConfitionOpen}
+            setIsAgreed={setIsAgreed}
+            IsAgreed={isAgreed}
+          />
         )}
       </Box>
     </>

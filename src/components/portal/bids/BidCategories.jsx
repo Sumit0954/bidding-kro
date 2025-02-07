@@ -131,7 +131,6 @@ const BidCategories = () => {
 
   const submitForm = async (data) => {
     setLoading(true);
-    console.log(data, "gogo");
 
     let formData = [];
     let productData = [];

@@ -78,7 +78,7 @@ function App() {
   useEffect(() => {
     // Function to check localStorage changes
     const checkLoginStatus = () => {
-      console.log("chck login");
+      // console.log("chck login");
       const token = localStorage.getItem("accessToken");
       if (token && !isLoggedIn) {
         setIsLoggedIn(true);

@@ -40,6 +40,7 @@ const Analysis = ({ bidDetails }) => {
   const [expandedIndex, setExpandedIndex] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [bidders, setBidders] = useState([]);
+  const [supplierName, setSupplierName] = useState();
   const [awardStatus, setAwardStatus] = useState(null);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
@@ -53,6 +54,7 @@ const Analysis = ({ bidDetails }) => {
   const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event, id) => {
+    setSupplierName(event.target.value);
     setSelectedSupplier(id);
   };
 
@@ -67,7 +69,7 @@ const Analysis = ({ bidDetails }) => {
   const handleCencelProduct = (choice) => {
     if (choice) {
       cencelProduct(deleteDetails?.id, deleteDetails.alertmessage);
-      setExpandedIndex(false)
+      setExpandedIndex(false);
     } else {
       setDeleteDetails({
         open: false,
@@ -82,7 +84,7 @@ const Analysis = ({ bidDetails }) => {
   const handleProductAward = (choice) => {
     if (choice) {
       awardSupplier();
-      setExpandedIndex(false)
+      setExpandedIndex(false);
     } else {
       setDeleteDetails({
         open: false,
@@ -164,13 +166,12 @@ const Analysis = ({ bidDetails }) => {
 
   useEffect(() => {
     fetchSupplierForAward();
-  }, [awardStatus,deleteDetails.open]);
+  }, [awardStatus, deleteDetails.open]);
 
   if (screenLoader) {
     return <ScreenLoader />;
   }
 
-  console.log("re-render");
   return (
     <>
       <br />
@@ -287,7 +288,7 @@ const Analysis = ({ bidDetails }) => {
                             setDeleteDetails({
                               open: selectedSupplier && true,
                               title: "Award Supplier",
-                              message: `Are you sure you want to award this supplier`,
+                              message: `Are you sure you wants to award ${supplierName}.`,
                               alertmessage: "Product awarded Successfully",
                               id: awardBidder?.id,
                               handleAction: "awardSupplier",
@@ -413,7 +414,7 @@ const Analysis = ({ bidDetails }) => {
       })}
 
       <AwardPopUp open={open} handleClose={handleClose} />
-      
+
       {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}

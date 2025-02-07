@@ -133,7 +133,7 @@ const Bidresult = ({ bidDetails }) => {
                     Date: {dateTimeFormatter(bidletter?.created_at)}
                   </Typography>
                   <Typography>
-                    Bid Number: <strong>{bidletter?.formatted_number}</strong>
+                    LOI Number: <strong>{bidletter?.formatted_number}</strong>
                   </Typography>
 
                   <Typography
@@ -305,10 +305,11 @@ const Bidresult = ({ bidDetails }) => {
                     <strong>Intent Statement:</strong>
                   </Typography>
                   <Typography>
-                    This Letter of Intent serves to confirm our intent to
-                    proceed with the award of the contract to your company for
-                    the supply of the above-mentioned products, subject to the
-                    finalization of terms and conditions.
+                    This is just a Letter of Intent and is not legally binding.
+                    All the key details of the intent will be clearly outlined
+                    in this document, and you will also receive an official
+                    copy. For the final contract, the buyer will provide the
+                    necessary content to proceed.
                   </Typography>
                   <br />
                   <Typography variant="h6">

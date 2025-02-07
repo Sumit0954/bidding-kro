@@ -22,7 +22,7 @@ const LetterOfIntent = ({ bidDetails }) => {
   const [expanded, setExpanded] = useState(true);
   const [screenLoader, setScreenLoader] = useState(true);
   const [letterOfIntent, setLetterOfIntent] = useState([]);
-
+  console.log(letterOfIntent, " : letterOfIntent");
   const fetchLetterofIntent = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -53,6 +53,7 @@ const LetterOfIntent = ({ bidDetails }) => {
   if (screenLoader) {
     return <ScreenLoader />;
   }
+
   return (
     <>
       <br />
@@ -90,8 +91,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                       Date: {dateTimeFormatter(letter?.created_at)}
                     </Typography>
                     <Typography>
-                      Bid Number:{" "}
-                      <strong>{letter?.bid?.formatted_number}</strong>
+                      LOI Number: <strong>{letter?.formatted_number}</strong>
                     </Typography>
 
                     <Typography
@@ -256,10 +256,11 @@ const LetterOfIntent = ({ bidDetails }) => {
                       <strong>Intent Statement:</strong>
                     </Typography>
                     <Typography>
-                      This Letter of Intent serves to confirm our intent to
-                      proceed with the award of the contract to your company for
-                      the supply of the above-mentioned products, subject to the
-                      finalization of terms and conditions.
+                      This is just a Letter of Intent and is not legally
+                      binding. All the key details of the intent will be clearly
+                      outlined in this document, and you will also receive an
+                      official copy. For the final contract, the buyer will
+                      provide the necessary content to proceed.
                     </Typography>
                     <br />
                     <Typography variant="h6">

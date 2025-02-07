@@ -120,7 +120,7 @@ const FeedbackSupplier = ({ bidDetails }) => {
             <Typography variant="body2" sx={{ marginY: 1 }}>
               {Object.entries(compnayFeedback).length === 0
                 ? "Rate Your Experience: How Well Did This Supplier Meet Your Expectations?"
-                : "Thank you for providing your feedback for this supplier!"}
+                : "Thank you for providing your feedback to buyer !"}
             </Typography>
 
             <Controller

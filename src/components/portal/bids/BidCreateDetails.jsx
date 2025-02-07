@@ -30,6 +30,7 @@ const BidCreateDetails = () => {
   const [bidStatus, setBidStatus] = useState("");
   const [screenLoader, setScreenLoader] = useState(true);
   const { action, id } = useParams();
+  const [isCreate, setIsCreate] = useState();
 
   const submitForm = async (data) => {
     setLoading(true);
@@ -56,7 +57,9 @@ const BidCreateDetails = () => {
           setLoading(false);
           setAlert({
             isVisible: true,
-            message: "Bid Details has been created successfully.",
+            message: `Bid Details has been ${
+              isCreate === false ? "updated" : " created"
+            } successfully.`,
             severity: "success",
           });
 
@@ -90,12 +93,18 @@ const BidCreateDetails = () => {
       );
 
       if (response.status === 200) {
+        setIsCreate(
+          response.data.eligiblity_criteria &&
+            response.data.delivery_terms &&
+            response.data.payment_terms === null
+        );
+
         reset({
           eligiblity_criteria: response.data.eligiblity_criteria || "",
           delivery_terms: response.data.delivery_terms || "",
           payment_terms: response.data.payment_terms || "",
         });
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log(error);
@@ -107,7 +116,7 @@ const BidCreateDetails = () => {
   }, [id]);
 
   if (screenLoader) {
-    return <ScreenLoader  />;
+    return <ScreenLoader />;
   }
 
   return (
@@ -116,22 +125,10 @@ const BidCreateDetails = () => {
         <div className="row">
           <div className={styles["form-container"]}>
             <div className={styles["bid-form-section"]}>
-              <h4>Create Details</h4>
+              <h4>{isCreate === false ? "Update" : "Create"} Details</h4>
             </div>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
-                {/* <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="description"
-                      label="Bid Description"
-                      rules={{
-                        required: "Description is required.",
-                      }}
-                    />
-                  </div>
-                </div> */}
                 <div className="row">
                   <div className="col-lg-12">
                     <CustomCkEditor
@@ -166,16 +163,6 @@ const BidCreateDetails = () => {
                   </div>
                 </div>
 
-                {/* <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="technical_specification"
-                      label="Technical Specification"
-                    />
-                  </div>
-                </div> */}
-
                 <div className={cn("my-3", styles["btn-container"])}>
                   <button
                     type="button"
@@ -192,13 +179,11 @@ const BidCreateDetails = () => {
                     <ButtonLoader size={60} />
                   ) : (
                     <button
-                      // type="submit"
                       type="submit"
                       className={cn("btn", "button")}
                       disabled={bidStatus === "cancelled" ? true : false}
-                      // onClick={() => navigate(`/portal/bids/create/questions/${id}`)}
                     >
-                      Save & Next
+                      {isCreate === false ? "Update" : "Save"} & Next
                     </button>
                   )}
                 </div>

@@ -24,6 +24,7 @@ const BidQuestions = () => {
   const [questions, setQuestions] = useState([{ question: "" }]);
   const [bidStatus, setBidStatus] = useState("");
   const [screenLoader, setScreenLoader] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -38,7 +39,7 @@ const BidQuestions = () => {
           if (response.status === 200) {
             setBidStatus(response.data.status);
             setQuestions(response.data.question);
-            setScreenLoader(false)
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -47,7 +48,7 @@ const BidQuestions = () => {
 
       retrieveBid();
     }
-  }, [id , , questions?.length]);
+  }, [id, questions?.length, loading]);
 
   const { control, reset } = useForm({
     defaultValues: {
@@ -70,8 +71,6 @@ const BidQuestions = () => {
     setFormCount(questions?.length);
     // setScreenLoader(false)
   }, [questions, reset]);
-
-  console.log(formCount)
 
   const handleQuestions = () => {
     if (formCount < MAX_QUESTION_COUNT) {
@@ -97,7 +96,7 @@ const BidQuestions = () => {
             message: `Question ${index + 1} has been deleted.`,
             severity: "success",
           });
-          setScreenLoader(false)
+          setScreenLoader(false);
         }
       } catch (error) {
         const { data } = error.response;
@@ -117,7 +116,7 @@ const BidQuestions = () => {
     }
   };
   if (screenLoader) {
-    return <ScreenLoader  />;
+    return <ScreenLoader />;
   }
   return (
     <>
@@ -152,6 +151,8 @@ const BidQuestions = () => {
                   index={index}
                   id={id}
                   onDelete={handleDeleteQuestion}
+                  loading={loading}
+                  setLoading={setLoading}
                 />
               ))}
 
@@ -184,14 +185,20 @@ const BidQuestions = () => {
 
 export default BidQuestions;
 
-const IndividualQuestionForm = ({ question, index, id, onDelete }) => {
+const IndividualQuestionForm = ({
+  question,
+  index,
+  id,
+  onDelete,
+  loading,
+  setLoading,
+}) => {
   const { control, handleSubmit, setError, watch } = useForm({
     defaultValues: {
       question: question,
     },
   });
   const { setAlert } = useContext(AlertContext);
-  const [loading, setLoading] = useState(false);
 
   const submitForm = async (data, index) => {
     setLoading(true);
@@ -208,7 +215,6 @@ const IndividualQuestionForm = ({ question, index, id, onDelete }) => {
           true
         );
         if (response.status === 201) {
-          window.location.reload();
           setLoading(false);
         }
       } catch (error) {
