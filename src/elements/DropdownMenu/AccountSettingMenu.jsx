@@ -42,10 +42,10 @@ const AccountSettingMenu = ({
     }
   };
 
-  const DeleteFCMToken = async (token) => {
+  const DeleteFCMToken = async (OldFCMToken) => {
     try {
       const formData = new FormData();
-      formData.append("token", token);
+      formData.append("token", OldFCMToken);
 
       const response = await _sendAPIRequest(
         "DELETE",
@@ -173,7 +173,8 @@ const AccountSettingMenu = ({
           onClick={() => {
             const OldFCMToken = localStorage.getItem("FCMToken");
             if (OldFCMToken) {
-              requestNotificationPermission();
+              // requestNotificationPermission();
+              DeleteFCMToken(OldFCMToken);
             } else {
               logout({
                 redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
