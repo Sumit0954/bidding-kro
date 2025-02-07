@@ -23,6 +23,7 @@ const PortalHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [subscriberId, setSubscriberId] = useState(null);
   const open = Boolean(anchorEl);
+  const novuAppID = import.meta.env.VITE_NOVU_APPLICATION_IDENTIFIER;
 
   useEffect(() => {
     if (userDetails?.novu_subscriber_id) {
@@ -121,7 +122,7 @@ const PortalHeader = () => {
             <div className={styles["icon-container"]}>
               {subscriberId && (
                 <Inbox
-                  applicationIdentifier="W3fmktGqBpaY"
+                  applicationIdentifier={novuAppID}
                   subscriberId={subscriberId}
                   backendUrl="https://eu.api.novu.co"
                   socketUrl="https://eu.ws.novu.co"
