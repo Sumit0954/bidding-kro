@@ -126,6 +126,10 @@ const PortalHeader = () => {
                   subscriberId={subscriberId}
                   backendUrl="https://eu.api.novu.co"
                   socketUrl="https://eu.ws.novu.co"
+                  localization={{
+                    "inbox.filters.labels.default": "Notifications",
+                  }}
+                  subscriberHash={userDetails?.novu_subscriber_hash}
                   onNotificationClick={(notification) => {
                     window.location.href = notification.redirect.url;
                   }}
