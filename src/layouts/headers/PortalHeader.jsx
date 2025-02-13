@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./PortalHeader.module.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import NotificationIcon from "../../assets/images/portal/layout/icons/notification-icon.svg";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
@@ -24,6 +24,7 @@ const PortalHeader = () => {
   const [subscriberId, setSubscriberId] = useState(null);
   const open = Boolean(anchorEl);
   const novuAppID = import.meta.env.VITE_NOVU_APPLICATION_IDENTIFIER;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userDetails?.novu_subscriber_id) {
@@ -131,7 +132,8 @@ const PortalHeader = () => {
                   }}
                   subscriberHash={userDetails?.novu_subscriber_hash}
                   onNotificationClick={(notification) => {
-                    window.location.href = notification.redirect.url;
+                    // window.location.href = notification.redirect.url;
+                    navigate(notification.redirect.url);
                   }}
                   renderBell={(unreadCount) => (
                     <Badge
