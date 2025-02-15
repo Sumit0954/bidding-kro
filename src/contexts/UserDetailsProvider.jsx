@@ -18,6 +18,7 @@ const UserDetailsProvider = (props) => {
         true
       );
       if (response.status === 200) {
+        console.log(response.data, "erer");
         setUserDetails(response.data);
         setNoCompany(response.data.company === null);
       }
@@ -34,7 +35,7 @@ const UserDetailsProvider = (props) => {
 
   return (
     <UserDetailsContext.Provider
-      value={{ userDetails, setUserDetails, noCompany }}
+      value={{ userDetails, setUserDetails, noCompany, setNoCompany }}
     >
       {props.children}
     </UserDetailsContext.Provider>

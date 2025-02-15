@@ -40,7 +40,7 @@ const CompanyProfile = () => {
     formState: { errors, dirtyFields },
   } = useForm();
   const [companyLogo, setCompanyLogo] = useState(DummyLogo);
-  const { userDetails } = useContext(UserDetailsContext);
+  const { userDetails, setNoCompany } = useContext(UserDetailsContext);
   const { companyDetails, setCompanyDetails } = useContext(
     CompanyDetailsContext
   );
@@ -166,6 +166,7 @@ const CompanyProfile = () => {
             message: "Company has been created successfully.",
             severity: "success",
           });
+          setNoCompany(false);
           navigate(`/portal/company-profile/category/${response.data.id}`);
         }
       } catch (error) {

@@ -189,7 +189,7 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
               setDeleteDetails({
                 open: true,
                 title: `Revoke Supplier`,
-                message: `Are you want to revoke ${cell.row.original.company.name}`,
+                message: `Are you want to revoke ${cell.row.original.company.name} for this bid? This action cannot be undone.`,
                 alertmessage: cell.row.original.company.name,
                 id: cell.row.original.id,
               })

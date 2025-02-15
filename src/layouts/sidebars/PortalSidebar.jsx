@@ -36,7 +36,9 @@ const PortalSidebar = () => {
           {sidebarMenu.map((item, index) => {
             const isDisabled =
               noCompany &&
-              ["Bids", "Live Bids", "Companies"].includes(item.title);
+              ["Bids", "Live Bids", "Companies", "Messages", "Team"].includes(
+                item.title
+              );
 
             return (
               <NavLink
