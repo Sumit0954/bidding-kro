@@ -16,6 +16,7 @@ const CompanyDetailsProvider = (props) => {
       );
       if (response.status === 200) {
         setCompanyDetails(response.data);
+        localStorage.setItem("loginUserID", response.data.id);
       }
     } catch (error) {
       if (error.response.status === 404) {

@@ -80,4 +80,8 @@ export const PortalApiUrls = Object.freeze({
   BID_FEEDBACK: "/feedback/bid/",
   RETRIEVE_FEEDACK: "/feedback/bid/",
   RETRIVE_COMPANY_REVIEWS: "/feedback/company/",
+  START_CHAT_WITH_BUYER: "/chat/channel/",
+  SEND_CHAT_MESSAGE: "/chat/channel/",
+  GET_MESSAGE_LIST: "/chat/channel/",
+  GET_CHAT_LIST: "/chat/channel/",
 });

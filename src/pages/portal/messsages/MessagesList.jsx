@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,11 +14,18 @@ import {
 import Messages from "./Messages";
 import MessageIcon from "@mui/icons-material/Message";
 import Badge from "@mui/material/Badge";
-import { truncateString } from "../../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import { Person2Outlined, PersonPinCircleOutlined } from "@mui/icons-material";
 import styles from "./Messages.module.scss";
+import { useLocation } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 const MessagesList = () => {
   const [selectedUser, setSelectedUser] = useState(0);
+  const [chatList, setChatList] = useState([]);
+  const location = useLocation();
+
+  const chatId = location?.state?.chatId;
 
   const messagesData = [
     {
@@ -333,6 +340,27 @@ const MessagesList = () => {
     },
   ];
 
+  const userID = localStorage.getItem("loginUserID");
+
+  const getChalList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CHAT_LIST,
+        "",
+        true
+      );
+
+      if (response?.status === 200) {
+        setChatList(response?.data);
+        console.log(response?.data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getChalList();
+  }, []);
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -353,7 +381,7 @@ const MessagesList = () => {
               background: "#f7f7f7",
             }}
           >
-            <IconButton sx={{color : "#062d72"}}>
+            <IconButton sx={{ color: "#062d72" }}>
               <MessageIcon />
             </IconButton>
             <Typography
@@ -367,67 +395,69 @@ const MessagesList = () => {
           <List>
             {/* Example Chat Items */}
             <Box className={styles["chat-list-container"]}>
-              {messagesData.map((user, index) => {
-                return (
-                  <>
-                    <ListItem
-                      button
-                      selected={selectedUser === index}
-                      onClick={() => setSelectedUser(index)}
-                      sx={{
-                        "&.Mui-selected": {
-                          backgroundColor: "#86b0f9",
-                        },
-                      }}
-                    >
-                      <ListItemAvatar>
-                        <Avatar sx={{ backgroundColor: "#062d72" }}>
-                          <Person2Outlined />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={user.user}
-                        secondary={
-                          truncateString(
-                            user.messages[user.messages.length - 1]?.text,
-                            25
-                          ) || "No messages yet"
-                        }
-                      />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        {user.unReadMessageCount > 0 && (
-                          <Badge
-                            badgeContent={user.unReadMessageCount || 0}
-                            color="primary"
-                            sx={{
-                              "& .MuiBadge-badge": {
-                                position: "absolute",
-                                transform: "translateY(-50%)", // Adjust for proper vertical centering
-                                right: 22, // Align it to the right side
-                                top: 5,
-                              },
-                            }}
-                          />
-                        )}
-                        {/* Last message time */}
-                        <Typography
-                          variant="caption"
-                          sx={{ color: "black", marginTop: "23px" }}
+              {chatList.map((user, userIndex) =>
+                user.read.map((company, companyIndex) => {
+                  console.log(company, " : company");
+                  console.log(userID, " : userID");
+
+
+                  if (company?.id !== userID) {
+                    return (
+                      <>
+                        <ListItem
+                          button
+                          selected={selectedUser === userIndex}
+                          onClick={() => setSelectedUser(userIndex)}
+                          sx={{
+                            "&.Mui-selected": {
+                              backgroundColor: "#86b0f9",
+                            },
+                          }}
                         >
-                          {user.lastMessagetTime}
-                        </Typography>
-                      </Box>
-                    </ListItem>
-                    <Divider />
-                  </>
-                );
-              })}
+                          <ListItemAvatar>
+                            <Avatar sx={{ backgroundColor: "#062d72" }}>
+                              <Person2Outlined />
+                            </Avatar>
+                          </ListItemAvatar>
+                          {/* <ListItemText primary={company.company?.name} /> */}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            {/* {company.unread_messages > 0 && (
+                  <Badge
+                    badgeContent={company.unread_messages || 0}
+                    color="primary"
+                    sx={{
+                      "& .MuiBadge-badge": {
+                        position: "absolute",
+                        transform: "translateY(-50%)",
+                        right: 22,
+                        top: 5,
+                      },
+                    }}
+                  />
+                )} */}
+                            {/* Last message time */}
+                            <Typography
+                              variant="caption"
+                              sx={{ color: "black", marginTop: "23px" }}
+                            >
+                              {/* {dateTimeFormatter(user.channel.last_message_at)} */}
+                            </Typography>
+                          </Box>
+                        </ListItem>
+                        <Divider />
+                      </>
+                    );
+                  } else {
+                    return null;
+                  }
+                })
+              )}
             </Box>
           </List>
         </Box>
@@ -441,7 +471,7 @@ const MessagesList = () => {
           {/* Message Header with Icon */}
 
           {/* Chat Messages */}
-          <Messages user={messagesData[selectedUser]} />
+          <Messages user={messagesData[selectedUser]} chatId={chatId} />
         </Box>
       </Box>
     </>

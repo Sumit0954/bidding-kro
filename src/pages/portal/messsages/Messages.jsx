@@ -2,7 +2,39 @@ import { Box, Typography, TextField, IconButton, Avatar } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import styles from "./Messages.module.scss";
 import { Person2Outlined } from "@mui/icons-material";
-const Messages = ({ user }) => {
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { dateTimeFormatter } from "../../../helpers/formatter";
+const Messages = ({ user, chatId }) => {
+  const { register, handleSubmit } = useForm();
+  const [messages, setMessages] = useState([]);
+
+  const sendMessage = async () => {
+    const formData = new FormData();
+  };
+
+  const getChatMessages = async (params) => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        `${PortalApiUrls?.GET_MESSAGE_LIST}${chatId}/`,
+        "",
+        true
+      );
+      if (response?.status === 200) {
+        // setMessages(.messages);
+
+        setMessages(response?.data);
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getChatMessages();
+  }, []);
+
+
   return (
     <>
       <Box className={styles["chat-box"]}>
@@ -16,34 +48,35 @@ const Messages = ({ user }) => {
 
         {/* Chat Messages */}
         <Box className={styles["chat-container"]}>
-          {user.messages.map((msg, index) => (
-            <Box
-              key={index}
-              sx={{
-                maxWidth: "70%",
-                marginBottom: 2,
-                alignSelf: msg.type === "buyer" ? "flex-end" : "flex-start",
-                background: msg.type === "buyer" ? "#fff" : "#86b0f9",
-                p: 1.5,
-                borderRadius: 2,
-                boxShadow: "0 1px 1px rgba(0,0,0,0.2)",
-                position: "relative", // For better placement of time
-              }}
-            >
-              <Typography variant="body1">{msg.text}</Typography>
-              <Typography
-                variant="caption"
+          {messages?.map((allmessage, messageIndex) =>
+            allmessage.messages.map((msg, msgIndex) => (
+              <Box
+                key={`${messageIndex}-${msgIndex}`} // Use a unique key for each message
                 sx={{
-                  display: "block",
-                  textAlign: "right",
-                  marginTop: 0.5,
-                  color: msg.type === "buyer" ? "gray" : "#dfe7ff",
+                  maxWidth: "70%",
+                  marginBottom: 2,
+                  p: 1.5,
+                  borderRadius: 2,
+                  boxShadow: "0 1px 1px rgba(0,0,0,0.2)",
+                  backgroundColor: "white",
+                  position: "relative",
                 }}
               >
-                {msg.time}
-              </Typography>
-            </Box>
-          ))}
+                <Typography variant="body1">{msg.text}</Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    display: "block",
+                    textAlign: "right",
+                    marginTop: 0.5,
+                    color: "black"
+                  }}
+                >
+                  {dateTimeFormatter(msg?.created_at)}
+                </Typography>
+              </Box>
+            ))
+          )}
         </Box>
 
         {/* Chat Input */}
@@ -63,8 +96,9 @@ const Messages = ({ user }) => {
             variant="outlined"
             size="small"
             sx={{ marginRight: 1 }}
+            {...register("message", { required: true })}
           />
-          <IconButton sx={{ color: "#062d72" }}>
+          <IconButton sx={{ color: "#062d72" }} onClick={sendMessage}>
             <SendIcon />
           </IconButton>
         </Box>

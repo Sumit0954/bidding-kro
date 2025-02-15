@@ -33,7 +33,7 @@ const PendingRequests = ({
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [requestBids, setRequestBids] = useState([]);
   const [refresh, setRefresh] = useState(0);
-  const [screenLoader , setScreenLoader] = useState(true)
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const columns = Pending_request_column();
 
@@ -60,7 +60,7 @@ const PendingRequests = ({
         );
         if (response.status === 200) {
           setCompanies(response?.data);
-          setScreenLoader(false)
+          setScreenLoader(false);
         }
       } catch (error) {
         console.log(error);
@@ -82,7 +82,7 @@ const PendingRequests = ({
           );
           if (response.status === 200) {
             setParticipants(response.data.participants);
-            setScreenLoader(false)
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -92,7 +92,6 @@ const PendingRequests = ({
       getParticipants();
     }
   }, [id, refresh]);
-  
 
   useEffect(() => {
     const getRequestList = async () => {
@@ -106,12 +105,12 @@ const PendingRequests = ({
 
         if (response.status === 200) {
           setRequestBids(response?.data);
-          setScreenLoader(false)
+          setScreenLoader(false);
         }
       } catch (error) {}
     };
     getRequestList();
-  }, [refresh]);
+  }, [refresh, addInvitaion]);
 
   const addAction = (cell) => {
     console.log("Cell Data : ", cell);
@@ -189,7 +188,7 @@ const PendingRequests = ({
           ...prevCategories,
           [depth]: mappedCategories,
         }));
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log(error);
@@ -210,8 +209,8 @@ const PendingRequests = ({
 
   useEffect(() => {}, [rootCategory]);
 
-  if(screenLoader){
-    return <ScreenLoader />
+  if (screenLoader) {
+    return <ScreenLoader />;
   }
   return (
     <>

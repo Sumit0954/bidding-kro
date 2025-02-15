@@ -12,6 +12,7 @@ import {
   Chip,
   Divider,
   Stack,
+  StepConnector,
   TableCell,
   Typography,
 } from "@mui/material";
@@ -28,7 +29,7 @@ import {
 } from "../../../../elements/CustomDataTable/PortalColumnData";
 import { AlertContext } from "../../../../contexts/AlertProvider";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductSpecification from "../../../../elements/CustomModal/ProductSpecificationModal";
 import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
 import {
@@ -54,7 +55,7 @@ const Summary = ({ bidDetails }) => {
     id: null,
   });
   const type = new URLSearchParams(useLocation().search).get("type");
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (bidDetails?.id) {
       const getParticipants = async () => {
@@ -377,6 +378,22 @@ const Summary = ({ bidDetails }) => {
     ];
   }
 
+  const chatWithBuyer = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "POST",
+        `${PortalApiUrls.START_CHAT_WITH_BUYER}${bidDetails?.company?.id}/get_or_create/`,
+        "",
+        true
+      );
+      if (response?.status === 200) {
+        navigate("/portal/messages", { state: { chatId: response.data.id } });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       {type === "invited" ? (
@@ -390,11 +407,10 @@ const Summary = ({ bidDetails }) => {
         >
           <Stepper
             alternativeLabel
-            activeStep={2} // Set this to the index of the last visible step (in this case, 2 for the third step)
+            activeStep={2} // Set active step index
             sx={{ padding: "0.5rem" }}
           >
             {steps.map((step, index) => {
-              // Extract the color of the icon dynamically
               const iconColor = step.icon.props.style.color;
 
               return (
@@ -416,10 +432,9 @@ const Summary = ({ bidDetails }) => {
                         justifyContent: "center",
                       }}
                     >
-                      {/* Icon and label horizontally aligned */}
                       <span
                         style={{
-                          color: iconColor, // Set label color to the same color as the icon
+                          color: iconColor, // Match text color with icon
                           fontSize: "0.8rem",
                           marginLeft: "8px",
                         }}
@@ -428,10 +443,23 @@ const Summary = ({ bidDetails }) => {
                       </span>
                     </Box>
                   </StepLabel>
+                  <StepConnector
+                    sx={{
+                      "& .MuiStepConnector-line": {
+                        borderColor:
+                          steps[index]?.icon?.props?.style?.color || "#d3d3d3", // Apply current step color
+                        width: "100%", // Ensure it stretches properly
+                      },
+                      "&:first-of-type .MuiStepConnector-line": {
+                        display: "none", // Hide the connector before the first step
+                      },
+                    }}
+                  />
                 </Step>
               );
             })}
           </Stepper>
+          ;
         </Box>
       ) : null}
       {/* Summury */}
@@ -722,7 +750,6 @@ const Summary = ({ bidDetails }) => {
       </Accordion>
 
       {/* Products list */}
-
       <Accordion
         defaultExpanded
         square={true}
@@ -799,7 +826,11 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.company?.name}
               </Typography>
             </Box>
-            <Button variant="contained" className={styles["chat-button"]}>
+            <Button
+              variant="contained"
+              className={styles["chat-button"]}
+              onClick={chatWithBuyer}
+            >
               Chat with Buyer
             </Button>
           </AccordionDetails>
@@ -1036,17 +1067,6 @@ const Summary = ({ bidDetails }) => {
           </div>
         </div>
       )}
-
-      {/* Note Tagsline for user ended */}
-
-      {/* {deleteDetails?.open && (
-        <DeleteDialog
-          title={deleteDetails.title}
-          message={deleteDetails.message}
-          handleClick={handleDeleteConfirmation}
-          action={addAction}
-        />
-      )} */}
 
       {showSpecification && (
         <ProductSpecificationModal
