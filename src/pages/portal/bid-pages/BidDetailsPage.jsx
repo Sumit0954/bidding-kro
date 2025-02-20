@@ -315,7 +315,12 @@ const BidDetailsPage = () => {
                 }
                 arrow
               >
-                <div style={{ display: "inline-block" }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    cursor: isInviteDisabled ? "not-allowed" : "pointer",
+                  }}
+                >
                   <button
                     className={cn("btn", "button")}
                     type="button"

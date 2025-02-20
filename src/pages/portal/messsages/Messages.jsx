@@ -4,18 +4,39 @@ import styles from "./Messages.module.scss";
 import { Person2Outlined } from "@mui/icons-material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { dateTimeFormatter } from "../../../helpers/formatter";
-const Messages = ({ user, chatId }) => {
-  const { register, handleSubmit } = useForm();
+import { TimeIcon } from "@mui/x-date-pickers";
+const Messages = ({ selectedUser, chatId, userID }) => {
+  const { handleSubmit, control, reset } = useForm();
   const [messages, setMessages] = useState([]);
+  const [updateChat, setUpdateChat] = useState();
 
-  const sendMessage = async () => {
-    const formData = new FormData();
+  const sendMessage = async (data) => {
+    if (data.message.trim() !== "") {
+      const formData = new FormData();
+      formData.append("message", data.message);
+
+      console.log("Sending Message:", formData.get("message"));
+
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          `${PortalApiUrls.SEND_CHAT_MESSAGE}${chatId}/`,
+          formData,
+          true
+        );
+
+        if (response?.status === 200) {
+          setUpdateChat(response?.data?.created_at);
+          reset({ message: "" });
+        }
+      } catch (error) {}
+    }
   };
 
-  const getChatMessages = async (params) => {
+  const getChatMessages = async () => {
     try {
       const response = await _sendAPIRequest(
         "GET",
@@ -24,16 +45,14 @@ const Messages = ({ user, chatId }) => {
         true
       );
       if (response?.status === 200) {
-        // setMessages(.messages);
-
         setMessages(response?.data);
       }
     } catch (error) {}
   };
+
   useEffect(() => {
     getChatMessages();
-  }, []);
-
+  }, [chatId, selectedUser, updateChat]);
 
   return (
     <>
@@ -43,7 +62,7 @@ const Messages = ({ user, chatId }) => {
           <Avatar sx={{ marginRight: 1, backgroundColor: "#062d72" }}>
             <Person2Outlined />
           </Avatar>
-          <Typography variant="h6">{user.user}</Typography>
+          <Typography variant="h6">{selectedUser}</Typography>
         </Box>
 
         {/* Chat Messages */}
@@ -55,21 +74,35 @@ const Messages = ({ user, chatId }) => {
                 sx={{
                   maxWidth: "70%",
                   marginBottom: 2,
-                  p: 1.5,
-                  borderRadius: 2,
-                  boxShadow: "0 1px 1px rgba(0,0,0,0.2)",
-                  backgroundColor: "white",
-                  position: "relative",
+                  padding: "10px 15px",
+                  borderRadius: "18px",
+                  boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+                  background:
+                    msg?.company?.id === userID
+                      ? "linear-gradient(135deg, #f4f7ff, #e3e9ff)"
+                      : "linear-gradient(135deg, #86b0f9, #639af3)",
+                  alignSelf:
+                    msg?.company?.id === userID ? "flex-end" : "flex-start",
+                  color: msg?.company?.id === userID ? "#333" : "#fff",
+                  cursor: "pointer", // Add pointer cursor on hover
+                  transition:
+                    "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out", // Smooth animation
+                  "&:hover": {
+                    transform: "scale(1.05)", // Slightly scale the box when hovered
+                    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)", // Add stronger shadow on hover
+                  },
                 }}
               >
                 <Typography variant="body1">{msg.text}</Typography>
+
                 <Typography
                   variant="caption"
                   sx={{
                     display: "block",
                     textAlign: "right",
                     marginTop: 0.5,
-                    color: "black"
+                    opacity: 0.7,
+                    fontSize: "12px",
                   }}
                 >
                   {dateTimeFormatter(msg?.created_at)}
@@ -87,20 +120,32 @@ const Messages = ({ user, chatId }) => {
             borderTop: "1px solid #ddd",
             background: "#fff",
             position: "sticky",
-            bottom: 0, // Sticks the input to the bottom of the container
+            bottom: 0, // Sticks input to the bottom
           }}
         >
-          <TextField
-            fullWidth
-            placeholder="Type a message"
-            variant="outlined"
-            size="small"
-            sx={{ marginRight: 1 }}
-            {...register("message", { required: true })}
-          />
-          <IconButton sx={{ color: "#062d72" }} onClick={sendMessage}>
-            <SendIcon />
-          </IconButton>
+          <form
+            onSubmit={handleSubmit(sendMessage)}
+            style={{ display: "flex", flex: 1 }}
+          >
+            <Controller
+              name="message"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  placeholder="Type a message"
+                  variant="outlined"
+                  size="small"
+                  sx={{ marginRight: 1 }}
+                />
+              )}
+            />
+            <IconButton sx={{ color: "#062d72" }} type="submit">
+              <SendIcon />
+            </IconButton>
+          </form>
         </Box>
       </Box>
     </>

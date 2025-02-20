@@ -64,7 +64,7 @@ function Dashboard() {
     }
   };
 
-  console.log("Permission Status:", permissionStatus);
+  // console.log("Permission Status:", permissionStatus);
 
   return (
     <>
@@ -120,87 +120,59 @@ function Dashboard() {
           <br />
         </Alert>
       )}
-
-      <Box className={styles["filter-points"]}>
-        {/* userName and Datepicker */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "#f9fbfc",
+          padding: "16px",
+          borderRadius: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        {/* userName & userPhoto  */}
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            flexDirection: { xs: "column", sm: "row" },
             alignItems: "center",
-            backgroundColor: "#f9fbfc",
-            padding: "16px",
-            borderRadius: "8px",
-            flexWrap: "wrap", // Allow wrapping for smaller screens
+            flexBasis: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: 2, sm: 0 },
           }}
         >
-          {/* userName & userPhoto  */}
-          <Box
+          <Avatar
+            alt="User Avatar"
+            src="/static/images/avatar/1.jpg"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              flexBasis: { xs: "100%", sm: "auto" }, // Full width on extra small screens
-              marginBottom: { xs: 2, sm: 0 }, // Add spacing for stacked items
+              width: 48,
+              height: 48,
+              marginBottom: { xs: "10px", sm: 0 },
+              marginRight: { sm: "16px" },
             }}
-          >
-            <Avatar
-              alt="User Avatar"
-              src="/static/images/avatar/1.jpg"
+          />
+          <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
+            <Typography
+              variant="h6"
               sx={{
-                width: 48,
-                height: 48,
-                marginRight: "16px",
+                fontWeight: "bold",
+                marginBottom: "4px",
+                fontSize: { xs: "1rem", sm: "1.25rem" },
               }}
             >
-              X
-            </Avatar>
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: "bold",
-                  marginBottom: "4px",
-                  fontSize: { xs: "1rem", sm: "1.25rem" }, // Adjust font size for small screens
-                }}
-              >
-                Hello, XYZ Industries
-              </Typography>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                sx={{
-                  fontSize: { xs: "0.875rem", sm: "1rem" }, // Adjust font size
-                }}
-              >
-                Here's what's happening with your business today
-              </Typography>
-            </Box>
-          </Box>
-          {/* Date & time */}
-
-          <Box
-            sx={{
-              flexBasis: { xs: "100%", sm: "auto" }, // Full width on extra small screens
-              display: "flex",
-              justifyContent: { xs: "center", sm: "flex-end" }, // Center-align on small screens
-            }}
-          >
-            <DatePicker
-              sx={{
-                minWidth: 200,
-                backgroundColor: "#fff",
-                borderRadius: "4px",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#062d72",
-                  },
-                },
-              }}
-            />
+              Hello, XYZ Industries
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+            >
+              Here's what's happening with your business today
+            </Typography>
           </Box>
         </Box>
         {/* dashboard and Datepicker */}
-        <Grid container spacing={2}>
+        <Grid container spacing={2} mt={3}>
           {/*  Total Spends */}
           <Grid item xs={12} sm={6} md={4}>
             <Card

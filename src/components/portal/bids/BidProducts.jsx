@@ -220,10 +220,27 @@ const BidProducts = () => {
     });
   };
 
-  const transformedProductData = productData.map((product) => ({
-    lable: product.name, // use 'lable' instead of 'label'
-    value: product.name, // keep 'value' as expected
+  // const transformedProductData = productData.map((product) => ({
+  //   lable: product.name, // use 'lable' instead of 'label'
+  //   value: product.name, // keep 'value' as expected
+  // }));
+
+  const selectedProduct = productList.map((product) => ({
+    lable: product.title, // use 'lable' instead of 'label'
+    value: product.title, // keep 'value' as expected
   }));
+
+  const transformedProductData = productData
+    .filter((available) =>
+      productList.every((added) => available?.name !== added?.title)
+    )
+    .map((available) => ({
+      lable: available.name, 
+      value: available.name,
+    }));
+
+
+   productData
 
   useEffect(() => {
     if (id) {
@@ -256,7 +273,7 @@ const BidProducts = () => {
       setSubmitLoader(false);
       setAlert({
         isVisible: true,
-        message: "Please Select Product For The Bid",
+        message: "Please Select Product For This Bid",
         severity: "error",
       });
     }
@@ -305,7 +322,7 @@ const BidProducts = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                       {/* Form with pre-filled data */}
-                      <form
+                      <form 
                         onSubmit={handleSubmit((data) =>
                           editProduct(data, item.id, index)
                         )}
@@ -315,7 +332,7 @@ const BidProducts = () => {
                             <CustomSelect
                               control={control}
                               label="Product Name"
-                              options={transformedProductData}
+                              options={selectedProduct}
                               name={`product_title${index}`}
                               placeholder="Product Name"
                               rules={{

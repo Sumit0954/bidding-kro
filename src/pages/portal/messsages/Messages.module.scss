@@ -5,7 +5,7 @@
   padding-bottom: 80px; // 10 * 4px = 40px (to match pb: 10)
   display: flex;
   flex-direction: column;
-  background-color: lightgrey;
+  background: linear-gradient(135deg, #dcdcdc, #b8b8b8);
   scroll-behavior: smooth;
   /* Scrollbar customizations */
   &::-webkit-scrollbar {

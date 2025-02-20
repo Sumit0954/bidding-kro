@@ -84,4 +84,5 @@ export const PortalApiUrls = Object.freeze({
   SEND_CHAT_MESSAGE: "/chat/channel/",
   GET_MESSAGE_LIST: "/chat/channel/",
   GET_CHAT_LIST: "/chat/channel/",
+  MARK_MESSAGE_READ : "/chat/channel/"
 });
