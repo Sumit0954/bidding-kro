@@ -1,8 +1,8 @@
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/11.3.1/firebase-messaging-compat.js"
 );
 
 firebase.initializeApp({
@@ -56,12 +56,12 @@ self.addEventListener("push", (event) => {
 });
 
 // Handle notification clicks (optional, can be customized)
-self.addEventListener("notificationclick", function (event) {
-  console.log("Notification Clicked!", event);
-  event.notification.close();
-  const clickActionUrl = event.notification?.data?.url
-    ? event.notification?.data?.url
-    : "http://localhost:3000/portal/";
-  // Open the app when clicked
-  event.waitUntil(clients.openWindow(clickActionUrl));
-});
+// self.addEventListener("notificationclick", function (event) {
+//   console.log("Notification Clicked!", event);
+//   event.notification.close();
+//   const clickActionUrl = event.notification?.data?.url
+//     ? event.notification?.data?.url
+//     : "http://localhost:3000/portal/";
+//   // Open the app when clicked
+//   event.waitUntil(clients.openWindow(clickActionUrl));
+// });
