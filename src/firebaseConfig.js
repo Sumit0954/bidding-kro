@@ -18,12 +18,12 @@ export default firebaseApp;
 const messaging = getMessaging();
 
 // Handle Foreground Notifications
-onMessage(messaging, (payload) => {
-  console.log("Foreground Notification Received:", payload);
+// onMessage(messaging, (payload) => {
+//   console.log("Foreground Notification Received:", payload);
 
-  // Show a browser notification manually
-  new Notification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: "/bidding-karo.ico", // Change to your app's icon
-  });
-});
+//   // Show a browser notification manually
+//   new Notification(payload.notification.title, {
+//     body: payload.notification.body,
+//     icon: "/bidding-karo.ico", // Change to your app's icon
+//   });
+// });

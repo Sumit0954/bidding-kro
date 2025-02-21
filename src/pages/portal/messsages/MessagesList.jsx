@@ -29,6 +29,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 const MessagesList = () => {
   const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUserID, setSelectedUserID] = useState("");
   const location = useLocation();
   const [chatList, setChatList] = useState([]);
   const [chatId, setChatID] = useState(location?.state?.chatId);
@@ -36,7 +37,7 @@ const MessagesList = () => {
   const [readStatus, setReadStatus] = useState({});
   const isMobile = useMediaQuery("(max-width:600px)");
   const [screenLoader, setScreenLoader] = useState(true);
-  
+
   const getChatList = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -47,6 +48,7 @@ const MessagesList = () => {
       );
 
       if (response?.status === 200) {
+        console.log(response?.data, "object");
         setChatList(response?.data);
         setScreenLoader(false);
       }
@@ -57,23 +59,71 @@ const MessagesList = () => {
     getChatList();
   }, []);
 
+  // useEffect(() => {
+  //   if (chatList.length > 0) {
+  //     const firstChat = chatList.find((chat) =>
+  //       chat.read.some((c) => c?.company?.id !== userID)
+  //     );
+
+  //     if (firstChat) {
+  //       const firstCompany = firstChat.read.find(
+  //         (c) => c?.company?.id !== userID
+  //       )?.company?.name;
+  //       const firstChatId = firstChat.channel?.id;
+
+  //       if (firstCompany) setSelectedUser(firstCompany);
+  //       if (firstChatId) setChatID(firstChatId);
+  //     }
+  //   }
+  // }, [chatList]);
+
+  // useEffect(() => {
+  //   if (chatList.length > 0 && !selectedUser) {
+  //     // Ensure we don't override a manually selected user
+  //     const firstChat = chatList.find((chat) =>
+  //       chat.read.some((c) => c?.company?.id !== userID)
+  //     );
+
+  //     if (firstChat) {
+  //       const firstCompany = firstChat.read.find(
+  //         (c) => c?.company?.id !== userID
+  //       )?.company?.name;
+  //       const firstChatId = firstChat.channel?.id;
+
+  //       if (firstCompany) setSelectedUser(firstCompany);
+  //       if (firstChatId) setChatID(firstChatId);
+  //     }
+  //   }
+  // }, [chatList, selectedUser]); // Add `selectedUser` to dependency array
+
   useEffect(() => {
-    if (chatList.length > 0) {
-      const firstChat = chatList.find((chat) =>
+    if (chatList.length > 0 && !selectedUser) {
+      // Ensure we don't override a manually selected user
+      const sortedChats = [...chatList].sort(
+        (a, b) =>
+          new Date(b.channel.last_message_at) -
+          new Date(a.channel.last_message_at)
+      );
+
+      const recentChat = sortedChats.find((chat) =>
         chat.read.some((c) => c?.company?.id !== userID)
       );
 
-      if (firstChat) {
-        const firstCompany = firstChat.read.find(
+      if (recentChat) {
+        const recentCompany = recentChat.read.find(
           (c) => c?.company?.id !== userID
         )?.company?.name;
-        const firstChatId = firstChat.channel?.id;
+        const recentChatId = recentChat.channel?.id;
+        const recentCompanyID = recentChat.read.find(
+          (c) => c?.company?.id !== userID
+        )?.company?.id;
 
-        if (firstCompany) setSelectedUser(firstCompany);
-        if (firstChatId) setChatID(firstChatId);
+        if (recentCompany) setSelectedUser(recentCompany);
+        if (recentCompanyID) setSelectedUserID(recentCompanyID);
+        if (recentChatId) setChatID(recentChatId);
       }
     }
-  }, [chatList]);
+  }, [chatList, selectedUser]); // Prevent overwriting a manually selected user
 
   const messageRead = async (chadId) => {
     try {
@@ -138,63 +188,71 @@ const MessagesList = () => {
           <List sx={{ padding: "8px" }}>
             {/* Chat List Items */}
             <Box className={styles["chat-list-container"]}>
-              {chatList.map((user, userIndex) =>
-                user.read.map((company, companyIndex) => {
-                  if (company?.company?.id !== userID) {
-                    return (
-                      <>
-                        <Tooltip title={company.company?.name}>
-                          <ListItem
-                            button
-                            selected={selectedUser === company.company?.name}
-                            onClick={() => {
-                              setSelectedUser(company.company?.name);
-                              setChatID(user?.channel?.id);
-                              messageRead(user?.channel?.id);
-                            }}
-                            sx={{
-                              "&.Mui-selected": {
-                                background:
-                                  "linear-gradient(90deg, #4A90E2, #062d72)",
-                                color: "#fff",
-                                borderLeft: "4px solid #fff",
+              {chatList
+                .slice() // Create a shallow copy to avoid mutating the original array
+                .sort(
+                  (a, b) =>
+                    new Date(b.channel.last_message_at) -
+                    new Date(a.channel.last_message_at)
+                ) // Sort in descending order
+                .map((user, userIndex) =>
+                  user.read.map((company, companyIndex) => {
+                    if (company?.company?.id !== userID) {
+                      return (
+                        <>
+                          <Tooltip title={company.company?.name}>
+                            <ListItem
+                              button
+                              selected={selectedUser === company.company?.name}
+                              onClick={() => {
+                                setSelectedUser(company.company?.name);
+                                setSelectedUserID(company?.company?.id);
+                                setChatID(user?.channel?.id);
+                                messageRead(user?.channel?.id);
+                              }}
+                              sx={{
+                                "&.Mui-selected": {
+                                  background:
+                                    "linear-gradient(90deg, #4A90E2, #062d72)",
+                                  color: "#fff",
+                                  borderLeft: "4px solid #fff",
+                                  transition: "all 0.3s ease-in-out",
+                                },
+                                "&:hover": {
+                                  background:
+                                    selectedUser === company.company?.name
+                                      ? "linear-gradient(90deg, #4A90E2, #062d72)"
+                                      : "#e3eafc",
+                                },
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                padding: "12px",
+                                borderRadius: "8px",
+                                marginBottom: "4px",
                                 transition: "all 0.3s ease-in-out",
-                              },
-                              "&:hover": {
-                                background:
-                                  selectedUser === company.company?.name
-                                    ? "linear-gradient(90deg, #4A90E2, #062d72)"
-                                    : "#e3eafc",
-                              },
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              padding: "12px",
-                              borderRadius: "8px",
-                              marginBottom: "4px",
-                              transition: "all 0.3s ease-in-out",
-                            }}
-                          >
-                            {/* Avatar with Badge */}
+                              }}
+                            >
+                              {/* Avatar with Badge */}
 
-                            <ListItemAvatar>
-                              <Badge
-                                badgeContent={
-                                  readStatus[user?.channel?.id]
-                                    ? 0
-                                    : user.read.find(
-                                        (company) =>
-                                          company?.company?.id === userID
-                                      )?.unread_messages || 0
-                                }
-                                color="error"
-                                overlap="circular"
-                                anchorOrigin={{
-                                  vertical: "top",
-                                  horizontal: "right",
-                                }}
-                              >
-                                {/* {company?.company?.logo === null && (
+                              <ListItemAvatar>
+                                <Badge
+                                  badgeContent={
+                                    readStatus[user?.channel?.id]
+                                      ? 0
+                                      : user.read.find(
+                                          (company) =>
+                                            company?.company?.id === userID
+                                        )?.unread_messages || 0
+                                  }
+                                  color="error"
+                                  overlap="circular"
+                                  anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                  }}
+                                >
+                                  {/* {company?.company?.logo === null && (
                                   <Avatar
                                     sx={{
                                       backgroundColor: "#062d72",
@@ -205,65 +263,66 @@ const MessagesList = () => {
                                     <Person2Outlined />
                                   </Avatar>
                                 )} */}
-                                <Avatar
-                                  sx={{
-                                    backgroundColor: "#062d72",
-                                    width: "40px",
-                                    height: "40px",
-                                  }}
-                                >
-                                  <Person2Outlined />
-                                </Avatar>
-                              </Badge>
-                            </ListItemAvatar>
+                                  <Avatar
+                                    sx={{
+                                      backgroundColor: "#062d72",
+                                      width: "40px",
+                                      height: "40px",
+                                    }}
+                                  >
+                                    {company.company.name.charAt(0)}
+                                    {/* <Person2Outlined /> */}
+                                  </Avatar>
+                                </Badge>
+                              </ListItemAvatar>
 
-                            {/* Hide Company Name & Timestamp on Mobile */}
-                            {!isMobile && (
-                              <ListItemText
-                                primary={
-                                  <Typography
-                                    variant="body1"
-                                    sx={{
-                                      fontWeight: "bold",
-                                      color:
-                                        selectedUser === company.company?.name
-                                          ? "#fff"
-                                          : "#333",
-                                    }}
-                                  >
-                                    {company.company?.name}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Typography
-                                    variant="caption"
-                                    sx={{
-                                      color:
-                                        selectedUser === company.company?.name
-                                          ? "#fff"
-                                          : "gray",
-                                    }}
-                                  >
-                                    {dateTimeFormatter(
-                                      user.channel.last_message_at
-                                    )}
-                                  </Typography>
-                                }
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  width: "100%",
-                                }}
-                              />
-                            )}
-                          </ListItem>
-                        </Tooltip>
-                        <Divider />
-                      </>
-                    );
-                  }
-                })
-              )}
+                              {/* Hide Company Name & Timestamp on Mobile */}
+                              {!isMobile && (
+                                <ListItemText
+                                  primary={
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        fontWeight: "bold",
+                                        color:
+                                          selectedUser === company.company?.name
+                                            ? "#fff"
+                                            : "#333",
+                                      }}
+                                    >
+                                      {company.company?.name}
+                                    </Typography>
+                                  }
+                                  secondary={
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        color:
+                                          selectedUser === company.company?.name
+                                            ? "#fff"
+                                            : "gray",
+                                      }}
+                                    >
+                                      {dateTimeFormatter(
+                                        user.channel.last_message_at
+                                      )}
+                                    </Typography>
+                                  }
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    width: "100%",
+                                  }}
+                                />
+                              )}
+                            </ListItem>
+                          </Tooltip>
+                          <Divider />
+                        </>
+                      );
+                    }
+                  })
+                )}
             </Box>
           </List>
         </Box>
@@ -274,10 +333,11 @@ const MessagesList = () => {
             selectedUser={selectedUser}
             chatId={chatId}
             userID={userID}
+            refreshChatList={getChatList}
+            selectedUserID={selectedUserID}
           />
         </Box>
       </Box>
-      ;
     </>
   );
 };

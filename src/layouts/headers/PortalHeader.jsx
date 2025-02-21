@@ -11,7 +11,7 @@ import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 import { Inbox, Preferences } from "@novu/react";
 import {
-  onMessageListener,
+  // onMessageListener,
   requestFirebaseNotificationPermission,
 } from "../../firebaseMessaging";
 import _sendAPIRequest from "../../helpers/api";
@@ -71,11 +71,11 @@ const PortalHeader = () => {
       .catch((err) => console.log("Notification permission error:", err));
 
     // Listen for incoming messages
-    onMessageListener()
-      .then((payload) => {
-        console.log("New Notification:", payload);
-      })
-      .catch((err) => console.log("Error receiving message:", err));
+    // onMessageListener()
+    //   .then((payload) => {
+    //     console.log("New Notification:", payload);
+    //   })
+    // .catch((err) => console.log("Error receiving message:", err));
   }, []);
 
   const handleClick = (event) => {

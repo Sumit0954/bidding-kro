@@ -1,8 +1,8 @@
 importScripts(
-  "https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/11.2.0/firebase-app-compat.js"
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/11.3.1/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging-compat.js"
 );
 
 firebase.initializeApp({
@@ -17,43 +17,43 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // Handle background notifications
-messaging.onBackgroundMessage((payload) => {
-  console.log("Background Notification Received:", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: "/logo.png", // Make sure the icon is correct or update
-  };
+// messaging.onBackgroundMessage((payload) => {
+//   console.log("Background Notification Received:", payload);
+//   const notificationTitle = payload.notification.title;
+//   const notificationOptions = {
+//     body: payload.notification.body,
+//     icon: "/logo.png", // Make sure the icon is correct or update
+//   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+//   self.registration.showNotification(notificationTitle, notificationOptions);
+// });
 
 // Listen for push events
-self.addEventListener("push", (event) => {
-  console.log("Push event received:", event);
-  if (event.data) {
-    const payload = event.data.json();
-    console.log("Push Payload:", payload);
+// self.addEventListener("push", (event) => {
+//   console.log("Push event received:", event);
+//   if (event.data) {
+//     const payload = event.data.json();
+//     console.log("Push Payload:", payload);
 
-    // Ensure the payload structure has the notification data
-    if (payload.notification) {
-      const notificationTitle = payload.notification.title;
-      const notificationOptions = {
-        body: payload.notification.body,
-        icon: "/bidding-karo.ico", // Update this to your app's icon
-      };
+//     // Ensure the payload structure has the notification data
+//     if (payload.notification) {
+//       const notificationTitle = payload.notification.title;
+//       const notificationOptions = {
+//         body: payload.notification.body,
+//         icon: "/bidding-karo.ico", // Update this to your app's icon
+//       };
 
-      self.registration.showNotification(
-        notificationTitle,
-        notificationOptions
-      );
-    } else {
-      console.log("No notification in payload");
-    }
-  } else {
-    console.log("No data in push event");
-  }
-});
+//       self.registration.showNotification(
+//         notificationTitle,
+//         notificationOptions
+//       );
+//     } else {
+//       console.log("No notification in payload");
+//     }
+//   } else {
+//     console.log("No data in push event");
+//   }
+// });
 
 // Handle notification clicks (optional, can be customized)
 // self.addEventListener("notificationclick", function (event) {

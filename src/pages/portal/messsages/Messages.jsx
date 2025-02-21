@@ -5,18 +5,32 @@ import { Person2Outlined } from "@mui/icons-material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { dateTimeFormatter } from "../../../helpers/formatter";
 import { TimeIcon } from "@mui/x-date-pickers";
-const Messages = ({ selectedUser, chatId, userID }) => {
+const Messages = ({
+  selectedUser,
+  chatId,
+  userID,
+  refreshChatList,
+  selectedUserID,
+}) => {
   const { handleSubmit, control, reset } = useForm();
   const [messages, setMessages] = useState([]);
   const [updateChat, setUpdateChat] = useState();
+  const lastMessageRef = useRef(null);
+
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "instant" });
+    }
+  }, [messages]);
 
   const sendMessage = async (data) => {
     if (data.message.trim() !== "") {
       const formData = new FormData();
       formData.append("message", data.message);
+      formData.append("receiver_company_id", selectedUserID);
 
       console.log("Sending Message:", formData.get("message"));
 
@@ -31,8 +45,11 @@ const Messages = ({ selectedUser, chatId, userID }) => {
         if (response?.status === 200) {
           setUpdateChat(response?.data?.created_at);
           reset({ message: "" });
+          refreshChatList();
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error, "error");
+      }
     }
   };
 
@@ -60,55 +77,64 @@ const Messages = ({ selectedUser, chatId, userID }) => {
         {/* Chat Header */}
         <Box className={styles["chat-box-header"]}>
           <Avatar sx={{ marginRight: 1, backgroundColor: "#062d72" }}>
-            <Person2Outlined />
+            {selectedUser.charAt(0)}
+            {/* <Person2Outlined /> */}
           </Avatar>
           <Typography variant="h6">{selectedUser}</Typography>
         </Box>
 
         {/* Chat Messages */}
+
         <Box className={styles["chat-container"]}>
           {messages?.map((allmessage, messageIndex) =>
-            allmessage.messages.map((msg, msgIndex) => (
-              <Box
-                key={`${messageIndex}-${msgIndex}`} // Use a unique key for each message
-                sx={{
-                  maxWidth: "70%",
-                  marginBottom: 2,
-                  padding: "10px 15px",
-                  borderRadius: "18px",
-                  boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-                  background:
-                    msg?.company?.id === userID
-                      ? "linear-gradient(135deg, #f4f7ff, #e3e9ff)"
-                      : "linear-gradient(135deg, #86b0f9, #639af3)",
-                  alignSelf:
-                    msg?.company?.id === userID ? "flex-end" : "flex-start",
-                  color: msg?.company?.id === userID ? "#333" : "#fff",
-                  cursor: "pointer", // Add pointer cursor on hover
-                  transition:
-                    "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out", // Smooth animation
-                  "&:hover": {
-                    transform: "scale(1.05)", // Slightly scale the box when hovered
-                    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)", // Add stronger shadow on hover
-                  },
-                }}
-              >
-                <Typography variant="body1">{msg.text}</Typography>
+            allmessage.messages.map((msg, msgIndex) => {
+              const isLastMessage =
+                messageIndex === messages.length - 1 &&
+                msgIndex === allmessage.messages.length - 1;
 
-                <Typography
-                  variant="caption"
+              return (
+                <Box
+                  key={`${messageIndex}-${msgIndex}`} // Unique key
+                  ref={isLastMessage ? lastMessageRef : null} // Attach ref to last message
                   sx={{
-                    display: "block",
-                    textAlign: "right",
-                    marginTop: 0.5,
-                    opacity: 0.7,
-                    fontSize: "12px",
+                    maxWidth: "70%",
+                    marginBottom: 2,
+                    padding: "10px 15px",
+                    borderRadius: "18px",
+                    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+                    background:
+                      msg?.company?.id === userID
+                        ? "linear-gradient(135deg, #f4f7ff, #e3e9ff)"
+                        : "linear-gradient(135deg, #86b0f9, #639af3)",
+                    alignSelf:
+                      msg?.company?.id === userID ? "flex-end" : "flex-start",
+                    color: msg?.company?.id === userID ? "#333" : "#fff",
+                    cursor: "pointer",
+                    transition:
+                      "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)",
+                    },
                   }}
                 >
-                  {dateTimeFormatter(msg?.created_at)}
-                </Typography>
-              </Box>
-            ))
+                  <Typography variant="body1">{msg.text}</Typography>
+
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      display: "block",
+                      textAlign: "right",
+                      marginTop: 0.5,
+                      opacity: 0.7,
+                      fontSize: "12px",
+                    }}
+                  >
+                    {dateTimeFormatter(msg?.created_at)}
+                  </Typography>
+                </Box>
+              );
+            })
           )}
         </Box>
 

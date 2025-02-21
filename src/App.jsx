@@ -4,10 +4,10 @@ import { Route, Routes } from "react-router-dom";
 import WebsiteRoutes from "./routes/WebsiteRoutes";
 import PortalRoutes from "./routes/PortalRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
-import {
-  requestFirebaseNotificationPermission,
-  onMessageListener,
-} from "./firebaseMessaging";
+// import {
+//   requestFirebaseNotificationPermission,
+//   onMessageListener,
+// } from "./firebaseMessaging";
 import { getMessaging, getToken } from "firebase/messaging";
 import _sendAPIRequest from "./helpers/api";
 import { PortalApiUrls } from "./helpers/api-urls/PortalApiUrls";
