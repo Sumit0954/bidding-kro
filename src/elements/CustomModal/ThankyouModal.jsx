@@ -15,7 +15,6 @@ const ThankyouModal = ({
 }) => {
   const handleClose = () => {
     setShowThankyou(false);
-    window.location.reload();
   };
 
   return (

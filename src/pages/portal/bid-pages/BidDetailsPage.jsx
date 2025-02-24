@@ -40,6 +40,7 @@ import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 import { PrintOutlined } from "@mui/icons-material";
+import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
 
 const BidDetailsPage = () => {
@@ -57,6 +58,11 @@ const BidDetailsPage = () => {
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+  });
 
   // const urlActiveTab = new URLSearchParams(useLocation().search).get("activeTab");
   const decodedSearch = decodeURIComponent(window.location.search).replace(
@@ -85,6 +91,7 @@ const BidDetailsPage = () => {
     navigate({ search: urlParams.toString() }, { replace: true });
   };
 
+            
   useEffect(() => {
     console.log(urlActiveTab, "urlActiveTab");
     if (urlActiveTab) {
@@ -102,12 +109,6 @@ const BidDetailsPage = () => {
       : title;
   };
 
-  const [deleteDetails, setDeleteDetails] = useState({
-    open: false,
-    title: "",
-    message: "",
-  });
-
   const handleDelete = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -118,7 +119,7 @@ const BidDetailsPage = () => {
       );
       if (response.status === 204) {
         setDeleteDetails({ open: false, title: "", message: "" });
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -176,7 +177,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id, type, refreshKey]);
+  }, [id, type, refreshKey, showThankyou, deleteDetails]);
 
   useEffect(() => {
     if (bidDetails?.id) {
@@ -204,7 +205,7 @@ const BidDetailsPage = () => {
 
   useEffect(() => {
     getPar();
-  }, []);
+  }, [showThankyou, deleteDetails]);
 
   const getPar = async () => {
     try {
@@ -246,18 +247,28 @@ const BidDetailsPage = () => {
           type === "invited" ||
           bidDetails?.status === "completed" ||
           bidDetails?.status === "closed" ||
-          bidDetails?.status === "live" ? (
+          bidDetails?.status === "live" ||
+          bidDetails?.status === "cancelled" ? (
             <Tooltip
               title={`This Bid Is  ${
-                bidDetails?.status === "completed" ? "Completed" : "Live"
+                bidDetails?.status === "completed"
+                  ? "Completed"
+                  : bidDetails?.status === "cancelled"
+                  ? "cancelled"
+                  : "live"
               }`}
               arrow
             >
               <div style={{ display: "inline-block", position: "relative" }}>
                 <button
-                  className={cn("btn", "button", "approve")}
+                  className={
+                    bidDetails?.status === "cancelled"
+                      ? cn("btn", "button", styles["ifCencelled"])
+                      : cn("btn", "button", "approve")
+                  }
                   type="button"
                   disabled
+                  style={{ backgroundColor: "red" }}
                   onClick={() => navigate("/portal/liveBids")}
                 >
                   {bidDetails?.status}

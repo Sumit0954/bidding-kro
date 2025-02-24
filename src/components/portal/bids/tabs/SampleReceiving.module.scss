@@ -52,3 +52,13 @@
   color: var(--gray);
   background-color: var(--disable);
 }
+
+.form-btn {
+  background-color: var(--primary-color) !important;
+
+  &.form-btn:hover {
+    background-color: var(--secondary-color) !important;
+  }
+}
+
+

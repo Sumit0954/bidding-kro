@@ -21,6 +21,7 @@ import {
   Box,
   Button,
   TableCell,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -341,116 +342,149 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
         <div className="row">
           <form>
             <div className="row" style={{ width: "100%" }}>
-              <div className="col-lg-4">
-                <Controller
-                  name="sample_receive_start_date"
-                  control={control}
-                  defaultValue={bidDetails?.sample_receive_start_date || null}
-                  rules={{
-                    required: !bidDetails?.sample_receive_start_date
-                      ? "Opening Date is required."
-                      : false,
-                    validate: (value) => {
-                      if (!bidDetails?.sample_receive_start_date) {
+              <Tooltip
+                title={
+                  bidDetails?.sample_receive_start_date &&
+                  "You can't change the opening date"
+                }
+              >
+                <div
+                  className="col-lg-4"
+                  style={{
+                    cursor: bidDetails?.sample_receive_start_date
+                      ? "not-allowed"
+                      : "default",
+                  }}
+                >
+                  <Controller
+                    style={{ cursor: "not-allowed" }}
+                    name="sample_receive_start_date"
+                    control={control}
+                    defaultValue={bidDetails?.sample_receive_start_date || null}
+                    rules={{
+                      required: !bidDetails?.sample_receive_start_date
+                        ? "Opening Date is required."
+                        : false,
+                      validate: (value) => {
+                        if (!bidDetails?.sample_receive_start_date) {
+                          const date = dayjs(value);
+                          return date.isValid() || "Invalid date range";
+                        }
+                        return true; // Skip validation if the field is disabled
+                      },
+                    }}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        label="Sample Receiving Opening Date"
+                        value={
+                          field.value
+                            ? dayjs(field.value)
+                            : bidDetails?.sample_receive_start_date
+                            ? dayjs(bidDetails.sample_receive_start_date)
+                            : null
+                        }
+                        minDate={dayjs()}
+                        onChange={(value) => {
+                          if (!bidDetails?.sample_receive_start_date) {
+                            const formattedValue = value
+                              ? value.format("YYYY-MM-DD")
+                              : null;
+                            field.onChange(formattedValue);
+                            setValue(
+                              "sample_receive_start_date",
+                              formattedValue
+                            );
+                            setSampleOpeningDate(formattedValue);
+                            clearErrors("sample_receive_start_date");
+                          }
+                        }}
+                        disabled={
+                          bidDetails?.sample_receive_start_date !== null
+                        }
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            required: true,
+                            style: {
+                              height: "40px",
+                              fontSize: "14px",
+                              pointerEvents:
+                                bidDetails?.sample_receive_start_date
+                                  ? "none"
+                                  : "auto",
+                            },
+                            error: !!errors.sample_receive_start_date,
+                            helperText:
+                              errors.sample_receive_start_date?.message,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              </Tooltip>
+              <Tooltip
+                title={
+                  bidDetails?.sample_receive_end_date !== null &&
+                  "Extend closing date accordingly"
+                }
+              >
+                <div className="col-lg-4">
+                  <Controller
+                    name="sample_receive_end_date"
+                    control={control}
+                    rules={{
+                      required: "Closing Date is required.",
+                      validate: (value) => {
                         const date = dayjs(value);
                         return date.isValid() || "Invalid date range";
-                      }
-                      return true; // Skip validation if the field is disabled
-                    },
-                  }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      label="Sample Receiving Opening Date"
-                      value={
-                        field.value
-                          ? dayjs(field.value)
-                          : bidDetails?.sample_receive_start_date
-                          ? dayjs(bidDetails.sample_receive_start_date)
-                          : null
-                      }
-                      minDate={dayjs()}
-                      onChange={(value) => {
-                        if (!bidDetails?.sample_receive_start_date) {
+                      },
+                    }}
+                    render={({ field }) => (
+                      <DatePicker
+                        {...field}
+                        label="Sample Receiving Closing Date"
+                        value={
+                          field.value // Use field.value if it's set
+                            ? dayjs(field.value)
+                            : bidDetails?.sample_receive_end_date // Otherwise use the bidDetails value
+                            ? dayjs(bidDetails.sample_receive_end_date)
+                            : null
+                        }
+                        minDate={
+                          bidDetails?.sample_receive_start_date
+                            ? dayjs(bidDetails?.sample_receive_start_date)
+                            : dayjs(sampleOpeningDate)
+                        }
+                        onChange={(value) => {
                           const formattedValue = value
                             ? value.format("YYYY-MM-DD")
                             : null;
-                          field.onChange(formattedValue);
-                          setValue("sample_receive_start_date", formattedValue);
-                          setSampleOpeningDate(formattedValue);
-                          clearErrors("sample_receive_start_date");
-                        }
-                      }}
-                      disabled={bidDetails?.sample_receive_start_date !== null}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          required: true,
-                          style: {
-                            height: "40px",
-                            fontSize: "14px",
+                          setValue("sample_receive_end_date", formattedValue);
+                          clearErrors("sample_receive_end_date");
+                        }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            required: true,
+                            style: {
+                              height: "40px",
+                              fontSize: "14px",
+                            },
+                            error: !!errors.sample_receive_end_date,
+                            helperText: errors.sample_receive_end_date?.message,
                           },
-                          error: !!errors.sample_receive_start_date,
-                          helperText: errors.sample_receive_start_date?.message,
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className="col-lg-4">
-                <Controller
-                  name="sample_receive_end_date"
-                  control={control}
-                  rules={{
-                    required: "Closing Date is required.",
-                    validate: (value) => {
-                      const date = dayjs(value);
-                      return date.isValid() || "Invalid date range";
-                    },
-                  }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      label="Sample Receiving Closing Date"
-                      value={
-                        field.value // Use field.value if it's set
-                          ? dayjs(field.value)
-                          : bidDetails?.sample_receive_end_date // Otherwise use the bidDetails value
-                          ? dayjs(bidDetails.sample_receive_end_date)
-                          : null
-                      }
-                      minDate={
-                        bidDetails?.sample_receive_start_date
-                          ? dayjs(bidDetails?.sample_receive_start_date)
-                          : dayjs(sampleOpeningDate)
-                      }
-                      onChange={(value) => {
-                        const formattedValue = value
-                          ? value.format("YYYY-MM-DD")
-                          : null;
-                        setValue("sample_receive_end_date", formattedValue);
-                        clearErrors("sample_receive_end_date");
-                      }}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          required: true,
-                          style: {
-                            height: "40px",
-                            fontSize: "14px",
-                          },
-                          error: !!errors.sample_receive_end_date,
-                          helperText: errors.sample_receive_end_date?.message,
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              </Tooltip>
               <div className="col-lg-4">
                 <Button
                   variant="contained"
+                  className={styles["form-btn"]}
                   style={{ width: "100%", height: "56px" }}
                   // className={styles["form-button"]}
                   onClick={handleSubmit(submitSampledates)}

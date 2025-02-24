@@ -189,13 +189,15 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Opening Date : {bidDetails?.bid_open_date}
+                      Bid Opening Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_open_date)}
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Closing Date : {bidDetails?.bid_close_date}
+                      Bid Closing Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_close_date)}
                     </ListItem>
                   </List>
                 </Box>
@@ -235,13 +237,15 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Opening Date : {bidDetails?.bid_open_date}
+                      Bid Opening Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_open_date)}
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Closing Date : {bidDetails?.bid_close_date}
+                      Bid Closing Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_close_date)}
                     </ListItem>
                   </List>
                 </Box>
@@ -346,13 +350,15 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Opening Date : {bidDetails?.bid_open_date}
+                      Bid Opening Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_open_date)}
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
-                      Bid Closing Date : {bidDetails?.bid_close_date}
+                      Bid Closing Date :{" "}
+                      {dateTimeFormatter(bidDetails?.bid_close_date)}
                     </ListItem>
                   </List>
                   <Typography variant="body1">
@@ -405,14 +411,14 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
                       Sample Receiving Opening date :{" "}
-                      {bidDetails?.sample_receive_start_date}
+                      {dateTimeFormatter(bidDetails?.sample_receive_start_date)}
                     </ListItem>
                     <ListItem>
                       <ListItemIcon>
                         <FiberManualRecordIcon style={{ fontSize: "small" }} />
                       </ListItemIcon>
                       Sample Receiving Closing date :{" "}
-                      {bidDetails?.sample_receive_end_date}
+                      {dateTimeFormatter(bidDetails?.sample_receive_end_date)}
                     </ListItem>
                   </List>
                   <Typography variant="body1">
@@ -796,7 +802,9 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                           />
                         </ListItemIcon>
                         Sample Receiving Opening date :{" "}
-                        {bidDetails?.sample_receive_start_date}
+                        {dateTimeFormatter(
+                          bidDetails?.sample_receive_start_date
+                        )}
                       </ListItem>
                       <ListItem>
                         <ListItemIcon>
@@ -805,7 +813,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                           />
                         </ListItemIcon>
                         Sample Receiving Closing date :{" "}
-                        {bidDetails?.sample_receive_end_date}
+                        {dateTimeFormatter(bidDetails?.sample_receive_end_date)}
                       </ListItem>
                     </List>
                     <Typography variant="body1">

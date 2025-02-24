@@ -176,7 +176,8 @@ const PortalHeader = () => {
             <div className={styles["icon-container"]}>
               {subscriberId && (
                 <Inbox
-                  applicationIdentifier="W3fmktGqBpaY"
+                  // applicationIdentifier="W3fmktGqBpaY"
+                  applicationIdentifier={novuAppID}
                   subscriberId={subscriberId}
                   subscriberHash={userDetails?.novu_subscriber_hash}
                   backendUrl="https://eu.api.novu.co"

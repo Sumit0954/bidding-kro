@@ -1,8 +1,8 @@
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal, Tooltip, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import styles from "./Modal.module.scss";
 import cn from "classnames";
-import { dateTimeFormatter } from "../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { ButtonLoader } from "../CustomLoader/Loader";
@@ -23,6 +23,7 @@ const InvitationModal = ({
   const { setAlert } = useContext(AlertContext);
   const dispatch = useDispatch();
 
+  console.log(bidDetails, " : bidDetails");
   const handleClose = () => {
     setInvitation(false);
   };
@@ -111,13 +112,21 @@ const InvitationModal = ({
                 {loading ? (
                   <ButtonLoader size={60} />
                 ) : (
-                  <button
-                    type="button"
-                    className="btn button"
-                    onClick={sendInvite}
+                  <Tooltip
+                    title={`Send invite to ${
+                      listtype === "allcompanies"
+                        ? companyDetail?.name
+                        : companyDetail?.requestor.name
+                    }`}
                   >
-                    Send Invitation
-                  </button>
+                    <button
+                      type="button"
+                      className="btn button"
+                      onClick={sendInvite}
+                    >
+                      Send Invitation
+                    </button>
+                  </Tooltip>
                 )}
               </Box>
 
@@ -128,21 +137,41 @@ const InvitationModal = ({
               </Box>
 
               <Box className="row mb-2">
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {bidDetails?.title}
-                </Box>
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
-                >
-                  {bidDetails?.type}
-                </Box>
-                <Box className="col-lg-4 text-start">
-                  {bidDetails?.bid_close_date}
-                </Box>
+                <Tooltip title={bidDetails?.title}>
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{
+                      borderRight: "2px solid var(--primary-color)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <strong>Title: </strong>{" "}
+                    {truncateString(bidDetails?.title, 25)}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={bidDetails?.type}>
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{
+                      borderRight: "2px solid var(--primary-color)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <strong>Type: </strong>
+                    {bidDetails?.type}
+                  </Box>
+                </Tooltip>
+                <Tooltip title={dateTimeFormatter(bidDetails?.bid_close_date)}>
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <strong>Closed on: </strong>
+                    {bidDetails?.bid_close_date === null
+                      ? "Still to be declare"
+                      : dateTimeFormatter(bidDetails?.bid_close_date)}
+                  </Box>
+                </Tooltip>
               </Box>
 
               <Box className="row">
@@ -154,27 +183,66 @@ const InvitationModal = ({
               </Box>
 
               <Box className="row mb-2">
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                <Tooltip
+                  title={
+                    listtype === "allcompanies"
+                      ? companyDetail?.name
+                      : companyDetail?.requestor.name
+                  }
                 >
-                  {listtype === "allcompanies"
-                    ? companyDetail?.name
-                    : companyDetail?.requestor.name}
-                </Box>
-                <Box
-                  className="col-lg-4 text-start"
-                  sx={{ borderRight: "2px solid var(--primary-color)" }}
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{
+                      borderRight: "2px solid var(--primary-color)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <strong>Name: </strong>{" "}
+                    {listtype === "allcompanies"
+                      ? companyDetail?.name
+                      : companyDetail?.requestor.name}
+                  </Box>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    listtype === "allcompanies"
+                      ? companyDetail?.business_email
+                      : companyDetail?.requestor.business_email
+                  }
                 >
-                  {listtype === "allcompanies"
-                    ? companyDetail?.business_email
-                    : companyDetail?.requestor.business_email}
-                </Box>
-                <Box className="col-lg-4 text-start">
-                  {listtype === "allcompanies"
-                    ? companyDetail?.business_mobile
-                    : companyDetail?.requestor.business_mobile}
-                </Box>
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{
+                      borderRight: "2px solid var(--primary-color)",
+                      cursor: " pointer",
+                    }}
+                  >
+                    <strong>Email: </strong>{" "}
+                    {truncateString(
+                      listtype === "allcompanies"
+                        ? companyDetail?.business_email
+                        : companyDetail?.requestor.business_email,
+                      20
+                    )}
+                  </Box>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    listtype === "allcompanies"
+                      ? companyDetail?.business_mobile
+                      : companyDetail?.requestor.business_mobile
+                  }
+                >
+                  <Box
+                    className="col-lg-4 text-start"
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <strong>Phone : </strong>{" "}
+                    {listtype === "allcompanies"
+                      ? companyDetail?.business_mobile
+                      : companyDetail?.requestor.business_mobile}
+                  </Box>
+                </Tooltip>
               </Box>
             </Box>
           </Box>
