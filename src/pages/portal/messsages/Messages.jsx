@@ -74,13 +74,28 @@ const Messages = ({
   return (
     <>
       <Box className={styles["chat-box"]}>
-        {/* Chat Header */}
-        <Box className={styles["chat-box-header"]}>
-          <Avatar sx={{ marginRight: 1, backgroundColor: "#062d72" }}>
+        <Box
+          className={styles["chat-box-header"]}
+          sx={{
+            display: "flex",
+            alignItems: "center", // Ensures content is vertically centered
+            padding: "5px 10px", // Reduce padding
+            height: "50px", // Adjust height as needed
+          }}
+        >
+          <Avatar
+            sx={{
+              marginRight: 1,
+              backgroundColor: "#062d72",
+              width: 30,
+              height: 30,
+            }}
+          >
             {selectedUser.charAt(0)}
-            {/* <Person2Outlined /> */}
           </Avatar>
-          <Typography variant="h6">{selectedUser}</Typography>
+          <Typography variant="h6" sx={{ fontSize: "16px" }}>
+            {selectedUser}
+          </Typography>
         </Box>
 
         {/* Chat Messages */}

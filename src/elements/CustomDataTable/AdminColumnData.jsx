@@ -8,6 +8,7 @@ export const companies_column = [
     accessor: "name",
     align: "left",
     disablePadding: false,
+    width: 150,
     Cell: (data) => {
       return (
         <NavLink
@@ -20,10 +21,11 @@ export const companies_column = [
     },
   },
   {
-    Header: "Owner",
+    Header: "Buyer Name",
     accessor: "customer_profile.user.first_name",
     align: "left",
     disablePadding: false,
+    width: 150,
     Cell: (data) => {
       return `${data?.row?.original?.customer_profile?.user?.first_name} ${data?.row?.original?.customer_profile?.user?.last_name}`;
     },
@@ -33,6 +35,28 @@ export const companies_column = [
     accessor: "business_email",
     align: "left",
     disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Category",
+    accessor: "category",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "City",
+    accessor: "city",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    align: "left",
+    disablePadding: false,
+    width: 100,
   },
 ];
 

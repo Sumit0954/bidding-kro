@@ -87,6 +87,7 @@ const CompanyList = () => {
         action={addAction}
         customClassName="admin-data-table"
       />
+      
     </>
   );
 };

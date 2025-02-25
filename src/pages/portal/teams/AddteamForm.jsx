@@ -40,7 +40,7 @@ const AddteamForm = () => {
           textAlign: "center", // Center the heading on all screen sizes
         }}
       >
-        INVITE TEAM MEMBER
+        ADD TEAM MEMBER
       </Typography>
       {/* First and Last Name fields */}
       <Box className={styles["first_last_name_fields"]}>

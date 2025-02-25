@@ -41,24 +41,24 @@ const sidebarMenu = [
     title: "Companies",
     path: "/admin/companies",
   },
-  {
-    icon: "/images/admin/layout/icons/credit-card.svg",
-    title: "Transactions",
-    path: "/admin/transactions",
-  },
-  {
-    icon: "/images/admin/layout/icons/queries.svg",
-    title: "Queries",
-    path: "/admin/queries",
-  },
-  {
-    icon: "/images/admin/layout/icons/blogging.svg",
-    title: "Blog Management",
-    path: "/admin/blogs",
-  },
-  {
-    icon: "/images/admin/layout/icons/Administrator3.svg",
-    title: "Admin Management",
-    path: "/admin/management",
-  },
+  // {
+  //   icon: "/images/admin/layout/icons/credit-card.svg",
+  //   title: "Transactions",
+  //   path: "/admin/transactions",
+  // },
+  // {
+  //   icon: "/images/admin/layout/icons/queries.svg",
+  //   title: "Queries",
+  //   path: "/admin/queries",
+  // },
+  // {
+  //   icon: "/images/admin/layout/icons/blogging.svg",
+  //   title: "Blog Management",
+  //   path: "/admin/blogs",
+  // },
+  // {
+  //   icon: "/images/admin/layout/icons/Administrator3.svg",
+  //   title: "Admin Management",
+  //   path: "/admin/management",
+  // },
 ];
