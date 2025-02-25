@@ -7,6 +7,7 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState, useRef } from "react";
 import { dateTimeFormatter } from "../../../helpers/formatter";
+import NoliveBidImg from "../../../assets/images/portal/bids/no_live_bid.png";
 import { TimeIcon } from "@mui/x-date-pickers";
 const Messages = ({
   selectedUser,
@@ -62,6 +63,7 @@ const Messages = ({
         true
       );
       if (response?.status === 200) {
+        console.log(response?.data, "mmmm");
         setMessages(response?.data);
       }
     } catch (error) {}
@@ -100,7 +102,7 @@ const Messages = ({
 
         {/* Chat Messages */}
 
-        <Box className={styles["chat-container"]}>
+        {/* <Box className={styles["chat-container"]}>
           {messages?.map((allmessage, messageIndex) =>
             allmessage.messages.map((msg, msgIndex) => {
               const isLastMessage =
@@ -150,6 +152,70 @@ const Messages = ({
                 </Box>
               );
             })
+          )}
+        </Box> */}
+
+        <Box className={styles["chat-container"]}>
+          {messages?.length > 0 ? (
+            messages.map((allmessage, messageIndex) =>
+              allmessage.messages.map((msg, msgIndex) => {
+                const isLastMessage =
+                  messageIndex === messages.length - 1 &&
+                  msgIndex === allmessage.messages.length - 1;
+
+                return (
+                  <Box
+                    key={`${messageIndex}-${msgIndex}`} // Unique key
+                    ref={isLastMessage ? lastMessageRef : null} // Attach ref to last message
+                    sx={{
+                      maxWidth: "70%",
+                      marginBottom: 2,
+                      padding: "10px 15px",
+                      borderRadius: "18px",
+                      boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+                      background:
+                        msg?.company?.id === userID
+                          ? "linear-gradient(135deg, #f4f7ff, #e3e9ff)"
+                          : "linear-gradient(135deg, #86b0f9, #639af3)",
+                      alignSelf:
+                        msg?.company?.id === userID ? "flex-end" : "flex-start",
+                      color: msg?.company?.id === userID ? "#333" : "#fff",
+                      cursor: "pointer",
+                      transition:
+                        "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)",
+                      },
+                    }}
+                  >
+                    <Typography variant="body1">{msg.text}</Typography>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: "block",
+                        textAlign: "right",
+                        marginTop: 0.5,
+                        opacity: 0.7,
+                        fontSize: "12px",
+                      }}
+                    >
+                      {dateTimeFormatter(msg?.created_at)}
+                    </Typography>
+                  </Box>
+                );
+              })
+            )
+          ) : (
+            <>
+              <Box
+                component="img"
+                src={NoliveBidImg}
+                alt="No Messages"
+                sx={{ width: "200px", display: "block", margin: "auto" }}
+              />
+            </>
           )}
         </Box>
 
