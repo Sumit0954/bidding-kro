@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import BidList from "../../../components/portal/bids/BidList";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import cn from "classnames";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import _sendAPIRequest from "../../../helpers/api";
@@ -12,12 +12,13 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import SearchBar from "../../../elements/CustomSelect/SearchBar";
 
 const BidListPage = () => {
-  const [value, setValue] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [value, setValue] = useState(location.state?.listType || 0);
   const [selectedRow, setSelectedRow] = useState({});
   // const [categories, setCategories] = useState({ 0: [] });
   // const [rootCategory, setRootCategory] = useState("");
   // const [selectedCategory, setSelectedCategory] = useState([]);
-  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -162,7 +163,7 @@ const BidListPage = () => {
                   "@media (max-width: 600px)": {
                     width: "100%",
                   },
-                   width: "100%"
+                  width: "100%",
                 }}
               >
                 + Create Bid

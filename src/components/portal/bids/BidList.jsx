@@ -25,7 +25,7 @@ const BidList = ({ listType }) => {
   const [rootCategory, setRootCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
-  const [screenLoader , setScreenLoader] = useState(true)
+  const [screenLoader, setScreenLoader] = useState(true);
 
   // To Created Bid List
   const getCreatedBidList = async () => {
@@ -49,7 +49,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setCreatedBids(response.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       // console.log(error);
@@ -67,7 +67,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setInviteBids(response.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {
       // console.log(error);
@@ -85,7 +85,7 @@ const BidList = ({ listType }) => {
       );
       if (response.status === 200) {
         setRelatedBids(response.data);
-        setScreenLoader(false)
+        setScreenLoader(false);
       }
     } catch (error) {}
   };
@@ -173,8 +173,7 @@ const BidList = ({ listType }) => {
     setSelectedCategory(ancestors);
   };
 
-  useEffect(() => {
-  }, [rootCategory]);
+  useEffect(() => {}, [rootCategory]);
 
   const handlerequest = (data) => {
     setSendRequest(true);
@@ -207,10 +206,9 @@ const BidList = ({ listType }) => {
     }
   };
 
-  if(screenLoader){
-    return <ScreenLoader />
+  if (screenLoader) {
+    return <ScreenLoader />;
   }
-
 
   return (
     <>
@@ -275,7 +273,7 @@ const BidList = ({ listType }) => {
           setSendRequest={setSendRequest}
           bidDetails={bidDetails}
         />
-      )} 
+      )}
     </>
   );
 };

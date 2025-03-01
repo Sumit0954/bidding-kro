@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import styles from "./Dashboard.module.scss";
 import { useNavigate } from "react-router-dom";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
+import { TableCell } from "@mui/material";
+
 import {
   Alert,
   AlertTitle,
@@ -13,8 +15,10 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import { RecentBids_column } from "../../../elements/CustomDataTable/PortalColumnData";
-import { Best_company_column } from "../../../elements/CustomDataTable/PortalColumnData";
+import {
+  created_bids_column,
+  invited_bids_column,
+} from "../../../elements/CustomDataTable/PortalColumnData";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import {
   AttachMoney,
@@ -26,11 +30,23 @@ import {
   SavingsTwoTone,
 } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import CompanyDetailsProvider, {
+  CompanyDetailsContext,
+} from "../../../contexts/CompanyDetailsProvider";
 
-function Dashboard() {
-  const naviagte = useNavigate();
-
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const [filterBy, setFilterBy] = useState("spends");
+  const [cardData, setCardData] = useState("");
+  const [createdBids, setCreatedBids] = useState([]);
+  const [inviteBids, setInviteBids] = useState([]);
+  const [selectedRow, setSelectedRow] = useState({});
   const { noCompany } = useContext(UserDetailsContext);
+  const { companyDetails } = useContext(CompanyDetailsContext);
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const [permissionStatus, setPermissionStatus] = useState(
     Notification.permission
@@ -65,6 +81,102 @@ function Dashboard() {
   };
 
   // console.log("Permission Status:", permissionStatus);
+
+  const getDashboardData = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        `${PortalApiUrls.PORTAL_DASHBOARD}`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        console.log("response.data", response.data);
+        setCardData(response.data);
+        setScreenLoader(false);
+      }
+    } catch (error) {
+      setAlert({
+        isVisible: true,
+        message: "Failed to fetch Dashboard Data. Please try again later.",
+        severity: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    console.log(companyDetails, "companyDetailscompanyDetails");
+    getDashboardData();
+    getCreatedBidList();
+    getInvitedBidList();
+  }, []);
+
+  const handleCardClick = (listType) => {
+    setFilterBy(listType); // Update the filterBy state
+    navigate("/portal/bids", { state: { listType: listType } });
+  };
+
+  const handleCard = (listType) => {
+    setFilterBy(listType); // Update the filterBy state
+  };
+
+  const isSelected = (type) => filterBy === type;
+
+  const getCreatedBidList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.CREATED_LIST_BIDS,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setCreatedBids(response.data);
+        setScreenLoader(false);
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
+  const getInvitedBidList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.INVITED_BID_LIST,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setInviteBids(response.data);
+        setScreenLoader(false);
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
+  const addCreatedAction = (cell) => {
+    return (
+      <TableCell {...cell.getCellProps()} align={cell.column.align}>
+        {" "}
+        {cell.render("Cell")}{" "}
+      </TableCell>
+    );
+  };
+
+  const addInvitedAction = (cell) => {
+    return (
+      <TableCell {...cell.getCellProps()} align={cell.column.align}>
+        {" "}
+        {cell.render("Cell")}{" "}
+      </TableCell>
+    );
+  };
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
@@ -143,7 +255,7 @@ function Dashboard() {
         >
           <Avatar
             alt="User Avatar"
-            src="/static/images/avatar/1.jpg"
+            src={companyDetails?.logo}
             sx={{
               width: 48,
               height: 48,
@@ -160,7 +272,7 @@ function Dashboard() {
                 fontSize: { xs: "1rem", sm: "1.25rem" },
               }}
             >
-              Hello, XYZ Industries
+              Hello, {companyDetails?.name}
             </Typography>
             <Typography
               variant="body2"
@@ -179,7 +291,10 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("spends") ? "#e0f7fa" : "white",
+                border: isSelected("spends") ? "2px solid #055160" : "none",
               }}
+              onClick={() => handleCard("spends")}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
@@ -190,7 +305,7 @@ function Dashboard() {
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.spends}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
@@ -204,18 +319,21 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("savings") ? "#e0f7fa" : "white",
+                border: isSelected("savings") ? "2px solid #055160" : "none",
               }}
+              onClick={() => handleCard("savings")}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Total Saving
+                  Total Savings
                 </Typography>
                 <Typography
                   variant="h4"
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.savings}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
@@ -229,18 +347,25 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("related_bids")
+                  ? "#e0f7fa"
+                  : "white",
+                border: isSelected("related_bids")
+                  ? "2px solid #055160"
+                  : "none",
               }}
+              onClick={() => handleCardClick(2)}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Perspective Bids Available
+                  Related Bids
                 </Typography>
                 <Typography
                   variant="h4"
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.related_bids}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
@@ -254,18 +379,25 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("pending_acceptance_bids")
+                  ? "#e0f7fa"
+                  : "white",
+                border: isSelected("pending_acceptance_bids")
+                  ? "2px solid #055160"
+                  : "none",
               }}
+              onClick={() => handleCardClick(1)}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Bids Invites pending for acceptance
+                  Invites pending
                 </Typography>
                 <Typography
                   variant="h4"
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.pending_acceptance_bids}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
@@ -279,18 +411,25 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("upcoming_bids")
+                  ? "#e0f7fa"
+                  : "white",
+                border: isSelected("upcoming_bids")
+                  ? "2px solid #055160"
+                  : "none",
               }}
+              onClick={() => handleCardClick(0)}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Accepted bids pending for live
+                  Upcoming bids
                 </Typography>
                 <Typography
                   variant="h4"
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.upcoming_bids}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
@@ -304,122 +443,29 @@ function Dashboard() {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                backgroundColor: isSelected("unawarded_bids")
+                  ? "#e0f7fa"
+                  : "white",
+                border: isSelected("unawarded_bids")
+                  ? "2px solid #055160"
+                  : "none",
               }}
+              onClick={() => handleCardClick(0)}
             >
               <CardContent sx={{ flex: "1" }}>
                 <Typography variant="h6" component="div">
-                  Participated bids pending for LOI
+                  Unawarded Bids
                 </Typography>
                 <Typography
                   variant="h4"
                   component="div"
                   sx={{ color: "#055160" }}
                 >
-                  10
+                  {cardData?.unawarded_bids}
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
                 <HourglassEmpty sx={{ color: "#055160" }} />
-              </Box>
-            </Card>
-          </Grid>
-          {/* Inactive Bids pending for action */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <CardContent sx={{ flex: "1" }}>
-                <Typography variant="h6" component="div">
-                  Inactive Bids pending for action
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="div"
-                  sx={{ color: "#055160" }}
-                >
-                  10
-                </Typography>
-              </CardContent>
-              <Box sx={{ padding: "10px" }}>
-                <HourglassEmpty sx={{ color: "#055160" }} />
-              </Box>
-            </Card>
-          </Grid>
-          {/*  Bids pending for sending the invites */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <CardContent sx={{ flex: "1" }}>
-                <Typography variant="h6" component="div">
-                  Bids pending for sending the invites
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="div"
-                  sx={{ color: "#055160" }}
-                >
-                  10
-                </Typography>
-              </CardContent>
-              <Box sx={{ padding: "10px" }}>
-                <PersonAdd sx={{ color: "#055160" }} />
-              </Box>
-            </Card>
-          </Grid>
-          {/*  Created bids pending for Live */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <CardContent sx={{ flex: "1" }}>
-                <Typography variant="h6" component="div">
-                  Created bids pending for Live
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="div"
-                  sx={{ color: "#055160" }}
-                >
-                  10
-                </Typography>
-              </CardContent>
-              <Box sx={{ padding: "10px" }}>
-                <HourglassEmpty sx={{ color: "#055160" }} />
-              </Box>
-            </Card>
-          </Grid>
-          {/*  Closed Bids pending to be awarded */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <CardContent sx={{ flex: "1" }}>
-                <Typography variant="h6" component="div">
-                  Closed Bids pending to be awarded
-                </Typography>
-                <Typography
-                  variant="h4"
-                  component="div"
-                  sx={{ color: "#055160" }}
-                >
-                  10
-                </Typography>
-              </CardContent>
-              <Box sx={{ padding: "10px" }}>
-                <EmojiEvents sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>
@@ -428,19 +474,35 @@ function Dashboard() {
 
       <div className="container-fluid mt-5">
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          Recent Bids
+          Recent Created Bids
         </Typography>
-        <DataTable propsColumn={RecentBids_column} propsData={[]} />
+        <DataTable
+          propsColumn={created_bids_column}
+          propsData={createdBids}
+          action={addCreatedAction}
+          customClassName="portal-data-table"
+          isSingleSelection={true}
+          setSelectedRow={setSelectedRow}
+          hideToolbar={true}
+          hidePagination={true}
+        />
       </div>
 
       <div className="container-fluid mt-5">
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-          Best Companies
+          Recent participated Bids
         </Typography>
-        <DataTable propsColumn={Best_company_column} propsData={[]} />
+        <DataTable
+          propsColumn={invited_bids_column}
+          propsData={inviteBids}
+          action={addInvitedAction}
+          customClassName="portal-data-table"
+          hideToolbar={true}
+          hidePagination={true}
+        />
       </div>
     </>
   );
-}
+};
 
 export default Dashboard;

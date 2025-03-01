@@ -145,7 +145,7 @@ function EnhancedTableToolbar(props) {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: "1 1 100%" , color : "#062d72" , fontWeight : "bolder" }}
+          sx={{ flex: "1 1 100%", color: "#062d72", fontWeight: "bolder" }}
           variant="subtitle1"
           id="tableTitle"
           component="div"
@@ -217,6 +217,7 @@ const DataTable = ({
   isSingleSelection = false,
   setSelectedRow,
   hideToolbar = false,
+  hidePagination = false,
 }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
@@ -346,18 +347,20 @@ const DataTable = ({
                 </TableBody>
               </Table>
             </TableContainer>
-            <TablePagination
-              classes={{
-                root: styles["custom-table-pagination"],
-              }}
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            {!hidePagination && (
+              <TablePagination
+                classes={{
+                  root: styles["custom-table-pagination"],
+                }}
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            )}
           </Paper>
         </Box>
       </ThemeProvider>

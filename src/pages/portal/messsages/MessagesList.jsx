@@ -492,6 +492,7 @@ const MessagesList = () => {
             userID={userID}
             refreshChatList={getChatList}
             selectedUserID={selectedUserID}
+            chatList={chatList}
           />
         </Box>
       </Box>

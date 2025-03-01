@@ -15,6 +15,7 @@ const Messages = ({
   userID,
   refreshChatList,
   selectedUserID,
+  chatList,
 }) => {
   const { handleSubmit, control, reset } = useForm();
   const [messages, setMessages] = useState([]);
@@ -220,40 +221,44 @@ const Messages = ({
         </Box>
 
         {/* Chat Input */}
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            borderTop: "1px solid #ddd",
-            background: "#fff",
-            position: "sticky",
-            bottom: 0, // Sticks input to the bottom
-          }}
-        >
-          <form
-            onSubmit={handleSubmit(sendMessage)}
-            style={{ display: "flex", flex: 1 }}
+        {chatList.length > 0 ? (
+          <Box
+            sx={{
+              p: 2,
+              display: "flex",
+              borderTop: "1px solid #ddd",
+              background: "#fff",
+              position: "sticky",
+              bottom: 0, // Sticks input to the bottom
+            }}
           >
-            <Controller
-              name="message"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder="Type a message"
-                  variant="outlined"
-                  size="small"
-                  sx={{ marginRight: 1 }}
-                />
-              )}
-            />
-            <IconButton sx={{ color: "#062d72" }} type="submit">
-              <SendIcon />
-            </IconButton>
-          </form>
-        </Box>
+            <form
+              onSubmit={handleSubmit(sendMessage)}
+              style={{ display: "flex", flex: 1 }}
+            >
+              <Controller
+                name="message"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder="Type a message"
+                    variant="outlined"
+                    size="small"
+                    sx={{ marginRight: 1 }}
+                  />
+                )}
+              />
+              <IconButton sx={{ color: "#062d72" }} type="submit">
+                <SendIcon />
+              </IconButton>
+            </form>
+          </Box>
+        ) : (
+          <></>
+        )}
       </Box>
     </>
   );

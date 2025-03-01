@@ -20,7 +20,7 @@ const CompanyDetailsProvider = (props) => {
       }
     } catch (error) {
       if (error.response.status === 404) {
-        setCompanyDetails()
+        setCompanyDetails();
       }
     }
   };
