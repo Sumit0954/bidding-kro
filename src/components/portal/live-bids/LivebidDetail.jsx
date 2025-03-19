@@ -338,7 +338,7 @@ function LivebidDetail() {
         type === "created"
           ? PortalApiUrls.LIVE_BID_PRODUCTS_BUYER
           : PortalApiUrls.LIVE_BID_PRODUCTS_SUPPLIER;
-      const response = await _sendAPIRequest("GET", `${url}${bidId}`, "", true);
+      const response = await _sendAPIRequest("GET", `${url}${bidId}/`, "", true);
       if (response.status === 200) {
         setBidProduct(response.data);
         console.log(response.data, "resres");
