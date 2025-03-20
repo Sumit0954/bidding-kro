@@ -2,10 +2,9 @@ import styles from "./Contact.module.scss";
 import cn from "classnames";
 import React from "react";
 import { useForm } from "react-hook-form";
-import CustomInput from "../../../elements/CustomInput/CustomInput";
 
 const Contact = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, register } = useForm();
 
   const submitForm = (data) => {
     console.log(data);
@@ -15,79 +14,68 @@ const Contact = () => {
     <>
       <section className={cn("mt-5", styles["contact-banner"])}>
         <div className="container">
-          <div className="row align-items-center py-5">
-            <div className="col-lg-6">
+          {/* Centered Heading */}
+          <div className="row justify-content-center">
+            <div className="col-lg-8 text-center">
+              <div className={styles["contact-heading"]}>
+                Need any Help? Contact Us
+              </div>
+            </div>
+          </div>
+
+          {/* Form aligned to the right */}
+          <div className="row py-5 justify-content-end">
+            <div className="col-lg-6 col-md-8 col-sm-10">
               <div className={styles["form-section"]}>
-                <div className={cn("row")}>
-                  <h3>Contact Us</h3>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <h3 className="text-start">Get in Touch</h3>
+                    <div className={styles["underline"]}></div>
+                    <p>
+                      Have questions or need assistance? Our team is ready and
+                      eager to support you.
+                    </p>
+                  </div>
                 </div>
-                <form onSubmit={handleSubmit(submitForm)} className={styles['contact-form']}>
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <CustomInput
-                        control={control}
-                        name="company-name"
-                        placeholder="Company Name"
-                        label="Company Name"
-                      />
+
+                <form
+                  onSubmit={handleSubmit(submitForm)}
+                  className={styles["contact-form"]}
+                >
+                  {[
+                    "Company Name",
+                    "Contact Person",
+                    "Phone Number",
+                    "Business Email",
+                  ].map((label, index) => (
+                    <div className="row" key={index}>
+                      <div className="col-12 text-start">
+                        <label className={styles["custom-label"]}>
+                          {label}
+                        </label>
+                      </div>
+                      <div className="col-12">
+                        <input
+                          {...register(label.toLowerCase().replace(/\s/g, "-"))}
+                          type="text"
+                          placeholder={label}
+                          className={styles["custom-input"]}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  ))}
 
                   <div className="row">
-                    <div className="col-lg-12">
-                      <CustomInput
-                        control={control}
-                        name="contact-person"
-                        placeholder="Contact Person"
-                        label="Contact Person"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <CustomInput
-                        control={control}
-                        name="phone-number"
-                        placeholder="Phone Number"
-                        inputType="tel"
-                        label="Phone Number"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <CustomInput
-                        control={control}
-                        name="business-email-id"
-                        placeholder="Email"
-                        inputType="email"
-                        label="Business Email"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-lg-12">
+                    <div className="col-12 text-center">
                       <button
                         type="submit"
-                        className={cn("btn", "button", styles["custom-btn"])}
+                        className={cn("btn", styles["custom-btn"])}
                       >
                         Submit
                       </button>
                     </div>
                   </div>
                 </form>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className={styles["contact-content"]}>
-                <h2>Got A Question?</h2>
-                <p className={styles["contact-subheading"]}>
-                  We’d love to hear from you. Send us a message & we’ll <br />{" "}
-                  respond as soon as possible 
-                </p>
               </div>
             </div>
           </div>

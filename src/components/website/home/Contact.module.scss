@@ -1,60 +1,148 @@
 .contact-banner {
-	background-image: url(../../../assets/images/website/home/callnow-bg.png);
-	width: 100%;
-	height: 550px;
-	background-repeat: no-repeat;
-
-	.form-section {
-		height: auto;
-		width: 500px;
-		background-color: var(--white);
-		padding: 10px;
-		border-radius: 10px;
-		margin: auto;
-		box-shadow: var(--glow-shadow);
-
-		h3 {
-			text-align: center;
-		}
-
-		.contact-form{
-			padding: 15px;
-		}
-
-		.custom-btn {
-			width: 100%;
-			margin: 10px 0;
-		}
-	}
-
-	.contact-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		h2 {
-			color: var(--primary-color);
-		}
-
-		.contact-subheading {
-			color: var(--primary-color);
-			text-align: center;
-		}
-	}
+  background-image: url(../../../assets/images/website/home/callnow-bg.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 5%;
+  text-align: center;
 }
 
+.contact-heading {
+  display: inline-block;
+  font-size: clamp(16px, 4vw, 22px);
+  font-weight: bold;
+  color: white;
+  padding: 10px 5vw;
+  border: 2px solid var(--primary-color);
+  background-color: var(--primary-color);
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.form-section {
+  max-width: 90%;
+  width: 500px;
+  background-color: #e2f1fc;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: var(--glow-shadow);
+  text-align: left;
+}
+
+.form-section h3 {
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.underline {
+  width: 50px;
+  height: 3px;
+  background-color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.custom-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.contact-form {
+  padding: 8px;
+}
+
+.custom-btn {
+  width: 200px;
+  height: 40px;
+  margin: 10px 0;
+  border-radius: 50px !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  &.custom-btn:hover {
+    background-color: var(--secondary-color) !important;
+  }
+}
+
+/* Responsive Adjustments */
 @media screen and (max-width: 991px) {
-	.contact-banner {
-		.contact-content {
-			display: none;
-		}
-	}
+  .form-section {
+    max-width: 80%;
+    width: 450px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .contact-banner {
+    padding: 30px 3%;
+    flex-wrap: wrap;
+  }
+
+  .contact-heading {
+    font-size: 18px;
+    padding: 8px 20px;
+  }
+
+  .form-section {
+    max-width: 95%;
+    width: 400px;
+    padding: 20px;
+  }
+
+  .custom-input {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .custom-btn {
+    width: 180px;
+    height: 38px;
+    font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 575px) {
-	.contact-banner {
-		.form-section {
-			width: 100%;
-		}
-	}
+  .contact-banner {
+    padding: 20px 3%;
+  }
+
+  .contact-heading {
+    font-size: 16px;
+    padding: 6px 15px;
+  }
+
+  .form-section {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .custom-input {
+    font-size: 12px;
+    padding: 7px;
+  }
+
+  .custom-btn {
+    width: 160px;
+    height: 35px;
+    font-size: 13px;
+  }
 }

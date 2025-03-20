@@ -1,34 +1,67 @@
 .image-section {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
-	.upper-image {
-		display: flex;
-		gap: 10px;
+  .upper-image {
+    display: flex;
+    gap: 10px;
 
-		.gallery-image {
-			width: 100%;
+    .gallery-image {
+      width: 100%;
 
-			img {
-				border-radius: 15px;
-				width: 100%;
-			}
-		}
-	}
+      img {
+        border-radius: 15px;
+        width: 100%;
+      }
+    }
+  }
 
-	.lower-image {
-		img {
-			border-radius: 15px;
-			width: 100%;
-		}
-	}
+  .lower-image {
+    img {
+      border-radius: 15px;
+      width: 100%;
+    }
+  }
 }
 
 @media screen and (max-width: 991px) {
-	.content-column {
-		margin-bottom: 20px;
-	}
+  .content-column {
+    margin-bottom: 20px;
+  }
+}
 
+@media screen and (max-width: 600px) {
+  .image-section {
+    flex-direction: column;
+    gap: 5px;
+  }
 
+  .blog-heading {
+    text-align: center;
+    padding: 10px 15px; /* Add padding to avoid touching edges */
+    margin-bottom: 10px; /* Create spacing from the card */
+  }
+
+  .recent-stories {
+    display: inline-block;
+    padding: 6px 15px;
+    font-size: 14px;
+  }
+
+  .upper-image,
+  .lower-image {
+    display: block;
+    text-align: center;
+
+    .gallery-image {
+      width: 90%; // Reduce width for proper alignment
+      margin: auto;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+    }
+  }
 }

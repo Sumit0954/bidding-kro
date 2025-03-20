@@ -1,113 +1,179 @@
-ul li {
-	list-style-type: none;
+/* ================== GENERAL FOOTER STYLES ================== */
 
-	a {
-		text-decoration: none;
-		color: #062c76;
-	}
+/* Remove bullets from lists and fix alignment */
+ul {
+  list-style-type: none;
+  padding: 0 !important;
+  margin: 0 !important;
 }
+
+/* Ensure proper alignment for all footer columns */
+.footer-column ul {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Footer heading styles */
 .footer-heading {
-	padding-top: 35px;
-	color: #062c76;
-}
-.line {
-	border: 1px solid #062c76;
-	margin-top: 30px;
-}
-.footer-bottom {
-	padding-top: 30px;
-	text-align: center;
+  padding-top: 35px;
+  color: #062c76;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px; /* Ensure spacing between heading and links */
+  text-align: left;
 }
 
+/* Footer links styling */
+ul li {
+  text-align: left; /* Ensures all links are left-aligned */
+}
+
+ul li a {
+  display: block;
+  text-decoration: none;
+  color: #062c76;
+  padding: 5px 0; /* Adjust spacing */
+  font-size: 16px;
+  transition: color 0.3s ease-in-out;
+}
+
+ul li a:hover {
+  color: var(--secondary-color); /* Change color on hover */
+}
+
+/* Footer separator line */
+.line {
+  border: 1px solid #062c76;
+  margin-top: 30px;
+  width: 100%;
+}
+
+/* Footer bottom text */
+.footer-bottom {
+  padding-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  color: #062c76;
+}
+
+/* Footer logo */
 .footer-logo {
-	height: 60px;
-	margin-top: 15%;
+  height: 60px;
+  margin-top: 15%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+/* Footer logo text */
 .footer-logo-text {
-	padding-top: 20px;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #062c76;
 }
+
+/* ================== SOCIAL ICONS SECTION ================== */
 
 .social-content {
-	background-color: #062c76;
-	color: #ffffff;
-	padding: 15px 20px 15px 20px;
-	display: flex;
-
-	align-items: center;
+  background-color: #062c76;
+  color: #ffffff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Aligns text to left and icons to right */
 }
+
+/* Social icons */
 .footer-icon {
-	height: 50px;
-	padding: 10px;
-	float: right;
+  height: 40px;
+  transition: transform 0.3s ease-in-out;
+  margin-right: 5px;
 }
 
-@media screen and (max-width: 324px) {
-	.footer-logo-text {
-		padding-top: 20px;
-		text-align: center;
-	}
-	.social-content {
-		background-color: #062c76;
-		color: #ffffff;
-		padding: 15px 20px 15px 20px;
-		display: block;
-		align-items: center;
-	}
-	.footer-icon {
-		height: 50px;
-		padding: 10px;
-		float: none;
-	}
+.footer-icon:hover {
+  transform: scale(1.1); /* Slight zoom on hover */
 }
 
-@media screen and (max-width: 575px) {
-	.footer-logo-text {
-		padding-top: 20px;
-		text-align: center;
-	}
-	.social-content {
-		background-color: #062c76;
-		color: #ffffff;
-		padding: 15px 20px 15px 20px;
-		display: block;
-		align-items: center;
-	}
-	.footer-icon {
-		height: 50px;
-		padding: 10px;
-		float: none;
-	}
+.social-icons-container {
+  display: flex;
+  justify-content: flex-end; /* Push icons to the right */
+  gap: "10px";
 }
+/* ================== RESPONSIVE DESIGN ================== */
 
-@media screen and (max-width: 767px) {
-	.footer-logo-text {
-		padding-top: 20px;
-		text-align: center;
-	}
-	.social-content {
-		background-color: #062c76;
-		color: #ffffff;
-		padding: 15px 20px 15px 20px;
-		display: block;
-		align-items: center;
-	}
-	.footer-icon {
-		height: 50px;
-		padding: 10px;
-		float: none;
-	}
-}
-
+/* Medium devices (max-width: 991px) */
 @media screen and (max-width: 991px) {
-	.footer-icon {
-		// float: right;
-	}
-	.social-content {
-		background-color: #062c76;
-		color: #ffffff;
-		padding: 15px 20px 15px 20px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
+  .footer-icon {
+    margin-top: 10px;
+  }
+
+  .footer-column {
+    text-align: center; /* Center align footer content */
+  }
+
+  .footer-heading {
+    text-align: center;
+  }
+
+  ul li {
+    text-align: center;
+  }
+
+  .social-content .col-lg-6:last-child {
+    justify-content: center;
+  }
+}
+
+/* Small devices (max-width: 767px) */
+@media screen and (max-width: 767px) {
+  .footer-logo {
+    margin-top: 10px;
+  }
+
+  .footer-logo-text {
+    padding-top: 10px;
+  }
+
+  .footer-heading {
+    text-align: center;
+  }
+
+  .social-content {
+    padding: 15px;
+  }
+
+  .footer-bottom {
+    font-size: 12px; /* Reduce text size */
+  }
+}
+
+/* Extra small devices (max-width: 575px) */
+@media screen and (max-width: 575px) {
+  .footer-logo {
+    height: 50px;
+  }
+
+  .footer-heading {
+    font-size: 16px;
+  }
+
+  ul li a {
+    font-size: 14px;
+  }
+
+  .footer-icon {
+    height: 35px;
+  }
+}
+
+/* Ultra small devices (max-width: 324px) */
+@media screen and (max-width: 324px) {
+  .footer-logo-text {
+    font-size: 14px;
+  }
+
+  .footer-icon {
+    height: 30px;
+  }
 }

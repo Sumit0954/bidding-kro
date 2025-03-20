@@ -1,37 +1,32 @@
 .marquee-wrapper {
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(
-    90deg,
-    #004aad,
-    #0088cc
-  ); /* IndiaMART-style gradient */
+  background: linear-gradient(90deg, #004aad, #0088cc);
   color: white;
   font-weight: bold;
-  font-size: 18px;
-  padding: 12px 0;
-  white-space: nowrap;
+  font-size: clamp(12px, 1.5vw, 18px); /* Responsive font size */
+  padding: 8px 0;
   position: relative;
-  border-top: 3px solid #ff9800; /* Highlighted top border */
-  border-bottom: 3px solid #ff9800;
+  display: flex;
+  align-items: center;
 }
 
 .marquee-content {
-  display: inline-block;
+  display: flex;
   white-space: nowrap;
-  animation: marquee 10s linear infinite;
-  transition: transform 0.3s ease-in-out;
+  animation: marquee var(--animation-speed, 10s) linear infinite;
 }
 
 .marquee-content span {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
+  padding-right: 20px; /* Space between repeating text */
 }
 
 .icon {
-  color: #ffd700; /* Gold color for icons */
-  font-size: 22px;
+  color: #ffd700;
+  font-size: clamp(16px, 2vw, 22px); /* Responsive icon size */
 }
 
 @keyframes marquee {

@@ -1,17 +1,44 @@
+// 🌟 Supplier Portal Image Styling
 .supplier-portal-img {
 	height: 350px;
 	width: 100%;
-}
-
-@media screen and (min-width: 320px) {
+  }
+  
+  @media screen and (min-width: 320px) {
 	.supplier-portal-img {
-		height: 100%;
-		width: 100%;
+	  height: 100%;
+	  width: 100%;
 	}
-}
-
-@media screen and (max-width: 991px) {
+  }
+  
+  // 🌟 Responsive Spacing for Content Column
+  @media screen and (max-width: 991px) {
 	.content-column {
-		margin-top: 3rem !important; 
+	  margin-top: 3rem !important;
 	}
-}
+  }
+  
+  // 📌 Heading with Lines Styling
+  .heading-with-lines {
+	text-align: center;
+	color: #062d72;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+  
+  .heading-with-lines::before,
+  .heading-with-lines::after {
+	content: "";
+	width: 15%; // Reduced width for shorter lines
+	border-bottom: 2px solid #062d72; // Line style
+  }
+  
+  .heading-with-lines::before {
+	margin-right: 10px;
+  }
+  
+  .heading-with-lines::after {
+	margin-left: 10px;
+  }
+  
