@@ -231,8 +231,7 @@ const AddteamForm = () => {
       {/* ✅ Submit Button */}
       <Button
         variant="contained"
-        color="primary"
-        style={{ marginTop: "20px", float: "right" }}
+        style={{ marginTop: "20px", float: "right", color: "white" }}
         className={styles["addMember-btn"]}
         startIcon={<PersonAddIcon />}
         onClick={handleAddMember}
