@@ -28,7 +28,7 @@ const Questions = ({ bidDetails }) => {
         );
         if (response?.data?.question) {
           setQuestions(response.data.question);
-          setScreenLoader(false)
+          setScreenLoader(false);
         }
       } catch (error) {
         setAlert({
@@ -83,12 +83,20 @@ const Questions = ({ bidDetails }) => {
         });
       }
     } catch (error) {
-      setAlert({
-        isVisible: true,
-        message:
-          "There was a problem submitting your answer. Please try again later.",
-        severity: "error",
-      });
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      } else {
+        setAlert({
+          isVisible: true,
+          message:
+            "There was a problem submitting your answer. Please try again later.",
+          severity: "error",
+        });
+      }
     } finally {
       setLoading((prev) => ({ ...prev, [questionId]: false }));
     }
@@ -97,8 +105,6 @@ const Questions = ({ bidDetails }) => {
   if (screenLoader) {
     return <ScreenLoader component={"Questions"} />;
   }
-
-
 
   return (
     <Box className="row" sx={{ marginTop: "2rem" }}>

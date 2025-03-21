@@ -94,6 +94,13 @@ const BidForm = () => {
     } catch (error) {
       setLoading(false);
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, watch, setError);
 
@@ -191,6 +198,13 @@ const BidForm = () => {
       } catch (error) {
         setLoading(false);
         const { data } = error.response;
+        if (error.status === 403) {
+          setAlert({
+            isVisible: true,
+            message: error.response.data.detail,
+            severity: "error",
+          });
+        }
         if (data) {
           setErrors(data, watch, setError);
 
@@ -227,6 +241,13 @@ const BidForm = () => {
       } catch (error) {
         setLoading(false);
         const { data } = error.response;
+        if (error.status === 403) {
+          setAlert({
+            isVisible: true,
+            message: error.response.data.detail,
+            severity: "error",
+          });
+        }
         if (data) {
           setErrors(data, watch, setError);
 
@@ -368,7 +389,9 @@ const BidForm = () => {
   };
 
   useEffect(() => {
-    handleFormdata(id);
+    if (id !== undefined) {
+      handleFormdata(id);
+    }
   }, [id]);
 
   if (screenLoader) {

@@ -46,6 +46,8 @@ const Dashboard = () => {
   const [selectedRow, setSelectedRow] = useState({});
   const { noCompany } = useContext(UserDetailsContext);
   const { companyDetails } = useContext(CompanyDetailsContext);
+  const { noCompanyCat } = useContext(CompanyDetailsContext);
+  const userID = localStorage.getItem("loginUserID");
   const [screenLoader, setScreenLoader] = useState(true);
 
   const [permissionStatus, setPermissionStatus] = useState(
@@ -187,17 +189,39 @@ const Dashboard = () => {
           </AlertTitle>
           Your account is registered, but you haven’t created a company yet.
           Please click the button below to create your company profile and
-          proceed further:
+          proceed further.
           <br />
           <br />
           <Button
             variant="contained"
             color="primary"
-            onClick={() => naviagte("company-profile/create")}
+            onClick={() => navigate("company-profile/create")}
             sx={{ marginTop: "8px" }}
             className={styles["create-comp-btn"]}
           >
             Create Company Profile
+          </Button>
+        </Alert>
+      )}
+
+      {noCompanyCat && (
+        <Alert severity="warning" className="my-3">
+          <AlertTitle sx={{ fontWeight: "bold" }}>
+            Warning: Company Category Selection Required
+          </AlertTitle>
+          Your account is registered, but you haven’t selected a company
+          category yet. Please click the button below to selected your company
+          category and proceed further.
+          <br />
+          <br />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate(`company-profile/category/${userID}`)}
+            sx={{ marginTop: "8px" }}
+            className={styles["create-comp-btn"]}
+          >
+            Select Company Category
           </Button>
         </Alert>
       )}

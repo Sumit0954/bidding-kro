@@ -21,7 +21,7 @@ const CategoryForm = () => {
   const [selectedCategories, setSelectedCategories] = useState({});
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const { companyDetails, setCompanyDetails } = useContext(
+  const { companyDetails, setCompanyDetails, setNoCompanyCat } = useContext(
     CompanyDetailsContext
   );
   const navigate = useNavigate();
@@ -191,6 +191,7 @@ const CategoryForm = () => {
       if (response.status === 200) {
         setLoading(false);
         setCompanyDetails(response.data);
+        setNoCompanyCat(false);
         setAlert({
           isVisible: true,
           message: "Category has been updated successfully.",
@@ -201,6 +202,13 @@ const CategoryForm = () => {
     } catch (error) {
       setLoading(false);
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, watch, setError);
 

@@ -113,6 +113,13 @@ const BidProducts = () => {
       }
     } catch (error) {
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, setValue, setError);
         setAlert({
@@ -159,6 +166,14 @@ const BidProducts = () => {
         setScreenLoader(false);
       }
     } catch (error) {
+      setLoading(false);
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -178,6 +193,13 @@ const BidProducts = () => {
         setScreenLoader(false);
       }
     } catch (error) {
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       console.log("Error deleting product", error);
     }
   };
@@ -235,12 +257,11 @@ const BidProducts = () => {
       productList.every((added) => available?.name !== added?.title)
     )
     .map((available) => ({
-      lable: available.name, 
+      lable: available.name,
       value: available.name,
     }));
 
-
-   productData
+  productData;
 
   useEffect(() => {
     if (id) {
@@ -322,7 +343,7 @@ const BidProducts = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                       {/* Form with pre-filled data */}
-                      <form 
+                      <form
                         onSubmit={handleSubmit((data) =>
                           editProduct(data, item.id, index)
                         )}

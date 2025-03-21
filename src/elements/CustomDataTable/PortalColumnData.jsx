@@ -6,14 +6,15 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
 import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
-import { useEffect, useState } from "react";
-import { Select, MenuItem, FormControl, Tooltip } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { Select, MenuItem, FormControl, Tooltip, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../store/tabSlice";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { AlertContext } from "../../contexts/AlertProvider";
 
-const patchBidStatus = async (id, formData) => {
+const patchBidStatus = async (id, formData, setAlert) => {
   try {
     const response = await _sendAPIRequest(
       "PATCH",
@@ -23,23 +24,20 @@ const patchBidStatus = async (id, formData) => {
     );
 
     if (response.status === 204) {
-      // window.location.reload();
-      // setAlert({
-      //   isVisible: true,
-      //   message: "Your Bid Status Updated sucessfully",
-      //   severity: "success",
-      // });
     }
   } catch (error) {
-    // setAlert({
-    //   isVisible: true,
-    //   message: error?.response?.data?.error || "An unexpected error occurred.",
-    //   severity: "error",
-    // });
+    if (error.status === 403) {
+      console.log(error.status, " :error");
+      setAlert({
+        isVisible: true,
+        message: error.response.data.detail,
+        severity: "error",
+      });
+    }
   }
 };
 
-const onCloneBidClick = async (id, navigate) => {
+const onCloneBidClick = async (id, navigate, setAlert) => {
   try {
     const response = await _sendAPIRequest(
       "POST",
@@ -51,10 +49,17 @@ const onCloneBidClick = async (id, navigate) => {
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
+    if (error.status === 403) {
+      setAlert({
+        isVisible: true,
+        message: error.response.data.detail,
+        severity: "error",
+      });
+    }
+
     console.log("Error cloning bid", error);
   }
 };
-
 const CloneConfirmation = ({ id, onCloneConfirm }) => {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -142,6 +147,13 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
       // Optional: Trigger a refresh or redirect as needed
     }
   } catch (error) {
+    if (error.status === 403) {
+      setAlert({
+        isVisible: true,
+        message: error.response.data.detail,
+        severity: "error",
+      });
+    }
     console.error("Error deleting bid", error);
   }
 };
@@ -351,11 +363,12 @@ export const created_bids_column = [
     hideSortIcon: true,
     Cell: (data) => {
       const navigate = useNavigate();
+      const { setAlert } = useContext(AlertContext);
 
       return (
         <CloneConfirmation
           id={data?.row?.original?.id}
-          onCloneConfirm={(id) => onCloneBidClick(id, navigate)}
+          onCloneConfirm={(id) => onCloneBidClick(id, navigate, setAlert)}
         />
 
         // <p
@@ -1342,6 +1355,8 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
         data.row.original.sample.is_received
       );
 
+      const { setAlert } = useContext(AlertContext);
+
       const handleStatusChange = (event) => {
         const newStatus = event.target.value;
         setStatus(newStatus);
@@ -1349,10 +1364,11 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
           ...prevDetails,
           is_received: newStatus,
         }));
+
         const formData = {
           is_received: newStatus,
         };
-        patchBidStatus(data.row.original.id, formData);
+        patchBidStatus(data.row.original.id, formData, setAlert);
         if (onActionComplete) {
           onActionComplete();
         }
@@ -1388,6 +1404,7 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
     width: 150, // Add a uniform width
     Cell: (data) => {
       const [participant, setParticipant] = useState();
+      const { setAlert } = useContext(AlertContext);
       const [status, setStatus] = useState(
         data.row.original.sample.approval_status === "rejected"
           ? "reject"
@@ -1406,6 +1423,7 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
         patchBidStatus(
           data.row.original.id,
           formData,
+          setAlert,
           true,
           data.row.original.company.id
         );
@@ -1656,41 +1674,152 @@ export const ProductBid_column2 = [
   },
 ];
 
-export const Team_list_column = [
+export const getTeamListColumn = (onToggleStatus) => [
   {
-    Header: "Name",
-    accessor: "name",
+    Header: "First Name",
+    accessor: "first_name",
     align: "left",
-    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Last Name",
+    accessor: "last_name",
+    align: "left",
     width: 160,
   },
   {
     Header: "Email",
     accessor: "email",
     align: "left",
-    disablePadding: false,
     width: 160,
   },
   {
     Header: "Mobile",
-    accessor: "mobile",
+    accessor: "mobile_number",
     align: "left",
-    disablePadding: false,
     width: 160,
   },
   {
     Header: "Role",
-    accessor: "role",
+    accessor: "groups",
     align: "left",
-    disablePadding: false,
     width: 160,
+    Cell: ({ value }) => value?.join(", ") || "-",
   },
+  // {
+  //   Header: "Status",
+  //   accessor: "is_active",
+  //   align: "left",
+  //   width: 160,
+  //   Cell: ({ row }) => (
+  //     <span>{row.original.is_active ? "Active" : "In Active"}</span>
+  //   ),
+  // },
   {
     Header: "Action",
-    accessor: "action",
-    align: "center",
-    disablePadding: false,
-    width: 100,
+    accessor: "is_active",
+    align: "left",
+    width: 160,
     hideSortIcon: true,
+    Cell: ({ row }) => (
+      <Tooltip
+        title={
+          row.original.is_active
+            ? "Click here to Deactivate Member"
+            : "Member is not Active"
+        }
+        arrow
+      >
+        <span
+          onClick={() =>
+            row.original.is_active && onToggleStatus(row.original.id)
+          }
+          style={{
+            color: row.original.is_active ? "#52c41a" : "#ff4d4f",
+            cursor: row.original.is_active ? "pointer" : "not-allowed",
+          }}
+        >
+          {row.original.is_active ? "Active" : "InActive"}
+        </span>
+      </Tooltip>
+    ),
   },
 ];
+
+// export const Team_list_column = [
+//   {
+//     Header: "First Name",
+//     accessor: "first_name",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Last Name",
+//     accessor: "last_name",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Email",
+//     accessor: "email",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Mobile",
+//     accessor: "mobile_number",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Role",
+//     accessor: "groups",
+//     align: "left",
+//     disablePadding: false,
+//     width: 160,
+//   },
+//   {
+//     Header: "Action",
+//     accessor: "is_active",
+//     align: "center",
+//     disablePadding: false,
+//     width: 100,
+//     hideSortIcon: true,
+//     Cell: (data) => {
+//       const onToggleStatus = async (id, isActive) => {
+//         try {
+//           const endpoint = isActive
+//             ? PortalApiUrls.DEACTIVATE_MEMBER.replace(":id", id)
+//             : PortalApiUrls.ACTIVATE_MEMBER.replace(":id", id);
+
+//           const response = await _sendAPIRequest("POST", endpoint, "", true);
+
+//           if (response.status === 200) {
+//             getTeamList(); // Refresh list after status change
+//           }
+//         } catch (error) {
+//           console.error("Error while updating status", error);
+//         }
+//       };
+//     return(
+//       <Button
+//         variant="contained"
+//         size="small"
+//         onClick={() => onToggleStatus(data.row.original.id, data.row.original.is_active)}
+//         sx={{
+//           backgroundColor: data.row.original.is_active ? "#ff4d4f" : "#52c41a",
+//           color: "#fff",
+//           "&:hover": {
+//             backgroundColor: data.row.original.is_active ? "#ff7875" : "#73d13d",
+//           },
+//         }}
+//       >
+//         {data.row.original.is_active ? "Deactivate" : "Activate"}
+//       </Button>
+//     );},
+//   },
+// ];

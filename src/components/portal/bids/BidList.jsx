@@ -91,13 +91,29 @@ const BidList = ({ listType }) => {
   };
 
   useEffect(() => {
-    getCreatedBidList();
+    if (listType === "created" && selectedCategory.length > 0) {
+      getCreatedBidList();
+    }
   }, [selectedCategory]);
 
+  // useEffect(() => {
+  //   if (listType == "created") {
+  //     getCreatedBidList();
+  //   } else if (listType == "invited") {
+  //     getInvitedBidList();
+  //   } else if (listType == "related") {
+  //     getRelatedBidList();
+  //   }
+  // }, [sendRequest]);
+
   useEffect(() => {
-    getCreatedBidList();
-    getInvitedBidList();
-    getRelatedBidList();
+    const fetchBidList = {
+      created: getCreatedBidList,
+      invited: getInvitedBidList,
+      related: getRelatedBidList,
+    };
+
+    fetchBidList[listType]?.(); // Calls the function based on listType if it exists
   }, [sendRequest]);
 
   const addCreatedAction = (cell) => {
@@ -161,7 +177,10 @@ const BidList = ({ listType }) => {
   };
 
   useEffect(() => {
-    getCategories([], 0);
+    if (listType == "created") {
+      getCategories([], 0);
+      console.log("listtype", listType);
+    }
   }, []);
 
   useEffect(() => {
@@ -173,7 +192,7 @@ const BidList = ({ listType }) => {
     setSelectedCategory(ancestors);
   };
 
-  useEffect(() => {}, [rootCategory]);
+  // useEffect(() => {}, [rootCategory]);
 
   const handlerequest = (data) => {
     setSendRequest(true);

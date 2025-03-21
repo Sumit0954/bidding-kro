@@ -95,6 +95,13 @@ const Summary = ({ bidDetails }) => {
         window.location.reload();
       }
     } catch (error) {
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       console.log(error);
     }
   };

@@ -67,10 +67,17 @@ const BidCreateDetails = () => {
         }
       } catch (error) {
         setLoading(false);
+        if (error.status === 403) {
+          setAlert({
+            isVisible: true,
+            message: error.response.data.detail,
+            severity: "error",
+          });
+        }
         const { data } = error.response;
         if (data) {
           setErrors(data, watch, setError);
-
+          console.log(data, ":data");
           if (data.error) {
             setAlert({
               isVisible: true,

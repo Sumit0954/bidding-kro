@@ -42,6 +42,7 @@ import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 import { PrintOutlined } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -58,6 +59,8 @@ const BidDetailsPage = () => {
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { setAlert } = useContext(AlertContext);
+
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -91,7 +94,6 @@ const BidDetailsPage = () => {
     navigate({ search: urlParams.toString() }, { replace: true });
   };
 
-            
   useEffect(() => {
     console.log(urlActiveTab, "urlActiveTab");
     if (urlActiveTab) {
@@ -119,9 +121,19 @@ const BidDetailsPage = () => {
       );
       if (response.status === 204) {
         setDeleteDetails({ open: false, title: "", message: "" });
-        // window.location.reload();
       }
     } catch (error) {
+      console.log("error");
+      if (error.status === 403) {
+        console.log(error, ":error");
+        setDeleteDetails({ open: false, title: "", message: "" });
+
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       console.log(error);
     }
   };

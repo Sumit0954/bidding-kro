@@ -33,9 +33,19 @@ const FeedbackSupplier = ({ bidDetails }) => {
         setLoading(false);
       }
     } catch (error) {
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       setAlert({
         isVisible: true,
-        message: "Some error occurred while submitting the feedback",
+        message:
+          error.status === 403
+            ? error.response.data.detail
+            : "Some error occurred while submitting the feedback",
         severity: "error",
       });
       setLoading(false);

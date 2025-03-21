@@ -100,6 +100,13 @@ const BidQuestions = () => {
         }
       } catch (error) {
         const { data } = error.response;
+        if (error.status === 403) {
+          setAlert({
+            isVisible: true,
+            message: error.response.data.detail,
+            severity: "error",
+          });
+        }
         if (data) {
           if (data.error) {
             setAlert({
@@ -221,6 +228,13 @@ const IndividualQuestionForm = ({
         console.log(error);
         setLoading(false);
         const { data } = error.response;
+        if (error.status === 403) {
+          setAlert({
+            isVisible: true,
+            message: error.response.data.detail,
+            severity: "error",
+          });
+        }
         if (data) {
           setErrors(data, watch, setError);
 

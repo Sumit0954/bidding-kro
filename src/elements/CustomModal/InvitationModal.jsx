@@ -74,18 +74,35 @@ const InvitationModal = ({
               // Optional: Trigger a refresh or redirect as needed
             }
           } catch (error) {
+            if (error.status === 403) {
+              setAlert({
+                isVisible: true,
+                message: error.response.data.detail,
+                severity: "error",
+              });
+              setInvitation(false);
+            }
             console.error("Error deleting bid", error);
           }
         }
       }
     } catch (error) {
       setLoading(false);
-      if (error.response.data.error_code === 9999)
+      if (error.response.data.error_code === 9999) {
         setAlert({
           isVisible: true,
           message: error.response.data.error,
           severity: "error",
         });
+      }
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+        setInvitation(false);
+      }
     }
   };
 

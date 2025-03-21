@@ -75,6 +75,13 @@ const CertificateForm = ({ certificates }) => {
       }
     } catch (error) {
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         if (data.error) {
           setAlert({
@@ -108,6 +115,13 @@ const CertificateForm = ({ certificates }) => {
     } catch (error) {
       setLoading(false);
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, watch, setError);
 
@@ -129,8 +143,8 @@ const CertificateForm = ({ certificates }) => {
       </div>
 
       <Alert severity="info" className="my-3">
-        If you find that your business related certificate type is not in the list.
-        Please{" "}
+        If you find that your business related certificate type is not in the
+        list. Please{" "}
         <span
           className="query-form-button"
           onClick={() => setShowQueryForm(true)}

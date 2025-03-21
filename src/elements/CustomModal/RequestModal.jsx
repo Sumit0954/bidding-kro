@@ -42,6 +42,13 @@ const RequestModal = ({ sendRequest, setSendRequest, bidDetails }) => {
       }
     } catch (error) {
       setLoading(false);
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       setAlert({
         isVisible: true,
         message: error.response.data.error,

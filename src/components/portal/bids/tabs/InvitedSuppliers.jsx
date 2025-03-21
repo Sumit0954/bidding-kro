@@ -151,6 +151,13 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       }
     } catch (error) {
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, Watch, setErrors);
         if (data.error) {
@@ -290,9 +297,10 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       }
     } catch (error) {
       setLoading(false);
+
       setAlert({
         isVisible: true,
-        message: error.response?.data?.error || "An error occurred.",
+        message: error.response?.data?.detail || "An error occurred.",
         severity: "error",
       });
     }

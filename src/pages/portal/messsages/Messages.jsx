@@ -71,7 +71,9 @@ const Messages = ({
   };
 
   useEffect(() => {
-    getChatMessages();
+    if (chatId != undefined) {
+      getChatMessages();
+    }
   }, [chatId, selectedUser, updateChat]);
 
   return (

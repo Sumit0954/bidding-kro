@@ -109,17 +109,35 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
       }
     } catch (error) {
       setLoading(false);
+      console.log(error.status === 403, " error");
+      // if (error.status === 403) {
+      //   setAlert({
+      //     isVisible: true,
+      //     message: error.response.data.detail,
+      //     severity: "error",
+      //   });
+      // }
+      error.status === 403 &&
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      console.log(error);
       setDeleteDetails({ open: false, title: "", message: "", action: "" });
+
       setAlert({
         isVisible: true,
         message:
           bidDetails?.status === "live"
-            ? "This is bid now live"
+            ? "This bid is now live"
             : bidDetails?.status === "completed"
-            ? "This is bid has been completed"
+            ? "This bid has been completed"
             : bidDetails?.status === "closed"
-            ? "This is bid has been closed"
-            : `You can not ${action} this bid`,
+            ? "This bid has been closed"
+            : error.status === 403
+            ? error.response?.data?.detail
+            : "error please try again",
         severity: "error",
       });
     }

@@ -45,7 +45,10 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
       setfeedback(false);
       setAlert({
         isVisible: true,
-        message: "Some error occurred while submitting the feedback",
+        message:
+          error.status === 403
+            ? error.response.data.detail
+            : "Some error occurred while submitting the feedback",
         severity: "error",
       });
     }

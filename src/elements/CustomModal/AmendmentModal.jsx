@@ -45,6 +45,13 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       setLoading(false);
       console.log(error);
       const { data } = error.response;
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
       if (data) {
         setErrors(data, watch, setError);
 
@@ -57,7 +64,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
         }
       }
     }
-    window.location.reload()
+    window.location.reload();
   };
 
   const handleFieldChange = (value) => {
