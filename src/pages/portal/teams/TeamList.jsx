@@ -4,7 +4,7 @@ import {
   getTeamListColumn,
   // Team_list_column,
 } from "../../../elements/CustomDataTable/PortalColumnData";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import GroupsIcon from "@mui/icons-material/Groups"; // Importing the team/group icon
 import styles from "./TeamList.module.scss";
 import { NavLink } from "react-router-dom";
@@ -18,6 +18,7 @@ const TeamList = () => {
   const [teamList, setTeamList] = useState([]);
   const { setAlert } = useContext(AlertContext);
   const [screenLoader, setScreenLoader] = useState(true);
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const getTeamList = async () => {
     try {
@@ -73,30 +74,45 @@ const TeamList = () => {
 
   return (
     <Box sx={{ padding: 2 }}>
-      {/* Header with title, icon, and button */}
+      {/* Header with title and icon */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: 2,
+          flexDirection: isMobile ? "column" : "row", // Stack in mobile view
+          gap: isMobile ? 2 : 0,
         }}
       >
-        {/* Title and Icon */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="h6">
             Team List <GroupsIcon sx={{ mr: 1, color: "#062d72" }} />
           </Typography>
         </Box>
 
-        {/* Add Member Button */}
-        <NavLink to={"/portal/teams/addMember"}>
-          <Button variant="contained" className={styles["addMember-btn"]}>
+        {/* Move button below the list in mobile view */}
+        {!isMobile && (
+          <NavLink to={"/portal/teams/addMember"}>
+            <Button variant="contained" className={styles["addMember-btn"]}>
+              <PersonAddIcon sx={{ mr: 1 }} /> Add Member
+            </Button>
+          </NavLink>
+        )}
+      </Box>
+
+      {/* Full-width Add Member Button for Mobile */}
+      {isMobile && (
+        <NavLink to={"/portal/teams/addMember"} style={{ width: "100%" }}>
+          <Button
+            variant="contained"
+            className={styles["addMember-btn"]}
+            sx={{ width: "100%", marginTop: 2, mb: 2 }} // Full width & margin on top
+          >
             <PersonAddIcon sx={{ mr: 1 }} /> Add Member
           </Button>
         </NavLink>
-      </Box>
-
+      )}
       {/* Data Table */}
       <DataTable
         propsColumn={getTeamListColumn(onToggleStatus)}

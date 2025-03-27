@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import styles from "./AddteamForm.jsx.module.scss";
+import styles from "./AddteamForm.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 

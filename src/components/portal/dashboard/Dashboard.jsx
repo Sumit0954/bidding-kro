@@ -93,7 +93,6 @@ const Dashboard = () => {
         true
       );
       if (response.status === 200) {
-        console.log("response.data", response.data);
         setCardData(response.data);
         setScreenLoader(false);
       }

@@ -16,95 +16,10 @@ const BidListPage = () => {
   const location = useLocation();
   const [value, setValue] = useState(location.state?.listType || 0);
   const [selectedRow, setSelectedRow] = useState({});
-  // const [categories, setCategories] = useState({ 0: [] });
-  // const [rootCategory, setRootCategory] = useState("");
-  // const [selectedCategory, setSelectedCategory] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  // const { control } = useForm();
-
-  // const handleCategorySelection = (selected) => {
-  //   console.log(selected, "Selected category");
-  //   if (selected && selected.value) {
-  //     setRootCategory(selected.value);
-  //   } else {
-  //     setRootCategory(null);
-  //   }
-  // };
-
-  // const getCategories = async (parent_categories, depth) => {
-  //   const params = new URLSearchParams();
-  //   parent_categories.forEach((value) => {
-  //     if (value !== undefined) {
-  //       params.append("parent_category", value);
-  //     }
-  //   });
-
-  //   try {
-  //     const response = await _sendAPIRequest(
-  //       "GET",
-  //       PortalApiUrls.GET_CATEGORIES,
-  //       params,
-  //       true
-  //     );
-  //     if (response.status === 200) {
-  //       const mappedCategories = response.data.map((category) => ({
-  //         lable: category.name, // 'label' is used by Autocomplete to display
-  //         value: category.id, // 'value' is used for internal management
-  //         depth: category.depth,
-  //       }));
-  //       setCategories((prevCategories) => ({
-  //         ...prevCategories,
-  //         [depth]: mappedCategories,
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getCategories([], 0);
-  // }, []);
-
-  // useEffect(() => {
-  //   setSelectedCategory(rootCategory);
-  // }, [rootCategory]);
-
-  // const handleOptionChange = (ancestors) => {
-  //   console.log(ancestors, "ancestorsancestors");
-  //   setSelectedCategory(ancestors);
-  // };
-
-  // useEffect(() => {
-  //   console.log(rootCategory, "rootCategory updated");
-  // }, [rootCategory]);
-
-  // useEffect(() => {
-  //   if (id) {
-  //     let url = PortalApiUrls.RETRIEVE_CREATED_BID;
-  //     const retrieveBid = async () => {
-  //       try {
-  //         const response = await _sendAPIRequest(
-  //           "GET",
-  //           url + `${id}/`,
-  //           "",
-  //           true
-  //         );
-  //         if (response.status === 200) {
-  //           setBidDetails(response.data);
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };
-
-  //     retrieveBid();
-  //   }
-  // }, []);
 
   return (
     <>
@@ -122,6 +37,8 @@ const BidListPage = () => {
             value={value}
             onChange={handleChange}
             aria-label="bid-list-tabs"
+            variant="scrollable"
+            scrollButtons="auto"
             sx={{
               "@media (max-width: 600px)": {
                 width: "100%", // Tabs take full width only on mobile

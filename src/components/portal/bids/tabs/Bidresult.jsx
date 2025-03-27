@@ -185,7 +185,7 @@ const Bidresult = ({ bidDetails }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {letter?.buyer?.address?.map((address) => {
+                          {bidletter?.buyer?.address?.map((address) => {
                             return (
                               <tr>
                                 <td>{address?.address}</td>

@@ -1,35 +1,145 @@
 .form-container {
-	margin: 0 auto !important;
+  margin: 0 auto !important;
 
-	.form-section {
-		.image-section {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+  .form-section {
+    .image-section {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
 
-			.img-container {
-				display: flex;
-				flex-direction: column;
+      .img-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
 
-				.img-box {
-					img.logo-img {
-						width: 200px;
-						height: 150px;
-						aspect-ratio: 2 / 1;
-						padding: 2px;
-						border: 2px solid var(--primary-color);
-						margin: 10px;
-					}
-				}
-			}
-		}
+        .img-box {
+          width: 100%;
 
+          img.banner-img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            min-height: 250px;
+            max-height: 360px;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            margin: 10px 0;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+          }
 
-		.btn-container {
-			display: flex;
-			align-items: center;
-			justify-content: flex-end;
-			gap: 10px;
-		}
-	}
+          img.banner-img:hover {
+            transform: scale(1.05); /* Slight zoom effect */
+            filter: brightness(1.1); /* Brightness boost */
+          }
+        }
+
+        /* Align button to bottom-right */
+        .upload-btn {
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+          margin-top: 10px;
+        }
+      }
+    }
+
+    .blog-btn {
+      background-color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+
+      &.blog-btn:hover {
+        background-color: var(--secondary-color) !important;
+        border-color: var(--secondary-color) !important;
+      }
+    }
+  }
+}
+.cover-image {
+  height: 245px; /* Adjust height to match the description box */
+  object-fit: cover;
+  border: 3px solid var(--primary-color);
+  border-radius: 10px; /* Rounded corners */
+  width: 100%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+}
+
+.cover-image:hover {
+  transform: scale(1.05); /* Slight zoom effect */
+  filter: brightness(1.1); /* Brightness boost */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .img-box img.banner-img {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .img-box img.banner-img {
+    min-height: 180px;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .img-box img.banner-img {
+    min-height: 150px;
+  }
+}
+
+.uploadIcon {
+  display: inline-block;
+  transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+  position: relative;
+}
+
+.blog-btn {
+  overflow: hidden; /* Prevents icon from breaking out */
+  position: relative;
+}
+
+.blog-btn:hover .uploadIcon {
+  animation: moveUpAndReappear 1s ease-in-out forwards;
+}
+
+@keyframes moveUpAndReappear {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  51% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ckeditor-container {
+  height: 300px; /* Set a fixed height */
+  overflow: hidden; /* Prevents unwanted expansion */
+  border: 1px solid #ccc; /* Optional: border for visibility */
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ckeditor-container .ck-editor__editable {
+  height: 100% !important; /* Makes the editor fit within the container */
+  max-height: 300px !important; /* Prevents it from growing beyond */
+  overflow-y: auto !important; /* Enables scrolling */
 }

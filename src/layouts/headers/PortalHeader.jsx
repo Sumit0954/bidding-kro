@@ -112,7 +112,7 @@ const PortalHeader = () => {
   //   return () => observer.disconnect();
   // }, []);
 
-  console.log(notifications, " : notifications");
+  // console.log(notifications, " : notifications");
   return (
     <header>
       <nav

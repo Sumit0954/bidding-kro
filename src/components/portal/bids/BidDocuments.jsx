@@ -32,6 +32,11 @@ const BidDocuments = () => {
   const [showThankyou, setShowThankyou] = useState(false);
   const [screenLoader, setScreenLoader] = useState(true);
   const { userDetails } = useContext(UserDetailsContext);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    document: null,
+    message: "",
+  });
 
   const { control, handleSubmit, setValue, watch, setError } = useForm({
     defaultValues: {
@@ -40,7 +45,6 @@ const BidDocuments = () => {
   });
 
   const inputRef = useRef(null);
-  console.log("documents : ", documents);
   const onDrop = (acceptedFiles) => {
     const newFile = acceptedFiles[0];
     if (newFile) {
@@ -84,7 +88,7 @@ const BidDocuments = () => {
           true
         );
         if (response.status === 201) {
-          window.location.reload();
+          setDocuments((prevDoc) => [...prevDoc, response.data]);
           setLoading(false);
         }
       } catch (error) {
@@ -112,12 +116,6 @@ const BidDocuments = () => {
       }
     }
   };
-
-  const [deleteDetails, setDeleteDetails] = useState({
-    open: false,
-    document: null,
-    message: "",
-  });
 
   const handleDeleteDocument = (data) => {
     setDeleteDetails({
@@ -149,7 +147,7 @@ const BidDocuments = () => {
             message: `Document ${name} has been deleted.`,
             severity: "success",
           });
-          window.location.reload(); // Reload after successful deletion
+          window.location.reload();
           setScreenLoader(false);
         }
       } catch (error) {

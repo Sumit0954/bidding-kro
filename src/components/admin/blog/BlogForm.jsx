@@ -5,13 +5,12 @@ import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.j
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
-import { Breadcrumbs, Typography } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
+import { Breadcrumbs, Dialog, Typography } from "@mui/material";
+import { CloudUpload, Upload } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 const BlogForm = () => {
-  const { control, handleSubmit } = useForm();
   const breadcrumbs = [
     <NavLink
       underline="hover"
@@ -32,10 +31,14 @@ const BlogForm = () => {
     register,
     watch,
     getValues,
+    control,
+    handleSubmit,
     formState: { errors },
   } = useForm();
   const [coverImage, setCoverImage] = useState(DummyLogo);
   const [bannerImage, setBannerImage] = useState(DummyLogo);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const all = watch();
   const { cover_image, banner_image } = all;
@@ -70,6 +73,11 @@ const BlogForm = () => {
     console.log(data);
   };
 
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setOpenDialog(true);
+  };
+
   return (
     <>
       <div role="presentation">
@@ -81,7 +89,7 @@ const BlogForm = () => {
           <div className={styles["form-container"]}>
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
-                <div className="row">
+                <div className="row mb-5">
                   <div className="col-lg-6">
                     <CustomInput
                       control={control}
@@ -105,109 +113,125 @@ const BlogForm = () => {
                     />
                   </div>
                 </div>
-
                 <div className="row mb-5">
                   <div
-                    className={cn("col-lg-6", styles["image-section"])}
-                    style={{ width: "50%" }}
+                    className={cn("col-lg-12", styles["image-section"])}
+                    style={{ width: "100%" }}
                   >
-                    <label>Cover Image</label>
-                    <div className={styles["img-container"]}>
-                      <div className={styles["img-box"]}>
-                        <img
-                          src={coverImage}
-                          className={styles["logo-img"]}
-                          alt="cover-img"
-                        />
-                      </div>
-                      <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUpload />}
-                        sx={{
-                          width: "12.5rem",
-                          marginLeft: "10px",
-                          backgroundColor: "var(--primary-color)",
-                          "&:hover": {
-                            backgroundColor: "var(--secondary-color)",
-                          },
-                        }}
-                      >
-                        Browse
-                        <input
-                          {...register("cover_image")}
-                          type="file"
-                          accept=".jpeg, .jpg, .png"
-                          className="visually-hidden-input"
-                        />
-                      </Button>
-                      {errors.Logo && (
-                        <span className="error">
-                          {errors?.Logo?.message || "Error"}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                    {/* Label aligned to left */}
+                    <label className="text-start w-100">Banner Image</label>
 
-                  <div
-                    className={cn("col-lg-6", styles["image-section"])}
-                    style={{ width: "50%" }}
-                  >
-                    <label>Banner Image</label>
+                    {/* Image Container */}
                     <div className={styles["img-container"]}>
                       <div className={styles["img-box"]}>
                         <img
                           src={bannerImage}
-                          className={styles["logo-img"]}
+                          className={styles["banner-img"]}
                           alt="banner-img"
+                          onClick={() => handleImageClick(bannerImage)}
                         />
                       </div>
-                      <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUpload />}
-                        sx={{
-                          width: "12.5rem",
-                          marginLeft: "10px",
-                          backgroundColor: "var(--primary-color)",
-                          "&:hover": {
-                            backgroundColor: "var(--secondary-color)",
-                          },
-                        }}
+
+                      {/* Button aligned to bottom right */}
+                      <div
+                        className="d-flex justify-content-start mt-3"
+                        style={{ width: "100%" }}
                       >
-                        Browse
-                        <input
-                          {...register("banner_image")}
-                          type="file"
-                          accept=".jpeg, .jpg, .png"
-                          className="visually-hidden-input"
-                        />
-                      </Button>
-                      {errors.Logo && (
-                        <span className="error">
-                          {errors?.Logo?.message || "Error"}
-                        </span>
-                      )}
+                        <Button
+                          component="label"
+                          role={undefined}
+                          variant="contained"
+                          tabIndex={-1}
+                          startIcon={<CloudUpload />}
+                          sx={{
+                            width: "12.5rem",
+                            backgroundColor: "var(--primary-color)",
+                            "&:hover": {
+                              backgroundColor: "var(--secondary-color)",
+                            },
+                          }}
+                        >
+                          Browse
+                          <input
+                            {...register("banner_image", {
+                              required: "Banner image is required",
+                              validate: (files) =>
+                                files.length > 0 || "Please select an image",
+                            })}
+                            type="file"
+                            accept=".jpeg, .jpg, .png"
+                            className="visually-hidden-input"
+                          />
+                        </Button>
+                      </div>
                     </div>
+
+                    {/* Error Message */}
+                    {errors.banner_image && (
+                      <span className="error">
+                        {errors?.banner_image?.message || "Error"}
+                      </span>
+                    )}
                   </div>
                 </div>
-
                 <div className="row">
-                  <div className="col-lg-12">
-                    <CustomCkEditor
-                      control={control}
-                      name="description"
-                      label="Description"
+                  <div className="col-lg-6 d-flex flex-column">
+                    <label className="mb-2 ">Cover Image</label>
+                    <img
+                      src={coverImage}
+                      alt="Cover Image"
+                      className={cn("w-100", styles["cover-image"])}
+                      onClick={() => handleImageClick(coverImage)}
                     />
                   </div>
                 </div>
-
-                <div className="row">
-                  <div className="col-lg-12">
+                <div className="row mb-5">
+                  {/* Button aligned to bottom right */}
+                  <div
+                    className="d-flex justify-content-start mt-3"
+                    style={{ width: "100%" }}
+                  >
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      tabIndex={-1}
+                      startIcon={<CloudUpload />}
+                      sx={{
+                        width: "12.5rem",
+                        backgroundColor: "var(--primary-color)",
+                        "&:hover": {
+                          backgroundColor: "var(--secondary-color)",
+                        },
+                      }}
+                    >
+                      Browse
+                      <input
+                        {...register("cover_image", {
+                          required: "Cover image is required",
+                        })}
+                        type="file"
+                        accept=".jpeg, .jpg, .png"
+                        className="visually-hidden-input"
+                      />
+                    </Button>
+                  </div>
+                </div>
+                {/* Blog Description in a new row with full width */}
+                <div className="row mt-3">
+                  <div className="col-12">
+                    <CustomCkEditor
+                      control={control}
+                      name="description"
+                      label="Blog Description"
+                      rules={{
+                        required: "Blog description is required",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <div className="col-lg-4">
                     <CustomInput
                       control={control}
                       label="Meta Title"
@@ -217,23 +241,21 @@ const BlogForm = () => {
                       }}
                     />
                   </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-8">
                     <CustomInput
                       control={control}
-                      label="Meta Kyeword"
-                      name="meta-kyeword"
+                      label="Meta Keyword"
+                      name="meta-keyword"
                       rules={{
-                        required: "Meta Kyeword is required.",
+                        required: "Meta Keyword is required.",
                       }}
                     />
                   </div>
                 </div>
 
+                {/* Meta Description in a new row with full width */}
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12">
                     <CustomInput
                       control={control}
                       label="Meta Description"
@@ -244,13 +266,12 @@ const BlogForm = () => {
                     />
                   </div>
                 </div>
-
-                <div className={cn("my-3", styles["btn-container"])}>
+                {/* Button aligned to the right */}
+                <div className="col-lg-4 offset-lg-8 mt-2">
                   <button
-                    type="submit"
-                    className={cn("btn", "button", styles["custom-btn"])}
+                    className={cn("btn btn-primary w-100", styles["blog-btn"])}
                   >
-                    Save
+                    <Upload className={styles["uploadIcon"]} /> UPLOAD
                   </button>
                 </div>
               </form>
@@ -258,6 +279,19 @@ const BlogForm = () => {
           </div>
         </div>
       </div>
+      {/* Image Preview Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        maxWidth={selectedImage === bannerImage ? "lg" : "md"} // You can also use "lg" or "xl" for larger sizes
+        fullWidth
+      >
+        <img
+          src={selectedImage}
+          alt="Selected"
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+        />
+      </Dialog>
     </>
   );
 };

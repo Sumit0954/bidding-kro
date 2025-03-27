@@ -58,7 +58,7 @@ const Contact = () => {
                         <input
                           {...register(label.toLowerCase().replace(/\s/g, "-"))}
                           type="text"
-                          placeholder={label}
+                          placeholder={`Enter Your ${label}`}
                           className={styles["custom-input"]}
                         />
                       </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./AdminSidebar.module.scss";
 import { NavLink } from "react-router-dom";
+import { Tooltip } from "@mui/material";
 
 const AdminSidebar = () => {
   return (
@@ -17,14 +18,16 @@ const AdminSidebar = () => {
               }
               key={index}
             >
-              <li className={styles["sidebar-item"]}>
-                <img
-                  className={styles["item-icon"]}
-                  src={item.icon}
-                  alt={item.title}
-                />
-                <span className={styles["item-name"]}>{item.title}</span>
-              </li>
+              <Tooltip title={item.title}>
+                <li className={styles["sidebar-item"]}>
+                  <img
+                    className={styles["item-icon"]}
+                    src={item.icon}
+                    alt={item.title}
+                  />
+                  <span className={styles["item-name"]}>{item.title}</span>
+                </li>
+              </Tooltip>
             </NavLink>
           ))}
         </ul>
@@ -38,27 +41,33 @@ export default AdminSidebar;
 const sidebarMenu = [
   {
     icon: "/images/admin/layout/icons/building.svg",
+    title: "Dashboard",
+    path: "/admin/dashboard",
+  },
+  {
+    icon: "/images/admin/layout/icons/building.svg",
     title: "Companies",
     path: "/admin/companies",
   },
-  // {
-  //   icon: "/images/admin/layout/icons/credit-card.svg",
-  //   title: "Transactions",
-  //   path: "/admin/transactions",
-  // },
-  // {
-  //   icon: "/images/admin/layout/icons/queries.svg",
-  //   title: "Queries",
-  //   path: "/admin/queries",
-  // },
-  // {
-  //   icon: "/images/admin/layout/icons/blogging.svg",
-  //   title: "Blog Management",
-  //   path: "/admin/blogs",
-  // },
-  // {
-  //   icon: "/images/admin/layout/icons/Administrator3.svg",
-  //   title: "Admin Management",
-  //   path: "/admin/management",
-  // },
+  {
+    icon: "/images/admin/layout/icons/blogging.svg",
+    title: "Blog Management",
+    path: "/admin/blogs",
+  },
+
+  {
+    icon: "/images/admin/layout/icons/Administrator3.svg",
+    title: "Admin Management",
+    path: "/admin/management",
+  },
+  {
+    icon: "/images/admin/layout/icons/credit-card.svg",
+    title: "Transactions",
+    path: "/admin/transactions",
+  },
+  {
+    icon: "/images/admin/layout/icons/queries.svg",
+    title: "Queries",
+    path: "/admin/queries",
+  },
 ];

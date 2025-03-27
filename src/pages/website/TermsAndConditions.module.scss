@@ -1,0 +1,20 @@
+.heading-with-lines {
+  text-align: center;
+  color: #062d72;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: "";
+    flex: 1;
+    border-bottom: 2px solid #062d72; // Line style
+    margin-right: 10px; // Space between text and line
+  }
+
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 2px solid #062d72; // Line style
+    margin-left: 10px; // Space between text and line
+  }
+}

@@ -30,7 +30,7 @@ const Login = () => {
       if (response.status === 200) {
         setLoading(false);
         login(response.data, "ADMIN");
-        window.location.href = "/admin/companies";
+        window.location.href = "/admin/dashboard";
       }
     } catch (error) {
       setLoading(false);

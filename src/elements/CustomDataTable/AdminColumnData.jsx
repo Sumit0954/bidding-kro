@@ -190,7 +190,13 @@ export const blogs_column = [
 
 export const Admin_list_column = [
   {
-    Header: "Mamber Name",
+    Header: "Admin Id",
+    accessor: "Id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Admin Name",
     accessor: "name",
     align: "left",
     disablePadding: false,
@@ -204,6 +210,128 @@ export const Admin_list_column = [
   {
     Header: "Actions",
     accessor: "action",
+    align: "right",
+    disablePadding: false,
+  },
+];
+
+export const registrationStats = [
+  {
+    Header: "Company Name",
+    accessor: "company_Name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Buyer Name",
+    accessor: "buyer_Name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "center",
+    disablePadding: false,
+  },
+  {
+    Header: "Category",
+    accessor: "category",
+    align: "right",
+    disablePadding: false,
+  },
+  {
+    Header: "City",
+    accessor: "city",
+    align: "right",
+    disablePadding: false,
+  },
+  {
+    Header: "Status",
+    accessor: "Status",
+    align: "right",
+    disablePadding: false,
+  },
+];
+
+export const bidDataStats = [
+  {
+    Header: "Bid Id",
+    accessor: "id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Owner Name",
+    accessor: "name",
+    align: "center",
+    disablePadding: false,
+  },
+
+  {
+    Header: "Payment",
+    accessor: "payment",
+    align: "right",
+    disablePadding: false,
+  },
+];
+
+export const lOIDataStats = [
+  {
+    Header: "Bid Id",
+    accessor: "id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Owner Name",
+    accessor: "name",
+    align: "center",
+    disablePadding: false,
+  },
+
+  {
+    Header: "LOI Status",
+    accessor: "Status",
+    align: "right",
+    disablePadding: false,
+  },
+];
+export const transactionDataStats = [
+  {
+    Header: "Transction Id",
+    accessor: "id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Owner Name",
+    accessor: "name",
+    align: "center",
+    disablePadding: false,
+  },
+
+  {
+    Header: "Payment",
+    accessor: "payment",
     align: "right",
     disablePadding: false,
   },

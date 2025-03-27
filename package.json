@@ -40,7 +40,8 @@
     "sass": "^1.83.0",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "dev": "vite",

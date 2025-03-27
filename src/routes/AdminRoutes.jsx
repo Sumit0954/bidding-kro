@@ -18,6 +18,7 @@ import QueryListPage from "../pages/admin/QueryListPage";
 import QueryDetailPage from "../pages/admin/QueryDetailPage";
 import AdminManagementPage from "../pages/admin/AdminManagementPage";
 import AdminManagementForm from "../components/admin/adminMangement/AdminManagementForm";
+import DashboardPage from "../pages/admin/DashboardPage";
 
 const AdminRoutes = () => {
   return (
@@ -31,6 +32,10 @@ const AdminRoutes = () => {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
               <Route element={<ProtectedRoutes />}>
+                <Route
+                  path="/dashboard"
+                  element={<LayoutPage Component={DashboardPage} />}
+                />
                 <Route
                   path="/companies"
                   element={<LayoutPage Component={CompanyListPage} />}
@@ -64,7 +69,7 @@ const AdminRoutes = () => {
                   element={<LayoutPage Component={BlogListPage} />}
                 />
                 <Route
-                  path="/blog/:action"
+                  path="blogs/:action"
                   element={<LayoutPage Component={BlogFromPage} />}
                 />
                 <Route

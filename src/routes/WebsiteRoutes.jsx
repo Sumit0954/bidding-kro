@@ -17,7 +17,8 @@ import UserDetailsProvider from "../contexts/UserDetailsProvider";
 import BlogPage from "../pages/website/BlogPage";
 import WebsiteFooter from "../layouts/footers/WebsiteFooter";
 import BlogDetailsPage from "../pages/website/BlogDetailsPage";
-
+import TermsAndConditions from "../pages/website/TermsAndConditions";
+import PrivacyAndPolicy from "../pages/website/PrivacyAndPolicy";
 
 const WebsiteRoutes = () => {
   return (
@@ -40,6 +41,14 @@ const WebsiteRoutes = () => {
                   <Route
                     path="/login/forgot-password"
                     element={<ForgotPasswordPage />}
+                  />
+                  <Route
+                    path="/terms-and-conditions"
+                    element={<TermsAndConditions />}
+                  />
+                  <Route
+                    path="/privacy-policy"
+                    element={<PrivacyAndPolicy />}
                   />
                   <Route
                     path="/login/forgot-password/otp"
