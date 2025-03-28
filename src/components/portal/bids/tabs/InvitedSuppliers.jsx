@@ -120,7 +120,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
             true
           );
           if (response.status === 200) {
-            console.log(response?.data);
             setBidDetails(response?.data);
           }
         } catch (error) {
@@ -181,7 +180,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
 
   const addAction = (cell) => {
     if (cell.column.id === "action") {
-      console.log(cell, " : Decline or not");
       return (
         <TableCell {...cell.getCellProps()} align="center" padding="none">
           <button
@@ -237,7 +235,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
             true
           );
           if (response.status === 200) {
-            console.log(response?.data);
             setBidDetails(response?.data);
           }
         } catch (error) {

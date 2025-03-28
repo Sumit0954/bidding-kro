@@ -34,7 +34,7 @@ const DeleteDialog = ({ title, message, handleClick }) => {
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center" }}>
           <Button
-            className="btn button"
+            className="btn button reject"
             onClick={() => handleClick(false)}
             autoFocus
             sx={{ width: "8rem" }}
@@ -42,7 +42,7 @@ const DeleteDialog = ({ title, message, handleClick }) => {
             No
           </Button>
           <Button
-            className="btn button reject"
+            className="btn button"
             onClick={() => handleClick(true)}
             autoFocus
             sx={{ width: "8rem" }}

@@ -135,7 +135,7 @@ const VideoReviewSection = () => {
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+              // src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
               title="Bidding Karo Video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

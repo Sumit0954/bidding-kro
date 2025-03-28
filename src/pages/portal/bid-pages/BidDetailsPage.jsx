@@ -189,7 +189,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id, type, refreshKey, showThankyou, deleteDetails]);
+  }, [id, type, refreshKey, showThankyou, deleteDetails, bidDetails?.status]);
 
   useEffect(() => {
     if (bidDetails?.id) {
@@ -267,6 +267,8 @@ const BidDetailsPage = () => {
                   ? "Completed"
                   : bidDetails?.status === "cancelled"
                   ? "cancelled"
+                  : bidDetails?.status === "active"
+                  ? "active"
                   : "live"
               }`}
               arrow

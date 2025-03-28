@@ -22,7 +22,7 @@ const HomePage = () => {
       <BuyersAndSupplier />
       <br />
       <br />
-      <CompaniesSlider />
+      {/* <CompaniesSlider /> */}
       <br />
       <br />
       <br />

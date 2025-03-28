@@ -25,6 +25,7 @@ import {
   Work,
   WorkTwoTone,
 } from "@mui/icons-material";
+import { NavLink } from "react-router-dom";
 
 const WebsiteFooter = () => {
   return (
@@ -91,27 +92,17 @@ const WebsiteFooter = () => {
                 <h3 className={styles["footer-heading"]}>Company</h3>
                 <ul>
                   <li>
-                    <a href="tel:+919599712997">
+                    <a href="/">
                       <SpeakerGroupOutlined /> About Us
                     </a>
                   </li>
                   <li>
-                    <a href="tel:+919599712997">
+                    <a href="/">
                       <GradeTwoTone /> Awards
                     </a>
                   </li>
                   <li>
-                    <a href="mailto:info@biddingkaro.in">
-                      <PhotoTwoTone /> Our Gallery
-                    </a>
-                  </li>
-                  <li>
-                    <a href="mailto:info@biddingkaro.in">
-                      <PolicyTwoTone /> Privacy Policy
-                    </a>
-                  </li>
-                  <li>
-                    <a href="mailto:info@biddingkaro.in">
+                    <a href="/">
                       <WorkTwoTone /> Career
                     </a>
                   </li>
