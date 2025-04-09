@@ -73,6 +73,7 @@ const Livebids = ({ listType }) => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [btnLoader, setBtnLoader] = useState(false);
   const [liveBids, setLiveBids] = useState([]);
+  const [upcomingBids, serUpcomingBids] = useState([]);
   const navigate = useNavigate();
 
   // Fetching the API for the list of live bids
@@ -89,7 +90,8 @@ const Livebids = ({ listType }) => {
         );
 
         if (response.status === 200) {
-          setLiveBids(response?.data);
+          setLiveBids(response?.data?.live_bids);
+          serUpcomingBids(response?.data?.upcoming_bids);
         }
       } catch (error) {
         console.error("Error fetching live bids:", error);
@@ -107,8 +109,15 @@ const Livebids = ({ listType }) => {
 
   return (
     <>
-      {liveBids?.length > 0 ? (
+      {liveBids?.length > 0 || upcomingBids > 0 ? (
         <Box sx={{ p: 2, bgcolor: "#f9fafc" }}>
+          {/* Live Bids Section Divider */}
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+            Live Bids
+          </Typography>
+          <Box sx={{ mb: 3, borderBottom: "2px solid #ccc" }} />
+
+          {/* Render Live Bids */}
           {liveBids.map((bid) => (
             <Card
               key={bid.id}
@@ -209,26 +218,128 @@ const Livebids = ({ listType }) => {
                     {btnLoader ? (
                       <ButtonLoader size={60} />
                     ) : (
-                      listType === "Invited" && (
-                        <Button
-                          variant="contained"
-                          className={styles["place-bid-btn"]}
-                          endIcon={<GavelIcon />}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            navigate(`/portal/liveBids/details/?id=${bid.id}`, {
-                              state: { bid },
-                            });
-                          }}
-                        >
-                          Place a Bid
-                        </Button>
-                      )
+                      <Button
+                        variant="contained"
+                        className={styles["place-bid-btn"]}
+                        endIcon={<GavelIcon />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          listType === "Invited"
+                            ? navigate(
+                                `/portal/liveBids/details/?id=${bid.id}`,
+                                {
+                                  state: { bid },
+                                }
+                              )
+                            : navigate(
+                                `/portal/liveBids/details/?type=created&id=${bid.id}`,
+                                { state: { bid } }
+                              );
+                        }}
+                      >
+                        {listType === "Invited" ? "Place a Bid" : "View Bid"}
+                      </Button>
                     )}
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
+          ))}
+
+          {/* Upcoming Bids Section Divider */}
+          <Typography variant="h6" sx={{ fontWeight: "bold", mt: 4, mb: 1 }}>
+            Upcoming Bids
+          </Typography>
+          <Box sx={{ mb: 3, borderBottom: "2px solid #ccc" }} />
+
+          {upcomingBids.map((bid) => (
+            <Tooltip title="Upcoming Bid - This bid yet to be live" arrow>
+              <Card
+                key={bid.id}
+                sx={{
+                  mb: 3,
+                  borderRadius: 3,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                  overflow: "hidden",
+                  opacity: 0.6,
+                  cursor: "wait", // show waiting cursor
+                  pointerEvents: "auto", // allow tooltip to work
+                }}
+                onClick={(e) => e.preventDefault()} // block click behavior
+              >
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {/* Bid Information */}
+                    <Grid item xs={12} md={8}>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ mb: 1 }}
+                      >
+                        Bid ID: <strong>{bid?.formatted_number}</strong>
+                        {listType === "Created" ? null : (
+                          <>
+                            | Place Bid Count:
+                            <strong>{String("6").padStart(2, "0")}</strong>
+                          </>
+                        )}
+                      </Typography>
+                      <Tooltip title={bid?.title}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#333",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {truncateString(bid?.title, 40)}
+                        </Typography>
+                      </Tooltip>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ color: "#666", mb: 1, fontWeight: "medium" }}
+                      >
+                        By <strong>{bid?.company?.name}</strong>
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#555", lineHeight: 1.6 }}
+                      >
+                        {bid?.description.replace(/<p>|<\/p>/g, "")}
+                      </Typography>
+                    </Grid>
+
+                    {/* Countdown Timer and Button */}
+                    <Grid
+                      item
+                      xs={12}
+                      md={4}
+                      container
+                      direction="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{ textAlign: "center" }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#333",
+                          mb: 1,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Bid Starts In:
+                      </Typography>
+                      <CountdownTimer endDate={bid?.bid_open_date} />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Tooltip>
           ))}
         </Box>
       ) : (
