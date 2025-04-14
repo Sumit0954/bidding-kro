@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-const senrtErrorDash = () => {
+const SenrtErrorDash = () => {
   return (
     <Button
       variant="contained"
@@ -14,4 +14,4 @@ const senrtErrorDash = () => {
   );
 };
 
-export default senrtErrorDash;
+export default SenrtErrorDash;

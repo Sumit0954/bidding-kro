@@ -12,6 +12,7 @@ import { getMessaging, getToken } from "firebase/messaging";
 import _sendAPIRequest from "./helpers/api";
 import { PortalApiUrls } from "./helpers/api-urls/PortalApiUrls";
 import * as Sentry from "@sentry/react";
+import SenrtErrorDash from "./pages/sentry-error-page";
 
 const requestNotificationPermission = async () => {
   console.log("chck token");
@@ -128,6 +129,7 @@ function App() {
         <Route path="/*" element={<WebsiteRoutes />} />
         <Route path="portal/*" element={<PortalRoutes />} />
         <Route path="admin/*" element={<AdminRoutes />} />
+        <Route path="sentry/" element={<SenrtErrorDash />} />
       </Routes>
     </Sentry.ErrorBoundary>
   );
