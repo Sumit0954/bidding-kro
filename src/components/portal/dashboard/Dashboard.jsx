@@ -266,6 +266,16 @@ const Dashboard = () => {
           flexWrap: "wrap",
         }}
       >
+        {/* <Button
+          variant="contained"
+          color="error"
+          onClick={() => {
+            throw new Error("This is your first error!");
+          }}
+        >
+          Break the world
+        </Button> */}
+
         {/* userName & userPhoto  */}
         <Box
           sx={{

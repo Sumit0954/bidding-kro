@@ -21,8 +21,11 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import styles from "./AddteamForm.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { useNavigate } from "react-router-dom";
 
 const AddteamForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -61,6 +64,15 @@ const AddteamForm = () => {
   // ✅ Handle change for controlled inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (
+      (name === "first_name" || name === "last_name") &&
+      /[^a-zA-Z\s]/.test(value)
+    ) {
+      return;
+    }
+    if (name === "mobile_number" && /[^0-9]/.test(value)) {
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -84,17 +96,27 @@ const AddteamForm = () => {
         true
       );
 
-      console.log("Member added successfully:", response.data);
-      alert("Member added successfully!");
+      if (response.status === 200 || response.status === 201) {
+        console.log("Member added successfully:", response.data);
+        // alert("Member added successfully!");
 
-      // ✅ Clear form after successful submission
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        mobile_number: "",
-        role: "",
-      });
+        setAlert({
+          isVisible: true,
+          message: "Member added successfully",
+          severity: "success",
+        });
+
+        navigate("/portal/team");
+
+        // ✅ Clear form after successful submission
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          mobile_number: "",
+          role: "",
+        });
+      }
     } catch (error) {
       console.error(
         "Failed to add member:",

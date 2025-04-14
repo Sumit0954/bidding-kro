@@ -14,6 +14,7 @@ import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import SearchBar from "../../../elements/CustomSelect/SearchBar";
 import RequestModal from "../../../elements/CustomModal/RequestModal";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import { exportToExcel } from "../../../utils/exportToExcel";
 
 const BidList = ({ listType }) => {
   const [sendRequest, setSendRequest] = useState(false);
@@ -256,6 +257,20 @@ const BidList = ({ listType }) => {
               multiple={true}
             />
           </div>
+          {/* {listType === "created" && (
+            <button
+              onClick={() =>
+                exportToExcel(
+                  createdBids,
+                  created_bids_column,
+                  "Created_Bids.xlsx",
+                  ["clone_bid", "reserved_price"]
+                )
+              }
+            >
+              Export to Excel
+            </button>
+          )} */}
         </div>
       )}
 

@@ -150,12 +150,13 @@ const Livebids = ({ listType }) => {
                       sx={{ mb: 1 }}
                     >
                       Bid ID: <strong>{bid?.formatted_number}</strong>
-                      {listType === "Created" ? null : (
+                      {/* {listType === "Created" ? null : (
                         <>
+                          {" "}
                           | Place Bid Count:
                           <strong>{String("6").padStart(2, "0")}</strong>
                         </>
-                      )}
+                      )} */}
                     </Typography>
                     <Tooltip title={bid?.title}>
                       <Typography
@@ -277,12 +278,13 @@ const Livebids = ({ listType }) => {
                         sx={{ mb: 1 }}
                       >
                         Bid ID: <strong>{bid?.formatted_number}</strong>
-                        {listType === "Created" ? null : (
+                        {/* {listType === "Created" ? null : (
                           <>
+                            {" "}
                             | Place Bid Count:
                             <strong>{String("6").padStart(2, "0")}</strong>
                           </>
-                        )}
+                        )} */}
                       </Typography>
                       <Tooltip title={bid?.title}>
                         <Typography

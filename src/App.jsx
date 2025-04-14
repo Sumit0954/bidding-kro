@@ -11,6 +11,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import { getMessaging, getToken } from "firebase/messaging";
 import _sendAPIRequest from "./helpers/api";
 import { PortalApiUrls } from "./helpers/api-urls/PortalApiUrls";
+import * as Sentry from "@sentry/react";
 
 const requestNotificationPermission = async () => {
   console.log("chck token");
@@ -122,11 +123,13 @@ function App() {
   // }, []);
 
   return (
-    <Routes>
-      <Route path="/*" element={<WebsiteRoutes />} />
-      <Route path="portal/*" element={<PortalRoutes />} />
-      <Route path="admin/*" element={<AdminRoutes />} />
-    </Routes>
+    <Sentry.ErrorBoundary fallback={<p>Something went wrong.</p>}>
+      <Routes>
+        <Route path="/*" element={<WebsiteRoutes />} />
+        <Route path="portal/*" element={<PortalRoutes />} />
+        <Route path="admin/*" element={<AdminRoutes />} />
+      </Routes>
+    </Sentry.ErrorBoundary>
   );
 }
 
