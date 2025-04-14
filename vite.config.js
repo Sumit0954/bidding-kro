@@ -3,10 +3,14 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react(), sentryVitePlugin({
-    org: "appcode-technologies",
-    project: "biddingkaro-frontend"
-  })],
+  plugins: [
+    react(),
+    sentryVitePlugin({
+      org: "appcode-technologies",
+      project: "biddingkaro-frontend",
+      telemetry: false,
+    }),
+  ],
 
   server: {
     open: true, // Opens the browser on `npm run dev`
@@ -14,6 +18,6 @@ export default defineConfig({
   },
 
   build: {
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 });
