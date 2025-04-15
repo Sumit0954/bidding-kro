@@ -10,4 +10,8 @@ export const WebsiteApiUrls = Object.freeze({
   FORGOT_SEND_OTP: "/user/customer/forgot_password/send_otp/",
   FORGOT_VERIFY_OTP: "/user/customer/forgot_password/verify_otp/",
   RESET_PASSWORD: "/user/customer/reset_password/",
+  WEBSITE_BLOGS: "/blog/",
+  WEBSITE_BLOG_DETAIL: "/blog/",
+  CONTACT_US: "/support/contact/",
+  GET_IN_TOUCH : "/support/get_in_touch/"
 });

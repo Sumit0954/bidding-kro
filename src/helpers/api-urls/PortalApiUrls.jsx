@@ -98,4 +98,5 @@ export const PortalApiUrls = Object.freeze({
   ADD_TEAM_MEMBER: "/user/customer/team/",
   DEACTIVATE_MEMBER: "/user/customer/team/",
   RETRIVE_MEMBER: "/user/customer/team/",
+  MISSING_DATA_REQUEST: "/support/customer/missing_data_request/",
 });
