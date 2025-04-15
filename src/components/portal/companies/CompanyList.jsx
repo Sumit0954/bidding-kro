@@ -32,7 +32,7 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   const [requestBids, setRequestBids] = useState([]);
 
   const { control } = useForm();
-  
+
   const handleInvite = (data) => {
     setInvitation(true);
     setCompanyDetail(data.row.original);
@@ -139,15 +139,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
     }
   };
 
-  // const handleCategorySelection = (selected) => {
-  //   console.log(selected, "Selected category");
-  //   if (selected && selected.value) {
-  //     setRootCategory(selected.value);
-  //   } else {
-  //     setRootCategory(null);
-  //   }
-  // };
-
   const getCategories = async (parent_categories, depth) => {
     const params = new URLSearchParams();
     parent_categories.forEach((value) => {
@@ -192,63 +183,6 @@ const CompanyList = ({ bidDetails, id, tab, listtype }) => {
   return (
     <>
       <div className="container">
-        {/* {listtype === "allcompanies" && (
-          <div className="row">
-            <div className="col-lg-3">
-              <CustomSelect
-                control={control}
-                name="Industry"
-                placeholder="Industry"
-                options={categories[0]}
-                handleChange={handleCategorySelection}
-                multiple={false}
-              />
-            </div>
-            <div className="col-lg-9">
-              <SearchBar
-                name="product_search"
-                placeholder="Search Your Category"
-                control={control}
-                rootCategory={rootCategory}
-                value={undefined}
-                ancestors={false}
-                onAncestorsChange={handleOptionChange}
-                disabled={!rootCategory}
-                multiple={true}
-              />
-            </div>
-          </div>
-        )} */}
-        {/* {listtype === "allcompanies" && (
-          <Alert
-            severity="info"
-            sx={{ marginBottom: "10px", display: "flex", alignItems: "center" }}
-            className={styles["alert-container"]}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <p className={styles["amendment-info"]} style={{ margin: 0 }}>
-                <span>
-                  You can extend the sample submission dates if needed. Adjust
-                  accordingly to meet requirements.
-                </span>
-              </p>
-              <Button
-                type="submit"
-                variant="contained"
-                className={styles["note-button"]}
-              >
-                Show All Companies
-              </Button>
-            </Box>
-          </Alert>
-        )} */}
         {listtype === "allcompanies" ? (
           <>
             <div className={styles["supplier-section"]}>

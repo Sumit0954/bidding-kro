@@ -23,6 +23,7 @@ import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import {
   AttachMoney,
   CheckCircle,
+  CurrencyRupee,
   EmojiEvents,
   HourglassEmpty,
   PersonAdd,
@@ -342,7 +343,7 @@ const Dashboard = () => {
                 </Typography>
               </CardContent>
               <Box sx={{ padding: "10px" }}>
-                <AttachMoney sx={{ color: "#055160" }} />
+                <CurrencyRupee sx={{ color: "#055160" }} />
               </Box>
             </Card>
           </Grid>

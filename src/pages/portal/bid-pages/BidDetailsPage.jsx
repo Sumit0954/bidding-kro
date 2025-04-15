@@ -42,7 +42,6 @@ import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 import { PrintOutlined } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
-import { AlertContext } from "../../../contexts/AlertProvider";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -59,8 +58,6 @@ const BidDetailsPage = () => {
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
-  const { setAlert } = useContext(AlertContext);
-
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -121,19 +118,9 @@ const BidDetailsPage = () => {
       );
       if (response.status === 204) {
         setDeleteDetails({ open: false, title: "", message: "" });
+        // window.location.reload();
       }
     } catch (error) {
-      console.log("error");
-      if (error.status === 403) {
-        console.log(error, ":error");
-        setDeleteDetails({ open: false, title: "", message: "" });
-
-        setAlert({
-          isVisible: true,
-          message: error.response.data.detail,
-          severity: "error",
-        });
-      }
       console.log(error);
     }
   };
@@ -189,7 +176,7 @@ const BidDetailsPage = () => {
 
       retrieveBid();
     }
-  }, [id, type, refreshKey, showThankyou, deleteDetails, bidDetails?.status]);
+  }, [id, type, refreshKey, showThankyou, deleteDetails]);
 
   useEffect(() => {
     if (bidDetails?.id) {
@@ -249,66 +236,57 @@ const BidDetailsPage = () => {
 
   return (
     <>
-      {/*BUTTONS IN BIDDETAILS  */}
-      <div className="d-flex align-items-center justify-content-between mb-2">
-        <div role="presentation">
+      {/* BUTTONS IN BIDDETAILS */}
+      <div className="d-flex flex-column w-100 mb-2">
+        {/* Breadcrumb and Buttons Container */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center w-100">
+          {/* Breadcrumb */}
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
-        </div>
-        <div className="d-flex align-items-center justify-content-end gap-3">
-          {type === "related" ||
-          type === "invited" ||
-          bidDetails?.status === "completed" ||
-          bidDetails?.status === "closed" ||
-          bidDetails?.status === "live" ||
-          bidDetails?.status === "cancelled" ? (
-            <Tooltip
-              title={`This Bid Is  ${
-                bidDetails?.status === "completed"
-                  ? "Completed"
-                  : bidDetails?.status === "cancelled"
-                  ? "cancelled"
-                  : bidDetails?.status === "active"
-                  ? "active"
-                  : "live"
-              }`}
-              arrow
-            >
-              <div style={{ display: "inline-block", position: "relative" }}>
-                <button
-                  className={
-                    bidDetails?.status === "cancelled"
-                      ? cn("btn", "button", styles["ifCencelled"])
-                      : cn("btn", "button", "approve")
-                  }
-                  type="button"
-                  disabled
-                  style={{ backgroundColor: "red" }}
-                  onClick={() => navigate("/portal/liveBids")}
-                >
-                  {bidDetails?.status}
-                </button>
 
-                {bidDetails?.status === "live" && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "-5px",
-                      right: "-5px",
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      backgroundColor: "#FFBF00", // Yellow color for "live"
-                      animation: "blink 1s infinite",
-                    }}
-                  />
-                )}
-              </div>
-            </Tooltip>
-          ) : (
-            <>
-              {bidDetails?.status === "active" ? (
-                <Tooltip title={"Your Bid Is Active Now"} arrow>
-                  <div style={{ display: "inline-block" }}>
+          {/* Buttons Section */}
+          <div className="d-flex flex-column flex-md-row gap-2 mt-2 mt-md-0">
+            {type === "related" ||
+            type === "invited" ||
+            bidDetails?.status === "completed" ||
+            bidDetails?.status === "closed" ||
+            bidDetails?.status === "live" ||
+            bidDetails?.status === "cancelled" ? (
+              <Tooltip title={`This Bid Is ${bidDetails?.status}`} arrow>
+                <div className="position-relative w-100">
+                  <button
+                    className={`btn button w-100 ${
+                      bidDetails?.status === "cancelled"
+                        ? styles["ifCancelled"]
+                        : "approve"
+                    }`}
+                    type="button"
+                    disabled
+                    style={{ backgroundColor: "red" }}
+                    onClick={() => navigate("/portal/liveBids")}
+                  >
+                    {bidDetails?.status}
+                  </button>
+
+                  {bidDetails?.status === "live" && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "-5px",
+                        right: "-5px",
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        backgroundColor: "#FFBF00",
+                        animation: "blink 1s infinite",
+                      }}
+                    />
+                  )}
+                </div>
+              </Tooltip>
+            ) : (
+              <>
+                {bidDetails?.status === "active" ? (
+                  <Tooltip title={"Your Bid Is Active Now"} arrow>
                     <button
                       className={cn("btn", "button", "approve")}
                       type="button"
@@ -316,117 +294,96 @@ const BidDetailsPage = () => {
                     >
                       Active
                     </button>
-                  </div>
-                </Tooltip>
-              ) : (
-                <Tooltip title={"Activate Your Bid"} arrow>
-                  <button
-                    className={cn("btn", "button")}
-                    type="button"
-                    onClick={() => setActivateBid(true)}
-                    disabled={bidDetails?.status === "cancelled" ? true : false}
-                  >
-                    Activate Bid
-                  </button>
-                </Tooltip>
-              )}
-              <Tooltip
-                title={
-                  isInviteDisabled
-                    ? bidDetails?.type === "L1"
-                      ? "! Please Fill Out  Live Bid Dates to Invite suppliers"
-                      : "! Please Fill Out  Sample Dates to Invite suppliers"
-                    : "Invite Supplier for this Bid"
-                }
-                arrow
-              >
-                <div
-                  style={{
-                    display: "inline-block",
-                    cursor: isInviteDisabled ? "not-allowed" : "pointer",
-                  }}
+                  </Tooltip>
+                ) : (
+                  <Tooltip title={"Activate Your Bid"} arrow>
+                    <button
+                      className="btn button"
+                      type="button"
+                      onClick={() => setActivateBid(true)}
+                      disabled={bidDetails?.status === "cancelled"}
+                    >
+                      Activate Bid
+                    </button>
+                  </Tooltip>
+                )}
+                <Tooltip
+                  title={
+                    isInviteDisabled
+                      ? bidDetails?.type === "L1"
+                        ? "! Please Fill Out Live Bid Dates to Invite Suppliers"
+                        : "! Please Fill Out Sample Dates to Invite Suppliers"
+                      : "Invite Supplier for this Bid"
+                  }
+                  arrow
                 >
                   <button
-                    className={cn("btn", "button")}
+                    className="button"
                     type="button"
-                    onClick={() =>
-                      navigate(`/portal/companies/${bidDetails?.id}`)
-                    }
-                    disabled={isInviteDisabled}
+                    onClick={() => {
+                      if (!isInviteDisabled) {
+                        navigate(`/portal/companies/${bidDetails?.id}`);
+                      }
+                    }}
+                    style={{
+                      ...(isInviteDisabled && {
+                        opacity: 0.5,
+                        cursor: "not-allowed", // Set the disabled cursor
+                      }),
+                    }}
                   >
                     Invite Suppliers
                   </button>
-                </div>
-              </Tooltip>
-              {participant?.participants.length > 0 ? (
-                <Tooltip title={"Make Amendments On This Bid"} arrow>
-                  <button
-                    className={cn("btn", "button")}
-                    type="button"
-                    onClick={() => setAddAmendment(true)}
-                    disabled={
-                      bidDetails?.status === "cancelled" ||
-                      bidDetails?.amendment?.length === 3
-                        ? true
-                        : false
-                    }
-                  >
-                    Amendments
-                  </button>
                 </Tooltip>
-              ) : (
-                <Tooltip title={"Edit This Bid"} arrow>
+
+                {participant?.participants.length > 0 ? (
+                  <Tooltip title={"Make Amendments On This Bid"} arrow>
+                    <button
+                      className="btn button"
+                      type="button"
+                      onClick={() => setAddAmendment(true)}
+                      disabled={
+                        bidDetails?.status === "cancelled" ||
+                        bidDetails?.amendment?.length === 3
+                      }
+                    >
+                      Amendments
+                    </button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title={"Edit This Bid"} arrow>
+                    <button
+                      type="submit"
+                      className="btn button"
+                      onClick={() =>
+                        navigate(`/portal/bids/categories/${bidDetails.id}`)
+                      }
+                      disabled={bidDetails?.status === "cancelled"}
+                    >
+                      Edit Bid
+                    </button>
+                  </Tooltip>
+                )}
+
+                <Tooltip title={"Cancel This Bid"} arrow>
                   <button
                     type="submit"
-                    className={cn("btn", "button")}
+                    className="btn button reject"
                     onClick={() =>
-                      navigate(`/portal/bids/categories/${bidDetails.id}`)
+                      setDeleteDetails({
+                        open: true,
+                        title: "Cancel Bid",
+                        message: `Are you sure you want to cancel this ${bidDetails?.title}? This action cannot be undone.`,
+                      })
                     }
-                    disabled={bidDetails?.status === "cancelled" ? true : false}
+                    disabled={bidDetails?.status === "cancelled"}
                   >
-                    Edit Bid
+                    Cancel Bid
                   </button>
                 </Tooltip>
-              )}
-              <Tooltip title={"Cencel This Bid"} arrow>
-                <button
-                  type="submit"
-                  className={cn("btn", "button", "reject")}
-                  onClick={() =>
-                    setDeleteDetails({
-                      open: true,
-                      title: "Cancel Bid",
-                      message: `Are you sure you want to cancel this ${bidDetails?.title} ? This action cannot be undone.`,
-                    })
-                  }
-                  disabled={bidDetails?.status === "cancelled" ? true : false}
-                >
-                  Cancel Bid
-                </button>
-              </Tooltip>
-            </>
-          )}
-
-          {/* <useReactToPrint
-            content={() => componentRef.current}
-            documentTitle={bidDetails?.formatted_number}
-            trigger={() => (
-              <Tooltip title={"Print The Page"} arrow>
-                <IconButton
-                  sx={{
-                    fontSize: "24px",
-                    fontWeight: "bold",
-                    color: "var(--primary-color)",
-                  }}
-                >
-                  <PrintOutlined
-                    style={{ fontSize: "28px", fontWeight: "bold" }}
-                  />
-                </IconButton>
-              </Tooltip>
+              </>
             )}
-            removeAfterPrint
-          /> */}
+          </div>
         </div>
       </div>
 
@@ -493,10 +450,12 @@ const BidDetailsPage = () => {
       {/*TABS IN BIDDETAILS  */}
       <Box sx={{ width: "100%" }}>
         <Tabs
-          // value={value}
           value={activeTab}
           onChange={handleChange}
           aria-label="bid-detail-tabs"
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
         >
           {type === "invited"
             ? [

@@ -93,7 +93,9 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
           );
           if (response.status === 200) {
             setParticipant(response.data);
-            setScreenLoader(false);
+            setInterval(() => {
+              setScreenLoader(false);
+            }, 1000);
           }
         } catch (error) {
           console.log(error);

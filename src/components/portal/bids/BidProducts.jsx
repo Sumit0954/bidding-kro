@@ -19,11 +19,13 @@ import {
   AccordionSummary,
   Typography,
   Divider,
+  Tooltip,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, Info } from "@mui/icons-material";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 import { useBidData } from "./BidCategories";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import MinimumPriceDiffModal from "../../../elements/CustomModal/MinimumPriceDiffModal";
 
 const BidProducts = () => {
   const { control, handleSubmit, setError, setValue, reset } = useForm();
@@ -38,6 +40,7 @@ const BidProducts = () => {
   // const { formData, productData } = useBidData();
   const [bidDetails, setBidDetails] = useState({});
   const { setAlert } = useContext(AlertContext);
+  const [showPriceDiffModal, setShowPriceDiffModal] = useState(false);
 
   const location = useLocation();
   // const { productData } = location.state || {};
@@ -389,7 +392,7 @@ const BidProducts = () => {
                           <div className="col-lg-6">
                             <CustomInput
                               control={control}
-                              label="Reserve Bid Price"
+                              label="Reserve Bid Price / Unit"
                               name={`reserved_price${index}`}
                               placeholder="₹ 20,000"
                               rules={{
@@ -400,7 +403,24 @@ const BidProducts = () => {
                           <div className="col-lg-6">
                             <CustomInput
                               control={control}
-                              label="Minimum Price Difference"
+                              label={
+                                <>
+                                  Minimum Price Difference{" "}
+                                  <Tooltip title="Click Here to understand the Minimum Price Difference">
+                                    <Info
+                                      fontSize="small"
+                                      onClick={() =>
+                                        setShowPriceDiffModal(true)
+                                      }
+                                      sx={{
+                                        color: "#062d72",
+                                        cursor: "pointer",
+                                        verticalAlign: "middle",
+                                      }}
+                                    />
+                                  </Tooltip>
+                                </>
+                              }
                               name={`min_decrement_amount${index}`}
                               placeholder="Minimum Price Difference"
                               rules={{
@@ -579,6 +599,13 @@ const BidProducts = () => {
           </div>
         </div>
       </div>
+
+      {showPriceDiffModal && (
+        <MinimumPriceDiffModal
+          showPriceDiffModal={showPriceDiffModal}
+          setShowPriceDiffModal={setShowPriceDiffModal}
+        />
+      )}
     </>
   );
 };

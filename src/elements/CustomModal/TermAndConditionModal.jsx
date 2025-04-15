@@ -76,42 +76,51 @@ const TermAndConditionModal = ({
             fontSize: { xs: "12px", sm: "14px" }, // Smaller font size for mobile
           }}
         >
-          The use of this platform, "Bidding Kro," is subject to the following
+          The use of this platform, "Bidding Karo," is subject to the following
           terms and conditions. By clicking on 'I AGREE', the user acknowledges
           that:
-          <ol style={{ paddingLeft: "20px" }}>
-            <li>
-              The user wishes to access and use "Bidding Kro" for viewing,
-              creating, and managing bids, and understands that this platform is
-              solely for facilitating the bidding process.
-            </li>
-            <li>
-              The information provided on this platform is made available to the
-              user for informational purposes only, and any actions taken based
-              on this information are at the user’s discretion and
-              responsibility.
-            </li>
-            <li>
-              "Bidding Kro" does not guarantee the accuracy, completeness, or
-              reliability of any bids, listings, or content shared by buyers or
-              suppliers on the platform.
-            </li>
-            <li>
-              Use of the platform does not establish any legal, fiduciary, or
-              client-supplier relationship between the platform, its operators,
-              and the user.
-            </li>
-            <li>
-              Any misuse of the platform, including providing false or
-              misleading information, violating bid terms, or engaging in
-              unethical practices, may lead to termination of the user’s access.
-            </li>
-          </ol>
-          "Bidding Kro" is not liable for any financial or business decisions
-          made by users based on the information shared or accessed through the
-          platform. Users are strongly advised to conduct independent due
-          diligence before proceeding with any bidding activity.
+          <Box sx={{ p: 3 }}>
+            <Typography variant="body5" paragraph sx={{ textAlign: "justify" }}>
+              <strong>1. Enrolment Eligibility:</strong> To use the Platform,
+              you must complete the registration process for one or more of the
+              Services offered. Use of the Services is restricted to parties
+              that can lawfully enter into contracts under applicable law. As
+              part of the registration process, you must provide us with your
+              legal name, address, phone number, email address, applicable tax
+              registration details, and any other information we may require.
+              Any personal data you provide to us will be handled in accordance
+              with the Bidding Genie Privacy Policy.
+            </Typography>
+            <Typography variant="body5" paragraph sx={{ textAlign: "justify" }}>
+              • Bidding Karo reserves the right to terminate or remove your
+              registration and/or deny you access to the Platform if we become
+              aware that you are not seriously participating in bid whether you
+              are Buyer or Supplier or if you violate any of the Terms of Use .
+              If you register on behalf of a business entity, you represent and
+              warrant that you are authorized by the business entity to accept
+              the Terms of Use on its behalf and that you have the authority to
+              bind the business entity to the Terms of Use.
+            </Typography>
+          </Box>
         </Typography>
+        {/* "Read More" Link */}
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <Typography
+            variant="body2"
+            component="a"
+            href="/terms-and-conditions"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              color: "#062d72",
+              textDecoration: "underline",
+              cursor: "pointer",
+              "&:hover": { color: "#05baee" },
+            }}
+          >
+            Read full Terms and Conditions
+          </Typography>
+        </Box>
 
         <Box display="flex" alignItems="center" mb={3}>
           <Checkbox

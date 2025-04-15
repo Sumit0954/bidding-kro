@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { Box, Typography, Dialog, DialogContent } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Dialog,
+  DialogContent,
+  IconButton,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 
-const AwardPopUp = ({ open , handleClose}) => {
+const AwardPopUp = ({ open, handleClose }) => {
   const [textVisible, setTextVisible] = useState(false);
 
   const handleVideoEnd = () => {
-    setTextVisible(true); // Show text when video ends
+    setTextVisible(true);
   };
   return (
     <Dialog
@@ -21,6 +28,20 @@ const AwardPopUp = ({ open , handleClose}) => {
         },
       }}
     >
+      {/* Close Button */}
+      <IconButton
+        onClick={handleClose}
+        style={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          zIndex: 1,
+          color: "#555",
+        }}
+      >
+        <Close />
+      </IconButton>
+
       <DialogContent>
         <Box
           display="flex"
@@ -29,17 +50,16 @@ const AwardPopUp = ({ open , handleClose}) => {
           justifyContent="center"
           position="relative"
           style={{
-            height: "300px", // Fixed height prevents scrollbars
-            overflow: "hidden", // Ensures no scrollbars appear
+            height: "300px",
+            overflow: "hidden",
           }}
         >
-          {/* Video Element */}
           <video
             src={"/images/portal/layout/icons/bidAwarded.mp4"}
             autoPlay
             muted
             loop={false}
-            onEnded={handleVideoEnd} // Handle video end
+            onEnded={handleVideoEnd}
             style={{
               width: "200px",
               height: "200px",
@@ -47,14 +67,13 @@ const AwardPopUp = ({ open , handleClose}) => {
             }}
           />
 
-          {/* Text Content */}
           <Typography
             variant="h3"
             fontWeight="500"
             className={textVisible ? "animate-text" : "hidden-text"}
             style={{
-              position: "absolute", // Position absolutely to avoid layout shift
-              bottom: "20px", // Initial position outside the visible area
+              position: "absolute",
+              bottom: "20px",
               left: "50%",
               transform: "translateX(-50%)",
               whiteSpace: "nowrap",
@@ -65,7 +84,6 @@ const AwardPopUp = ({ open , handleClose}) => {
         </Box>
       </DialogContent>
 
-      {/* CSS for Animation */}
       <style>
         {`
       .hidden-text {

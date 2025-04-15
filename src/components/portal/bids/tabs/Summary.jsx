@@ -14,6 +14,7 @@ import {
   Stack,
   StepConnector,
   TableCell,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ExpandMore, HourglassEmpty } from "@mui/icons-material";
@@ -95,13 +96,6 @@ const Summary = ({ bidDetails }) => {
         window.location.reload();
       }
     } catch (error) {
-      if (error.status === 403) {
-        setAlert({
-          isVisible: true,
-          message: error.response.data.detail,
-          severity: "error",
-        });
-      }
       console.log(error);
     }
   };
@@ -490,13 +484,16 @@ const Summary = ({ bidDetails }) => {
                 {bidDetails?.formatted_number}
               </p>
             </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>
-                {" "}
-                {truncatelength(bidDetails?.title, 61)}
-              </p>
-            </div>
+            <Tooltip title={bidDetails?.title}>
+              <div className="col">
+                <h6 className={styles["col-heading"]}>Bid Title</h6>
+                <p className={styles["col-data"]}>
+                  {" "}
+                  {truncatelength(bidDetails?.title, 30)}
+                </p>
+              </div>
+            </Tooltip>
+
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>

@@ -1246,7 +1246,7 @@ export const products_Column = ({
     width: 160,
     Cell: (data) => {
       return (
-        <NavLink
+        <p
           className={styles["table-link"]}
           onClick={() => {
             setSelectedProduct(data.row.original);
@@ -1254,7 +1254,7 @@ export const products_Column = ({
           }}
         >
           View Specification
-        </NavLink>
+        </p>
       );
     },
   },

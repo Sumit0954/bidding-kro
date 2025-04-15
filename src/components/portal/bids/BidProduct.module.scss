@@ -1,17 +1,36 @@
 .form-container {
   width: 80% !important;
   margin: 0 auto !important;
-
-  .bid-form-section {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 2px solid var(--primary-color);
-    margin: 30px auto !important;
-  }
 }
+
+.bid-form-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; /* Align items properly */
+  border-bottom: 2px solid var(--primary-color);
+  margin: 30px auto !important;
+}
+
 .btn-container {
   display: flex;
   justify-content: end;
   gap: 10px;
+}
+
+/* Responsive: Stack elements and make button full width on small screens */
+@media (max-width: 768px) {
+  .bid-form-section {
+    flex-direction: column; /* Stack heading and button */
+    align-items: stretch; /* Make button take full width */
+  }
+
+  .btn-container {
+    width: 100%;
+    justify-content: center; /* Center the button */
+  }
+
+  .bid-form-section button {
+    width: 100%; /* Make button full width */
+  }
 }

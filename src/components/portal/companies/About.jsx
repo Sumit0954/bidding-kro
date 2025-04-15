@@ -152,16 +152,7 @@ const About = () => {
         </AccordionSummary>
 
         <AccordionDetails>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              display: "flex",
-              flexWrap:
-                companyDetail?.category?.length >= 7 ? "wrap" : "nowrap", // Wrap if more than 7
-              gap: "9px", // Space between chips
-            }}
-          >
+          <Stack direction="row" flexWrap="wrap" gap="10px">
             {companyDetail?.category?.map((category) => {
               return <Chip label={category?.name} />;
             })}

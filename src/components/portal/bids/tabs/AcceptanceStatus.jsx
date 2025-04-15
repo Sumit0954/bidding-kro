@@ -197,7 +197,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Box mb={2}>
                   <Typography variant="body1">
                     We are excited to inform you that you’ve been invited to
-                    participate in an upcoming bid on the Bidding Kro platform.
+                    participate in an upcoming bid on the Bidding karo platform.
                     Your participation is crucial, and we encourage you to
                     review the bid details and key dates outlined below:
                   </Typography>
@@ -282,7 +282,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Box mb={2}>
                   <Typography variant="body1">
                     Thank you for informing us about your decision regarding the
-                    recent bid invitation on the Bidding Kro platform. We
+                    recent bid invitation on the Bidding karo platform. We
                     understand that circumstances may vary, and we appreciate
                     your prompt response.
                   </Typography>
@@ -340,7 +340,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Box>
                   <Typography variant="body1">
                     Thank you for your understanding, and we look forward to
-                    your continued engagement with Bidding Kro.
+                    your continued engagement with Bidding karo.
                   </Typography>
                 </Box>
               </Box>
@@ -358,7 +358,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Box mb={2}>
                   <Typography variant="body1">
                     We are excited to inform you that you’ve been invited to
-                    participate in an upcoming bid on the Bidding Kro platform.
+                    participate in an upcoming bid on the Bidding karo platform.
                     Your participation is crucial, and we encourage you to
                     review the bid details and key dates outlined below:
                   </Typography>
@@ -412,7 +412,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
               <Box mb={2}>
                 <Typography variant="body1">
                   We are excited to invite you to participate in a Quality-Based
-                  Selection bid on our platform, Bidding Kro. This process
+                  Selection bid on our platform, Bidding karo. This process
                   requires suppliers to submit samples for evaluation, which
                   will determine your eligibility to proceed with live bidding.
                 </Typography>
@@ -469,7 +469,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
               <Box mb={2}>
                 <Typography variant="body1">
                   Thank you for accepting the invitation to participate in the
-                  Quality-Based Selection bid on our platform, Bidding Kro. We
+                  Quality-Based Selection bid on our platform, Bidding karo. We
                   are pleased to have you on board for this important process.
                 </Typography>
 
@@ -746,7 +746,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                   This decision is part of the ongoing evaluation process, and
                   we understand that this news may be unexpected. We encourage
                   you to remain positive, as there will be future opportunities
-                  to participate in other bids on the Bidding Kro platform.
+                  to participate in other bids on the Bidding karo platform.
                 </Typography>
               </Box>
 
@@ -754,7 +754,7 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
               <Box>
                 <Typography variant="body1">
                   Thank you for your understanding, and we look forward to your
-                  continued engagement with Bidding Kro.
+                  continued engagement with Bidding karo.
                 </Typography>
               </Box>
             </Box>
@@ -774,14 +774,14 @@ const AcceptanceStatus = ({ bidDetails, type, onActionComplete }) => {
                 <Typography variant="body1">
                   We are pleased to inform you that your participation in the
                   commercial bid has been successfully recorded. Thank you for
-                  accepting the bid invitation on the Bidding Kro platform.
+                  accepting the bid invitation on the Bidding karo platform.
                 </Typography>
               </Box>
 
               {/* Paragraph 3 */}
               <Box>
                 <Typography variant="body1">
-                  Thank you for your continued trust in Bidding Kro. We look
+                  Thank you for your continued trust in Bidding karo. We look
                   forward to sharing the results with you soon. Stay tuned for
                   further updates.
                 </Typography>

@@ -1,23 +1,42 @@
 .form-container {
   width: 80% !important;
   margin: 0 auto !important;
+}
 
-  .form-section {
+.form-section {
+  .question-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--primary-color);
+    margin: 30px auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  .btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  /* Responsive Styling for Small Screens */
+  @media (max-width: 768px) {
     .question-section {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--primary-color);
-      margin: 30px auto !important;
-      margin-bottom: 0 !important;
+      flex-direction: column; /* Stack heading and button vertically */
+      align-items: stretch;
     }
 
     .btn-container {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .question-section button {
+      width: 100%; /* Full width button */
+      margin-top: 5px;
     }
   }
 }
@@ -31,34 +50,34 @@
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
+  }
 
-    /* Add this to your existing CSS */
-    @keyframes shake {
-      0% {
-        transform: translateX(0);
-      }
-      25% {
-        transform: translateX(-5px);
-      }
-      50% {
-        transform: translateX(5px);
-      }
-      75% {
-        transform: translateX(-5px);
-      }
-      100% {
-        transform: translateX(0);
-      }
+  /* Add this to your existing CSS */
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
     }
+    25% {
+      transform: translateX(-5px);
+    }
+    50% {
+      transform: translateX(5px);
+    }
+    75% {
+      transform: translateX(-5px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
 
-    .delete-btn {
-      padding: 0;
-      transition: transform 0.3s ease;
-    }
+  .delete-btn {
+    padding: 0;
+    transition: transform 0.3s ease;
+  }
 
-    .delete-btn:hover {
-      color: red;
-      animation: shake 0.5s ease-in-out;
-    }
+  .delete-btn:hover {
+    color: red;
+    animation: shake 0.5s ease-in-out;
   }
 }

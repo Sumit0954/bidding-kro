@@ -459,7 +459,8 @@ const CategoryForm = () => {
         <QueryFormModal
           showQueryForm={showQueryForm}
           setShowQueryForm={setShowQueryForm}
-          formHeading="Category Suggestion Query"
+          formHeading="Write the missing product below"
+          type="category"
         />
       )}
     </>

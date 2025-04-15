@@ -169,27 +169,27 @@ const CertificateForm = ({ certificates }) => {
               }}
             />
           </div>
-          <div className={cn("col-lg-4", styles["img-btn"])}>
+          {/* Flex container for the buttons */}
+          <div className="col-lg-6 d-flex justify-content-end align-items-start gap-2 mt-4">
+            {/* Upload Certificate button */}
             {preview ? (
-              <>
-                <div className={styles["img-box"]}>
-                  <img
-                    src={preview}
-                    className={styles["logo-img"]}
-                    alt="certificate-preview"
-                  />
-                  <Button
-                    onClick={() => setPreview(null)}
-                    sx={{
-                      position: "absolute",
-                      right: 300,
-                      zIndex: 1,
-                    }}
-                  >
-                    <Cancel sx={{ color: "var(--gray)" }} />
-                  </Button>
-                </div>
-              </>
+              <div className={styles["img-box"]}>
+                <img
+                  src={preview}
+                  className={styles["logo-img"]}
+                  alt="certificate-preview"
+                />
+                <Button
+                  onClick={() => setPreview(null)}
+                  sx={{
+                    position: "absolute",
+                    right: 300,
+                    zIndex: 1,
+                  }}
+                >
+                  <Cancel sx={{ color: "var(--gray)" }} />
+                </Button>
+              </div>
             ) : (
               <Button
                 component="label"
@@ -204,9 +204,8 @@ const CertificateForm = ({ certificates }) => {
                     backgroundColor: "var(--secondary-color)",
                   },
                 }}
-                className="mt-4"
               >
-                Upload Certificate
+                Choose a Certificate
                 <input
                   {...register("file", {
                     required: "Certificate file is required.",
@@ -217,23 +216,22 @@ const CertificateForm = ({ certificates }) => {
                 />
               </Button>
             )}
-            {errors.file && (
-              <span className="error d-flex justify-content-center mt-1">
-                {errors?.file?.message || "Error"}
-              </span>
-            )}
-          </div>
 
-          <div className="col-lg-2">
-            {loading ? (
-              <ButtonLoader size={60} />
-            ) : (
-              <button
-                className={`btn button ${!errors.file ? "mt-4" : "mb-2"}`}
-                type="submit"
-              >
-                Upload
-              </button>
+            {preview && (
+              <>
+                <div className="col-lg-2">
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <button
+                      className={`btn button ${!errors.file ? "mt-4" : "mb-2"}`}
+                      type="submit"
+                    >
+                      Upload
+                    </button>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -270,7 +268,8 @@ const CertificateForm = ({ certificates }) => {
         <QueryFormModal
           showQueryForm={showQueryForm}
           setShowQueryForm={setShowQueryForm}
-          formHeading="Certificate Type Suggestion Query"
+          formHeading="Write the missing certificate type below"
+          type="certificate"
         />
       )}
     </>
