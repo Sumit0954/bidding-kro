@@ -6,45 +6,47 @@ import { jwtDecode } from "jwt-decode";
 
 const AdminSidebar = () => {
   const token = localStorage.getItem("accessToken");
-
   const decoded = jwtDecode(token);
-
   const groups = decoded.groups;
 
-  console.log(sidebarMenu, " : sidebarMenu");
-  const filteredMenu = sidebarMenu.filter((item) =>
-    groups.includes(item.accessor)
+  // Always show dashboard, filter the rest
+  const alwaysVisible = sidebarMenu.filter(
+    (item) => item.accessor === "dashboard_management"
+  );
+  const filteredMenu = sidebarMenu.filter(
+    (item) =>
+      item.accessor !== "dashboard_management" && groups.includes(item.accessor)
   );
 
+  const permissionSiderBar = [...alwaysVisible, ...filteredMenu];
+
   return (
-    <>
-      <div className={styles["sidebar-container"]}>
-        <ul className={styles["sidebar-items"]}>
-          {filteredMenu.map((item, index) => (
-            <NavLink
-              to={item.path}
-              className={({ isActive }) =>
-                isActive
-                  ? `${styles["item-link"]} ${styles["active"]}`
-                  : styles["item-link"]
-              }
-              key={index}
-            >
-              <Tooltip title={item.title}>
-                <li className={styles["sidebar-item"]}>
-                  <img
-                    className={styles["item-icon"]}
-                    src={item.icon}
-                    alt={item.title}
-                  />
-                  <span className={styles["item-name"]}>{item.title}</span>
-                </li>
-              </Tooltip>
-            </NavLink>
-          ))}
-        </ul>
-      </div>
-    </>
+    <div className={styles["sidebar-container"]}>
+      <ul className={styles["sidebar-items"]}>
+        {permissionSiderBar.map((item, index) => (
+          <NavLink
+            to={item.path}
+            className={({ isActive }) =>
+              isActive
+                ? `${styles["item-link"]} ${styles["active"]}`
+                : styles["item-link"]
+            }
+            key={index}
+          >
+            <Tooltip title={item.title}>
+              <li className={styles["sidebar-item"]}>
+                <img
+                  className={styles["item-icon"]}
+                  src={item.icon}
+                  alt={item.title}
+                />
+                <span className={styles["item-name"]}>{item.title}</span>
+              </li>
+            </Tooltip>
+          </NavLink>
+        ))}
+      </ul>
+    </div>
   );
 };
 

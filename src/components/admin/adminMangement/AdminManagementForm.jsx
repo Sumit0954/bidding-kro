@@ -215,7 +215,6 @@ const AdminManagementForm = () => {
             "admin_management",
             "blog_management",
             "company_management",
-            "dashboard_management",
             "query_management",
             "report_management",
             "transaction_management",
