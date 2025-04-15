@@ -1,11 +1,25 @@
 import { NavLink } from "react-router-dom";
 import styles from "./DataTable.module.scss";
-import { dateTimeFormatter } from "../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
+import { Button, Chip, Popover, Stack, Tooltip } from "@mui/material";
+import { useState } from "react";
+import { CheckCircle } from "@mui/icons-material";
+import _sendAPIRequest from "../../helpers/api";
 
 export const companies_column = [
   {
+    Header: "Company Id",
+    accessor: "comp_Id",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+    Cell: (data) => {
+      return <b>Company {data?.row?.original?.id}</b>;
+    },
+  },
+  {
     Header: "Company Name",
-    accessor: "name",
+    accessor: "company_name",
     align: "left",
     disablePadding: false,
     width: 150,
@@ -21,43 +35,50 @@ export const companies_column = [
     },
   },
   {
-    Header: "Buyer Name",
-    accessor: "customer_profile.user.first_name",
-    align: "left",
-    disablePadding: false,
-    width: 150,
-    Cell: (data) => {
-      return `${data?.row?.original?.customer_profile?.user?.first_name} ${data?.row?.original?.customer_profile?.user?.last_name}`;
-    },
-  },
-  {
     Header: "Email",
     accessor: "business_email",
     align: "left",
     disablePadding: false,
     width: 150,
+    Cell: (data) => {
+      return (
+        <a href={`mailto:${data?.row?.original?.business_email}`}>
+          {data?.row?.original?.business_email}
+        </a>
+      );
+    },
   },
   {
-    Header: "Category",
-    accessor: "category",
+    Header: "Created At",
+    accessor: "created_at",
     align: "left",
     disablePadding: false,
     width: 150,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
   },
-  {
-    Header: "City",
-    accessor: "city",
-    align: "left",
-    disablePadding: false,
-    width: 150,
-  },
-  {
-    Header: "Status",
-    accessor: "status",
-    align: "left",
-    disablePadding: false,
-    width: 100,
-  },
+  // {
+  //   Header: "Category",
+  //   accessor: "category",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  // },
+  // {
+  //   Header: "City",
+  //   accessor: "city",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  // },
+  // {
+  //   Header: "Status",
+  //   accessor: "status",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 100,
+  // },
 ];
 
 export const transactions_column = [
@@ -83,7 +104,11 @@ export const transactions_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return data?.row?.original?.bid?.title;
+      return (
+        <Tooltip title={data?.row?.original?.bid?.title}>
+          {truncateString(data?.row?.original?.bid?.title, 30)}
+        </Tooltip>
+      );
     },
   },
   {
@@ -96,12 +121,12 @@ export const transactions_column = [
     },
   },
   {
-    Header: "Owner Name",
+    Header: "Company Name",
     accessor: "customer.first_name",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return `${data?.row?.original?.customer?.first_name} ${data?.row?.original?.customer?.last_name}`;
+      return data?.row?.original?.company?.name;
     },
   },
   {
@@ -164,14 +189,7 @@ export const blogs_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return (
-        <NavLink
-          className={styles["table-link"]}
-          to={`/admin/blogs/${data?.row?.original?.id}`}
-        >
-          {data?.row?.original?.name}
-        </NavLink>
-      );
+      return data?.row?.original?.id;
     },
   },
   {
@@ -179,12 +197,52 @@ export const blogs_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      const blog_id = data?.row?.original?.id;
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/blogs/update/${blog_id}`}
+        >
+          {data?.row?.original?.title}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Created At",
+    accessor: "created_date",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Updated At",
+    accessor: "updated_date",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.updated_at);
+    },
+  },
+  {
+    Header: "Blog Slug",
+    accessor: "blog_slug",
+    align: "left",
+
+    disablePadding: false,
+    Cell: (data) => {
+      return data?.row?.original?.slug;
+    },
   },
   {
     Header: "Actions",
     accessor: "action",
     align: "left",
     disablePadding: false,
+    width: 100,
   },
 ];
 
@@ -194,24 +252,99 @@ export const Admin_list_column = [
     accessor: "Id",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      return <b>ADMIN {data.row.original.id}</b>;
+    },
   },
   {
     Header: "Admin Name",
     accessor: "name",
     align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          to={`addmanagementform/update/${data.row.original.id}`}
+          style={{ textDecoration: "none" }}
+        >
+          {data.row.original.first_name}
+        </NavLink>
+      );
+    },
   },
   {
     Header: "Email",
     accessor: "email",
-    align: "center",
+    disablePadding: false,
+    align: "left",
+  },
+  {
+    Header: "Active",
+    accessor: "is_active",
+    align: "left",
     disablePadding: false,
   },
   {
-    Header: "Actions",
-    accessor: "action",
-    align: "right",
+    Header: "Permissions",
+    accessor: "permissions",
+    align: "left",
     disablePadding: false,
+    Cell: (data) => {
+      const [anchorEl, setAnchorEl] = useState(null);
+      const [selectedPermissions, setSelectedPermissions] = useState([]);
+      const handleClick = (event, permissions) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedPermissions(permissions);
+      };
+
+      const handleClose = () => {
+        setAnchorEl(null);
+      };
+      return (
+        <>
+          <Button
+            variant="outlined"
+            onClick={(e) => handleClick(e, data.row.original.groups)}
+            className=""
+          >
+            See Permissions
+          </Button>
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          >
+            <Stack direction="row" spacing={1} sx={{ p: 2, flexWrap: "wrap" }}>
+              {selectedPermissions.map((permission, index) => {
+                const formattedPermission = permission
+                  .split("_")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ");
+
+                return (
+                  <Chip
+                    key={index}
+                    label={formattedPermission}
+                    icon={<CheckCircle />}
+                    variant="filled"
+                    size="small"
+                    sx={{
+                      backgroundColor: "#E3F2FD",
+                      color: "#0D47A1",
+                      fontWeight: "bold",
+                      borderRadius: "5px",
+                      padding: "5px",
+                      boxShadow: "1px 1px 5px rgba(0,0,0,0.2)",
+                    }}
+                  />
+                );
+              })}
+            </Stack>
+          </Popover>
+        </>
+      );
+    },
   },
 ];
 
@@ -309,6 +442,7 @@ export const lOIDataStats = [
     disablePadding: false,
   },
 ];
+
 export const transactionDataStats = [
   {
     Header: "Transction Id",
@@ -334,5 +468,241 @@ export const transactionDataStats = [
     accessor: "payment",
     align: "right",
     disablePadding: false,
+  },
+];
+
+export const contact_us_queries_column = [
+  {
+    Header: "Sender Name",
+    accessor: "name",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Subject",
+    accessor: "subject",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          to={`/admin/queries/contact-us/${data?.row?.original?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.subject}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Sender Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <a href={`mailto:${data?.row?.original?.email}`}>
+          {data?.row?.original?.email}
+        </a>
+      );
+    },
+  },
+  {
+    Header: "Is Read",
+    accessor: "is_read",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {!data?.row?.original?.is_read && (
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "#FEBE10",
+                animation: "blinker 1s infinite",
+              }}
+            ></span>
+          )}
+
+          <b style={{ color: "green" }}>Read</b>
+
+          {/* Blinker animation style */}
+          <style>
+            {`
+              @keyframes blinker {
+                50% { opacity: 0; }
+              }
+            `}
+          </style>
+        </span>
+      );
+    },
+  },
+  {
+    Header: "Sended At",
+    accessor: "created_at",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+];
+
+export const get_in_touch_queries_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          to={`/admin/queries/get-in-touch/${data?.row?.original?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.company_name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Contact Person",
+    accessor: "contact_person_name",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return data?.row?.original?.contact_person_name;
+    },
+  },
+  {
+    Header: "Email",
+    accessor: "email",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <a href={`mailto:${data?.row?.original?.email}`}>
+          {data?.row?.original?.email}
+        </a>
+      );
+    },
+  },
+  {
+    Header: "Is Read",
+    accessor: "is_read",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {!data?.row?.original?.is_read && (
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "#FEBE10",
+                animation: "blinker 1s infinite",
+              }}
+            ></span>
+          )}
+
+          <b style={{ color: "green" }}>Read</b>
+
+          {/* Blinker animation style */}
+          <style>
+            {`
+              @keyframes blinker {
+                50% { opacity: 0; }
+              }
+            `}
+          </style>
+        </span>
+      );
+    },
+  },
+  {
+    Header: "Sended At",
+    accessor: "created_at",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+];
+
+export const missing_data_queries_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return data?.row?.original?.company?.name;
+    },
+  },
+  {
+    Header: "Query Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          to={`/admin/queries/missing-data-query/${data?.row?.original?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.type}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Is Read",
+    accessor: "is_read",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {!data?.row?.original?.is_read && (
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "#FEBE10",
+                animation: "blinker 1s infinite",
+              }}
+            ></span>
+          )}
+
+          <b style={{ color: "green" }}>Read</b>
+
+          {/* Blinker animation style */}
+          <style>
+            {`
+              @keyframes blinker {
+                50% { opacity: 0; }
+              }
+            `}
+          </style>
+        </span>
+      );
+    },
+  },
+  {
+    Header: "Sended At",
+    accessor: "created_at",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
   },
 ];

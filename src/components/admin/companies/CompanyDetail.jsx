@@ -6,13 +6,15 @@ import {
   AccordionSummary,
   Chip,
   Divider,
+  IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { Download, ExpandMore } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import DOMPurify from "dompurify";
 
@@ -27,6 +29,7 @@ const CompanyDetail = ({ companyDetails }) => {
     <>
       <Accordion
         expanded={expanded === "Summary"}
+        defaultExpanded
         onChange={handleChange("Summary")}
         square={true}
         classes={{ root: "custom-accordion" }}
@@ -53,7 +56,9 @@ const CompanyDetail = ({ companyDetails }) => {
             <div className="col">
               <h6 className={styles["col-heading"]}>Organisation Type</h6>
               <p className={styles["col-data"]}>
-                {companyDetails?.organization_type?.name}
+                {companyDetails?.organization_type !== null
+                  ? companyDetails?.organization_type.name
+                  : "Yet to be declare"}
               </p>
             </div>
           </div>
@@ -118,7 +123,7 @@ const CompanyDetail = ({ companyDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion
+      {/* <Accordion
         expanded={expanded === "Owner Info"}
         onChange={handleChange("Owner Info")}
         square={true}
@@ -172,7 +177,7 @@ const CompanyDetail = ({ companyDetails }) => {
             </div>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
       <Accordion
         expanded={expanded === "Categories"}
@@ -186,15 +191,21 @@ const CompanyDetail = ({ companyDetails }) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Stack direction="row" flexWrap="wrap" gap="10px">
-            {companyDetails?.category?.map((category) => {
-              return <Chip label={category?.name} />;
-            })}
-          </Stack>
+          {companyDetails?.category?.length > 0 ? (
+            <Stack direction="row" flexWrap="wrap" gap="10px">
+              {companyDetails.category.map((category, index) => (
+                <Chip key={index} label={category?.name} />
+              ))}
+            </Stack>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No categories selected
+            </Typography>
+          )}
         </AccordionDetails>
       </Accordion>
 
-      <Accordion
+      {/* <Accordion
         expanded={expanded === "Contacts"}
         onChange={handleChange("Contacts")}
         square={true}
@@ -262,7 +273,7 @@ const CompanyDetail = ({ companyDetails }) => {
             </div>
           </div>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
       <Accordion
         expanded={expanded === "Addresses"}
@@ -275,28 +286,34 @@ const CompanyDetail = ({ companyDetails }) => {
             Addresses ({companyDetails?.address?.length})
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          {companyDetails?.address?.map((item, index) => {
-            console.log(item, "item");
-            return (
-              <>
-                <div className="row">
-                  <div className="col">
-                    <h6 className={styles["col-heading"]}>
-                      Address Line {index + 1}
-                    </h6>
-                    <p className={styles["col-data"]}>
-                      {`${item.address}, ${item.city}, ${item.state}, ${item.country} - ${item.pincode}`}
-                    </p>
-                  </div>
-                </div>
 
-                {index < companyDetails?.address?.length - 1 && (
-                  <Divider classes={{ root: "custom-divider" }} />
-                )}
-              </>
-            );
-          })}
+        <AccordionDetails>
+          {companyDetails?.address?.length > 0 ? (
+            companyDetails?.address?.map((item, index) => {
+              return (
+                <>
+                  <div className="row">
+                    <div className="col">
+                      <h6 className={styles["col-heading"]}>
+                        Address Line {index + 1}
+                      </h6>
+                      <p className={styles["col-data"]}>
+                        {`${item.address}, ${item.city}, ${item.state}, ${item.country} - ${item.pincode}`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {index < companyDetails?.address?.length - 1 && (
+                    <Divider classes={{ root: "custom-divider" }} />
+                  )}
+                </>
+              );
+            })
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No Address added
+            </Typography>
+          )}
         </AccordionDetails>
       </Accordion>
 
@@ -312,21 +329,46 @@ const CompanyDetail = ({ companyDetails }) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <ImageList cols={5} gap={10} sx={{ overflowY: "unset" }}>
-            {companyDetails?.certificate?.map((item, index) => (
-              <>
-                <ImageListItem key={index}>
-                  <img
-                    srcSet={`${item.file}?w=164&h=164&fit=contain&auto=format&dpr=2 2x`}
-                    src={item.file}
-                    alt={`Certificate ${index + 1}`}
-                    loading="lazy"
-                  />
-                  <ImageListItemBar title={item.type.name} />
-                </ImageListItem>
-              </>
-            ))}
-          </ImageList>
+          {companyDetails?.certificate?.length > 0 ? (
+            <ImageList cols={5} gap={10} sx={{ overflowY: "unset" }}>
+              {companyDetails?.certificate?.map((item, index) => (
+                <>
+                  <ImageListItem key={index}>
+                    <img
+                      srcSet={`${item.file}?w=164&h=164&fit=contain&auto=format&dpr=2 2x`}
+                      src={item.file}
+                      alt={`Certificate ${index + 1}`}
+                      loading="lazy"
+                    />
+                    <ImageListItemBar
+                      title={item.type.name}
+                      actionIcon={
+                        <Tooltip title={"Download certificate"}>
+                          <IconButton
+                            aria-label="download"
+                            href={item.file}
+                            download
+                            sx={{
+                              color: "white",
+                              "&:hover": {
+                                color: "#062d72",
+                              },
+                            }}
+                          >
+                            <Download />
+                          </IconButton>
+                        </Tooltip>
+                      }
+                    />
+                  </ImageListItem>
+                </>
+              ))}
+            </ImageList>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No Address added
+            </Typography>
+          )}
         </AccordionDetails>
       </Accordion>
     </>

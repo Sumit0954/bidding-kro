@@ -47,47 +47,12 @@ const CompanyList = () => {
   }
   return (
     <>
-      <div className={cn("row",styles["companyList-filters"])}>
-        <div className="col-lg-3">
-          <CustomSelect
-            control={control}
-            name="Industry"
-            placeholder="Categories"
-            multiple={false}
-          />
-        </div>
-        <div className="col-lg-3">
-          <CustomSelect
-            control={control}
-            name="Industry"
-            placeholder="Sub Categories"
-            multiple={false}
-          />
-        </div>
-        <div className="col-lg-3">
-          <CustomSelect
-            control={control}
-            name="Industry"
-            placeholder="City"
-            multiple={false}
-          />
-        </div>
-        <div className="col-lg-3">
-          <CustomSelect
-            control={control}
-            name="Industry"
-            placeholder="Status"
-            multiple={false}
-          />
-        </div>
-      </div>
       <DataTable
         propsColumn={companies_column}
         propsData={companies}
         action={addAction}
         customClassName="admin-data-table"
       />
-      
     </>
   );
 };

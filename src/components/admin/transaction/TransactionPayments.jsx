@@ -12,10 +12,12 @@ import { useParams } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
 import cn from "classnames";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const TransactionPayments = () => {
   const { order_id } = useParams();
   const [payments, setPayments] = useState([]);
+  const [screenLoader, setScreenLoader] = useState(true);
 
   useEffect(() => {
     if (order_id) {
@@ -29,6 +31,7 @@ const TransactionPayments = () => {
           );
           if (response.status === 200) {
             setPayments(response.data.items);
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -44,6 +47,9 @@ const TransactionPayments = () => {
     return newDate.toLocaleDateString();
   };
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       {payments?.length > 0 &&

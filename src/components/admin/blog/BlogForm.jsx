@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./BlogForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import DummyLogo from "../../../assets/images/portal/company-profile/dummy-img.jpg";
@@ -8,25 +8,14 @@ import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import { Breadcrumbs, Dialog, Typography } from "@mui/material";
 import { CloudUpload, Upload } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import _sendAPIRequest from "../../../helpers/api";
+import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BlogForm = () => {
-  const breadcrumbs = [
-    <NavLink
-      underline="hover"
-      key="1"
-      color="inherit"
-      to="/admin/blogs"
-      style={{ textDecoration: "none" }}
-    >
-      Home
-    </NavLink>,
-
-    <Typography key="2" color="text.primary">
-      Blog Management
-    </Typography>,
-  ];
-
   const {
     register,
     watch,
@@ -34,11 +23,18 @@ const BlogForm = () => {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
+  const [blogDetail, setBlogDetail] = useState({});
   const [coverImage, setCoverImage] = useState(DummyLogo);
   const [bannerImage, setBannerImage] = useState(DummyLogo);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [buttonLoader, setButtonLoader] = useState(false);
+  const { blog_id } = useParams();
+  const { action } = useParams();
+  const { setAlert } = useContext(AlertContext);
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const all = watch();
   const { cover_image, banner_image } = all;
@@ -51,6 +47,41 @@ const BlogForm = () => {
       setBannerImage(URL.createObjectURL(banner_image[0]));
     }
   }, [cover_image, banner_image]);
+
+  useEffect(() => {
+    if (blog_id) {
+      fetchBlogDetails();
+    }
+  }, [blog_id]);
+
+  const fetchBlogDetails = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        `${AdminApiUrls.RETRIEVE_BLOG}${blog_id}/`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        const blogData = response.data;
+        setBlogDetail(blogData); // Set the fetched blog details
+
+        // Prefill form data once the details are fetched
+        setValue("title", blogData.title);
+        setValue("slug", blogData.slug);
+        setValue("description", blogData.description);
+        setValue("meta_title", blogData.meta_title);
+        setValue("meta_keywords", blogData.meta_keywords);
+        setValue("meta_description", blogData.meta_description);
+
+        setCoverImage(blogData.cover_image || DummyLogo);
+        setBannerImage(blogData.banner_image || DummyLogo);
+        setScreenLoader(false);
+      }
+    } catch (error) {
+      set;
+    }
+  };
 
   useEffect(() => {
     // Update preview image state if input type="file" (image Blob) was set previously
@@ -67,10 +98,100 @@ const BlogForm = () => {
         setBannerImage(URL.createObjectURL(banner_image[0]));
       }
     }
-  }, [getValues]);
+  }, [getValues, setValue]);
 
-  const submitForm = (data) => {
-    console.log(data);
+  const submitForm = async (data) => {
+    setButtonLoader(true);
+
+    if (action === "create") {
+      const createBlogData = new FormData();
+
+      createBlogData.append("title", data.title);
+      createBlogData.append("slug", data.slug);
+      if (data.banner_image && data.banner_image[0]) {
+        createBlogData.append("banner_image", data.banner_image[0]);
+      }
+      if (data.cover_image && data.cover_image[0]) {
+        createBlogData.append("cover_image", data.cover_image[0]);
+      }
+      createBlogData.append(
+        "description",
+        data.description.replace(/<p>|<\/p>/g, "")
+      );
+      createBlogData.append("meta_title", data.meta_title || "");
+      createBlogData.append("meta_keywords", data.meta_keywords || "");
+      createBlogData.append("meta_description", data.meta_description || "");
+
+      try {
+        const response = await _sendAPIRequest(
+          "POST",
+          AdminApiUrls.CREATE_BLOG,
+          createBlogData,
+          true
+        );
+
+        if (response.status === 201) {
+          setButtonLoader(false);
+          setAlert({
+            isVisible: true,
+            message: "Blog has been Uploaded successfully",
+            severity: "success",
+          });
+        }
+      } catch (error) {
+        setAlert({
+          isVisible: true,
+          message:  "Something went wrong",
+          severity: "error",
+        });
+      }
+    }
+    if (action === "update") {
+      const updateBlogData = new FormData();
+
+      updateBlogData.append("title", data.title);
+      updateBlogData.append("slug", data.slug);
+      if (data.banner_image && data.banner_image[0]) {
+        updateBlogData.append(
+          "banner_image",
+          data.banner_image[0] || bannerImage
+        );
+      }
+      if (data.cover_image && data.cover_image[0]) {
+        updateBlogData.append("cover_image", data.cover_image[0] || coverImage);
+      }
+      updateBlogData.append(
+        "description",
+        data.description.replace(/<p>|<\/p>/g, "")
+      );
+      updateBlogData.append("meta_title", data.meta_title || "");
+      updateBlogData.append("meta_keywords", data.meta_keywords || "");
+      updateBlogData.append("meta_description", data.meta_description || "");
+
+      try {
+        const response = await _sendAPIRequest(
+          "PATCH",
+          `${AdminApiUrls.UPDATE_BLOG}${blog_id}/`,
+          updateBlogData,
+          true
+        );
+
+        if (response) {
+          setButtonLoader(false);
+          setAlert({
+            isVisible: true,
+            message: "Blog has been updated successfully",
+            severity: "success",
+          });
+        }
+      } catch (error) {
+        setAlert({
+          isVisible: true,
+          message: "Something went wrong",
+          severity: "error",
+        });
+      }
+    }
   };
 
   const handleImageClick = (image) => {
@@ -78,6 +199,25 @@ const BlogForm = () => {
     setOpenDialog(true);
   };
 
+  const breadcrumbs = [
+    <NavLink
+      underline="hover"
+      key="1"
+      color="inherit"
+      to="/admin/blogs"
+      style={{ textDecoration: "none" }}
+    >
+      Home
+    </NavLink>,
+
+    <Typography key="2" color="text.primary">
+      {blogDetail?.title}
+    </Typography>,
+  ];
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <div role="presentation">
@@ -94,7 +234,7 @@ const BlogForm = () => {
                     <CustomInput
                       control={control}
                       label="Blog Name"
-                      name="blog_name"
+                      name="title"
                       placeholder="Blog Name"
                       rules={{
                         required: "Blog Name is required.",
@@ -105,7 +245,7 @@ const BlogForm = () => {
                     <CustomInput
                       control={control}
                       label="Blog Slug"
-                      name="blog_slug"
+                      name="slug"
                       placeholder="Blog Slug"
                       rules={{
                         required: "Blog Slug is required.",
@@ -127,6 +267,7 @@ const BlogForm = () => {
                         <img
                           src={bannerImage}
                           className={styles["banner-img"]}
+                          name="banner_image"
                           alt="banner-img"
                           onClick={() => handleImageClick(bannerImage)}
                         />
@@ -144,14 +285,14 @@ const BlogForm = () => {
                           tabIndex={-1}
                           startIcon={<CloudUpload />}
                           sx={{
-                            width: "12.5rem",
+                            width: "15rem",
                             backgroundColor: "var(--primary-color)",
                             "&:hover": {
                               backgroundColor: "var(--secondary-color)",
                             },
                           }}
                         >
-                          Browse
+                          Choose Banner Image
                           <input
                             {...register("banner_image", {
                               required: "Banner image is required",
@@ -198,14 +339,14 @@ const BlogForm = () => {
                       tabIndex={-1}
                       startIcon={<CloudUpload />}
                       sx={{
-                        width: "12.5rem",
+                        width: "15rem",
                         backgroundColor: "var(--primary-color)",
                         "&:hover": {
                           backgroundColor: "var(--secondary-color)",
                         },
                       }}
                     >
-                      Browse
+                      Choose Cover Image
                       <input
                         {...register("cover_image", {
                           required: "Cover image is required",
@@ -235,7 +376,7 @@ const BlogForm = () => {
                     <CustomInput
                       control={control}
                       label="Meta Title"
-                      name="meta-title"
+                      name="meta_title"
                       rules={{
                         required: "Meta Title is required.",
                       }}
@@ -245,7 +386,7 @@ const BlogForm = () => {
                     <CustomInput
                       control={control}
                       label="Meta Keyword"
-                      name="meta-keyword"
+                      name="meta_keywords"
                       rules={{
                         required: "Meta Keyword is required.",
                       }}
@@ -259,7 +400,7 @@ const BlogForm = () => {
                     <CustomInput
                       control={control}
                       label="Meta Description"
-                      name="meta-description"
+                      name="meta_description"
                       rules={{
                         required: "Meta Description is required.",
                       }}
@@ -268,11 +409,22 @@ const BlogForm = () => {
                 </div>
                 {/* Button aligned to the right */}
                 <div className="col-lg-4 offset-lg-8 mt-2">
-                  <button
-                    className={cn("btn btn-primary w-100", styles["blog-btn"])}
-                  >
-                    <Upload className={styles["uploadIcon"]} /> UPLOAD
-                  </button>
+                  {buttonLoader ? (
+                    <>
+                      <ButtonLoader size={60} />
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className={cn(
+                          "btn btn-primary w-100",
+                          styles["blog-btn"]
+                        )}
+                      >
+                        <Upload className={styles["uploadIcon"]} /> UPLOAD
+                      </button>
+                    </>
+                  )}
                 </div>
               </form>
             </div>

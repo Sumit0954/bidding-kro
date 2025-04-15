@@ -4,6 +4,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -12,11 +13,13 @@ import { Breadcrumbs } from "@mui/material";
 import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
 import cn from "classnames";
-import { dateTimeFormatter } from "../../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const TransactionDetails = () => {
   const { transaction_id } = useParams();
   const [transactionDetails, setTransactionDetails] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const breadcrumbs = [
     <NavLink
@@ -45,6 +48,7 @@ const TransactionDetails = () => {
         );
         if (response.status === 200) {
           setTransactionDetails(response.data);
+          setScreenLoader(false);
         }
       } catch (error) {
         console.log(error);
@@ -54,6 +58,9 @@ const TransactionDetails = () => {
     getTransactionDetails();
   }, [transaction_id]);
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <div role="presentation">
@@ -81,59 +88,19 @@ const TransactionDetails = () => {
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
               <p className={styles["col-data"]}>
-                {transactionDetails?.bid?.title}
+                <Tooltip title={transactionDetails?.bid?.title}>
+                  {truncateString(transactionDetails?.bid?.title, 30)}
+                </Tooltip>
               </p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Owner Name</h6>
+              <h6 className={styles["col-heading"]}>Company Name</h6>
               <p className={styles["col-data"]}>
-                {transactionDetails?.bid?.title}
-              </p>
-            </div>
-          </div>
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{ root: "custom-accordion" }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Owner Info
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div className="row">
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Owner Name</h6>
-              <p className={styles["col-data"]}>
-                {`${transactionDetails?.customer?.first_name} ${transactionDetails?.customer?.last_name}`}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Designation</h6>
-              <p className={styles["col-data"]}>
-                {transactionDetails?.customer?.profile?.designation}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Mobile</h6>
-              <p className={styles["col-data"]}>
-                {transactionDetails?.customer?.mobile_number}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Email</h6>
-              <p className={styles["col-data"]}>
-                {transactionDetails?.customer?.email}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>WhatsApp</h6>
-              <p className={styles["col-data"]}>
-                {transactionDetails?.customer?.profile?.whatsapp_number}
+                <NavLink
+                  to={`/admin/companies/${transactionDetails?.company?.id}`}
+                >
+                  {truncateString(transactionDetails?.company?.name, 30)}
+                </NavLink>
               </p>
             </div>
           </div>

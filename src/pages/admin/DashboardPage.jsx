@@ -5,20 +5,9 @@ import RegistrationData from "../../components/admin/dashboard/RegistrationData"
 import BidsData from "../../components/admin/dashboard/BidsData";
 import LOIData from "../../components/admin/dashboard/LOIData";
 import TransactionData from "../../components/admin/dashboard/TransactionData";
-import { jwtDecode } from "jwt-decode";
 
 const DashboardPage = () => {
   const [value, setValue] = useState(0);
-
-  const token = localStorage.getItem("accessToken");
-
-  if (token) {
-    const decoded = jwtDecode(token);
-    console.log("Decoded Token:", decoded);
-
-    const groups = decoded.groups;
-    console.log("User Groups:", groups);
-  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

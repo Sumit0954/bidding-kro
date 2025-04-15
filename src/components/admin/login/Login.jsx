@@ -85,16 +85,6 @@ const Login = () => {
                   </div>
                 </div>
 
-                <div className="row">
-                  <div className="col text-end">
-                    <p className={cn("mb-0", styles["frogetpassword-link"])}>
-                      <NavLink to={"/admin/forgot-password"}>
-                        Forgot your Password?
-                      </NavLink>
-                    </p>
-                  </div>
-                </div>
-
                 <div className="row my-3">
                   <div className="col text-center">
                     {loading ? (

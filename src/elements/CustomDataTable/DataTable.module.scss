@@ -14,7 +14,7 @@
     }
 
     &::-webkit-scrollbar-thumb::after {
-      content: 'Scroll';
+      content: "Scroll";
       font-size: 12px;
       color: var(--white);
       text-align: center;
@@ -32,6 +32,11 @@
 
 .table-link {
   text-decoration: none;
+  color: rgb(30, 157, 241);
+
+  &.table-link:hover {
+    text-decoration: underline;
+  }
 }
 
 .portal-data-table {
@@ -67,9 +72,8 @@
 }
 
 .disabled-link {
-  pointer-events: none;   /* Disable clicking */
+  pointer-events: none; /* Disable clicking */
   color: grey;
   cursor: not-allowed;
   text-decoration: none;
 }
-

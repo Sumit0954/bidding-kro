@@ -2,13 +2,25 @@ import React from "react";
 import styles from "./AdminSidebar.module.scss";
 import { NavLink } from "react-router-dom";
 import { Tooltip } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 
 const AdminSidebar = () => {
+  const token = localStorage.getItem("accessToken");
+
+  const decoded = jwtDecode(token);
+
+  const groups = decoded.groups;
+
+  console.log(sidebarMenu, " : sidebarMenu");
+  const filteredMenu = sidebarMenu.filter((item) =>
+    groups.includes(item.accessor)
+  );
+
   return (
     <>
       <div className={styles["sidebar-container"]}>
         <ul className={styles["sidebar-items"]}>
-          {sidebarMenu.map((item, index) => (
+          {filteredMenu.map((item, index) => (
             <NavLink
               to={item.path}
               className={({ isActive }) =>
@@ -40,34 +52,39 @@ export default AdminSidebar;
 
 const sidebarMenu = [
   {
-    icon: "/images/admin/layout/icons/building.svg",
+    icon: "/images/portal/layout/icons/dashboard-icon.svg",
     title: "Dashboard",
     path: "/admin/dashboard",
+    accessor: "dashboard_management",
   },
   {
     icon: "/images/admin/layout/icons/building.svg",
     title: "Companies",
     path: "/admin/companies",
+    accessor: "company_management",
   },
   {
     icon: "/images/admin/layout/icons/blogging.svg",
     title: "Blog Management",
     path: "/admin/blogs",
+    accessor: "blog_management",
   },
-
   {
     icon: "/images/admin/layout/icons/Administrator3.svg",
     title: "Admin Management",
     path: "/admin/management",
+    accessor: "admin_management",
   },
   {
     icon: "/images/admin/layout/icons/credit-card.svg",
     title: "Transactions",
     path: "/admin/transactions",
+    accessor: "transaction_management",
   },
   {
     icon: "/images/admin/layout/icons/queries.svg",
     title: "Queries",
     path: "/admin/queries",
+    accessor: "query_management",
   },
 ];
