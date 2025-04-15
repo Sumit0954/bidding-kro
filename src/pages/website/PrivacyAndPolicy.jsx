@@ -226,7 +226,10 @@ const PrivacyAndPolicy = () => {
           information” and does NOT track personal information about you, such
           as your name, email address, physical address, etc. You may opt out of
           the use of the DART cookie by visiting the Google ad and content
-          network privacy policy at http://www.google.com/privacy_ads.html
+          network privacy policy at{" "}
+          <a href="http://www.google.com/privacy_ads.html">
+            http://www.google.com/privacy_ads.html
+          </a>
         </Typography>
         <Typography variant="body1" paragraph sx={{ textAlign: "justify" }}>
           <strong>(h) Changes to this privacy policy</strong>

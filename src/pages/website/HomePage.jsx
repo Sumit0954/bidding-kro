@@ -32,7 +32,7 @@ const HomePage = () => {
       <br />
       <RecentBlogs />
       <br />
-      <br />
+      <br id="contact-us" />
       <Contact />
     </>
   );

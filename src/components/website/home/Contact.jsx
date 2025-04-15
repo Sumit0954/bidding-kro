@@ -1,13 +1,50 @@
+import { AirplayOutlined } from "@mui/icons-material";
 import styles from "./Contact.module.scss";
 import cn from "classnames";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import _sendAPIRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const Contact = () => {
-  const { control, handleSubmit, register } = useForm();
+  const { control, handleSubmit, register, reset } = useForm();
+  const { setAlert } = useContext(AlertContext);
+  const [buttonLoader, setButtonLoader] = useState(false);
+  const submitForm = async (data) => {
+    setButtonLoader(true);
+    const getInTouchFormdata = new FormData();
 
-  const submitForm = (data) => {
-    console.log(data);
+    for (const key in data) {
+      getInTouchFormdata.append(key, data[key]);
+    }
+
+    try {
+      const response = await _sendAPIRequest(
+        "POST",
+        WebsiteApiUrls.GET_IN_TOUCH,
+        getInTouchFormdata,
+        true
+      );
+      if (response.status === 201) {
+        setButtonLoader(false);
+        setAlert({
+          isVisible: true,
+          message: "Details has been submitted successfully",
+          severity: "success",
+        });
+        reset();
+      }
+    } catch (error) {
+      setButtonLoader(false);
+      setAlert({
+        isVisible: true,
+        message: "Something went wrong",
+        severity: "error",
+      });
+      reset();
+    }
   };
 
   return (
@@ -17,9 +54,7 @@ const Contact = () => {
           {/* Centered Heading */}
           <div className="row justify-content-center">
             <div className="col-lg-8 text-center">
-              <div className={styles["contact-heading"]}>
-                Need any Help? Contact Us
-              </div>
+              <div className={styles["contact-heading"]}>Book A Demo</div>
             </div>
           </div>
 
@@ -42,37 +77,89 @@ const Contact = () => {
                   onSubmit={handleSubmit(submitForm)}
                   className={styles["contact-form"]}
                 >
-                  {[
-                    "Company Name",
-                    "Contact Person",
-                    "Phone Number",
-                    "Business Email",
-                  ].map((label, index) => (
-                    <div className="row" key={index}>
-                      <div className="col-12 text-start">
-                        <label className={styles["custom-label"]}>
-                          {label}
-                        </label>
-                      </div>
-                      <div className="col-12">
-                        <input
-                          {...register(label.toLowerCase().replace(/\s/g, "-"))}
-                          type="text"
-                          placeholder={`Enter Your ${label}`}
-                          className={styles["custom-input"]}
-                        />
-                      </div>
+                  {/* Company Name */}
+                  <div className="row">
+                    <div className="col-12 text-start">
+                      <label className={styles["custom-label"]}>
+                        Company Name
+                      </label>
                     </div>
-                  ))}
+                    <div className="col-12">
+                      <input
+                        {...register("company_name")}
+                        type="text"
+                        placeholder="Enter Your Company Name"
+                        className={styles["custom-input"]}
+                      />
+                    </div>
+                  </div>
 
+                  {/* Contact Person */}
+                  <div className="row">
+                    <div className="col-12 text-start">
+                      <label className={styles["custom-label"]}>
+                        Contact Person
+                      </label>
+                    </div>
+                    <div className="col-12">
+                      <input
+                        {...register("contact_person_name")}
+                        type="text"
+                        placeholder="Enter Your Contact Person"
+                        className={styles["custom-input"]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone Number */}
+                  <div className="row">
+                    <div className="col-12 text-start">
+                      <label className={styles["custom-label"]}>
+                        Phone Number
+                      </label>
+                    </div>
+                    <div className="col-12">
+                      <input
+                        {...register("phone")}
+                        type="text"
+                        placeholder="Enter Your Phone Number"
+                        className={styles["custom-input"]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Business Email */}
+                  <div className="row">
+                    <div className="col-12 text-start">
+                      <label className={styles["custom-label"]}>
+                        Business Email
+                      </label>
+                    </div>
+                    <div className="col-12">
+                      <input
+                        {...register("email")}
+                        type="text"
+                        placeholder="Enter Your Business Email"
+                        className={styles["custom-input"]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
                   <div className="row">
                     <div className="col-12 text-center">
-                      <button
-                        type="submit"
-                        className={cn("btn", styles["custom-btn"])}
-                      >
-                        Submit
-                      </button>
+                      {buttonLoader ? (
+                        <ButtonLoader size={60} />
+                      ) : (
+                        <>
+                          <button
+                            type="submit"
+                            className={cn("btn", styles["custom-btn"])}
+                          >
+                            Submit
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </form>

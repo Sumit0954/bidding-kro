@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import styles from "./OurGallery.module.scss";
@@ -20,49 +20,40 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { Swiper, SwiperSlide } from "swiper/react";
+import _sendAPIRequest from "../../../helpers/api";
+import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
+import { truncateString } from "../../../helpers/formatter";
+import { NavLink } from "react-router-dom";
 
 const RecentBlogs = () => {
+  const [blogss, setBlogs] = useState([]);
+
+  const fetchThreelatestBlogs = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        WebsiteApiUrls.WEBSITE_BLOGS,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setBlogs(response.data.slice(0, 4));
+      }
+    } catch (error) {
+      console.log(error, " : error");
+    }
+  };
+
+  useEffect(() => {
+    fetchThreelatestBlogs();
+  }, []);
+
   useEffect(() => {
     AOS.init({ duration: 2000, once: true }); // Initialize AOS
   }, []);
 
-  const blogs = [
-    {
-      title: "How Bidding Karo is Revolutionizing the Procurement Process",
-      date: "18 FEB",
-      description:
-        "In this post, explore how Bidding Karo streamlines procurement by giving buyers ...",
-      image: GalleryImg1,
-    },
-    {
-      title: "The Power of Bidding: Why Buyers Should Lead the Negotiation",
-      date: "19 FEB",
-      description:
-        "Focus on the buyer-centric approach that Bidding Karo takes. Discuss the benefits...",
-      image: GalleryImg2,
-    },
-    {
-      title: "How Suppliers Benefit from Bidding Karo’s Dynamic Marketplace",
-      date: "18 FEB",
-      description:
-        "Highlight how suppliers can gain exposure to a wider pool of buyers and how the...",
-      image: GalleryImg3,
-    },
-  ];
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const DateBox = styled(Box)({
-    backgroundColor: "#E63946",
-    color: "#fff",
-    padding: "5px 10px",
-    position: "absolute",
-    bottom: "10px",
-    right: "10px",
-    fontWeight: "bold",
-    textAlign: "center",
-  });
 
   const ImageContainer = styled(Box)({
     position: "relative",
@@ -79,10 +70,12 @@ const RecentBlogs = () => {
       data-aos="fade-left" // Apply AOS animation
     >
       <ImageContainer>
-        <CardMedia component="img" height="205" image={blog.image} alt="Blog" />
-        <DateBox sx={{ backgroundColor: "#062d72" }}>
-          <Typography variant="body2">{blog.date}</Typography>
-        </DateBox>
+        <CardMedia
+          component="img"
+          height="205"
+          image={blog.cover_image}
+          alt="Blog"
+        />
       </ImageContainer>
       <CardContent>
         <Typography variant="caption" color="textSecondary">
@@ -92,18 +85,20 @@ const RecentBlogs = () => {
           {blog.title}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {blog.description}
+          {truncateString(blog.description, 100)}
         </Typography>
-        <Typography
-          sx={{
-            color: "#062d72",
-            fontWeight: "bold",
-            mt: 1,
-            cursor: "pointer",
-          }}
-        >
-          View More →
-        </Typography>
+        <NavLink to={`/blogs/${blog.slug}`} style={{ textDecoration: "none" }}>
+          <Typography
+            sx={{
+              color: "#062d72",
+              fontWeight: "bold",
+              mt: 1,
+              cursor: "pointer",
+            }}
+          >
+            View More →
+          </Typography>
+        </NavLink>
       </CardContent>
     </Card>
   );
@@ -163,7 +158,7 @@ const RecentBlogs = () => {
           }}
           style={{ paddingBottom: "50px", width: "80%" }}
         >
-          {blogs.map((blog, index) => (
+          {blogss.map((blog, index) => (
             <SwiperSlide
               key={index}
               style={{ display: "flex", justifyContent: "center" }}

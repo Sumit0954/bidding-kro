@@ -10,6 +10,9 @@ import {
   Call,
   CallTwoTone,
   CasesTwoTone,
+  DesignServices,
+  DisplaySettings,
+  FactCheckTwoTone,
   Grade,
   GradeTwoTone,
   GroupOutlined,
@@ -17,6 +20,7 @@ import {
   LibraryBooksTwoTone,
   Mail,
   MailTwoTone,
+  MonetizationOnTwoTone,
   Photo,
   PhotoTwoTone,
   Policy,
@@ -39,39 +43,63 @@ const WebsiteFooter = () => {
         </div>
         <div className={`col-lg-6 ${styles["social-icons-container"]}`}>
           <Tooltip title="Follow us on Instagram">
-            <img
-              src={instagramicon}
-              alt="Instagram"
-              className={styles["footer-icon"]}
-              style={{ backgroundColor: "#E1306C", borderRadius: "50%" }}
-            />
+            <a
+              href="https://www.instagram.com/bidding.karo?igsh=eWthYWlieTRoOG44&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={instagramicon}
+                alt="Instagram"
+                className={styles["footer-icon"]}
+                style={{ backgroundColor: "#E1306C", borderRadius: "50%" }}
+              />
+            </a>
           </Tooltip>
 
           <Tooltip title="Like us on Facebook">
-            <img
-              src={facebookicon}
-              alt="Facebook"
-              className={styles["footer-icon"]}
-              style={{ backgroundColor: "#1877F2", borderRadius: "50%" }}
-            />
+            <a
+              href="https://www.facebook.com/share/1MC7RorEKc/?mibextid=wwXIfr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={facebookicon}
+                alt="Facebook"
+                className={styles["footer-icon"]}
+                style={{ backgroundColor: "#1877F2", borderRadius: "50%" }}
+              />
+            </a>
           </Tooltip>
 
           <Tooltip title="Connect with us on LinkedIn">
-            <img
-              src={linkdinicon}
-              alt="LinkedIn"
-              className={styles["footer-icon"]}
-              style={{ backgroundColor: "#0077B5", borderRadius: "50%" }}
-            />
+            <a
+              href="https://www.linkedin.com/company/biddingkaro/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={linkdinicon}
+                alt="LinkedIn"
+                className={styles["footer-icon"]}
+                style={{ backgroundColor: "#0077B5", borderRadius: "50%" }}
+              />
+            </a>
           </Tooltip>
 
           <Tooltip title="Subscribe to our YouTube">
-            <img
-              src={Youtubeicon}
-              alt="YouTube"
-              className={styles["footer-icon"]}
-              style={{ backgroundColor: "red", borderRadius: "50%" }}
-            />
+            <a
+              href="http://www.youtube.com/@BiddingKaro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={Youtubeicon}
+                alt="YouTube"
+                className={styles["footer-icon"]}
+                style={{ backgroundColor: "red", borderRadius: "50%" }}
+              />
+            </a>
           </Tooltip>
         </div>
       </div>
@@ -108,7 +136,32 @@ const WebsiteFooter = () => {
                   </li>
                 </ul>
               </div>
-
+              <div className="footer-column">
+                <h3 className={styles["footer-heading"]}>Policies</h3>
+                <ul>
+                  <li>
+                    <a href="/terms-and-conditions">
+                      <FactCheckTwoTone /> Terms & Conditions
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/privacy-policy">
+                      <PolicyTwoTone /> Privacy Policy
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/disclaimer">
+                      <DisplaySettings />
+                      Disclaimer
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/code-of-ethics">
+                      <DesignServices /> Code of ethics
+                    </a>
+                  </li>
+                </ul>
+              </div>
               <div className="footer-column">
                 <h3 className={styles["footer-heading"]}>Resource Centre</h3>
                 <ul>

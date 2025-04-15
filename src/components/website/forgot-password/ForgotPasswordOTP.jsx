@@ -90,7 +90,7 @@ const ForgotPasswordOTP = () => {
         const { mobile_number, error } = data;
         setAlert({
           isVisible: true,
-          message: error,
+          message:  "Something went wrong",
           severity: "error",
         });
 

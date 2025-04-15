@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { Avatar } from "@mui/material";
 import {
+  AirplayOutlined,
   GroupOutlined,
   Info,
   LibraryBooks,
@@ -63,17 +64,11 @@ const WebsiteHeader = () => {
               </li>
               <li className="nav-item">
                 <NavLink
-                  className={({ isActive }) =>
-                    cn([
-                      "nav-link",
-                      "px-3",
-                      styles["custom-navlink"],
-                      { [styles["active-link"]]: isActive },
-                    ])
-                  }
-                  to="/contact"
+                  className={cn("nav-link", "px-3", styles["custom-navlink"])}
+                  to={"/contactUs"}
                 >
-                  Contact <PermPhoneMsg sx={{ fontSize: "20px" }} />
+                  Contact Us
+                  <PermPhoneMsg sx={{ fontSize: "20px" }} />
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -104,26 +99,58 @@ const WebsiteHeader = () => {
             ) : (
               <div className={styles["btn-container"]}>
                 {/* New "Pricing" Link */}
-                <NavLink
-                  to={"/pricing"}
-                  className={cn("btn", "mx-2", styles["header-btn"])}
-                >
-                  Book a Demo &nbsp; <TryOutlined sx={{ fontSize: "20px" }} />
-                </NavLink>
-                <NavLink
-                  to={"/register"}
-                  className={cn("btn", "mx-2", styles["header-btn"])}
-                >
-                  Register &nbsp;
-                  <PersonAdd sx={{ fontSize: "20px" }} />
-                </NavLink>
-                <NavLink
-                  to={"/login"}
-                  className={cn("btn", "mx-2", styles["header-btn"])}
-                >
-                  Login &nbsp;
-                  <Login sx={{ fontSize: "20px" }} />
-                </NavLink>
+                <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                  <li className="nav-item">
+                    <NavLink
+                      className={({ isActive }) =>
+                        cn([
+                          "nav-link",
+                          "px-3",
+                          styles["custom-navlink"],
+                          { [styles["active-link"]]: isActive },
+                        ])
+                      }
+                      to={"/register"}
+                    >
+                      Register &nbsp;
+                      <PersonAdd sx={{ fontSize: "20px" }} />
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      className={({ isActive }) =>
+                        cn([
+                          "nav-link",
+                          "px-3",
+                          styles["custom-navlink"],
+                          { [styles["active-link"]]: isActive },
+                        ])
+                      }
+                      to={"/login"}
+                    >
+                      Login &nbsp;
+                      <Login sx={{ fontSize: "20px" }} />
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      className={cn(
+                        "nav-link",
+                        "px-3",
+                        styles["custom-navlink"]
+                      )}
+                      onClick={() => {
+                        const section = document.getElementById("contact-us");
+                        if (section) {
+                          section.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }}
+                    >
+                      Book A Demo &nbsp;{" "}
+                      <AirplayOutlined sx={{ fontSize: "20px" }} />{" "}
+                    </NavLink>
+                  </li>
+                </ul>
               </div>
             )}
           </div>

@@ -64,7 +64,6 @@
       width: auto; /* Adjust width dynamically */
       min-width: 110px; /* Ensures consistency */
       height: 35px;
-      border: 1px solid var(--primary-color) !important;
       background: none;
       color: var(--primary-color) !important;
       display: flex;
@@ -74,7 +73,6 @@
       white-space: nowrap; /* Prevents text breaking */
       font-size: 14px;
       font-weight: 500;
-      border-radius: 6px;
 
       &:hover {
         color: var(--secondary-color) !important;
@@ -99,5 +97,3 @@
     }
   }
 }
-
-
