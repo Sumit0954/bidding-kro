@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextField,
   Select,
@@ -22,10 +22,11 @@ import styles from "./AddteamForm.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { useNavigate } from "react-router-dom";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const AddteamForm = () => {
   const navigate = useNavigate();
-
+  const { setAlert } = useContext(AlertContext);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -97,9 +98,6 @@ const AddteamForm = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log("Member added successfully:", response.data);
-        // alert("Member added successfully!");
-
         setAlert({
           isVisible: true,
           message: "Member added successfully",
@@ -118,11 +116,8 @@ const AddteamForm = () => {
         });
       }
     } catch (error) {
-      console.error(
-        "Failed to add member:",
-        error.response?.data || error.message
-      );
-      alert(error.response?.data?.message || "Failed to add member.");
+      console.log(error, " : error");
+
       if (error.status === 403) {
         setAlert({
           isVisible: true,
@@ -132,7 +127,7 @@ const AddteamForm = () => {
       } else if (error.status == 400) {
         setAlert({
           isVisible: true,
-          message: error.response.data.error,
+          message: "Please Fill out the required field",
           severity: "error",
         });
       }
