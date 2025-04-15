@@ -19,6 +19,10 @@ import WebsiteFooter from "../layouts/footers/WebsiteFooter";
 import BlogDetailsPage from "../pages/website/BlogDetailsPage";
 import TermsAndConditions from "../pages/website/TermsAndConditions";
 import PrivacyAndPolicy from "../pages/website/PrivacyAndPolicy";
+import AboutUs from "../pages/website/AboutUs";
+import ContactusPage from "../pages/website/ContactusPage";
+import Disclaimer from "../pages/website/Disclaimer";
+import CodeOfEthics from "../pages/website/CodeOfEthics";
 
 const WebsiteRoutes = () => {
   return (
@@ -62,8 +66,11 @@ const WebsiteRoutes = () => {
                   </Route>
 
                   <Route path="/blogs" element={<BlogPage />} />
-
                   <Route path="/blogs/:slug" element={<BlogDetailsPage />} />
+                  <Route path="/about" element={<AboutUs />} />
+                  <Route path="/contactUs" element={<ContactusPage />} />
+                  <Route path="/disclaimer" element={<Disclaimer />} />
+                  <Route path="/code-of-ethics" element={<CodeOfEthics />} />
                 </Routes>
 
                 <CallAlert />

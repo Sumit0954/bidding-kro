@@ -61,19 +61,20 @@ const AdminRoutes = () => {
                   element={<LayoutPage Component={QueryListPage} />}
                 />
                 <Route
-                  path="/queries/:query_id"
+                  path="/queries/:query_type/:query_id"
                   element={<LayoutPage Component={QueryDetailPage} />}
                 />
                 <Route
                   path="/blogs"
                   element={<LayoutPage Component={BlogListPage} />}
                 />
+
                 <Route
                   path="blogs/:action"
                   element={<LayoutPage Component={BlogFromPage} />}
                 />
                 <Route
-                  path="/blog/:action/:blog_id"
+                  path="blogs/:action/:blog_id"
                   element={<LayoutPage Component={BlogFromPage} />}
                 />
                 <Route
@@ -81,7 +82,11 @@ const AdminRoutes = () => {
                   element={<LayoutPage Component={AdminManagementPage} />}
                 />
                 <Route
-                  path="/management/addmanagementform"
+                  path="/management/addmanagementform/:action"
+                  element={<LayoutPage Component={AdminManagementForm} />}
+                />
+                <Route
+                  path="/management/addmanagementform/:action/:id"
                   element={<LayoutPage Component={AdminManagementForm} />}
                 />
               </Route>
