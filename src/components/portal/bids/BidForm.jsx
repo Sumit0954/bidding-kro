@@ -46,7 +46,7 @@ const BidForm = () => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [searchedBids, setSearchedBids] = useState([]);
-  const [screenLoader, setScreenLoader] = useState(false);
+  const [screenLoader, setScreenLoader] = useState(true);
   const [titleValue, setTitleValue] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
@@ -75,7 +75,6 @@ const BidForm = () => {
   }, [id, productData, setValue]);
 
   const updateBidCategories = async (id) => {
-    console.log(id, formData, "bidid");
     const categoryIds = formData.map((item) => item.category);
     setLoading(true);
     try {
@@ -86,7 +85,6 @@ const BidForm = () => {
         true
       );
       if (response1.status === 200) {
-        console.log(response1, "res11");
         setLoading(false);
 
         navigate(`/portal/bids/products/${id}`, { state: { productData } });
@@ -235,7 +233,6 @@ const BidForm = () => {
             severity: "success",
           });
           updateBidCategories(id);
-          setScreenLoader(false);
           // navigate(`/portal/bids/products/${id}`);
         }
       } catch (error) {
@@ -288,8 +285,6 @@ const BidForm = () => {
                 false
               ),
             });
-
-            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
@@ -382,6 +377,7 @@ const BidForm = () => {
           title: response.data.title || "",
           description: response.data.description || "",
         });
+        setScreenLoader(false);
       }
     } catch (error) {
       console.log(error);
