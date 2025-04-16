@@ -71,6 +71,7 @@ const BidForm = () => {
 
       // Set the 'title' field with the concatenated product names
       setValue("title", concatenatedProductNames);
+      setScreenLoader(false);
     }
   }, [id, productData, setValue]);
 
