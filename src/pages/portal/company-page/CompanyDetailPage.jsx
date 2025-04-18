@@ -1,6 +1,5 @@
 import About from "../../../components/portal/companies/About";
 import PreviousBids from "../../../components/portal/companies/PreviousBids";
-import Chat from "../../../components/portal/companies/Chat";
 import { Box, Breadcrumbs, Button, Tab, Tabs, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
