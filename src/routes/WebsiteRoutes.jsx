@@ -23,6 +23,7 @@ import AboutUs from "../pages/website/AboutUs";
 import ContactusPage from "../pages/website/ContactusPage";
 import Disclaimer from "../pages/website/Disclaimer";
 import CodeOfEthics from "../pages/website/CodeOfEthics";
+import CencelationPolicy from "../pages/website/CencelationPolicy";
 
 const WebsiteRoutes = () => {
   return (
@@ -71,6 +72,10 @@ const WebsiteRoutes = () => {
                   <Route path="/contactUs" element={<ContactusPage />} />
                   <Route path="/disclaimer" element={<Disclaimer />} />
                   <Route path="/code-of-ethics" element={<CodeOfEthics />} />
+                  <Route
+                    path="/cancellation-policy"
+                    element={<CencelationPolicy />}
+                  />
                 </Routes>
 
                 <CallAlert />

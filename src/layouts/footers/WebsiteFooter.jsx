@@ -13,23 +13,14 @@ import {
   DesignServices,
   DisplaySettings,
   FactCheckTwoTone,
-  Grade,
   GradeTwoTone,
-  GroupOutlined,
-  Info,
   LibraryBooksTwoTone,
-  Mail,
+  LocalPoliceTwoTone,
   MailTwoTone,
-  MonetizationOnTwoTone,
-  Photo,
-  PhotoTwoTone,
-  Policy,
   PolicyTwoTone,
   SpeakerGroupOutlined,
-  Work,
   WorkTwoTone,
 } from "@mui/icons-material";
-import { NavLink } from "react-router-dom";
 
 const WebsiteFooter = () => {
   return (
@@ -158,6 +149,11 @@ const WebsiteFooter = () => {
                   <li>
                     <a href="/code-of-ethics">
                       <DesignServices /> Code of ethics
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/cancellation-policy">
+                      <LocalPoliceTwoTone /> Cencelation Policies
                     </a>
                   </li>
                 </ul>
