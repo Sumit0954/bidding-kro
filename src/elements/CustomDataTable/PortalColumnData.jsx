@@ -1193,6 +1193,14 @@ export const l1_participants_column = [
                 ? "pending"
                 : "cancelled"
             }`}
+            style={{
+              color:
+                data?.row?.original?.status === "accepted" || "participated"
+                  ? "green"
+                  : data?.row?.original?.status === "pending"
+                  ? "yellow"
+                  : "green",
+            }}
           >
             {data?.row?.original?.status}
           </div>
