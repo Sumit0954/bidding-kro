@@ -153,7 +153,7 @@ const WebsiteFooter = () => {
                   </li>
                   <li>
                     <a href="/cancellation-policy">
-                      <LocalPoliceTwoTone /> Cencelation Policies
+                      <LocalPoliceTwoTone /> Cancellation Policy
                     </a>
                   </li>
                 </ul>
