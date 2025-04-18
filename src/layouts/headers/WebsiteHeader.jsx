@@ -64,7 +64,14 @@ const WebsiteHeader = () => {
               </li>
               <li className="nav-item">
                 <NavLink
-                  className={cn("nav-link", "px-3", styles["custom-navlink"])}
+                  className={({ isActive }) =>
+                    cn([
+                      "nav-link",
+                      "px-3",
+                      styles["custom-navlink"],
+                      { [styles["active-link"]]: isActive },
+                    ])
+                  }
                   to={"/contactUs"}
                 >
                   Contact Us
