@@ -16,6 +16,7 @@ import {
   Paper,
   Button,
   Box,
+  Alert,
 } from "@mui/material";
 import {
   Expand,
@@ -42,6 +43,7 @@ const Analysis = ({ bidDetails }) => {
   const [bidders, setBidders] = useState([]);
   const [supplierName, setSupplierName] = useState();
   const [awardStatus, setAwardStatus] = useState(null);
+  const { setAlert } = useContext(AlertContext);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -50,8 +52,6 @@ const Analysis = ({ bidDetails }) => {
     id: null,
     handleAction: "",
   });
-
-  const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event, id) => {
     setSupplierName(event.target.value);
@@ -107,6 +107,7 @@ const Analysis = ({ bidDetails }) => {
         true
       );
       if (response.status === 200) {
+        console.log(response.data, " : awarded");
         setBidders(response.data);
         setScreenLoader(false);
       }
@@ -172,12 +173,20 @@ const Analysis = ({ bidDetails }) => {
     return <ScreenLoader />;
   }
 
+  const isNonL1 = bidders.some((bidder) => {
+    if (!bidder?.participant?.length) return false;
+    const supplier = bidder.participant.find((s) => s.company === supplierName);
+    if (!supplier) return false;
+    return supplier.position !== 1;
+  });
+
   return (
     <>
       <br />
       <div className={styles["heading"]}>
         <Typography variant="h6">Product Name</Typography>
       </div>
+
       {bidders.map((awardBidder, index) => {
         return (
           <>
@@ -380,9 +389,13 @@ const Analysis = ({ bidDetails }) => {
                           >
                             <TableCell>
                               <Radio
-                                checked={selectedSupplier === supplier?.id}
+                                checked={
+                                  selectedSupplier === supplier?.id ||
+                                  supplier?.is_awarded
+                                }
                                 disabled={
-                                  awardBidder?.award_status === "cancelled"
+                                  awardBidder?.award_status === "cancelled" ||
+                                  awardBidder?.award_status === "awarded"
                                 }
                                 onChange={(event) =>
                                   handleChange(event, supplier.id)
@@ -424,6 +437,8 @@ const Analysis = ({ bidDetails }) => {
               ? handleCencelProduct
               : handleProductAward
           }
+          supplierName={supplierName}
+          isNonL1={isNonL1}
         />
       )}
     </>
