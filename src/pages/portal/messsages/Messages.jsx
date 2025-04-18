@@ -184,6 +184,7 @@ const Messages = ({
             <form
               onSubmit={handleSubmit(sendMessage)}
               style={{ display: "flex", flex: 1 }}
+              autoComplete="off"
             >
               <Controller
                 name="message"
