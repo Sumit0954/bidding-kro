@@ -42,6 +42,7 @@ import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
 import { PrintOutlined } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -58,6 +59,7 @@ const BidDetailsPage = () => {
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { setAlert } = useContext(AlertContext);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -118,10 +120,16 @@ const BidDetailsPage = () => {
       );
       if (response.status === 204) {
         setDeleteDetails({ open: false, title: "", message: "" });
-        // window.location.reload();
       }
     } catch (error) {
-      console.log(error);
+      if (error.status === 403) {
+        setDeleteDetails({ open: false, title: "", message: "" });
+        setAlert({
+          isVisible: true,
+          message: "You do not have permission to perform this action.",
+          severity: "error",
+        });
+      }
     }
   };
 
@@ -796,7 +804,7 @@ const BidDetailsPage = () => {
         />
       )}
 
-      {/*BID CENCELATION CONFIRMATION MODAL IN BIDDETAILS  */}
+      {/*BID CANCELATION CONFIRMATION MODAL IN BIDDETAILS  */}
       {deleteDetails?.open && (
         <DeleteDialog
           title={deleteDetails.title}

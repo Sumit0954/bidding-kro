@@ -1,4 +1,4 @@
-import { Alert, Box, Modal, Typography } from "@mui/material";
+import { Alert, Box, IconButton, Modal, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./Modal.module.scss";
@@ -9,8 +9,7 @@ import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../contexts/AlertProvider";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import CustomSelect from "../CustomSelect/CustomSelect";
-import { CloseFullscreen } from "@mui/icons-material";
-import axios from "axios";
+import { Close } from "@mui/icons-material";
 
 const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
   const handleClose = () => {
@@ -35,6 +34,7 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       if (response.status === 201) {
         setLoading(false);
         setAddAmendment(false);
+        window.location.reload();
         setAlert({
           isVisible: true,
           message: "Amendment created successfully!",
@@ -43,8 +43,9 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
       const { data } = error.response;
+      setAddAmendment(false);
+
       if (error.status === 403) {
         setAlert({
           isVisible: true,
@@ -64,7 +65,6 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
         }
       }
     }
-    window.location.reload();
   };
 
   const handleFieldChange = (value) => {
@@ -120,7 +120,23 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       >
         <Box className={cn("container", styles["modal-container"])}>
           <Box className="row">
-            <Box className={styles["modal-section"]}>
+            <Box
+              className={styles["modal-section"]}
+              sx={{ position: "relative" }}
+            >
+              {/* Close Icon Button */}
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                  position: "absolute",
+                  right: 16,
+                  top: 16,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <Close />
+              </IconButton>
               <Typography
                 className={cn("my-3")}
                 id="modal-modal-title"
