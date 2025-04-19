@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.scss";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import WebsiteRoutes from "./routes/WebsiteRoutes";
 import PortalRoutes from "./routes/PortalRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
@@ -13,7 +13,8 @@ import _sendAPIRequest from "./helpers/api";
 import { PortalApiUrls } from "./helpers/api-urls/PortalApiUrls";
 import * as Sentry from "@sentry/react";
 import SenrtErrorDash from "./pages/sentry-error-page";
-
+import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
+import NotFound from "./pages/error/NotFound";
 const requestNotificationPermission = async () => {
   console.log("chck token");
   try {
@@ -56,6 +57,22 @@ const RegisterFCMToken = async (token) => {
 };
 
 function App() {
+  const location = useLocation();
+  const [isTawkLoaded, setIsTawkLoaded] = useState(false);
+
+  useEffect(() => {
+    const isPortalPage = location.pathname.startsWith("/portal");
+
+    if (isTawkLoaded && window.Tawk_API) {
+      if (isPortalPage) {
+        window.Tawk_API.hideWidget();
+      } else {
+        window.Tawk_API.showWidget();
+        window.Tawk_API.minimize(); // 👈 force it to stay minimized
+      }
+    }
+  }, [location, isTawkLoaded]);
+
   // useEffect(() => {
   //   requestFirebaseNotificationPermission()
   //     .then((token) => {
@@ -124,14 +141,27 @@ function App() {
   // }, []);
 
   return (
-    <Sentry.ErrorBoundary fallback={<p>Something went wrong.</p>}>
-      <Routes>
-        <Route path="/*" element={<WebsiteRoutes />} />
-        <Route path="portal/*" element={<PortalRoutes />} />
-        <Route path="admin/*" element={<AdminRoutes />} />
-        <Route path="sentry/" element={<SenrtErrorDash />} />
-      </Routes>
-    </Sentry.ErrorBoundary>
+    <>
+      <TawkMessengerReact
+        propertyId="67f4bf4e846b7b190fd1e9a1"
+        widgetId="1ioa0mioo"
+        onLoad={() => {
+          setIsTawkLoaded(true);
+          if (window.Tawk_API) {
+            window.Tawk_API.hideWidget();
+            window.Tawk_API.minimize();
+          }
+        }}
+      />
+      <Sentry.ErrorBoundary fallback={<NotFound />}>
+        <Routes>
+          <Route path="/*" element={<WebsiteRoutes />} />
+          <Route path="portal/*" element={<PortalRoutes />} />
+          <Route path="admin/*" element={<AdminRoutes />} />
+          <Route path="sentry/" element={<SenrtErrorDash />} />
+        </Routes>
+      </Sentry.ErrorBoundary>
+    </>
   );
 }
 
