@@ -22,4 +22,5 @@ export const AdminApiUrls = Object.freeze({
   RETRIEVE_GET_IN_TOUCH_QUERY_DETAIL: "/support/admin/get_in_touch/",
   MISSING_DATA_QUERY: "/support/admin/missing_data_request/",
   RETRIEVE_MISSING_DATA_QUERY_DETAIL: "/support/admin/missing_data_request/",
+  GET_ADMIN_DASHBOARD_DATA: "/dashboard/admin/",
 });

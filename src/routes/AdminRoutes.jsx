@@ -19,6 +19,7 @@ import QueryDetailPage from "../pages/admin/QueryDetailPage";
 import AdminManagementPage from "../pages/admin/AdminManagementPage";
 import AdminManagementForm from "../components/admin/adminMangement/AdminManagementForm";
 import DashboardPage from "../pages/admin/DashboardPage";
+import ReportPage from "../pages/admin/ReportPage";
 
 const AdminRoutes = () => {
   return (
@@ -35,6 +36,10 @@ const AdminRoutes = () => {
                 <Route
                   path="/dashboard"
                   element={<LayoutPage Component={DashboardPage} />}
+                />
+                <Route
+                  path="/reports"
+                  element={<LayoutPage Component={ReportPage} />}
                 />
                 <Route
                   path="/companies"

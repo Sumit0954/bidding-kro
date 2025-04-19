@@ -60,6 +60,12 @@ const sidebarMenu = [
     accessor: "dashboard_management",
   },
   {
+    icon: "/images/portal/layout/icons/dashboard-icon.svg",
+    title: "Report",
+    path: "/admin/reports",
+    accessor: "report_management",
+  },
+  {
     icon: "/images/admin/layout/icons/building.svg",
     title: "Companies",
     path: "/admin/companies",

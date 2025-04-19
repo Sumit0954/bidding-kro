@@ -706,3 +706,57 @@ export const missing_data_queries_column = [
     },
   },
 ];
+
+// ----------------REPORTS COLUMN------------------------------------------
+
+export const total_companies_column = [
+  {
+    Header: "Company Id",
+    accessor: "comp_Id",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Email",
+    accessor: "business_email",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Created At",
+    accessor: "created_at",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  // {
+  //   Header: "Category",
+  //   accessor: "category",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  // },
+  // {
+  //   Header: "City",
+  //   accessor: "city",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  // },
+  // {
+  //   Header: "Status",
+  //   accessor: "status",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 100,
+  // },
+];
