@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import cn from "classnames";
 import styles from "./AdminManagementForm.module.scss";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumbs, Typography } from "@mui/material";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import React, { useContext, useEffect, useState } from "react";
@@ -19,6 +19,7 @@ const AdminManagementForm = () => {
   const [roles, setRoles] = useState([]);
   const { setAlert } = useContext(AlertContext);
   const [buttonLoader, setButtonLoader] = useState(false);
+  const navigate = useNavigate();
 
   const setPreFilledDetails = (data) => {
     setValue("first_name", data?.first_name);
@@ -82,9 +83,10 @@ const AdminManagementForm = () => {
 
   const onSubmit = async (data) => {
     setButtonLoader(true);
+    const adminRoles = [...new Set([...roles, "dashboard_management"])];
     const formData = {
       ...data,
-      roles,
+      roles: adminRoles,
     };
     if (action === "create") {
       try {
@@ -98,6 +100,7 @@ const AdminManagementForm = () => {
         if (response.status === 201) {
           console.log(response, " : response");
           setButtonLoader(false);
+          navigate("/admin/management");
           setAlert({
             isVisible: true,
             message: "Admin has been created successfully",
@@ -106,10 +109,10 @@ const AdminManagementForm = () => {
         }
       } catch (error) {
         setButtonLoader(false);
-        console.log(error, " : error");
+
         setAlert({
           isVisible: true,
-          message: "Something went wrong",
+          message: error.response.data.email[0],
           severity: "error",
         });
       }
@@ -123,8 +126,9 @@ const AdminManagementForm = () => {
           true
         );
 
-        if (response) {
+        if (response.status === 200) {
           setButtonLoader(false);
+          navigate("/admin/management");
           setAlert({
             isVisible: true,
             message: "Admin Details Updated Successfully",
@@ -136,7 +140,7 @@ const AdminManagementForm = () => {
         console.log(error, " : error");
         setAlert({
           isVisible: true,
-          message:  "Something went wrong",
+          message: "Something went wrong",
           severity: "error",
         });
       }
@@ -215,32 +219,39 @@ const AdminManagementForm = () => {
             "admin_management",
             "blog_management",
             "company_management",
+            "dashboard_management",
             "query_management",
             "report_management",
             "transaction_management",
-          ].map((permission, key) => (
-            <FormControlLabel
-              key={key}
-              control={
-                <Checkbox
-                  name={permission}
-                  defaultChecked={
-                    action === "update" && roles.includes(permission)
-                  }
-                  onChange={handleCheckboxChange}
-                  sx={{
-                    color: "#062d72",
-                    "&.Mui-checked": { color: "#062d72" },
-                  }}
-                />
-              }
-              label={permission
-                .split("_")
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ")}
-            />
-          ))}
+          ].map((permission, key) => {
+            const isDashboard = permission === "dashboard_management";
+            return (
+              <FormControlLabel
+                key={key}
+                control={
+                  <Checkbox
+                    name={permission}
+                    defaultChecked={
+                      isDashboard ||
+                      (action === "update" && roles.includes(permission))
+                    }
+                    disabled={isDashboard}
+                    onChange={handleCheckboxChange}
+                    sx={{
+                      color: "#062d72",
+                      "&.Mui-checked": { color: "#062d72" },
+                    }}
+                  />
+                }
+                label={permission
+                  .split("_")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
+              />
+            );
+          })}
         </FormGroup>
+
         {buttonLoader ? (
           <ButtonLoader size={60} />
         ) : (
