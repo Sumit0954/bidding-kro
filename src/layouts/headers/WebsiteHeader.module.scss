@@ -84,16 +84,30 @@
 
 @media screen and (max-width: 575px) {
   .custom-navbar {
-    .logo-img {
-      height: 40px;
-    }
-
     .btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
       margin-bottom: 10px;
-    }
 
-    .custom-navlink {
-      padding: 6px 10px;
+      ul {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding-left: 0; // remove any left padding
+      }
+
+      .nav-item {
+        width: 100%;
+      }
+
+      .nav-link {
+        text-align: left;
+        width: 100%;
+        padding: 10px 16px;
+        display: block;
+      }
     }
   }
 }
