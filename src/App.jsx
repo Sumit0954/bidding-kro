@@ -15,6 +15,7 @@ import * as Sentry from "@sentry/react";
 import SenrtErrorDash from "./pages/sentry-error-page";
 import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
 import NotFound from "./pages/error/NotFound";
+import TwakChatbot from "./components/website/twak-chatbot/TwakChatbot";
 const requestNotificationPermission = async () => {
   console.log("chck token");
   try {
@@ -58,21 +59,6 @@ const RegisterFCMToken = async (token) => {
 
 function App() {
   const location = useLocation();
-  const [isTawkLoaded, setIsTawkLoaded] = useState(false);
-
-  useEffect(() => {
-    const isPortalPage = location.pathname.startsWith("/portal");
-
-    if (isTawkLoaded && window.Tawk_API) {
-      if (isPortalPage) {
-        window.Tawk_API.hideWidget();
-      } else {
-        window.Tawk_API.showWidget();
-        window.Tawk_API.minimize(); // 👈 force it to stay minimized
-      }
-    }
-  }, [location, isTawkLoaded]);
-
   // useEffect(() => {
   //   requestFirebaseNotificationPermission()
   //     .then((token) => {
@@ -140,19 +126,14 @@ function App() {
   //   });
   // }, []);
 
+  const isPublicRoute =
+    location.pathname.startsWith("/portal") ||
+    location.pathname.startsWith("/admin") ||
+    location.pathname.startsWith("/sentry");
   return (
     <>
-      <TawkMessengerReact
-        propertyId="67f4bf4e846b7b190fd1e9a1"
-        widgetId="1ioa0mioo"
-        onLoad={() => {
-          setIsTawkLoaded(true);
-          if (window.Tawk_API) {
-            window.Tawk_API.hideWidget();
-            window.Tawk_API.minimize();
-          }
-        }}
-      />
+      {!isPublicRoute && <TwakChatbot />}
+
       <Sentry.ErrorBoundary fallback={<NotFound />}>
         <Routes>
           <Route path="/*" element={<WebsiteRoutes />} />
