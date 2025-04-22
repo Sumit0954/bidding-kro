@@ -20,6 +20,8 @@ import AdminManagementPage from "../pages/admin/AdminManagementPage";
 import AdminManagementForm from "../components/admin/adminMangement/AdminManagementForm";
 import DashboardPage from "../pages/admin/DashboardPage";
 import ReportPage from "../pages/admin/ReportPage";
+import PortalBids from "../pages/admin/PortalBids";
+import PortalBidDetail from "../components/admin/portalBids/PortalBidDetail";
 
 const AdminRoutes = () => {
   return (
@@ -31,7 +33,6 @@ const AdminRoutes = () => {
             <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
               <Route element={<ProtectedRoutes />}>
                 <Route
                   path="/dashboard"
@@ -73,7 +74,6 @@ const AdminRoutes = () => {
                   path="/blogs"
                   element={<LayoutPage Component={BlogListPage} />}
                 />
-
                 <Route
                   path="blogs/:action"
                   element={<LayoutPage Component={BlogFromPage} />}
@@ -93,6 +93,14 @@ const AdminRoutes = () => {
                 <Route
                   path="/management/addmanagementform/:action/:id"
                   element={<LayoutPage Component={AdminManagementForm} />}
+                />
+                <Route
+                  path="/portal-bids"
+                  element={<LayoutPage Component={PortalBids} />}
+                />
+                <Route
+                  path="/portal-bids/:id"
+                  element={<LayoutPage Component={PortalBidDetail} />}
                 />
               </Route>
             </Routes>

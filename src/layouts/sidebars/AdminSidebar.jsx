@@ -95,4 +95,10 @@ const sidebarMenu = [
     path: "/admin/queries",
     accessor: "query_management",
   },
+  {
+    icon: "/images/portal/layout/icons/bid-list-icon.svg",
+    title: "Portal Bids",
+    path: "/admin/portal-bids",
+    accessor: "blog_management",
+  },
 ];
