@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./AdminHeader.module.scss";
 import cn from "classnames";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
 import { Box } from "@mui/material";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const AdminHeader = () => {
   const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const { isAuthenticated } = useContext(AuthContext);
 
   const handleClick = (event) => {
     setIsActive(!isActive);
@@ -26,9 +28,13 @@ const AdminHeader = () => {
         )}
       >
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <a
+            className="navbar-brand"
+            href={isAuthenticated ? "/admin/dashboard" : undefined}
+          >
             <img src="/logo.png" alt="logo" className={styles["logo-img"]} />
           </a>
+
           <button
             className={cn("navbar-toggler", styles["custom-toggle"])}
             type="button"
@@ -42,26 +48,30 @@ const AdminHeader = () => {
               className={cn(["navbar-toggler-icon", styles["custom-icon"]])}
             ></span>
           </button>
-          <div
-            className={cn(
-              "collapse",
-              "navbar-collapse",
-              styles["custom-navbar-collapse"]
-            )}
-            id="navbarTogglerDemo02"
-          >
-            <div className={styles["icon-container"]}>
-              <Box className={cn("cursor")} onClick={handleClick}>
-                <img src={UserIcon} alt="NotificationIcon" />
-              </Box>
-              <AccountSettingMenu
-                open={open}
-                anchorEl={anchorEl}
-                setAnchorEl={setAnchorEl}
-                from={"Admin"}
-              />
-            </div>
-          </div>
+          {isAuthenticated && (
+            <>
+              <div
+                className={cn(
+                  "collapse",
+                  "navbar-collapse",
+                  styles["custom-navbar-collapse"]
+                )}
+                id="navbarTogglerDemo02"
+              >
+                <div className={styles["icon-container"]}>
+                  <Box className={cn("cursor")} onClick={handleClick}>
+                    <img src={UserIcon} alt="NotificationIcon" />
+                  </Box>
+                  <AccountSettingMenu
+                    open={open}
+                    anchorEl={anchorEl}
+                    setAnchorEl={setAnchorEl}
+                    from={"Admin"}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </nav>
     </header>
