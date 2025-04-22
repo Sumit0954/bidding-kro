@@ -40,7 +40,7 @@ const LoginForm = () => {
       if (response.status === 200) {
         setLoading(false);
         login(response.data, "PORTAL");
-        navigate("/portal");
+        window.location.href = "/portal";
         setAlert({
           isVisible: true,
           message: "Login Successfully",
