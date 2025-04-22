@@ -13,11 +13,14 @@ import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import { useNavigate } from "react-router-dom";
 
 const DashboardData = () => {
   const [dashboardData, setDashboardData] = useState({});
   const [screenLoader, setScreenLoader] = useState(true);
   const { setAlert } = useContext(AlertContext);
+  const navigate = useNavigate();
+
   const stats = [
     {
       title: "Companies Registered",
@@ -83,6 +86,10 @@ const DashboardData = () => {
     fetchAdminDashboardData();
   }, []);
 
+  const handleReportRedirection = () => {
+    navigate("/admin/reports");
+  };
+
   if (screenLoader) {
     return <ScreenLoader />;
   }
@@ -109,11 +116,17 @@ const DashboardData = () => {
       </Box>
       <Grid container spacing={2} justifyContent="center" sx={{ mb: 10 }}>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={index}
+            onClick={() => handleReportRedirection()}
+          >
             <Tooltip title={`Click here to see ${stat.title} report`}>
               <Card
                 elevation={3}
-                
                 sx={{
                   position: "relative",
                   borderRadius: 2,
