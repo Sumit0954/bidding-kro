@@ -105,19 +105,12 @@ const AccountSettingMenu = ({
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
-          {from === "Portal" && userDetails ? (
-            <>
-              <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
-              {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
-            </>
-          ) : (
-            <>
-              <Avatar />
-              {"Super Admin"}
-            </>
-          )}
-        </MenuItem>
+        {from === "Portal" && userDetails && (
+          <MenuItem>
+            <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
+            {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
+          </MenuItem>
+        )}
 
         {from === "Portal" && (
           <div>
@@ -159,9 +152,9 @@ const AccountSettingMenu = ({
                 Settings
               </MenuItem>
             </NavLink>
+            <Divider className={cn("my-2", styles["divider"])} />
           </div>
         )}
-        <Divider className={cn("my-2", styles["divider"])} />
         <MenuItem
           // onClick={() =>
           //   // logout({
