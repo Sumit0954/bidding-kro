@@ -24,8 +24,8 @@ const PortalHeader = () => {
   const [isActive, setIsActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [subscriberId, setSubscriberId] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  // const [openModal, setOpenModal] = useState(false);
+  // const [notifications, setNotifications] = useState([]);
 
   const open = Boolean(anchorEl);
   const novuAppID = import.meta.env.VITE_NOVU_APPLICATION_IDENTIFIER;
@@ -125,7 +125,7 @@ const PortalHeader = () => {
         )}
       >
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <a className="navbar-brand" href="/portal">
             <img src="/logo.png" alt="logo" className={styles["logo-img"]} />
           </a>
           <button
