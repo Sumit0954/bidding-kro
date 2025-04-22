@@ -706,6 +706,32 @@ export const missing_data_queries_column = [
     },
   },
 ];
+export const portal_bids_column = [
+  {
+    Header: "Bid Id",
+    accessor: "Id",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Bid Title",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Opening Date",
+    accessor: "opening_date",
+    align: "left",
+    disablePadding: false,
+  },
+  {
+    Header: "Closing Date",
+    accessor: "closing_date",
+    align: "left",
+    disablePadding: false,
+  },
+];
 
 // ----------------REPORTS COLUMN------------------------------------------
 
@@ -738,25 +764,405 @@ export const total_companies_column = [
     disablePadding: false,
     width: 150,
   },
-  // {
-  //   Header: "Category",
-  //   accessor: "category",
-  //   align: "left",
-  //   disablePadding: false,
-  //   width: 150,
-  // },
-  // {
-  //   Header: "City",
-  //   accessor: "city",
-  //   align: "left",
-  //   disablePadding: false,
-  //   width: 150,
-  // },
-  // {
-  //   Header: "Status",
-  //   accessor: "status",
-  //   align: "left",
-  //   disablePadding: false,
-  //   width: 100,
-  // },
 ];
+export const unregistered_companies_column = [
+  {
+    Header: "User Id",
+    accessor: "user_Id",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "User Name",
+    accessor: "user_name",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Email",
+    accessor: "business_email",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Phone",
+    accessor: "phone_no.",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+];
+export const completed_bids_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Opening Date",
+    accessor: "bid_open_date",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Closing Date",
+    accessor: "bid_close_date",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const non_LOI_L1_companies_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Opening Date",
+    accessor: "bid_open_date",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Closing Date",
+    accessor: "bid_close_date",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const non_participation_companies_column = [
+  {
+    Header: "Company Id",
+    accessor: "comp_Id",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Email",
+    accessor: "business_email",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+  {
+    Header: "Bid",
+    accessor: "bid",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+  },
+];
+export const pending_live_dates_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Created At",
+    accessor: "createed_at",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const closed_bids_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Ended At",
+    accessor: "ended_at",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const activated_bids_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "activated At",
+    accessor: "createed_at",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const revoked_bids_column = [
+  {
+    Header: "Company ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Revoked for",
+    accessor: "bid_title",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "revoked At",
+    accessor: "revoked_at",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const live_bids_column = [
+  {
+    Header: "Bid Id",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+  {
+    Header: "Created By",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Live At",
+    accessor: "live_at",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+];
+export const pending_activation_column = [
+  {
+    Header: "Bid ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Bid Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+
+  {
+    Header: "Bid Type",
+    accessor: "type",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Created By",
+    accessor: "creatded_by",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+];
+export const review_analysis_column = [
+  {
+    Header: "companay ID",
+    accessor: "formatted_number",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    width: 120, // Change to uniform width
+  },
+
+  {
+    Header: "Reviewed By",
+    accessor: "review_name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Change to uniform width
+  },
+  {
+    Header: "Review",
+    accessor: "review",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+  {
+    Header: "Comment",
+    accessor: "comment",
+    align: "left",
+    disablePadding: false,
+    width: 100, // Add a uniform width
+  },
+];
+
+const reportColumns = {
+  "Total Companies": {
+    name: "TotalCompanies",
+    column: total_companies_column,
+  },
+  "Unregister Companies": {
+    name: "UnregisteredCompanies",
+    column: unregistered_companies_column,
+  },
+  "Completed Bids": {
+    name: "CompletedBids",
+    column: completed_bids_column,
+  },
+  "No LOI for L1": {
+    name: "NoLOIforL1",
+    column: non_LOI_L1_companies_column,
+  },
+  "Non Participator Companies": {
+    name: "NonParticipatorCompanies",
+    column: non_participation_companies_column,
+  },
+  "Pending Live dates": {
+    name: "PendingLiveDates",
+    column: pending_live_dates_column,
+  },
+  "Closed Bids": {
+    name: "ClosedBids",
+    column: closed_bids_column,
+  },
+  "Activated Bids": {
+    name: "ActivatedBids",
+    column: activated_bids_column,
+  },
+  "Revoked Companies": {
+    name: "RevokedCompanies",
+    column: revoked_bids_column,
+  },
+  "Live Bids": {
+    name: "LiveBids",
+    column: live_bids_column,
+  },
+  "Pending Activation": {
+    name: "PendingActivation",
+    column: pending_activation_column,
+  },
+  "Rating analyses": {
+    name: "RatingAnalysis",
+    column: review_analysis_column,
+  },
+};
+
+export const reportColumnHandler = (type) => {
+  return reportColumns[type] || { name: "", column: [] };
+};

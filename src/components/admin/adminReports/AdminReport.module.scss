@@ -10,3 +10,24 @@
     background-color: var(--secondary-color) !important;
   }
 }
+
+.report-box {
+  padding: 16px;
+  text-align: center;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 110px;
+  transition: all 0.2s ease;
+
+  &.report-box:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Same as boxShadow={6} */
+    background-color: #d5d5d5;
+  }
+}
+
+.report-box.active {
+  border: 2px solid #062d72;
+}

@@ -1,6 +1,7 @@
 import {
   AccessTime,
   AssessmentTwoTone,
+  AssuredWorkloadTwoTone,
   BusinessTwoTone,
   CalendarMonthTwoTone,
   DescriptionTwoTone,
@@ -9,6 +10,8 @@ import {
   Gavel,
   GavelTwoTone,
   HourglassEmptyTwoTone,
+  MonetizationOnTwoTone,
+  ReportProblemTwoTone,
   ToggleOnTwoTone,
   WifiTetheringTwoTone,
 } from "@mui/icons-material";
@@ -23,14 +26,23 @@ import {
   Typography,
 } from "@mui/material";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import { total_companies_column } from "../../../elements/CustomDataTable/AdminColumnData";
+import {
+  reportColumnHandler,
+  total_companies_column,
+} from "../../../elements/CustomDataTable/AdminColumnData";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css
 import styles from "./AdminReport.module.scss";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-date-range";
+import { exportToExcel } from "../../../utils/exportToExcel";
 
 const AdminReport = () => {
+  const [reportType, setReportType] = useState("Total Companies");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("threeMonths");
+  const { name, column } = reportColumnHandler(reportType);
+
   const reportTopics = [
     {
       icon: <BusinessTwoTone fontSize="large" sx={{ color: "#062d72" }} />,
@@ -80,8 +92,18 @@ const AdminReport = () => {
       icon: <AssessmentTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
       label: "Rating analyses",
     },
+    {
+      icon: (
+        <MonetizationOnTwoTone fontSize="large" sx={{ color: "	#b95f17" }} />
+      ),
+      label: "Revenue",
+    },
+    {
+      icon: <AssuredWorkloadTwoTone fontSize="large" sx={{ color: "green" }} />,
+      label: "Transaction",
+    },
   ];
-  const [anchorEl, setAnchorEl] = useState(null);
+
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -90,12 +112,18 @@ const AdminReport = () => {
     },
   ]);
 
-  const handleDateClick = (e) => setAnchorEl(e.currentTarget);
-  const closePopover = () => setAnchorEl(null);
-  const isOpen = Boolean(anchorEl);
+  // 3 months range on first render
+  useEffect(() => {
+    const end = new Date();
+    const start = new Date();
+    start.setMonth(end.getMonth() - 3);
+    setDateRange([{ startDate: start, endDate: end, key: "selection" }]);
+  }, []);
 
+  // Update when the date range updated
   useEffect(() => {
     const { startDate, endDate } = dateRange[0];
+
     console.log("Selected Date Range:", {
       start: startDate.toISOString().split("T")[0],
       end: endDate.toISOString().split("T")[0],
@@ -112,28 +140,24 @@ const AdminReport = () => {
       </Alert>
       <Box p={2} mb={5}>
         <Grid container spacing={2}>
-          {reportTopics.map((item, index) => (
-            <Grid item xs={12} sm={6} md={2} key={index}>
+          {reportTopics.map((report, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={2}
+              key={index}
+              onClick={() => setReportType(report.label)}
+            >
               <Paper
                 elevation={3}
-                sx={{
-                  p: 2,
-                  textAlign: "center",
-                  backgroundColor: "#e0e0e0",
-                  cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between", // Ensures content is spaced evenly
-                  height: "110px", // Fixed height to make all boxes same size
-                  "&:hover": {
-                    boxShadow: 6,
-                    backgroundColor: "#d5d5d5",
-                  },
-                }}
+                className={`${styles["report-box"]} ${
+                  reportType === report.label ? styles["active"] : ""
+                }`}
               >
-                <Box mb={1}>{item.icon}</Box>
+                <Box mb={1}>{report.icon}</Box>
                 <Typography variant="body1" fontWeight={500}>
-                  {item.label}
+                  {report.label}
                 </Typography>
               </Paper>
             </Grid>
@@ -151,7 +175,7 @@ const AdminReport = () => {
         {/* Left Side - Heading */}
         <Grid item>
           <Typography variant="h6" fontWeight="bold">
-            Recent Created Bids
+            {reportType}
           </Typography>
         </Grid>
 
@@ -159,7 +183,11 @@ const AdminReport = () => {
         <Grid item>
           <Stack direction="row" spacing={2} alignItems="center">
             {/* Export Button */}
-            <Button variant="contained" className={styles["export-btn"]}>
+            <Button
+              variant="contained"
+              className={styles["export-btn"]}
+              onClick={() => exportToExcel([], column, `${name}.xlsx`)}
+            >
               Export Data
             </Button>
 
@@ -175,9 +203,9 @@ const AdminReport = () => {
       </Grid>
 
       <Popover
-        open={isOpen}
+        open={anchorEl}
         anchorEl={anchorEl}
-        onClose={closePopover}
+        onClose={() => setAnchorEl(null)}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Box p={2}>
@@ -192,7 +220,9 @@ const AdminReport = () => {
                 type="radio"
                 name="rangeOptions"
                 id="threeMonths"
+                checked={selectedOption === "threeMonths"}
                 onChange={() => {
+                  setSelectedOption("threeMonths");
                   const end = new Date();
                   const start = new Date();
                   start.setMonth(end.getMonth() - 3);
@@ -211,7 +241,9 @@ const AdminReport = () => {
                 type="radio"
                 name="rangeOptions"
                 id="sixMonths"
+                checked={selectedOption === "sixMonths"}
                 onChange={() => {
+                  setSelectedOption("sixMonths");
                   const end = new Date();
                   const start = new Date();
                   start.setMonth(end.getMonth() - 6);
@@ -230,7 +262,9 @@ const AdminReport = () => {
                 type="radio"
                 name="rangeOptions"
                 id="oneYear"
+                checked={selectedOption === "oneYear"}
                 onChange={() => {
+                  setSelectedOption("oneYear");
                   const end = new Date();
                   const start = new Date();
                   start.setFullYear(end.getFullYear() - 1);
@@ -255,7 +289,7 @@ const AdminReport = () => {
         </Box>
       </Popover>
 
-      <DataTable propsColumn={total_companies_column} propsData={[]} />
+      <DataTable propsColumn={column} propsData={[]} />
     </>
   );
 };
