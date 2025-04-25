@@ -15,7 +15,6 @@ const Documents = ({ bidDetails, type }) => {
   const { setAlert } = useContext(AlertContext);
   const navigate = useNavigate();
 
-
   // const formData = new URLSearchParams();
   // formData.append("action", deleteDetails.action);
   // formData.append(
@@ -116,7 +115,7 @@ const Documents = ({ bidDetails, type }) => {
     <>
       <DataTable
         propsColumn={documents_column}
-        propsData={bidDetails?.document}
+        propsData={bidDetails?.document || []}
         action={addAction}
         customClassName="portal-data-table"
       />
