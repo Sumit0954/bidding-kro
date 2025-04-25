@@ -540,7 +540,22 @@ const BidProducts = () => {
                       <div className="col-lg-6">
                         <CustomInput
                           control={control}
-                          label="Minimum Price Difference"
+                          label={
+                            <>
+                              Minimum Price Difference{" "}
+                              <Tooltip title="Click Here to understand the Minimum Price Difference">
+                                <Info
+                                  fontSize="small"
+                                  onClick={() => setShowPriceDiffModal(true)}
+                                  sx={{
+                                    color: "#062d72",
+                                    cursor: "pointer",
+                                    verticalAlign: "middle",
+                                  }}
+                                />
+                              </Tooltip>
+                            </>
+                          }
                           name="min_decrement_amount"
                           placeholder="Minimum Price Difference"
                           rules={{
