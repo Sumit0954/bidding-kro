@@ -181,7 +181,6 @@ const WebsiteFooter = () => {
                   </li>
                 </ul>
               </div>
-
               <div className="footer-column">
                 <h3 className={styles["footer-heading"]}>Contact</h3>
                 <ul>
@@ -200,10 +199,10 @@ const WebsiteFooter = () => {
             </div>
           </div>
         </div>
+        <div className={styles["line"]}></div>
 
         {/* Footer Bottom */}
         <div className="row">
-          <div className={styles["line"]}></div>
           <div className="col-lg-12">
             <p className={styles["footer-bottom"]}>
               Copyright © 2024 | All Rights Reserved. | Sitemap

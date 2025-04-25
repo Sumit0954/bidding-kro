@@ -50,7 +50,8 @@ ul li a:hover {
 /* Footer separator line */
 .line {
   border: 1px solid #062c76;
-  margin-top: 30px;
+  margin-top: 10px;
+  margin-bottom: -10px;
   width: 100%;
 }
 
@@ -106,10 +107,36 @@ ul li a:hover {
   justify-content: flex-end; /* Push icons to the right */
   gap: "10px";
 }
+
+/* Footer Links Alignment */
+.footer-links {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  text-align: center;
+  gap: 20px;
+}
+
+/* Footer Columns */
+.footer-column {
+  flex: 1;
+  min-width: 150px; /* Ensures columns stack properly */
+}
 /* ================== RESPONSIVE DESIGN ================== */
 
 /* Medium devices (max-width: 991px) */
 @media screen and (max-width: 991px) {
+  .footer-logo {
+    margin-top: 10px;
+  }
+
+  .footer-logo-text {
+    padding-top: 10px;
+  }
+
+  .footer-heading {
+    text-align: left;
+  }
   .footer-icon {
     margin-top: 10px;
   }
@@ -129,21 +156,21 @@ ul li a:hover {
   .social-content .col-lg-6:last-child {
     justify-content: center;
   }
-}
+  .social-content {
+    flex-direction: column; /* Stack text and icons */
+    text-align: center;
+    align-items: center;
+  }
 
-/* Footer Links Alignment */
-.footer-links {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  text-align: center;
-  gap: 20px;
-}
+  .social-content p {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
 
-/* Footer Columns */
-.footer-column {
-  flex: 1;
-  min-width: 150px; /* Ensures columns stack properly */
+  .social-icons-container {
+    justify-content: center !important;
+  }
 }
 
 /* Small devices (max-width: 767px) */
@@ -157,7 +184,7 @@ ul li a:hover {
   }
 
   .footer-heading {
-    text-align: center;
+    text-align: left;
   }
 
   .social-content {
@@ -187,11 +214,11 @@ ul li a:hover {
   .footer-links {
     flex-direction: row;
     justify-content: space-between;
-    text-align: center;
+    text-align: left;
   }
 
   ul li a {
-    justify-content: center; /* Center icon + text combo */
+    justify-content: left; /* Center icon + text combo */
   }
 }
 
@@ -214,12 +241,12 @@ ul li a:hover {
   }
   .footer-links {
     flex-direction: column;
-    text-align: center;
+    text-align: left;
     gap: 10px;
   }
 
   .footer-column {
-    text-align: center;
+    text-align: left;
     width: 100%;
   }
 }
