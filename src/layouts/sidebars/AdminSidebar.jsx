@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./AdminSidebar.module.scss";
 import { NavLink } from "react-router-dom";
 import { Tooltip } from "@mui/material";
@@ -99,6 +99,6 @@ const sidebarMenu = [
     icon: "/images/portal/layout/icons/bid-list-icon.svg",
     title: "Portal Bids",
     path: "/admin/portal-bids",
-    accessor: "blog_management",
+    accessor: "bid_management",
   },
 ];

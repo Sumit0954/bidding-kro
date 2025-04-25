@@ -223,6 +223,7 @@ const AdminManagementForm = () => {
             "query_management",
             "report_management",
             "transaction_management",
+            "bid_management",
           ].map((permission, key) => {
             const isDashboard = permission === "dashboard_management";
             return (
