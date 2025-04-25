@@ -17,6 +17,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Button,
   TableCell,
@@ -36,27 +37,23 @@ import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader"
 
 const InvitedSuppliers = ({ onActionComplete, id, type }) => {
   const {
-    control,
     handleSubmit,
-    clearErrors,
     watch,
     formState: { dirtyFields },
   } = useForm();
   const dispatch = useDispatch();
-  const [createdAt, setCreatedAt] = useState("");
   const [screenLoader, setScreenLoader] = useState(true);
-  const [showSubmittedDated, setShowSubmittedDated] = useState(false);
-  const [revokesupplier, setRevokeSupplier] = useState(false);
   const [bidDetails, setBidDetails] = useState({});
   const [loading, setLoading] = useState(false);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    alertmessage: "",
+    id: null,
+  });
   const [participant, setParticipant] = useState();
   const [refresh, setRefresh] = useState(0);
-  const minDate = getMinMaxDate(2, 10, createdAt)[0]
-    .toISOString()
-    .split("T")[0];
-  const maxDate = getMinMaxDate(1, 10, createdAt)[1]
-    .toISOString()
-    .split("T")[0];
 
   const [bidDate, setBidDate] = useState(null);
   const [timeRange, setTimeRange] = useState({ start: null, end: null });
@@ -65,13 +62,6 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
   const bidEndDate = watch("bid_end_date");
 
   const { setAlert } = useContext(AlertContext);
-  const [deleteDetails, setDeleteDetails] = useState({
-    open: false,
-    title: "",
-    message: "",
-    alertmessage: "",
-    id: null,
-  });
 
   const filteredParticipants = participant?.participants.filter(
     (p) => p.sample?.approval_status === "approved"
@@ -314,101 +304,132 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
       <div className="container">
         <div className="row">
           {bidDetails?.type === "L1" && bidDetails?.bid_open_date === null ? (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="row" style={{ marginTop: "10px" }}>
-                <Box display="flex" flexDirection="row" gap={2} width="100%">
-                  <Box flex="1" style={{ maxWidth: "25%" }}>
-                    <DatePicker
-                      label="Live Bid Date *"
-                      value={bidDate ? dayjs(bidDate) : null}
-                      minDate={dayjs()}
-                      format="DD/MM/YYYY"
-                      onChange={(value) =>
-                        setBidDate(value?.format("YYYY-MM-DD") || null)
-                      }
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          required: true,
-                          style: {
-                            height: "40px",
-                            fontSize: "14px",
+            <>
+              <Alert severity="info" className="my-3">
+                <p style={{ margin: 0 }}>
+                  <strong>Note:</strong>{" "}
+                  <strong style={{ color: "red" }}>Please</strong> be careful
+                  while filling in live bid dates, as they are non-editable once
+                  set.
+                </p>
+              </Alert>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row" style={{ marginTop: "10px" }}>
+                  <Box display="flex" flexDirection="row" gap={2} width="100%">
+                    <Box flex="1" style={{ maxWidth: "25%" }}>
+                      <DatePicker
+                        label="Live Bid Date *"
+                        value={bidDate ? dayjs(bidDate) : null}
+                        minDate={dayjs()}
+                        format="DD/MM/YYYY"
+                        onChange={(value) =>
+                          setBidDate(value?.format("YYYY-MM-DD") || null)
+                        }
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            required: true,
+                            style: {
+                              height: "40px",
+                              fontSize: "14px",
+                            },
                           },
-                        },
-                      }}
-                    />
-                  </Box>
+                        }}
+                      />
+                    </Box>
 
-                  <Box flex="1" style={{ maxWidth: "25%" }}>
-                    <TimePicker
-                      label="Start Time"
-                      value={
-                        timeRange.start
-                          ? dayjs(`${bidDate}T${timeRange.start}`)
-                          : null
-                      }
-                      minutesStep={15}
-                      onChange={(value) =>
-                        handleTimeChange(
-                          "start",
-                          value?.format("HH:mm") || null
-                        )
-                      }
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          style: {
-                            height: "40px",
-                            fontSize: "14px",
+                    <Box flex="1" style={{ maxWidth: "25%" }}>
+                      <TimePicker
+                        label="Start Time"
+                        value={
+                          timeRange.start
+                            ? dayjs(`${bidDate}T${timeRange.start}`)
+                            : null
+                        }
+                        minutesStep={15}
+                        disabled={!bidDate}
+                        onChange={(value) =>
+                          handleTimeChange(
+                            "start",
+                            value?.format("HH:mm") || null
+                          )
+                        }
+                        onAccept={(value) =>
+                          handleTimeChange(
+                            "start",
+                            value?.format("HH:mm") || null
+                          )
+                        }
+                        closeOnSelect={false}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            style: {
+                              height: "40px",
+                              fontSize: "14px",
+                            },
                           },
-                        },
-                      }}
-                    />
-                  </Box>
+                        }}
+                      />
+                    </Box>
 
-                  <Box flex="1" style={{ maxWidth: "25%" }}>
-                    <TimePicker
-                      label="End Time"
-                      value={
-                        timeRange.end
-                          ? dayjs(`${bidDate}T${timeRange.end}`)
-                          : null
-                      }
-                      minutesStep={15}
-                      onChange={(value) =>
-                        handleTimeChange("end", value?.format("HH:mm") || null)
-                      }
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          style: {
-                            height: "40px",
-                            fontSize: "14px",
+                    <Box flex="1" style={{ maxWidth: "25%" }}>
+                      <TimePicker
+                        label="End Time"
+                        value={
+                          timeRange.end
+                            ? dayjs(`${bidDate}T${timeRange.end}`)
+                            : null
+                        }
+                        minutesStep={15}
+                        closeOnSelect={false}
+                        onAccept={(value) =>
+                          handleTimeChange(
+                            "end",
+                            value?.format("HH:mm") || null
+                          )
+                        }
+                        minTime={
+                          timeRange.start
+                            ? dayjs(`${bidDate}T${timeRange.start}`).add(
+                                1,
+                                "minute"
+                              )
+                            : undefined
+                        }
+                        disabled={!timeRange.start}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            style: {
+                              height: "40px",
+                              fontSize: "14px",
+                            },
                           },
-                        },
-                      }}
-                    />
-                  </Box>
+                        }}
+                      />
+                    </Box>
 
-                  <Box flex="1" style={{ maxWidth: "25%" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      disabled={loading}
-                      style={{
-                        width: "100%",
-                        height: "56px",
-                        fontSize: "14px",
-                      }}
-                      className={styles["form-button"]}
-                    >
-                      {loading ? "Submitting..." : "Submit"}
-                    </Button>
+                    <Box flex="1" style={{ maxWidth: "25%" }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        disabled={loading}
+                        style={{
+                          width: "100%",
+                          height: "56px",
+                          fontSize: "14px",
+                        }}
+                        className={styles["form-button"]}
+                      >
+                        {loading ? "Submitting..." : "Submit"}
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
-              </div>
-            </form>
+                </div>
+              </form>
+            </>
           ) : (
             <></>
           )}
