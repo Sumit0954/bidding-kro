@@ -25,17 +25,16 @@ const BlogForm = () => {
     formState: { errors },
     setValue,
   } = useForm();
+
   const [blogDetail, setBlogDetail] = useState({});
   const [coverImage, setCoverImage] = useState(DummyLogo);
   const [bannerImage, setBannerImage] = useState(DummyLogo);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [buttonLoader, setButtonLoader] = useState(false);
-  const { blog_id } = useParams();
-  const { action } = useParams();
+  const { blog_id, action } = useParams();
   const { setAlert } = useContext(AlertContext);
   const [screenLoader, setScreenLoader] = useState(true);
-
   const all = watch();
   const { cover_image, banner_image } = all;
 
@@ -47,12 +46,6 @@ const BlogForm = () => {
       setBannerImage(URL.createObjectURL(banner_image[0]));
     }
   }, [cover_image, banner_image]);
-
-  useEffect(() => {
-    if (blog_id) {
-      fetchBlogDetails();
-    }
-  }, [blog_id]);
 
   const fetchBlogDetails = async () => {
     try {
@@ -82,6 +75,14 @@ const BlogForm = () => {
       set;
     }
   };
+
+  useEffect(() => {
+    if (blog_id) {
+      fetchBlogDetails();
+    } else {
+      setScreenLoader(false);
+    }
+  }, [blog_id]);
 
   useEffect(() => {
     // Update preview image state if input type="file" (image Blob) was set previously
@@ -141,7 +142,7 @@ const BlogForm = () => {
       } catch (error) {
         setAlert({
           isVisible: true,
-          message:  "Something went wrong",
+          message: "Something went wrong",
           severity: "error",
         });
       }
