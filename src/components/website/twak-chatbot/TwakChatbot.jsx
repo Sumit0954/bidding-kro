@@ -16,20 +16,27 @@ const TwakChatbot = () => {
       location.pathname.startsWith("/portal") ||
       location.pathname.startsWith("/admin") ||
       location.pathname.startsWith("/sentry");
+
     if (isTawkLoaded && window.Tawk_API) {
       if (isPublicRoute) {
         window.Tawk_API.hideWidget();
       } else {
         window.Tawk_API.showWidget();
         window.Tawk_API.minimize();
+        window.Tawk_API.setAttributes(
+          { preventPopup: "true" },
+          function (error) {
+            if (error) console.log("Tawk setAttributes error:", error);
+          }
+        );
       }
     }
   }, [location.pathname, isTawkLoaded]);
 
   return (
     <TawkMessengerReact
-      propertyId="67f4bf4e846b7b190fd1e9a1"
-      widgetId="1ioa0mioo"
+      propertyId={import.meta.env.VITE_TAWK_PROPERTY_ID}
+      widgetId={import.meta.env.VITE_TAWK_WIDGET_ID}
       onLoad={handleTawkLoad}
     />
   );
