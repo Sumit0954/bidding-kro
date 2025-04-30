@@ -84,9 +84,8 @@ export const retrieveDateFormat = (date, showTime = true) => {
   return formatted;
 };
 
-export const truncateString = (str, num) => {
-  if (str.length <= num) {
-    return str;
-  }
-  return str.slice(0, num) + "...";
+export const truncateString = (title, maxlength) => {
+  return title?.length > maxlength
+    ? title.substring(0, maxlength) + "..."
+    : title;
 };
