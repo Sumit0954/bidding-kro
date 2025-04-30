@@ -287,16 +287,27 @@ const Dashboard = () => {
             marginBottom: { xs: 2, sm: 0 },
           }}
         >
-          <Avatar
-            alt="User Avatar"
+          <Box
+            component="img"
             src={companyDetails?.logo}
+            alt="Company Logo"
             sx={{
-              width: 48,
-              height: 48,
+              width: {
+                xs: 80, // For small screens
+                sm: 68, // For tablets
+                md: 60, // For medium+ screens
+              },
+              height: {
+                xs: 70,
+                sm: 60,
+                md: 60,
+              },
+              objectFit: "contain",
               marginBottom: { xs: "10px", sm: 0 },
               marginRight: { sm: "16px" },
             }}
           />
+
           <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
             <Typography
               variant="h6"

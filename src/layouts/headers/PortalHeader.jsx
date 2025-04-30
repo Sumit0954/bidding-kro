@@ -6,7 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import NotificationIcon from "../../assets/images/portal/layout/icons/notification-icon.svg";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
-import { Badge, Box, Modal } from "@mui/material";
+import { Avatar, Badge, Box, Modal } from "@mui/material";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 import { Inbox, Preferences } from "@novu/react";
@@ -208,10 +208,20 @@ const PortalHeader = () => {
                   )}
                 />
               )}
+              {companyDetails?.logo ? (
+                <Box
+                  onClick={handleClick}
+                  component="img"
+                  className={cn("cursor", styles["company-logo"])}
+                  src={companyDetails?.logo}
+                  alt="Company Logo"
+                />
+              ) : (
+                <Box className={cn("cursor")} onClick={handleClick}>
+                  <img src={UserIcon} alt="NotificationIcon" />
+                </Box>
+              )}
 
-              <Box className={cn("cursor")} onClick={handleClick}>
-                <img src={UserIcon} alt="NotificationIcon" />
-              </Box>
               <AccountSettingMenu
                 open={open}
                 anchorEl={anchorEl}

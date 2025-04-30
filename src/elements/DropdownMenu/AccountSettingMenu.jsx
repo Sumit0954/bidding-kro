@@ -107,7 +107,21 @@ const AccountSettingMenu = ({
       >
         {from === "Portal" && userDetails && (
           <MenuItem>
-            <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
+            <Avatar
+              src={companyDetails?.logo}
+              alt="ProfileImg"
+              variant="square" // Make Avatar square (better for logos)
+              sx={{
+                width: 68, // or your needed size
+                height: 60,
+                objectFit: "contain", // Important to prevent image from stretching
+                backgroundColor: "transparent", // Optional: white background for better logo visibility
+                padding: "4px", // Optional: small padding inside avatar
+                border: "1px solid gray", // Optional: soft border
+                borderRadius: "50%",
+              }}
+            />
+
             {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
           </MenuItem>
         )}
