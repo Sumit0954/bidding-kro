@@ -24,6 +24,8 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import dayjs from "dayjs";
 import { getStarColor } from "../../../helpers/common";
+import NoliveBidImg from "../../../assets/images/portal/bids/bid-closed-img.png";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const calculateEndTime = (bidCloseTime, liveBidproduct, timeInSec) => {
   const now = new Date();
@@ -53,6 +55,7 @@ const LiveBidProducts = ({
   onUpdate,
   timeUpFlag,
   bidCloseTime,
+  screenLoader,
 }) => {
   console.log(liveBidproduct, "liveBidproduct");
 
@@ -79,8 +82,6 @@ const LiveBidProducts = ({
 
   useEffect(() => {
     if (remainingTime == "00:00") {
-      console.log(remainingTime, "remainingTimeremainingTime");
-      // setIsTimeUp(true); // Disable the input if time is up
     }
   }, [remainingTime]);
 
@@ -207,11 +208,45 @@ const LiveBidProducts = ({
     }
   };
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return type === "created" ? (
     <>
-      <Box sx={{ maxWidth: "100%", margin: "auto", padding: 2 }}>
+      <Box
+        sx={{
+          maxWidth: "100%",
+          margin: "auto",
+          padding: 2,
+        }}
+      >
         {/* Top Information Box */}
         <Card variant="outlined" sx={{ marginBottom: 2, position: "relative" }}>
+          {isTimeUp && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none", // allows clicking through the overlay
+              }}
+            >
+              <img
+                src={NoliveBidImg}
+                alt="Bidding Closed"
+                style={{
+                  width: "50%", // increased from 200px
+                  opacity: 0.3,
+                }}
+              />
+            </Box>
+          )}
           <CardContent>
             {/* View Details Button */}
             <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
@@ -219,25 +254,41 @@ const LiveBidProducts = ({
                 <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
                   {liveBidproduct?.product?.title}
                 </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontStyle: "italic",
-                    color: remainingTime === "00:00" ? "red" : "green",
-                    mt: 0.5,
-                  }}
-                >
-                  <AccessTimeIcon
-                    fontSize="small"
+                {isTimeUp ? (
+                  <Typography
+                    variant="body2"
                     sx={{
-                      mr: 0.5,
-                      color: remainingTime === "00:00" ? "red" : "green",
+                      display: "flex",
+                      alignItems: "center",
+                      fontStyle: "italic",
+                      color: "red",
+                      mt: 0.5,
                     }}
-                  />
-                  Remaining Time: {remainingTime}
-                </Typography>
+                  >
+                    <AccessTimeIcon
+                      fontSize="small"
+                      sx={{ mr: 0.5, color: "red" }}
+                    />
+                    Bidding Closed
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontStyle: "italic",
+                      color: "green",
+                      mt: 0.5,
+                    }}
+                  >
+                    <AccessTimeIcon
+                      fontSize="small"
+                      sx={{ mr: 0.5, color: "green" }}
+                    />
+                    Remaining Time: {remainingTime}
+                  </Typography>
+                )}
                 <Typography
                   variant="body2"
                   sx={{
@@ -381,34 +432,53 @@ const LiveBidProducts = ({
         sx={{
           p: 2,
           mb: 2,
-          backgroundColor: isTimeUp ? "lightgrey" : "white",
+          position: "relative", // Add this
+          overflow: "hidden", // Optional: prevents any overflow visually
         }}
       >
         {/* Title Section */}
+
         <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
           <Grid item>
             <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
               {liveBidproduct?.product?.title}
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                fontStyle: "italic",
-                color: remainingTime === "00:00" ? "red" : "green",
-                mt: 0.5,
-              }}
-            >
-              <AccessTimeIcon
-                fontSize="small"
+            {isTimeUp ? (
+              <Typography
+                variant="body2"
                 sx={{
-                  mr: 0.5,
-                  color: remainingTime === "00:00" ? "red" : "green",
+                  display: "flex",
+                  alignItems: "center",
+                  fontStyle: "italic",
+                  color: "red",
+                  mt: 0.5,
                 }}
-              />
-              Remaining Time: {remainingTime}
-            </Typography>
+              >
+                <AccessTimeIcon
+                  fontSize="small"
+                  sx={{ mr: 0.5, color: "red" }}
+                />
+                Bidding Closed
+              </Typography>
+            ) : (
+              <Typography
+                variant="body2"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontStyle: "italic",
+                  color: "green",
+                  mt: 0.5,
+                }}
+              >
+                <AccessTimeIcon
+                  fontSize="small"
+                  sx={{ mr: 0.5, color: "green" }}
+                />
+                Remaining Time: {remainingTime}
+              </Typography>
+            )}
+
             <Typography
               variant="body2"
               sx={{
@@ -479,6 +549,32 @@ const LiveBidProducts = ({
               </Typography>
             </Box>
           </Grid>
+          {isTimeUp && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none", // allows clicking through the overlay
+              }}
+            >
+              <img
+                src={NoliveBidImg}
+                alt="Bidding Closed"
+                style={{
+                  width: "60%", // Adjust as needed
+                  opacity: 0.2, // Subtle overlay
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+          )}
 
           {/* Reserve Bid Section */}
           <Grid item xs={12} md={3}>
@@ -587,6 +683,7 @@ const LiveBidProducts = ({
                     type="submit"
                     variant="contained"
                     color="success"
+                    disabled
                     fullWidth
                     sx={{
                       fontWeight: "bold",
