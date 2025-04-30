@@ -23,4 +23,11 @@ export const AdminApiUrls = Object.freeze({
   MISSING_DATA_QUERY: "/support/admin/missing_data_request/",
   RETRIEVE_MISSING_DATA_QUERY_DETAIL: "/support/admin/missing_data_request/",
   GET_ADMIN_DASHBOARD_DATA: "/dashboard/admin/",
+  GET_PORTAL_BIDS: "/bid/admin/",
+  FETCH_BID_DETAILS: "/bid/admin/",
+  FETCH_COMPANY_REPORT: "/report/admin/company/",
+  FETCH_CUSTOMER_REPORT: "/report/admin/customer/",
+  FETCH_BIDS_REPORT: "/report/admin/bid/",
+  FETCH_PARTICIAPATION_REPORTS: "/report/admin/bid/participant/",
+  FETCH_FEEDBACK_REPORT: "/report/admin/feedback/",
 });

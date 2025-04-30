@@ -26,84 +26,38 @@ import {
   Typography,
 } from "@mui/material";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
-import {
-  reportColumnHandler,
-  total_companies_column,
-} from "../../../elements/CustomDataTable/AdminColumnData";
+import { reportColumnHandler } from "../../../elements/CustomDataTable/AdminColumnData";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css
 import styles from "./AdminReport.module.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DateRange } from "react-date-range";
 import { exportToExcel } from "../../../utils/exportToExcel";
+import _sendAPIRequest from "../../../helpers/api";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { modifiedData } from "../../../helpers/formatter";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { useForm } from "react-hook-form";
+import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
+import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 
 const AdminReport = () => {
   const [reportType, setReportType] = useState("Total Companies");
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOption, setSelectedOption] = useState("threeMonths");
-  const { name, column } = reportColumnHandler(reportType);
-
-  const reportTopics = [
-    {
-      icon: <BusinessTwoTone fontSize="large" sx={{ color: "#062d72" }} />,
-      label: "Total Companies",
-    },
-    {
-      icon: <HourglassEmptyTwoTone fontSize="large" sx={{ color: "orange" }} />,
-      label: "Unregister Companies",
-    },
-    {
-      icon: <GavelTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
-      label: "Completed Bids",
-    },
-    {
-      icon: <DescriptionTwoTone fontSize="large" sx={{ color: "red" }} />,
-      label: "No LOI for L1",
-    },
-    {
-      icon: <DoDisturbAlt fontSize="large" sx={{ color: "red" }} />,
-      label: "Non Participator Companies",
-    },
-    {
-      icon: <CalendarMonthTwoTone fontSize="large" sx={{ color: "orange" }} />,
-      label: "Pending Live dates",
-    },
-    {
-      icon: <Gavel fontSize="large" sx={{ color: "#00c87d" }} />,
-      label: "Closed Bids",
-    },
-    {
-      icon: <ToggleOnTwoTone fontSize="large" sx={{ color: "#00c87d" }} />,
-      label: "Activated Bids",
-    },
-    {
-      icon: <DomainDisabledTwoTone fontSize="large" sx={{ color: "red" }} />,
-      label: "Revoked Companies",
-    },
-    {
-      icon: <WifiTetheringTwoTone fontSize="large" sx={{ color: "#00c87d" }} />,
-      label: "Live Bids",
-    },
-    {
-      icon: <AccessTime fontSize="large" sx={{ color: "orange" }} />,
-      label: "Pending Activation",
-    },
-    {
-      icon: <AssessmentTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
-      label: "Rating analyses",
-    },
-    {
-      icon: (
-        <MonetizationOnTwoTone fontSize="large" sx={{ color: "	#b95f17" }} />
-      ),
-      label: "Revenue",
-    },
-    {
-      icon: <AssuredWorkloadTwoTone fontSize="large" sx={{ color: "green" }} />,
-      label: "Transaction",
-    },
-  ];
-
+  const [states, setStates] = useState([]);
+  const [stateValue, setStateValue] = useState(null);
+  const [reportData, setReportData] = useState([]);
+  const { control, setError, watch } = useForm();
+  const [certificateTypes, setCertificateTypes] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [cityValue, setCityValue] = useState(null);
+  const { setAlert } = useContext(AlertContext);
+  const [geoLocation, setGeoLocation] = useState({
+    latitude: "",
+    longitude: "",
+    json_id: "",
+  });
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -111,31 +65,194 @@ const AdminReport = () => {
       key: "selection",
     },
   ]);
+  const { name, column, api, downloadData, query_type } =
+    reportColumnHandler(reportType);
+  const { startDate, endDate } = dateRange[0];
+  const selectedCertificate = watch("type");
 
-  // 3 months range on first render
+  const getStatesList = async () => {
+    const params = { country: 101, ordering: "name" };
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_STATES,
+        params,
+        true
+      );
+      if (response.status === 200) {
+        const data = modifiedData(response.data);
+        setStates(data);
+      }
+    } catch (error) {}
+  };
+
+  const getCertificateTypes = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CERTIFICATE_TYPE,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        const data = modifiedData(response.data);
+        setCertificateTypes(data);
+      }
+    } catch (error) {}
+  };
+
+  const getCityDetail = async () => {
+    if (!cityValue?.value) return;
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.RETRIEVE_CITY + `${cityValue?.value}`,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        const { latitude, longitude, json_id } = response.data;
+        setGeoLocation({
+          latitude: latitude,
+          longitude: longitude,
+          json_id: json_id,
+        });
+      }
+    } catch (error) {}
+  };
+
+  const handleCityInputChange = async (value) => {
+    if (!stateValue?.value) {
+      setError("state", {
+        type: "focus",
+        message: "Please select a state first.",
+      });
+    }
+
+    if (value.length >= 3 && stateValue?.value) {
+      const params = {
+        state: stateValue.value,
+        search: value,
+        ordering: "name",
+      };
+      try {
+        const response = await _sendAPIRequest(
+          "GET",
+          PortalApiUrls.GET_CITIES,
+          params,
+          true
+        );
+        if (response.status === 200) {
+          const data = modifiedData(response.data);
+          setCities(data);
+          getCityDetail();
+        }
+      } catch (error) {
+        const { data } = error.response;
+        if (data) {
+          if (data.error) {
+            setAlert({
+              isVisible: true,
+              message: data.error,
+              severity: "error",
+            });
+          }
+        }
+      }
+    }
+  };
+
+  const fetchAdminReports = async () => {
+    if (!api) return;
+    try {
+      const start_date = startDate?.toISOString()?.split("T")[0];
+      const end_date = endDate?.toISOString()?.split("T")[0];
+      const params = new URLSearchParams();
+      let API = "";
+      if (name === "TotalCompanies") {
+        params.append("start_date", start_date);
+        params.append("end_date", end_date);
+        if (stateValue) params.append("state", stateValue.lable);
+        if (cityValue) params.append("city", cityValue.lable);
+        if (selectedCertificate)
+          params.append("certificate", selectedCertificate);
+
+        API = `${api}?${params}`;
+      }
+
+      if (
+        name === "NoLOIforL1" ||
+        name === "CompletedBids" ||
+        name === "ClosedBids" ||
+        name === "PendingActivation" ||
+        name === "ActivatedBids" ||
+        name === "LiveBids" ||
+        name === "PendingLiveDates"
+      ) {
+        if (startDate) params.append("start_date", start_date);
+        if (endDate) params.append("end_date", end_date);
+        params.append("query_type", query_type);
+        API = `${api}?${params}`;
+      }
+
+      if (name === "NonParticipatorCompanies" || name === "RevokedCompanies") {
+        params.append("start_date", start_date);
+        params.append("end_date", end_date);
+        params.append("query_type", query_type);
+        API = `${api}?${params}`;
+      }
+
+      if (name === "RatingAnalysis") {
+        params.append("start_date", start_date);
+        params.append("end_date", end_date);
+        API = `${api}?${params}`;
+      }
+
+      if (name === "UnregisteredCompanies") {
+        API = api;
+      }
+
+      if (API) {
+        const response = await _sendAPIRequest("GET", API, "", true);
+        if (response.status === 200) {
+          setReportData(response.data);
+        }
+      } else {
+      }
+    } catch (error) {
+      setAlert({
+        isVisible: true,
+        message: "Somthing went wrong",
+        severity: "error",
+      });
+    }
+  };
+
   useEffect(() => {
-    const end = new Date();
     const start = new Date();
+    const end = new Date();
     start.setMonth(end.getMonth() - 3);
-    setDateRange([{ startDate: start, endDate: end, key: "selection" }]);
+    // END DATE EXTENSION FOR 1 DAY
+    const adjustedEnd = new Date(end);
+    adjustedEnd.setDate(adjustedEnd.getDate() + 2);
+    setDateRange([
+      { startDate: start, endDate: adjustedEnd, key: "selection" },
+    ]);
+    getStatesList();
+    getCertificateTypes();
   }, []);
 
   // Update when the date range updated
   useEffect(() => {
-    const { startDate, endDate } = dateRange[0];
-
-    console.log("Selected Date Range:", {
-      start: startDate.toISOString().split("T")[0],
-      end: endDate.toISOString().split("T")[0],
-    });
-  }, [dateRange]);
+    fetchAdminReports();
+  }, [dateRange, column, stateValue, cityValue, selectedCertificate]);
 
   return (
     <>
       <Alert severity="info" className="my-3">
         <p style={{ margin: 0 }}>
           <strong>Note:</strong> These Tiles shows List of the important portal
-          fields you can view or donwload the list.
+          fields you can view or download the list.
         </p>
       </Alert>
       <Box p={2} mb={5}>
@@ -164,7 +281,6 @@ const AdminReport = () => {
           ))}
         </Grid>
       </Box>
-
       <Grid
         container
         alignItems="center"
@@ -174,11 +290,22 @@ const AdminReport = () => {
       >
         {/* Left Side - Heading */}
         <Grid item>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 800,
+              background: "linear-gradient(90deg, #1976d2, #42a5f5)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              fontFamily: "'Poppins', sans-serif",
+            }}
+          >
             {reportType}
           </Typography>
         </Grid>
-
         {/* Right Side - Buttons */}
         <Grid item>
           <Stack direction="row" spacing={2} alignItems="center">
@@ -186,22 +313,58 @@ const AdminReport = () => {
             <Button
               variant="contained"
               className={styles["export-btn"]}
-              onClick={() => exportToExcel([], column, `${name}.xlsx`)}
+              onClick={() =>
+                exportToExcel(reportData, downloadData, `${name}.xlsx`)
+              }
             >
               Export Data
             </Button>
 
-            {/* Date Picker Button */}
-            <Button
-              variant="outlined"
-              onClick={(e) => setAnchorEl(e.currentTarget)}
-            >
-              {`${dateRange[0].startDate.toLocaleDateString()} - ${dateRange[0].endDate.toLocaleDateString()}`}
-            </Button>
+            {name !== "LiveBids" && (
+              <Button
+                variant="outlined"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                {`${dateRange[0].startDate.toLocaleDateString()} - ${dateRange[0].endDate.toLocaleDateString()}`}
+              </Button>
+            )}
           </Stack>
         </Grid>
       </Grid>
-
+      {name === "TotalCompanies" && (
+        <div className="row">
+          <div className="col-lg-4">
+            <SearchSelect
+              control={control}
+              options={states}
+              name="state"
+              placeholder="Search by state"
+              setValue={setStateValue}
+              value={stateValue}
+            />
+          </div>
+          <div className="col-lg-4">
+            <SearchSelect
+              control={control}
+              options={cities}
+              name="city"
+              placeholder="Search by City"
+              handleInputChange={handleCityInputChange}
+              setValue={setCityValue}
+              value={cityValue}
+            />
+          </div>
+          <div className="col-lg-4">
+            <CustomSelect
+              control={control}
+              name="type"
+              placeholder="Search by Certificate Type"
+              options={certificateTypes}
+              multiple={false}
+            />
+          </div>
+        </div>
+      )}
       <Popover
         open={anchorEl}
         anchorEl={anchorEl}
@@ -226,8 +389,15 @@ const AdminReport = () => {
                   const end = new Date();
                   const start = new Date();
                   start.setMonth(end.getMonth() - 3);
+                  // END DATE EXTENSION FOR 1 DAY
+                  const adjustedEnd = new Date(end);
+                  adjustedEnd.setDate(adjustedEnd.getDate() + 2);
                   setDateRange([
-                    { startDate: start, endDate: end, key: "selection" },
+                    {
+                      startDate: start,
+                      endDate: adjustedEnd,
+                      key: "selection",
+                    },
                   ]);
                 }}
               />
@@ -247,8 +417,15 @@ const AdminReport = () => {
                   const end = new Date();
                   const start = new Date();
                   start.setMonth(end.getMonth() - 6);
+                  // END DATE EXTENSION FOR 1 DAY
+                  const adjustedEnd = new Date(end);
+                  adjustedEnd.setDate(adjustedEnd.getDate() + 2);
                   setDateRange([
-                    { startDate: start, endDate: end, key: "selection" },
+                    {
+                      startDate: start,
+                      endDate: adjustedEnd,
+                      key: "selection",
+                    },
                   ]);
                 }}
               />
@@ -268,8 +445,15 @@ const AdminReport = () => {
                   const end = new Date();
                   const start = new Date();
                   start.setFullYear(end.getFullYear() - 1);
+                  // END DATE EXTENSION FOR 1 DAY
+                  const adjustedEnd = new Date(end);
+                  adjustedEnd.setDate(adjustedEnd.getDate() + 2);
                   setDateRange([
-                    { startDate: start, endDate: end, key: "selection" },
+                    {
+                      startDate: start,
+                      endDate: adjustedEnd,
+                      key: "selection",
+                    },
                   ]);
                 }}
               />
@@ -282,16 +466,84 @@ const AdminReport = () => {
           {/* Date Picker */}
           <DateRange
             ranges={dateRange}
-            onChange={(item) => setDateRange([item.selection])}
+            onChange={(item) => {
+              const selection = item.selection;
+              const adjustedEndDate = new Date(selection.endDate);
+              // END DATE EXTENSION FOR 1 DAY
+              adjustedEndDate.setDate(adjustedEndDate.getDate() + 2);
+              setDateRange([
+                {
+                  ...selection,
+                  endDate: adjustedEndDate,
+                },
+              ]);
+            }}
             moveRangeOnFirstSelection={false}
             editableDateInputs
           />
         </Box>
       </Popover>
-
-      <DataTable propsColumn={column} propsData={[]} />
+      <DataTable propsColumn={column} propsData={reportData || []} />
     </>
   );
 };
 
 export default AdminReport;
+const reportTopics = [
+  {
+    icon: <BusinessTwoTone fontSize="large" sx={{ color: "#062d72" }} />,
+    label: "Total Companies",
+  },
+  {
+    icon: <HourglassEmptyTwoTone fontSize="large" sx={{ color: "orange" }} />,
+    label: "Unregister Companies",
+  },
+  {
+    icon: <GavelTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
+    label: "Completed Bids",
+  },
+  {
+    icon: <DescriptionTwoTone fontSize="large" sx={{ color: "red" }} />,
+    label: "No LOI for L1",
+  },
+  {
+    icon: <DoDisturbAlt fontSize="large" sx={{ color: "red" }} />,
+    label: "Accepted But Not Participated",
+  },
+  {
+    icon: <CalendarMonthTwoTone fontSize="large" sx={{ color: "orange" }} />,
+    label: "Pending Live dates",
+  },
+  {
+    icon: <Gavel fontSize="large" sx={{ color: "#00c87d" }} />,
+    label: "Closed Bids",
+  },
+  {
+    icon: <ToggleOnTwoTone fontSize="large" sx={{ color: "#00c87d" }} />,
+    label: "Activated Bids",
+  },
+  {
+    icon: <DomainDisabledTwoTone fontSize="large" sx={{ color: "red" }} />,
+    label: "Revoked Companies",
+  },
+  {
+    icon: <WifiTetheringTwoTone fontSize="large" sx={{ color: "#00c87d" }} />,
+    label: "Live Bids",
+  },
+  {
+    icon: <AccessTime fontSize="large" sx={{ color: "orange" }} />,
+    label: "Pending Activation",
+  },
+  {
+    icon: <AssessmentTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
+    label: "Rating analyses",
+  },
+  {
+    icon: <MonetizationOnTwoTone fontSize="large" sx={{ color: "	#b95f17" }} />,
+    label: "Revenue",
+  },
+  {
+    icon: <AssuredWorkloadTwoTone fontSize="large" sx={{ color: "green" }} />,
+    label: "Transaction",
+  },
+];
