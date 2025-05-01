@@ -22,13 +22,9 @@ const TwakChatbot = () => {
         window.Tawk_API.hideWidget();
       } else {
         window.Tawk_API.showWidget();
-        window.Tawk_API.minimize();
-        window.Tawk_API.setAttributes(
-          { preventPopup: "true" },
-          function (error) {
-            if (error) console.log("Tawk setAttributes error:", error);
-          }
-        );
+        window.Tawk_API.minimize(function (error) {
+          if (error) console.log("Tawk error:", error);
+        });
       }
     }
   }, [location.pathname, isTawkLoaded]);
