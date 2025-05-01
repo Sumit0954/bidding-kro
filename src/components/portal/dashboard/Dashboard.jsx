@@ -13,7 +13,6 @@ import {
   CardContent,
   Grid,
   Typography,
-  Avatar,
 } from "@mui/material";
 import {
   created_bids_column,
@@ -21,22 +20,18 @@ import {
 } from "../../../elements/CustomDataTable/PortalColumnData";
 import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import {
-  AttachMoney,
   CheckCircle,
   CurrencyRupee,
-  EmojiEvents,
   HourglassEmpty,
-  PersonAdd,
-  PlayCircle,
   SavingsTwoTone,
 } from "@mui/icons-material";
-import { DatePicker } from "@mui/x-date-pickers";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import CompanyDetailsProvider, {
   CompanyDetailsContext,
 } from "../../../contexts/CompanyDetailsProvider";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -50,7 +45,7 @@ const Dashboard = () => {
   const { noCompanyCat } = useContext(CompanyDetailsContext);
   const userID = localStorage.getItem("loginUserID");
   const [screenLoader, setScreenLoader] = useState(true);
-
+  const { setAlert } = useContext(AlertContext);
   const [permissionStatus, setPermissionStatus] = useState(
     Notification.permission
   );
@@ -83,8 +78,6 @@ const Dashboard = () => {
     }
   };
 
-  // console.log("Permission Status:", permissionStatus);
-
   const getDashboardData = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -107,7 +100,6 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    console.log(companyDetails, "companyDetailscompanyDetails");
     getDashboardData();
     getCreatedBidList();
     getInvitedBidList();
