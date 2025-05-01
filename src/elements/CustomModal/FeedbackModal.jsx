@@ -54,7 +54,6 @@ const FeedbackModal = ({ feedback, setfeedback, bidId, rated_company }) => {
     }
   };
 
-  console.log(compnayFeedback);
   const retriveFeedback = async () => {
     if (Object.entries(compnayFeedback).length === 0) {
       try {

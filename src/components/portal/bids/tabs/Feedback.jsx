@@ -38,26 +38,8 @@ const Feedback = ({ bidDetails }) => {
     } catch (error) {}
   };
 
-  const retriveFeedback = async () => {
-    if (Object.entries(compnayFeedback).length === 0) {
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          PortalApiUrls.RETRIEVE_FEEDACK +
-            `${bidId}/?rated_company=${rated_company}`,
-          "",
-          true
-        );
-        if (response?.status === 200) {
-          setCompanyFerdback(response?.data);
-        }
-      } catch (error) {}
-    }
-  };
-
   useEffect(() => {
     getBidParticipants();
-    retriveFeedback();
   }, []);
 
   const filterParticiapnts = participants.filter((participants) => {
