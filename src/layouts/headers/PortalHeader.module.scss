@@ -30,16 +30,35 @@
     .icon-container {
       display: flex;
       align-items: center;
-      gap: 30px;
-      margin-right: 2rem;
+      gap: 15px !important;
     }
   }
 }
 
 @media screen and (max-width: 575px) {
   .custom-navbar {
-    .logo-img {
-      height: 40px;
+    .custom-navbar-collapse {
+      .icon-container {
+        flex-direction: column;
+        align-items: flex-end; // Push to right
+        margin-right: 5px;
+
+        // Optional: spacing between text and icon
+        > * {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+        }
+
+        // To make company logo and username visible together
+        .company-logo,
+        .user-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
     }
   }
 }
@@ -67,23 +86,15 @@
 
 .company-logo {
   cursor: pointer;
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  padding: 2px; // reduced from 4px
+  width: 45px;
+  height: 45px;
+  object-fit: contain; /* changed from 'cover' */
+  padding: 1px;
   margin-bottom: 10px;
-  margin-right: 8px; // reduced from 14px
   background-color: #fff;
   overflow: hidden;
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
+  border-radius: 50%;
+  border: 1px solid#555;
 
   @media (min-width: 600px) {
     margin-bottom: 0;
