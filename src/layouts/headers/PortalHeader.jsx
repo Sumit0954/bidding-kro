@@ -6,7 +6,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import NotificationIcon from "../../assets/images/portal/layout/icons/notification-icon.svg";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
-import { Avatar, Badge, Box, Modal } from "@mui/material";
+import { Avatar, Badge, Box, Modal, Tooltip } from "@mui/material";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
 import { CompanyDetailsContext } from "../../contexts/CompanyDetailsProvider";
 import { Inbox, Preferences } from "@novu/react";
@@ -83,36 +83,6 @@ const PortalHeader = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  // useEffect(() => {
-  //   const observer = new MutationObserver(() => {
-  //     const header = document.querySelector(".nv-inboxHeader");
-
-  //     if (header && !document.querySelector("#fullscreen-icon")) {
-  //       const fullScreenButton = document.createElement("span");
-  //       fullScreenButton.id = "fullscreen-icon";
-  //       fullScreenButton.style.cursor = "pointer";
-  //       fullScreenButton.style.marginLeft = "10px";
-  //       fullScreenButton.innerHTML = `
-  //         <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24">
-  //           <path d="M5 15h2v4h4v2H5v-6zm12 0h2v6h-6v-2h4v-4zM11 3v2H7v4H5V3h6zm8 0v6h-2V5h-4V3h6z"/>
-  //         </svg>
-  //       `;
-
-  //       fullScreenButton.onclick = () => {
-  //         setOpenModal(true); // Open the MUI modal
-  //       };
-
-  //       header.prepend(fullScreenButton);
-  //     }
-  //   });
-
-  //   const targetNode = document.body;
-  //   observer.observe(targetNode, { childList: true, subtree: true });
-
-  //   return () => observer.disconnect();
-  // }, []);
-
-  // console.log(notifications, " : notifications");
   return (
     <header>
       <nav
@@ -141,30 +111,7 @@ const PortalHeader = () => {
               className={cn(["navbar-toggler-icon", styles["custom-icon"]])}
             ></span>
           </button>
-          {/* MUI Modal */}
-          {/* <Modal open={openModal} onClose={() => setOpenModal(false)}>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "80%",
-                height: "80%",
-                bgcolor: "background.paper",
-                boxShadow: 24,
-                p: 4,
-                overflow: "auto",
-              }}
-            >
 
-              <div className="nv-inboxContainer">
-
-                <h2>Inbox Content</h2>
-                <p>Here, the inbox will be displayed in fullscreen mode.</p>
-              </div>
-            </Box>
-          </Modal> */}
           <div
             className={cn(
               "collapse",
@@ -186,7 +133,8 @@ const PortalHeader = () => {
                     "inbox.filters.labels.default": "Notifications",
                   }}
                   onNotificationClick={(notification) => {
-                    navigate(notification.redirect.url);
+                    const redirectUrl = notification.redirect.url;
+                    navigate(redirectUrl);
                   }}
                   renderBell={(unreadCount) => (
                     <Badge
@@ -198,30 +146,33 @@ const PortalHeader = () => {
                         horizontal: "right",
                       }}
                     >
-                      <img
-                        src={NotificationIcon}
-                        alt="Notification Icon"
-                        width={32}
-                        height={32}
-                      />
+                      <Tooltip title={"Notification"}>
+                        <img
+                          src={NotificationIcon}
+                          alt="Notification Icon"
+                          width={32}
+                          height={32}
+                        />
+                      </Tooltip>
                     </Badge>
                   )}
                 />
-              )}
-              {companyDetails?.logo ? (
-                <Box
-                  onClick={handleClick}
-                  component="img"
-                  className={cn("cursor", styles["company-logo"])}
-                  src={companyDetails?.logo}
-                  alt="Company Logo"
-                />
-              ) : (
-                <Box className={cn("cursor")} onClick={handleClick}>
-                  <img src={UserIcon} alt="NotificationIcon" />
-                </Box>
-              )}
-
+              )}{" "}
+              <Tooltip title={companyDetails?.name}>
+                {companyDetails?.logo ? (
+                  <Box
+                    onClick={handleClick}
+                    component="img"
+                    className={cn("cursor", styles["company-logo"])}
+                    src={companyDetails?.logo}
+                    alt="Company Logo"
+                  />
+                ) : (
+                  <Box className={cn("cursor")} onClick={handleClick}>
+                    <img src={UserIcon} alt="NotificationIcon" />
+                  </Box>
+                )}
+              </Tooltip>
               <AccountSettingMenu
                 open={open}
                 anchorEl={anchorEl}
