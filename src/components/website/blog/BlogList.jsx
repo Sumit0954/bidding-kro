@@ -36,12 +36,11 @@ const BlogList = () => {
   if (screenLoader) {
     return <ScreenLoader />;
   }
-
   return (
     <Grid container spacing={3} className={styles.blogListContainer}>
       {blogs.map((blog, index) => (
         <Grid item xs={12} sm={6} md={4} key={index}>
-          <NavLink to={`/blogs/${blog.slug}`}>
+          <NavLink to={`/blogs/${blog.slug}`} state={{ blogs: blogs }}>
             <Box className={styles.blogItem}>
               {/* Background Image */}
               <Box

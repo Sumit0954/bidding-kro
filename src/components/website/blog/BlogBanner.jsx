@@ -1,5 +1,5 @@
-import styles from './BlogBanner.module.scss'
-import BannerImg from '../../../assets/images/blog/blog-banner.jpg'
+import styles from "./BlogBanner.module.scss";
+import BannerImg from "../../../assets/images/blog/blog-banner.jpg";
 
 const Blog = () => {
   return (
@@ -12,7 +12,7 @@ const Blog = () => {
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Blog
+export default Blog;

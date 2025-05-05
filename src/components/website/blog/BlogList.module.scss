@@ -11,8 +11,22 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); // Adds a soft shadow
   transition: box-shadow 0.3s ease-in-out;
 
+  // 🔥 Add dark overlay
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4); // Dark semi-transparent layer
+    z-index: 1;
+    transition: background 0.3s ease;
+  }
+
   &:hover {
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); // Increases shadow on hover
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+
+    &::before {
+      background: rgba(0, 0, 0, 0.5); // Slightly darker on hover
+    }
   }
 
   &:hover .image {
@@ -38,6 +52,7 @@
   background-size: cover;
   background-position: center;
   transition: filter 0.4s ease-in-out;
+  z-index: 0; // Ensure image stays behind overlay and text
 }
 
 .content {
@@ -55,9 +70,8 @@
   background: var(--primary-color);
   padding: 4px 8px;
   border-radius: 4px;
-  font-weight: bold;
-  display: inline-block;
   font-weight: bolder !important;
+  display: inline-block;
   text-transform: uppercase;
 }
 
