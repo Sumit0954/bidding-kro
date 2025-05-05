@@ -14,7 +14,7 @@
 .marquee-content {
   display: flex;
   white-space: nowrap;
-  animation: marquee var(--animation-speed, 10s) linear infinite;
+  animation: marquee var(--animation-speed, 20s) linear infinite;
 }
 
 .marquee-content span {
