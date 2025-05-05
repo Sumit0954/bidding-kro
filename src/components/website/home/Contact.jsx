@@ -9,9 +9,19 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const Contact = () => {
-  const { control, handleSubmit, register, reset } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
   const { setAlert } = useContext(AlertContext);
   const [buttonLoader, setButtonLoader] = useState(false);
+  const phoneValue = watch("phone");
   const submitForm = async (data) => {
     setButtonLoader(true);
     const getInTouchFormdata = new FormData();
@@ -47,9 +57,16 @@ const Contact = () => {
     }
   };
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      // Only set if digits
+      setValue("phone", value, { shouldValidate: true });
+    }
+  };
   return (
     <>
-      <section className={cn("mt-5", styles["contact-banner"])}>
+      <section className={cn("mt-5", styles["contact-banner"])} id="contact-us">
         <div className="container">
           {/* Centered Heading */}
           <div className="row justify-content-center">
@@ -86,11 +103,24 @@ const Contact = () => {
                     </div>
                     <div className="col-12">
                       <input
-                        {...register("company_name")}
+                        {...register("company_name", {
+                          required: "Company name is required",
+                          pattern: {
+                            value: /^[A-Za-z\s.,]+$/, // Allows letters, spaces, commas, and periods
+                            message:
+                              "Only letters, spaces, commas, and periods allowed",
+                          },
+                        })}
                         type="text"
                         placeholder="Enter Your Company Name"
                         className={styles["custom-input"]}
                       />
+
+                      {errors.company_name && (
+                        <p style={{ color: "red" }}>
+                          {errors.company_name.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -103,11 +133,23 @@ const Contact = () => {
                     </div>
                     <div className="col-12">
                       <input
-                        {...register("contact_person_name")}
+                        {...register("contact_person_name", {
+                          required: "Contact person name is required",
+                          pattern: {
+                            value: /^[A-Za-z\s]+$/,
+                            message: "Only letters and spaces allowed",
+                          },
+                        })}
                         type="text"
                         placeholder="Enter Your Contact Person"
                         className={styles["custom-input"]}
                       />
+
+                      {errors.contact_person_name && (
+                        <p style={{ color: "red" }}>
+                          {errors.contact_person_name.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -120,11 +162,19 @@ const Contact = () => {
                     </div>
                     <div className="col-12">
                       <input
-                        {...register("phone")}
-                        type="text"
+                        value={phoneValue}
+                        onChange={handlePhoneChange}
                         placeholder="Enter Your Phone Number"
                         className={styles["custom-input"]}
+                        {...register("phone", {
+                          required: "Phone number is required",
+                          validate: (value) =>
+                            /^\d*$/.test(value) || "Only numbers allowed",
+                        })}
                       />
+                      {errors.phone && (
+                        <p style={{ color: "red" }}>{errors.phone.message}</p>
+                      )}
                     </div>
                   </div>
 
@@ -137,11 +187,20 @@ const Contact = () => {
                     </div>
                     <div className="col-12">
                       <input
-                        {...register("email")}
-                        type="text"
+                        {...register("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Enter a valid email address",
+                          },
+                        })}
+                        type="email"
                         placeholder="Enter Your Business Email"
                         className={styles["custom-input"]}
                       />
+                      {errors.email && (
+                        <p style={{ color: "red" }}>{errors.email.message}</p>
+                      )}
                     </div>
                   </div>
 
