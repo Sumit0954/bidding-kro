@@ -26,22 +26,6 @@ const AccountSettingMenu = ({
     setAnchorEl(null);
   };
 
-  const requestNotificationPermission = async () => {
-    console.log("chck token");
-    try {
-      const messaging = getMessaging();
-
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
-      });
-      console.log("FCM Token:", token);
-      DeleteFCMToken(token);
-    } catch (error) {
-      console.error("Error getting FCM token:", error);
-    }
-  };
-
   const DeleteFCMToken = async (OldFCMToken) => {
     try {
       const formData = new FormData();
@@ -116,7 +100,7 @@ const AccountSettingMenu = ({
                 height: 60,
                 objectFit: "contain", // Important to prevent image from stretching
                 backgroundColor: "transparent", // Optional: white background for better logo visibility
-                padding: "4px", // Optional: small padding inside avatar
+                padding: "1px", // Optional: small padding inside avatar
                 border: "1px solid gray", // Optional: soft border
                 borderRadius: "50%",
               }}
@@ -136,7 +120,24 @@ const AccountSettingMenu = ({
             >
               <MenuItem>
                 <ListItemIcon>
-                  <AccountCircleRounded fontSize="medium" />
+                  {userDetails ? (
+                    <Avatar
+                      src={userDetails?.profile_image}
+                      alt="user_proflie"
+                      variant="square" // Make Avatar square (better for logos)
+                      sx={{
+                        width: 68, // or your needed size
+                        height: 60,
+                        objectFit: "contain", // Important to prevent image from stretching
+                        backgroundColor: "transparent", // Optional: white background for better logo visibility
+                        padding: "2px", // Optional: small padding inside avatar
+                        border: "1px solid gray", // Optional: soft border
+                        borderRadius: "50%",
+                      }}
+                    />
+                  ) : (
+                    <AccountCircleRounded fontSize="medium" />
+                  )}
                 </ListItemIcon>
                 User Profile
               </MenuItem>

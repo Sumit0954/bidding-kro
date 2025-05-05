@@ -32,7 +32,9 @@ import CompanyDetailsProvider, {
   CompanyDetailsContext,
 } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
-
+import fallback_user_img from "../../../assets/images/portal/company-profile/fallback-profile-img.jpg";
+import { requestFirebaseNotificationPermission } from "../../../firebaseMessaging";
+import { getMessaging, getToken } from "firebase/messaging";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [filterBy, setFilterBy] = useState("spends");
@@ -49,25 +51,64 @@ const Dashboard = () => {
   const [permissionStatus, setPermissionStatus] = useState(
     Notification.permission
   );
+  const RegisterFCMToken = async (token) => {
+    try {
+      const formData = new FormData();
+      formData.append("token", token);
 
+      const response = await _sendAPIRequest(
+        "PUT",
+        `${PortalApiUrls.REGISTER_FCM_TOKEN}`,
+        formData,
+        true
+      );
+      if (response.status === 200) {
+        console.log("Register FCM Token Sucessfully");
+      }
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+  
   useEffect(() => {
-    console.log("Checking notification permission...");
-    // Function to check notification permission status
-    const checkPermission = () => {
-      setPermissionStatus(Notification.permission);
+    const registerTokenIfAllowed = async () => {
+      if (Notification.permission === "granted") {
+        console.log("Auto-registering token after login...");
+
+        const messaging = getMessaging();
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
+        });
+
+        if (token) {
+          const oldToken = localStorage.getItem("FCMToken");
+          if (token !== oldToken) {
+            await RegisterFCMToken(token);
+            localStorage.setItem("FCMToken", token);
+          }
+        }
+      }
     };
 
-    // Listen for permission changes (if applicable)
-    window.addEventListener("focus", checkPermission);
-
-    return () => {
-      window.removeEventListener("focus", checkPermission);
-    };
-  }, []);
+    registerTokenIfAllowed();
+  }, [userID]);
 
   const requestPermission = () => {
     if (Notification.permission !== "granted") {
       Notification.requestPermission().then((permission) => {
+        requestFirebaseNotificationPermission()
+          .then((token) => {
+            if (token) {
+              console.log("Firebase Token Reload:", token);
+              const OldFCMToken = localStorage.getItem("FCMToken");
+              if (token != OldFCMToken) {
+                RegisterFCMToken(token);
+                localStorage.setItem("FCMToken", token);
+              }
+            }
+          })
+          .catch((err) => console.log("Notification permission error:", err));
         setPermissionStatus(permission);
         if (permission === "granted") {
           console.log("🔔 Notification permission granted!");
@@ -281,7 +322,11 @@ const Dashboard = () => {
         >
           <Box
             component="img"
-            src={companyDetails?.logo}
+            src={
+              companyDetails?.logo !== null
+                ? companyDetails?.logo
+                : fallback_user_img
+            }
             alt="Company Logo"
             sx={{
               width: {
@@ -297,6 +342,7 @@ const Dashboard = () => {
               objectFit: "contain",
               marginBottom: { xs: "10px", sm: 0 },
               marginRight: { sm: "16px" },
+              borderRadius: " 50%",
             }}
           />
 
