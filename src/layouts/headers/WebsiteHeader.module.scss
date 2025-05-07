@@ -26,23 +26,49 @@
   .custom-navlink {
     color: var(--primary-color) !important;
     transition: all 0.3s ease;
-    padding: 8px 12px; /* Adjust padding to maintain consistency */
+    padding: 8px 12px;
+    text-decoration: none;
+    position: relative;
+    font-weight: 500;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--secondary-color);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
 
     &:hover {
       color: var(--secondary-color) !important;
+
+      &::after {
+        transform: scaleX(1);
+      }
     }
   }
 
-  /* Circular effect for active link */
   .active-link {
-    background: var(--secondary-color);
-    color: white !important;
-    border-radius: 20px; /* Adjust for a more uniform circular effect */
-    padding: 6px 14px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--secondary-color) !important;
     font-weight: 600;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--secondary-color);
+      transform: scaleX(1);
+      transform-origin: left;
+    }
   }
 
   .loggedin-profile {
@@ -58,19 +84,19 @@
 
   .btn-container {
     display: flex;
-    gap: 8px; /* Adjust spacing between buttons */
+    gap: 8px;
 
     .header-btn {
-      width: auto; /* Adjust width dynamically */
-      min-width: 110px; /* Ensures consistency */
+      width: auto;
+      min-width: 110px;
       height: 35px;
       background: none;
       color: var(--primary-color) !important;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 6px 12px; /* Fix alignment inside button */
-      white-space: nowrap; /* Prevents text breaking */
+      padding: 6px 12px;
+      white-space: nowrap;
       font-size: 14px;
       font-weight: 500;
 
@@ -84,6 +110,10 @@
 
 @media screen and (max-width: 575px) {
   .custom-navbar {
+    .logo-img {
+      height: 38px;
+    }
+
     .btn-container {
       display: flex;
       flex-direction: column;
@@ -95,7 +125,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding-left: 0; // remove any left padding
+        padding-left: 0;
       }
 
       .nav-item {

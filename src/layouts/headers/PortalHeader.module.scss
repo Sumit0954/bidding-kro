@@ -22,65 +22,103 @@
       box-shadow: none;
     }
   }
+}
 
-  .custom-navbar-collapse {
-    justify-content: flex-end;
+// 🟡 Moved icon-container styling outside nested .custom-navbar-collapse
+.icon-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-right: 12px;
+
+  .company-logo,
+  .user-wrapper {
+    display: flex;
     align-items: center;
-
-    .icon-container {
-      display: flex;
-      align-items: center;
-      gap: 15px !important;
-    }
+    gap: 8px;
   }
 }
 
 @media screen and (max-width: 575px) {
   .custom-navbar {
-    .custom-navbar-collapse {
-      .icon-container {
-        flex-direction: column;
-        align-items: flex-end; // Push to right
-        margin-right: 5px;
+    .logo-img {
+      height: 38px;
+    }
+  }
 
-        // Optional: spacing between text and icon
-        > * {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 8px;
-        }
+  .icon-container {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-right: 8px;
 
-        // To make company logo and username visible together
-        .company-logo,
-        .user-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-      }
+    img {
+      width: 26px !important;
+      height: 26px !important;
+    }
+  }
+
+  .company-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  // ✅ Responsive fix for Novu Inbox Popup
+  .novu-inbox {
+    max-width: 95vw !important;
+    width: 95vw !important;
+    left: auto !important;
+    right: 10px !important;
+    position: fixed !important;
+    top: 60px !important;
+    z-index: 9999 !important;
+
+    .novu-dropdown {
+      max-height: 75vh;
+      overflow-y: auto;
     }
   }
 }
 
-// Custom Scrollbar for Novu Inbox
+// ✅ Custom Scrollbar for Novu Inbox
 .novu-inbox {
   ::-webkit-scrollbar {
-    width: 6px; // Slim width
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; // Light background
+    background: #f1f1f1;
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #888; // Dark color for visibility
+    background: #888;
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #555; // Darker color on hover
+    background: #555;
+  }
+}
+
+/* Override Novu Inbox styles for small screens */
+@media (max-width: 600px) {
+  .novu-inbox-wrapper {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    right: 5vw !important;
+    left: 5vw !important;
+    top: 10vh !important;
+    transform: none !important;
+    border-radius: 12px !important;
+  }
+
+  .novu-notification-center {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
   }
 }
 
@@ -88,15 +126,15 @@
   cursor: pointer;
   width: 45px;
   height: 45px;
-  object-fit: contain; /* changed from 'cover' */
+  object-fit: contain;
   padding: 1px;
-  margin-bottom: 10px;
   background-color: #fff;
   overflow: hidden;
   border-radius: 50%;
-  border: 1px solid#555;
+  border: 1px solid #555;
+  margin-bottom: 0;
 
-  @media (min-width: 600px) {
+  @media (max-width: 575px) {
     margin-bottom: 0;
   }
 }

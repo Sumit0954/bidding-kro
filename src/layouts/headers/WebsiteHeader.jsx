@@ -1,22 +1,36 @@
 import React, { useContext } from "react";
 import styles from "./WebsiteHeader.module.scss";
 import cn from "classnames";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserDetailsContext } from "../../contexts/UserDetailsProvider";
-import { Avatar } from "@mui/material";
+import { Avatar, Tooltip } from "@mui/material";
 import {
   AirplayOutlined,
   GroupOutlined,
   Info,
   LibraryBooks,
+  LibraryBooksTwoTone,
   Login,
   PermPhoneMsg,
+  PermPhoneMsgTwoTone,
   PersonAdd,
+  PersonAddTwoTone,
   TryOutlined,
 } from "@mui/icons-material";
 
 const WebsiteHeader = () => {
   const { userDetails } = useContext(UserDetailsContext);
+  const navigate = useNavigate();
+
+  const handleBookADemmoClick = () => {
+    navigate("/");
+    setTimeout(() => {
+      const targetElement = document.getElementById("contact-us");
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 200);
+  };
   return (
     <header>
       <nav
@@ -59,7 +73,7 @@ const WebsiteHeader = () => {
                   }
                   to="/about"
                 >
-                  About <GroupOutlined sx={{ fontSize: "20px" }} />
+                  About <GroupOutlined sx={{ fontSize: 20, ml: 1 }} />
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -74,8 +88,8 @@ const WebsiteHeader = () => {
                   }
                   to={"/contactUs"}
                 >
-                  Contact Us
-                  <PermPhoneMsg sx={{ fontSize: "20px" }} />
+                  Contact Us{" "}
+                  <PermPhoneMsgTwoTone sx={{ fontSize: 20, ml: 1 }} />
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -90,19 +104,19 @@ const WebsiteHeader = () => {
                   }
                   to="/blogs"
                 >
-                  Blogs <LibraryBooks sx={{ fontSize: "20px" }} />
+                  Blogs <LibraryBooksTwoTone sx={{ fontSize: 20, ml: 1 }} />
                 </NavLink>
               </li>
             </ul>
 
             {userDetails?.user ? (
-              <NavLink
-                to={"/portal"}
-                className={cn(styles["loggedin-profile"])}
-              >
-                <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
-                {`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
-              </NavLink>
+              <a href={"/portal"} className={cn(styles["loggedin-profile"])}>
+                <Tooltip
+                  title={`${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`}
+                >
+                  <Avatar src={userDetails?.profile_image} alt="ProfileImg" />
+                </Tooltip>
+              </a>
             ) : (
               <div className={styles["btn-container"]}>
                 {/* New "Pricing" Link */}
@@ -119,8 +133,7 @@ const WebsiteHeader = () => {
                       }
                       to={"/register"}
                     >
-                      Register &nbsp;
-                      <PersonAdd sx={{ fontSize: "20px" }} />
+                      Register <PersonAddTwoTone sx={{ fontSize: 20, ml: 1 }} />
                     </NavLink>
                   </li>
                   <li className="nav-item">
@@ -135,27 +148,21 @@ const WebsiteHeader = () => {
                       }
                       to={"/login"}
                     >
-                      Login &nbsp;
-                      <Login sx={{ fontSize: "20px" }} />
+                      Login <Login sx={{ fontSize: 20, ml: 1 }} />
                     </NavLink>
                   </li>
                   <li className="nav-item">
-                    <NavLink
+                    <button
                       className={cn(
                         "nav-link",
                         "px-3",
                         styles["custom-navlink"]
                       )}
-                      onClick={() => {
-                        const section = document.getElementById("contact-us");
-                        if (section) {
-                          section.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
+                      onClick={handleBookADemmoClick}
                     >
-                      Book A Demo &nbsp;{" "}
-                      <AirplayOutlined sx={{ fontSize: "20px" }} />{" "}
-                    </NavLink>
+                      Book A Demo{" "}
+                      <AirplayOutlined sx={{ fontSize: 20, ml: 1 }} />
+                    </button>
                   </li>
                 </ul>
               </div>
