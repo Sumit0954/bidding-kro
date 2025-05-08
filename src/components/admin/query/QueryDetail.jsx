@@ -29,6 +29,8 @@ const QueryDetail = () => {
       API = AdminApiUrls.RETRIEVE_GET_IN_TOUCH_QUERY_DETAIL;
     } else if (query_type === "missing-data-query") {
       API = AdminApiUrls.RETRIEVE_MISSING_DATA_QUERY_DETAIL;
+    } else if (query_type === "customer-support") {
+      API = AdminApiUrls.RETRIEVE_CUSTOMER_SUPPORT_QUERY;
     }
     try {
       const response = await _sendAPIRequest(
@@ -84,7 +86,9 @@ const QueryDetail = () => {
                   ? "Demo Query"
                   : query_type === "missing-data-query"
                   ? `Missing Data Query`
-                  : "Unknown Type"}
+                  : query_type === "customer-support"
+                  ? `Customer support`
+                  : "Unknown Query"}
               </p>
             </div>
             <div className="col">
@@ -103,7 +107,8 @@ const QueryDetail = () => {
                   ? queryDetails?.name
                   : query_type === "get-in-touch"
                   ? queryDetails?.company_name
-                  : query_type === "missing-data-query"
+                  : query_type === "missing-data-query" ||
+                    query_type === "customer-support"
                   ? queryDetails?.company?.name
                   : ""}
               </p>
@@ -113,12 +118,14 @@ const QueryDetail = () => {
               <a
                 className={styles["col-data"]}
                 href={`mailto:${
-                  query_type === "missing-data-query"
+                  query_type === "missing-data-query" ||
+                  query_type === "customer-support"
                     ? queryDetails?.company?.business_email
                     : queryDetails?.email
                 }`}
               >
-                {query_type === "missing-data-query"
+                {query_type === "missing-data-query" ||
+                query_type === "customer-support"
                   ? queryDetails?.company?.business_email
                   : queryDetails?.email}
               </a>
@@ -129,11 +136,13 @@ const QueryDetail = () => {
                   "contact-us": "Subject",
                   "get-in-touch": "Contact Person Name",
                   "missing-data-query": "Type",
+                  "customer-support": "Subject",
                 }[query_type] || ""}
               </h6>
 
               <p className={styles["col-data"]}>
-                {query_type === "contact-us"
+                {query_type === "contact-us" ||
+                query_type === "customer-support"
                   ? queryDetails?.subject
                   : query_type === "get-in-touch"
                   ? queryDetails?.contact_person_name

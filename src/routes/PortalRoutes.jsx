@@ -32,6 +32,7 @@ import Messages from "../pages/portal/messsages/Messages";
 import MessagesList from "../pages/portal/messsages/MessagesList";
 import TeamList from "../pages/portal/teams/TeamList";
 import AddteamForm from "../pages/portal/teams/AddteamForm";
+import UsersSuppport from "../pages/portal/supports/UsersSuppport";
 
 const PortalRoutes = () => {
   return (
@@ -167,13 +168,17 @@ const PortalRoutes = () => {
                       path="/messages"
                       element={<LayoutPage Component={MessagesList} />}
                     />
-                     <Route
+                    <Route
                       path="/teams"
                       element={<LayoutPage Component={TeamList} />}
                     />
-                     <Route
+                    <Route
                       path="/teams/addMember"
                       element={<LayoutPage Component={AddteamForm} />}
+                    />
+                    <Route
+                      path="/support"
+                      element={<LayoutPage Component={UsersSuppport} />}
                     />
                   </Route>
                 </Routes>

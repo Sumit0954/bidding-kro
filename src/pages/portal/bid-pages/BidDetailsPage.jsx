@@ -43,6 +43,9 @@ import { PrintOutlined } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import BidPaymentModal from "../../../components/portal/bid-activation-payment/BidPaymentModal";
+import { truncateString } from "../../../helpers/formatter";
+import PaymentLoader from "../../../components/portal/bid-activation-payment/PaymentLoader";
 
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
@@ -60,6 +63,9 @@ const BidDetailsPage = () => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const { setAlert } = useContext(AlertContext);
+  const [bidAmount, setBidAmount] = useState(null);
+  const [confirmPaymentLoading, setConfirmPaymentLoading] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState({});
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -93,21 +99,29 @@ const BidDetailsPage = () => {
     navigate({ search: urlParams.toString() }, { replace: true });
   };
 
+  const fetchBidPrice = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls?.BID_PRICE_AMOUNT,
+        "",
+        true
+      );
+      if (response?.status === 200) {
+        setBidAmount(response?.data?.amount);
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    console.log(urlActiveTab, "urlActiveTab");
     if (urlActiveTab) {
       dispatch(setActiveTab(urlActiveTab));
     }
+    fetchBidPrice();
   }, []);
 
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1); // Increment the refresh key
-  };
-
-  const truncatelength = (title, maxlength) => {
-    return title?.length > maxlength
-      ? title.substring(0, maxlength) + "..."
-      : title;
   };
 
   const handleDelete = async () => {
@@ -141,6 +155,10 @@ const BidDetailsPage = () => {
     }
   };
 
+  const checkBidConfirmation = (IsPaymentDone) => {
+    setPaymentDetails(IsPaymentDone);
+  };
+
   const breadcrumbs = [
     <NavLink
       underline="hover"
@@ -153,7 +171,7 @@ const BidDetailsPage = () => {
     </NavLink>,
     <Tooltip title={bidDetails?.title || ""} arrow>
       <Typography key="2" color="text.primary" style={{ cursor: "pointer" }}>
-        {truncatelength(bidDetails?.title, 30)}
+        {truncateString(bidDetails?.title, 30)}
       </Typography>
     </Tooltip>,
   ];
@@ -198,7 +216,6 @@ const BidDetailsPage = () => {
           );
           if (response.status === 200) {
             const participants = response.data.participants;
-            console.log(response.data, "response.data");
             setParticipant(response.data);
           }
         } catch (error) {
@@ -223,7 +240,6 @@ const BidDetailsPage = () => {
         true
       );
       if (response.status === 200) {
-        console.log("data :", response.data);
         setParticipant(response.data);
       }
     } catch (error) {
@@ -239,7 +255,11 @@ const BidDetailsPage = () => {
         bidDetails?.sample_receive_end_date === null));
 
   if (screenLoader) {
-    return <ScreenLoader component={"AcceptanceStatus"} />;
+    return <ScreenLoader />;
+  }
+
+  if (confirmPaymentLoading) {
+    return <PaymentLoader />;
   }
 
   return (
@@ -815,11 +835,14 @@ const BidDetailsPage = () => {
 
       {/*RAZORPAY PAYEMENT IN BIDDETAILS  */}
       {activateBid && (
-        <RazorpayPaymentHandler
-          userData={userDetails}
+        <BidPaymentModal
+          activateBid={activateBid}
           setActivateBid={setActivateBid}
+          bidAmount={bidAmount}
+          setConfirmPaymentLoading={setConfirmPaymentLoading}
+          bidid={bidDetails?.id}
           setShowThankyou={setShowThankyou}
-          id={bidDetails?.id}
+          checkBidConfirmation={checkBidConfirmation}
         />
       )}
 
@@ -831,6 +854,7 @@ const BidDetailsPage = () => {
           heading={"Payment Successful!"}
           description={`Your bid has been activated successfully!`}
           showLogin={false}
+          paymentDetails={paymentDetails}
         />
       )}
 

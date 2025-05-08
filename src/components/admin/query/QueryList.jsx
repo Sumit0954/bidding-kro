@@ -7,6 +7,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import PropTypes from "prop-types";
 import {
   contact_us_queries_column,
+  customer_support_column,
   get_in_touch_queries_column,
   missing_data_queries_column,
 } from "../../../elements/CustomDataTable/AdminColumnData";
@@ -41,6 +42,10 @@ const QueryList = () => {
       case 2:
         API = AdminApiUrls.MISSING_DATA_QUERY;
         setTableColumns(missing_data_queries_column);
+        break;
+      case 3:
+        API = AdminApiUrls.CUSTOMER_SUPPORT_QUERY;
+        setTableColumns(customer_support_column);
         break;
       default:
         console.log("Invalid API value");
@@ -83,6 +88,7 @@ const QueryList = () => {
           <Tab label="Contact Us" {...a11yProps(0)} />
           <Tab label="Get In Touch" {...a11yProps(1)} />
           <Tab label="Missing Data Query" {...a11yProps(2)} />
+          <Tab label="Customer Support" {...a11yProps(3)} />
         </Tabs>
 
         <Box sx={{ mt: 2 }}>
