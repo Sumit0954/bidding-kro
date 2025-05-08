@@ -99,4 +99,8 @@ export const PortalApiUrls = Object.freeze({
   DEACTIVATE_MEMBER: "/user/customer/team/",
   RETRIVE_MEMBER: "/user/customer/team/",
   MISSING_DATA_REQUEST: "/support/customer/missing_data_request/",
+  BID_PRICE_AMOUNT: "/payment/amount/",
+  BID_CREATE_ORDER: "/payment/customer/order/",
+  BID_VERIFY_PAYMENT: "/payment/customer/verify/",
+  CUSTOMER_SUPPORT_TICKET: "/support/customer/ticket/",
 });

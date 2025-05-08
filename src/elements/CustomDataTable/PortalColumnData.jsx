@@ -1195,11 +1195,12 @@ export const l1_participants_column = [
             }`}
             style={{
               color:
-                data?.row?.original?.status === "accepted" || "participated"
+                data?.row?.original?.status === "accepted" ||
+                data?.row?.original?.status === "participated"
                   ? "green"
                   : data?.row?.original?.status === "pending"
-                  ? "yellow"
-                  : "green",
+                  ? "#FFBF00"
+                  : "red",
             }}
           >
             {data?.row?.original?.status}

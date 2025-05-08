@@ -15,7 +15,7 @@ export const companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return <b>Company {data?.row?.original?.id}</b>;
+      return <b># {data?.row?.original?.id}</b>;
     },
   },
   {
@@ -250,7 +250,7 @@ export const Admin_list_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return <b>ADMIN {data.row.original.id}</b>;
+      return <b># {data.row.original.id}</b>;
     },
   },
   {
@@ -633,7 +633,14 @@ export const missing_data_queries_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return data?.row?.original?.company?.name;
+      return (
+        <NavLink
+          to={`/admin/companies/${data?.row?.original?.company?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.company?.name}
+        </NavLink>
+      );
     },
   },
   {
@@ -688,6 +695,84 @@ export const missing_data_queries_column = [
   },
   {
     Header: "Sended At",
+    accessor: "created_at",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+];
+export const customer_support_column = [
+  {
+    Header: "Company Name",
+    accessor: "company_name",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      console.log(data, "data");
+      return (
+        <NavLink
+          to={`/admin/companies/${data?.row?.original?.company?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.company?.name}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Subject",
+    accessor: "subject",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <NavLink
+          to={`/admin/queries/customer-support/${data?.row?.original?.id}`}
+          className={styles["table-link"]}
+        >
+          {data?.row?.original?.subject}
+        </NavLink>
+      );
+    },
+  },
+  {
+    Header: "Is Read",
+    accessor: "is_read",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      return (
+        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {!data?.row?.original?.is_read && (
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "#FEBE10",
+                animation: "blinker 1s infinite",
+              }}
+            ></span>
+          )}
+
+          <b style={{ color: "green" }}>Read</b>
+
+          {/* Blinker animation style */}
+          <style>
+            {`
+              @keyframes blinker {
+                50% { opacity: 0; }
+              }
+            `}
+          </style>
+        </span>
+      );
+    },
+  },
+  {
+    Header: "Complaint At",
     accessor: "created_at",
     align: "left",
     disablePadding: false,
@@ -807,7 +892,7 @@ export const total_companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return <b>Company {data?.row?.original?.id}</b>;
+      return <b># {data?.row?.original?.id}</b>;
     },
   },
   {
@@ -1278,7 +1363,7 @@ export const revoked_companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return <b>Company {data?.row?.original?.bid?.company?.id}</b>;
+      return <b># {data?.row?.original?.bid?.company?.id}</b>;
     },
   },
   {

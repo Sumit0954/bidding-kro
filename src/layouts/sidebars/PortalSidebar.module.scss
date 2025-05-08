@@ -64,7 +64,8 @@
 /* Responsive view for mobile screens */
 @media (max-width: 768px) {
   .sidebar-container {
-    width: 80px; /* Shrink sidebar width on mobile */
+    width: 70px; /* Shrink sidebar width on mobile */
+    margin-top: -20px;
   }
 
   .item-name {
