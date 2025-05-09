@@ -1819,7 +1819,7 @@ export const bids_report_data = [
       const bidAmount = row.total_bid_amount;
 
       if (bidAmount === null || bidAmount === undefined) {
-        return "N-A";
+        return "N/A";
       }
 
       const bid = Number(bidAmount) || 0;
@@ -1900,7 +1900,7 @@ export const participation_report_data = [
       const products = row?.bid?.product;
       return Array.isArray(products) && products.length > 0
         ? products.map((pro) => pro.title).join(", ")
-        : "N-A";
+        : "N/A";
     },
   },
   {
@@ -1909,7 +1909,7 @@ export const participation_report_data = [
       const categories = row?.bid?.category;
       return Array.isArray(categories) && categories.length > 0
         ? categories.map((cat) => cat.name).join(", ")
-        : "N-A";
+        : "N/A";
     },
   },
   {
@@ -1929,7 +1929,7 @@ export const participation_report_data = [
     accessor: (row) => {
       return row?.bid?.total_bid_amount !== null
         ? row?.bid?.total_bid_amount
-        : "N-A";
+        : "N/A";
     },
   },
   {
@@ -1939,7 +1939,7 @@ export const participation_report_data = [
       const bidAmount = row?.bid?.total_bid_amount;
 
       if (bidAmount === null || bidAmount === undefined) {
-        return "N-A";
+        return "N/A";
       }
 
       const bid = Number(bidAmount) || 0;

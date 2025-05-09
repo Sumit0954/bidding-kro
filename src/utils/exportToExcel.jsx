@@ -57,30 +57,30 @@ export const exportToExcel = (
       }
       if (col.accessor === "category" && Array.isArray(value)) {
         value =
-          value.length > 0 ? value.map((cat) => cat.name).join(", ") : "N-A";
+          value.length > 0 ? value.map((cat) => cat.name).join(", ") : "N/A";
       }
 
       if (col.accessor === "product" && Array.isArray(value)) {
         value =
           value.length > 0
             ? value.map((product) => product.title).join(", ")
-            : "N-A";
+            : "N/A";
       }
 
       if (col.accessor === "organization_type" && !value) {
-        value = "N-A";
+        value = "N/A";
       }
       if (
         col.Header === "Designation" ||
         (col.Header === "Whatsapp Number" && value === "")
       ) {
-        value = "N-A";
+        value = "N/A";
       }
       if (col.Header === "Created At" && value) {
         value = dateTimeFormatter(value);
       }
       if (col.accessor === "total_bid_amount" && value === "") {
-        value = "N-A";
+        value = "N/A";
       }
 
       return value;

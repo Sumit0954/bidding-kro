@@ -11,7 +11,6 @@ import {
   GavelTwoTone,
   HourglassEmptyTwoTone,
   MonetizationOnTwoTone,
-  ReportProblemTwoTone,
   ToggleOnTwoTone,
   WifiTetheringTwoTone,
 } from "@mui/icons-material";
@@ -48,16 +47,12 @@ const AdminReport = () => {
   const [states, setStates] = useState([]);
   const [stateValue, setStateValue] = useState(null);
   const [reportData, setReportData] = useState([]);
-  const { control, setError, watch } = useForm();
-  const [certificateTypes, setCertificateTypes] = useState([]);
+  const { control, setError } = useForm();
   const [cities, setCities] = useState([]);
   const [cityValue, setCityValue] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { setAlert } = useContext(AlertContext);
-  const [geoLocation, setGeoLocation] = useState({
-    latitude: "",
-    longitude: "",
-    json_id: "",
-  });
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -68,7 +63,6 @@ const AdminReport = () => {
   const { name, column, api, downloadData, query_type } =
     reportColumnHandler(reportType);
   const { startDate, endDate } = dateRange[0];
-  const selectedCertificate = watch("type");
 
   const getStatesList = async () => {
     const params = { country: 101, ordering: "name" };
@@ -86,42 +80,7 @@ const AdminReport = () => {
     } catch (error) {}
   };
 
-  const getCertificateTypes = async () => {
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.GET_CERTIFICATE_TYPE,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        const data = modifiedData(response.data);
-        setCertificateTypes(data);
-      }
-    } catch (error) {}
-  };
-
-  const getCityDetail = async () => {
-    if (!cityValue?.value) return;
-    try {
-      const response = await _sendAPIRequest(
-        "GET",
-        PortalApiUrls.RETRIEVE_CITY + `${cityValue?.value}`,
-        "",
-        true
-      );
-      if (response.status === 200) {
-        const { latitude, longitude, json_id } = response.data;
-        setGeoLocation({
-          latitude: latitude,
-          longitude: longitude,
-          json_id: json_id,
-        });
-      }
-    } catch (error) {}
-  };
-
-  const handleCityInputChange = async (value) => {
+  const handleCityInputChange = async (event, value) => {
     if (!stateValue?.value) {
       setError("state", {
         type: "focus",
@@ -145,7 +104,6 @@ const AdminReport = () => {
         if (response.status === 200) {
           const data = modifiedData(response.data);
           setCities(data);
-          getCityDetail();
         }
       } catch (error) {
         const { data } = error.response;
@@ -162,6 +120,27 @@ const AdminReport = () => {
     }
   };
 
+  const getCategories = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.GET_CATEGORIES,
+        "",
+        true
+      );
+      if (response?.status === 200) {
+        console.log(response?.data, " options");
+        setCategories(response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCategoryChange = (selectedOption) => {
+    setSelectedCategory(selectedOption?.value);
+  };
+
   const fetchAdminReports = async () => {
     if (!api) return;
     try {
@@ -174,9 +153,7 @@ const AdminReport = () => {
         params.append("end_date", end_date);
         if (stateValue) params.append("state", stateValue.lable);
         if (cityValue) params.append("city", cityValue.lable);
-        if (selectedCertificate)
-          params.append("certificate", selectedCertificate);
-
+        if (selectedCategory) params.append("category", selectedCategory);
         API = `${api}?${params}`;
       }
 
@@ -228,6 +205,11 @@ const AdminReport = () => {
     }
   };
 
+  const formattedCategories = categories.map((cat) => ({
+    lable: cat.name,
+    value: cat.id,
+  }));
+
   useEffect(() => {
     const start = new Date();
     const end = new Date();
@@ -239,13 +221,13 @@ const AdminReport = () => {
       { startDate: start, endDate: adjustedEnd, key: "selection" },
     ]);
     getStatesList();
-    getCertificateTypes();
+    getCategories();
   }, []);
 
   // Update when the date range updated
   useEffect(() => {
     fetchAdminReports();
-  }, [dateRange, column, stateValue, cityValue, selectedCertificate]);
+  }, [dateRange, column, stateValue, cityValue, selectedCategory]);
 
   return (
     <>
@@ -348,7 +330,7 @@ const AdminReport = () => {
               control={control}
               options={cities}
               name="city"
-              placeholder="Search by City"
+              placeholder="City"
               handleInputChange={handleCityInputChange}
               setValue={setCityValue}
               value={cityValue}
@@ -358,9 +340,10 @@ const AdminReport = () => {
             <CustomSelect
               control={control}
               name="type"
-              placeholder="Search by Certificate Type"
-              options={certificateTypes}
+              placeholder="Search by category"
+              options={formattedCategories}
               multiple={false}
+              handleChange={handleCategoryChange}
             />
           </div>
         </div>
