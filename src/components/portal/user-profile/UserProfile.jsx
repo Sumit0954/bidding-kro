@@ -79,6 +79,7 @@ const UserProfile = () => {
     }
     /* -- */
 
+    console.log(userDetails, " :");
     try {
       const response = await _sendAPIRequest(
         "PATCH",
@@ -236,7 +237,11 @@ const UserProfile = () => {
                       placeholder="WhatsApp"
                       inputType="tel"
                       rules={{
-                        pattern: phoneValidator,
+                        required: "Phone number is required",
+                        pattern: {
+                          value: phoneValidator,
+                          message: "Please enter a valid phone number",
+                        },
                       }}
                     />
                   </div>
