@@ -4,9 +4,12 @@ import { NavLink, useParams } from "react-router-dom";
 import { Breadcrumbs, Typography } from "@mui/material";
 import _sendAPIRequest from "../../helpers/api";
 import { AdminApiUrls } from "../../helpers/api-urls/AdminApiUrls";
+import ScreenLoader from "../../elements/CustomScreeenLoader/ScreenLoader";
 
 const CompanyDetailPage = () => {
   const [companyDetails, setCompanyDetails] = useState();
+  const [screenLoader, setScreenLoader] = useState(true);
+
   const { company_id } = useParams();
 
   const getCompanyDetails = async () => {
@@ -23,6 +26,7 @@ const CompanyDetailPage = () => {
     } catch (error) {
       console.log(error);
     }
+    setScreenLoader(false);
   };
 
   useEffect(() => {
@@ -44,6 +48,9 @@ const CompanyDetailPage = () => {
     </Typography>,
   ];
 
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <div role="presentation">
