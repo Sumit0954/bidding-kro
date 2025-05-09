@@ -104,7 +104,7 @@ const AddteamForm = () => {
           severity: "success",
         });
 
-        navigate("/portal/team");
+        navigate("/portal/teams");
 
         // ✅ Clear form after successful submission
         setFormData({
@@ -252,13 +252,6 @@ const AddteamForm = () => {
         className={styles["addMember-btn"]}
         startIcon={<PersonAddIcon />}
         onClick={handleAddMember}
-        disabled={
-          !formData.first_name ||
-          !formData.last_name ||
-          !formData.email ||
-          !formData.mobile_number ||
-          !formData.role
-        }
       >
         Add Member
       </Button>
