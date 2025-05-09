@@ -18,9 +18,18 @@ import bidding_solution_img from "../../assets/images/website/about-us/bidding-s
 import { useState } from "react";
 import CountUp from "react-countup";
 import aboutusBg from "../../assets/images/website/about-us/about-bg-img.jpg";
+import aboutus1 from "../../assets/images/website/about-us/aboutus1.png";
+import aboutus2 from "../../assets/images/website/about-us/aboutus2.png";
+import aboutus3 from "../../assets/images/website/about-us/aboutus3.png";
 
 const AboutUs = () => {
   const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const images = [aboutus1, aboutus2, aboutus3];
+  const handleImage = (image) => {
+    setSelectedImage(image);
+    setOpen(true);
+  };
   return (
     <>
       <div
@@ -172,12 +181,12 @@ const AboutUs = () => {
         {/* New Section with Images, Paragraph, and Button */}
         <Container sx={{ py: 8, textAlign: "center" }}>
           <Grid container spacing={3} justifyContent="center">
-            {[...Array(3)].map((_, index) => (
+            {images.map((src, index) => (
               <Grid item xs={12} sm={4} key={index}>
                 <img
-                  src={who_we_are_img}
+                  src={src}
                   alt="Who We Are"
-                  onClick={() => setOpen(true)}
+                  onClick={() => handleImage(src)}
                   style={{
                     width: "100%",
                     height: "400px",
@@ -312,7 +321,7 @@ const AboutUs = () => {
         >
           <div style={{ width: "100%", height: "400px" }}>
             <img
-              src={who_we_are_img}
+              src={selectedImage}
               alt="Who We Are Enlarged"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
