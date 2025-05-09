@@ -69,7 +69,7 @@ const Dashboard = () => {
       console.log(error.response);
     }
   };
-  
+
   useEffect(() => {
     const registerTokenIfAllowed = async () => {
       if (Notification.permission === "granted") {
@@ -322,11 +322,7 @@ const Dashboard = () => {
         >
           <Box
             component="img"
-            src={
-              companyDetails?.logo !== null
-                ? companyDetails?.logo
-                : fallback_user_img
-            }
+            src={companyDetails?.logo || fallback_user_img}
             alt="Company Logo"
             sx={{
               width: {
