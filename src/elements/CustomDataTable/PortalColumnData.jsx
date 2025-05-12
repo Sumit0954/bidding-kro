@@ -1086,71 +1086,6 @@ export const Pending_request_column = () => {
   ];
 };
 
-// export const Pending_request_column = [
-//   {
-//     Header: "Company Name",
-//     accessor: "name",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//     Cell: (data) => {
-//       return (
-//         <NavLink
-//           className={styles["table-link"]}
-//           to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
-//         >
-//           {data?.row?.original?.requestor?.name}
-//         </NavLink>
-//       );
-//     },
-//   },
-//   {
-//     Header: "Company Email",
-//     accessor: "business_email",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//     Cell: (data) => {
-//       return data?.row?.original?.requestor?.business_email;
-//     },
-//   },
-//   {
-//     Header: "Mobile No.",
-//     accessor: "business_mobile",
-//     align: "left",
-//     disablePadding: false,
-//     width: 150,
-//     Cell: (data) => {
-//       console.log(data?.row?.original.id, "yoyo");
-//       return data?.row?.original?.requestor?.business_mobile;
-//     },
-//   },
-//   {
-//     Header: "Action",
-//     accessor: "action",
-//     align: "center",
-//     disablePadding: false,
-//     width: 100,
-//     hideSortIcon: true,
-//   },
-//   {
-//     Header: "",
-//     accessor: "delete",
-//     align: "center",
-//     disablePadding: false,
-//     width: 80,
-//     Cell: (data) => {
-//       console.log(data?.row?.original.id, "jojo");
-//       return (
-//         <DeleteConfirmation
-//           id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
-//           onDeleteConfirm={onDeleteBidClick}
-//         />
-//       );
-//     },
-//   },
-// ];
-
 export const l1_participants_column = [
   {
     Header: "Company Name",
@@ -1715,120 +1650,79 @@ export const getTeamListColumn = (onToggleStatus) => [
     width: 160,
     Cell: ({ value }) => value?.join(", ") || "-",
   },
-  // {
-  //   Header: "Status",
-  //   accessor: "is_active",
-  //   align: "left",
-  //   width: 160,
-  //   Cell: ({ row }) => (
-  //     <span>{row.original.is_active ? "Active" : "In Active"}</span>
-  //   ),
-  // },
   {
     Header: "Action",
     accessor: "is_active",
     align: "left",
     width: 160,
     hideSortIcon: true,
-    Cell: ({ row }) => (
-      <Tooltip
-        title={
-          row.original.is_active
-            ? "Click here to Deactivate Member"
-            : "Member is not Active"
+    Cell: ({ row }) => {
+      const [deleteDetails, setDeleteDetails] = useState({
+        open: false,
+        title: "",
+        message: "",
+        memberId: null,
+      });
+
+      const handleMemberDeactivationConfimation = (memberId) => {
+        setDeleteDetails({
+          open: true,
+          title: "Confirm Deactivation",
+          message: `Are you sure you want to deactivate ${row.original.first_name} ${row.original.last_name}`,
+          memberId: memberId,
+        });
+      };
+
+      const handleMemberDeactivation = (choice) => {
+        if (choice) {
+          onToggleStatus(deleteDetails?.memberId);
+          setDeleteDetails({
+            open: false,
+            title: "",
+            message: "",
+            memberId: null,
+          });
         }
-        arrow
-      >
-        <span
-          onClick={() =>
-            row.original.is_active && onToggleStatus(row.original.id)
-          }
-          style={{
-            color: row.original.is_active ? "#52c41a" : "#ff4d4f",
-            cursor: row.original.is_active ? "pointer" : "not-allowed",
-          }}
-        >
-          {row.original.is_active ? "Active" : "InActive"}
-        </span>
-      </Tooltip>
-    ),
+        setDeleteDetails({
+          open: false,
+          title: "",
+          message: "",
+          memberId: null,
+        });
+      };
+      return (
+        <>
+          <Tooltip
+            title={
+              row.original.is_active
+                ? "Click here to Deactivate Member"
+                : "Member is not Active"
+            }
+            arrow
+          >
+            <span
+              onClick={() =>
+                row.original.is_active &&
+                handleMemberDeactivationConfimation(row.original.id)
+              }
+              style={{
+                color: row.original.is_active ? "#52c41a" : "#ff4d4f",
+                cursor: row.original.is_active ? "pointer" : "not-allowed",
+              }}
+            >
+              {row.original.is_active ? "Active" : "InActive"}
+            </span>
+          </Tooltip>
+
+          {deleteDetails?.open && (
+            <DeleteDialog
+              title={deleteDetails.title}
+              message={deleteDetails.message}
+              handleClick={handleMemberDeactivation}
+            />
+          )}
+        </>
+      );
+    },
   },
 ];
-
-// export const Team_list_column = [
-//   {
-//     Header: "First Name",
-//     accessor: "first_name",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Last Name",
-//     accessor: "last_name",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Email",
-//     accessor: "email",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Mobile",
-//     accessor: "mobile_number",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Role",
-//     accessor: "groups",
-//     align: "left",
-//     disablePadding: false,
-//     width: 160,
-//   },
-//   {
-//     Header: "Action",
-//     accessor: "is_active",
-//     align: "center",
-//     disablePadding: false,
-//     width: 100,
-//     hideSortIcon: true,
-//     Cell: (data) => {
-//       const onToggleStatus = async (id, isActive) => {
-//         try {
-//           const endpoint = isActive
-//             ? PortalApiUrls.DEACTIVATE_MEMBER.replace(":id", id)
-//             : PortalApiUrls.ACTIVATE_MEMBER.replace(":id", id);
-
-//           const response = await _sendAPIRequest("POST", endpoint, "", true);
-
-//           if (response.status === 200) {
-//             getTeamList(); // Refresh list after status change
-//           }
-//         } catch (error) {
-//           console.error("Error while updating status", error);
-//         }
-//       };
-//     return(
-//       <Button
-//         variant="contained"
-//         size="small"
-//         onClick={() => onToggleStatus(data.row.original.id, data.row.original.is_active)}
-//         sx={{
-//           backgroundColor: data.row.original.is_active ? "#ff4d4f" : "#52c41a",
-//           color: "#fff",
-//           "&:hover": {
-//             backgroundColor: data.row.original.is_active ? "#ff7875" : "#73d13d",
-//           },
-//         }}
-//       >
-//         {data.row.original.is_active ? "Deactivate" : "Activate"}
-//       </Button>
-//     );},
-//   },
-// ];

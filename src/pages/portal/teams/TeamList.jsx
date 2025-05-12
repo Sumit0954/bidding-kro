@@ -48,7 +48,7 @@ const TeamList = () => {
         true
       );
 
-      if (response.status === 200) {
+      if (response?.status === 204) {
         console.log(`Member with ID ${id} deactivated`);
         getTeamList(); // Refresh list after deactivation
       }
@@ -58,6 +58,13 @@ const TeamList = () => {
         setAlert({
           isVisible: true,
           message: error.response.data.detail,
+          severity: "error",
+        });
+      }
+      if (error.status === 400) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.error,
           severity: "error",
         });
       }
