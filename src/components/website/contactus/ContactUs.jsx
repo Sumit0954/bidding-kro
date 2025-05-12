@@ -177,6 +177,15 @@ const ContactUs = () => {
 
             <TextField
               fullWidth
+              margin="normal"
+              placeholder="Phone No."
+              variant="outlined"
+              {...register("phone", { required: "phone is required" })}
+              error={!!errors.phone}
+              helperText={errors.phone?.message}
+            />
+            <TextField
+              fullWidth
               multiline
               rows={6}
               margin="normal"

@@ -86,7 +86,7 @@ const QueryList = () => {
           }}
         >
           <Tab label="Contact Us" {...a11yProps(0)} />
-          <Tab label="Get In Touch" {...a11yProps(1)} />
+          <Tab label="Book a Demo" {...a11yProps(1)} />
           <Tab label="Missing Data Query" {...a11yProps(2)} />
           <Tab label="Customer Support" {...a11yProps(3)} />
         </Tabs>

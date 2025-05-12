@@ -130,6 +130,20 @@ const QueryDetail = () => {
                   : queryDetails?.email}
               </a>
             </div>
+            {
+              <div className="col">
+                <h6 className={styles["col-heading"]}>Phone</h6>
+                <p className={styles["col-data"]}>
+                  {" "}
+                  {query_type === "get-in-touch" || query_type === "contact-us"
+                    ? queryDetails?.phone
+                    : query_type === "missing-data-query" ||
+                      query_type === "customer-support"
+                    ? queryDetails?.company?.business_mobile
+                    : "N/A"}
+                </p>
+              </div>
+            }
             <div className="col">
               <h6 className={styles["col-heading"]}>
                 {{
