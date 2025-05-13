@@ -48,9 +48,8 @@ const Dashboard = () => {
   const userID = localStorage.getItem("loginUserID");
   const [screenLoader, setScreenLoader] = useState(true);
   const { setAlert } = useContext(AlertContext);
-  const [permissionStatus, setPermissionStatus] = useState(
-    Notification.permission
-  );
+  const [permissionStatus, setPermissionStatus] = useState("default");
+
   const RegisterFCMToken = async (token) => {
     try {
       const formData = new FormData();
@@ -70,91 +69,63 @@ const Dashboard = () => {
     }
   };
 
+  const isNotificationSupported = () => {
+    return "Notification" in window && "serviceWorker" in navigator;
+  };
+
   useEffect(() => {
-    const checkIsSupported = async () => {
-      const supported = await isSupported();
-      if (!supported) {
-        setAlert({
-          isVisible: true,
-          message: "Notification not supported",
-          severity: "error",
-        });
-        return;
+    const checkNotificationPermission = () => {
+      if (isNotificationSupported()) {
+        setPermissionStatus(Notification.permission);
       }
-      try {
-        if (Notification.permission === "granted") {
-          const messaging = getMessaging();
+    };
+    const registerTokenIfAllowed = async () => {
+      if (Notification.permission === "granted") {
+        console.log("Auto-registering token after login...");
 
-          const token = await getToken(messaging, {
-            vapidKey:
-              "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
-          });
+        const messaging = getMessaging();
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
+        });
 
-          if (token) {
-            const oldToken = localStorage.getItem("FCMToken");
-            if (token !== oldToken) {
-              await RegisterFCMToken(token);
-              localStorage.setItem("FCMToken", token);
-            }
+        if (token) {
+          const oldToken = localStorage.getItem("FCMToken");
+          if (token !== oldToken) {
+            await RegisterFCMToken(token);
+            localStorage.setItem("FCMToken", token);
           }
         }
-      } catch (error) {
-        setAlert({
-          isVisible: true,
-          message: "Notification not supported",
-          severity: "error",
-        });
       }
     };
 
-    checkIsSupported();
+    checkNotificationPermission();
+    registerTokenIfAllowed();
   }, [userID]);
 
   const requestPermission = () => {
-    const checkIsSupported = async () => {
-      const supported = await isSupported();
-      if (!supported) {
-        setAlert({
-          isVisible: true,
-          message: "Notification not supported in this browser",
-          severity: "error",
-        });
-        return;
-      }
-      try {
-        if (Notification.permission !== "granted") {
-          const permission = await Notification.requestPermission();
-          setPermissionStatus(permission);
-
-          if (permission === "granted") {
-            console.log("🔔 Notification permission granted!");
-            try {
-              const token = await requestFirebaseNotificationPermission();
-              if (token) {
-                console.log("Firebase Token Reload:", token);
-                const oldToken = localStorage.getItem("FCMToken");
-                if (token !== oldToken) {
-                  await RegisterFCMToken(token);
-                  localStorage.setItem("FCMToken", token);
-                }
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        requestFirebaseNotificationPermission()
+          .then((token) => {
+            if (token) {
+              console.log("Firebase Token Reload:", token);
+              const OldFCMToken = localStorage.getItem("FCMToken");
+              if (token != OldFCMToken) {
+                RegisterFCMToken(token);
+                localStorage.setItem("FCMToken", token);
               }
-            } catch (err) {
-              console.log("Notification token error:", err);
             }
-          } else {
-            console.warn("⚠️ Notification permission denied!");
-          }
+          })
+          .catch((err) => console.log("Notification permission error:", err));
+        setPermissionStatus(permission);
+        if (permission === "granted") {
+          console.log("🔔 Notification permission granted!");
+        } else {
+          console.warn("⚠️ Notification permission denied!");
         }
-      } catch (error) {
-        setAlert({
-          isVisible: true,
-          message: "Notification not supported in this browser",
-          severity: "error",
-        });
-      }
-    };
-
-    checkIsSupported();
+      });
+    }
   };
 
   const getDashboardData = async () => {
@@ -297,36 +268,42 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      {permissionStatus === "default" && (
-        <Alert severity="warning" className="my-3 d-flex">
-          <AlertTitle sx={{ fontWeight: "bold" }}>
-            Warning: Notifications Disabled
-          </AlertTitle>
-          You have not allowed notification permissions. To receive important
-          updates, please enable notifications.
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => requestPermission()}
-            sx={{ marginLeft: "10px" }}
-            className={styles["create-comp-btn"]}
-          >
-            Enable Notifications
-          </Button>
-        </Alert>
+      {isNotificationSupported() && (
+        <>
+          {permissionStatus === "default" && (
+            <Alert severity="warning" className="my-3 d-flex">
+              <AlertTitle sx={{ fontWeight: "bold" }}>
+                Warning: Notifications Disabled
+              </AlertTitle>
+              You have not allowed notification permissions. To receive
+              important updates, please enable notifications.
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => requestPermission()}
+                sx={{ marginLeft: "10px" }}
+                className={styles["create-comp-btn"]}
+              >
+                Enable Notifications
+              </Button>
+            </Alert>
+          )}
+
+          {permissionStatus === "denied" && (
+            <Alert severity="warning" className="my-3">
+              <AlertTitle sx={{ fontWeight: "bold" }}>
+                Warning: Notifications Permissions Denied
+              </AlertTitle>
+              You have denied notification permissions. To receive important
+              updates, please go to your browser settings and enable
+              notifications.
+              <br />
+              <br />
+            </Alert>
+          )}
+        </>
       )}
 
-      {permissionStatus === "denied" && (
-        <Alert severity="warning" className="my-3">
-          <AlertTitle sx={{ fontWeight: "bold" }}>
-            Warning: Notifications Permissions Denied
-          </AlertTitle>
-          You have denied notification permissions. To receive important
-          updates, please enable notifications.
-          <br />
-          <br />
-        </Alert>
-      )}
       <Box
         sx={{
           display: "flex",
