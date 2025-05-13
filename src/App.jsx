@@ -58,7 +58,6 @@ function App() {
 
       <Sentry.ErrorBoundary fallback={<NotFound />}>
         <Routes>
-          <Route path="/paymentconfirmation" element={<PaymentLoader />} />
           <Route path="/*" element={<WebsiteRoutes />} />
           <Route path="portal/*" element={<PortalRoutes />} />
           <Route path="admin/*" element={<AdminRoutes />} />

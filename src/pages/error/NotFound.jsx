@@ -1,15 +1,14 @@
-import React from "react";
-import Erro404 from "../../assets/images/NotFoundError/notFound404Error.png";
+import Error500 from "../../assets/images/internalServerError/internalServerError.png";
 
 const NotFound = () => {
   return (
     <div style={styles.container}>
       <img
-        src={Erro404} // You can replace this with your own 404 image URL
+        src={Error500} // You can replace this with your own 404 image URL
         alt="404 Not Found"
         style={styles.image}
       />
-      <h2 style={styles.message}>Oops! Something Went Wrong</h2>
+      <h2 style={styles.message}>500 Internal Server Error</h2>
     </div>
   );
 };
@@ -25,7 +24,7 @@ const styles = {
     backgroundColor: "#f8f9fa",
   },
   image: {
-    width: "300px",
+    width: "800px",
     maxWidth: "80%",
     marginBottom: "20px",
   },
