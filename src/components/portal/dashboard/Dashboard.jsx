@@ -34,7 +34,7 @@ import CompanyDetailsProvider, {
 import { AlertContext } from "../../../contexts/AlertProvider";
 import fallback_user_img from "../../../assets/images/portal/company-profile/fallback-profile-img.jpg";
 import { requestFirebaseNotificationPermission } from "../../../firebaseMessaging";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [filterBy, setFilterBy] = useState("spends");
@@ -71,50 +71,86 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const registerTokenIfAllowed = async () => {
-      if (Notification.permission === "granted") {
-        console.log("Auto-registering token after login...");
+    try {
+      const checkIsSupported = async () => {
+        const IsSupported = await isSupported();
+        if (IsSupported === true) {
+          const registerTokenIfAllowed = async () => {
+            if (Notification.permission === "granted") {
+              console.log("Auto-registering token after login...");
 
-        const messaging = getMessaging();
-        const token = await getToken(messaging, {
-          vapidKey:
-            "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
-        });
+              const messaging = getMessaging();
+              const token = await getToken(messaging, {
+                vapidKey:
+                  "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
+              });
 
-        if (token) {
-          const oldToken = localStorage.getItem("FCMToken");
-          if (token !== oldToken) {
-            await RegisterFCMToken(token);
-            localStorage.setItem("FCMToken", token);
-          }
+              if (token) {
+                const oldToken = localStorage.getItem("FCMToken");
+                if (token !== oldToken) {
+                  await RegisterFCMToken(token);
+                  localStorage.setItem("FCMToken", token);
+                }
+              }
+            }
+          };
+
+          registerTokenIfAllowed();
+        } else {
+          console.log("Notification not supported");
         }
-      }
-    };
+      };
 
-    registerTokenIfAllowed();
+      checkIsSupported();
+    } catch (error) {
+      setAlert({
+        isVisible: true,
+        message: "Notfication Not supported",
+        severity: "error",
+      });
+    }
   }, [userID]);
 
   const requestPermission = () => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        requestFirebaseNotificationPermission()
-          .then((token) => {
-            if (token) {
-              console.log("Firebase Token Reload:", token);
-              const OldFCMToken = localStorage.getItem("FCMToken");
-              if (token != OldFCMToken) {
-                RegisterFCMToken(token);
-                localStorage.setItem("FCMToken", token);
+    try {
+      const checkIsSupported = async () => {
+        const IsSupported = await isSupported();
+        if (IsSupported === true) {
+          if (Notification.permission !== "granted") {
+            Notification.requestPermission().then((permission) => {
+              requestFirebaseNotificationPermission()
+                .then((token) => {
+                  if (token) {
+                    console.log("Firebase Token Reload:", token);
+                    const OldFCMToken = localStorage.getItem("FCMToken");
+                    if (token != OldFCMToken) {
+                      RegisterFCMToken(token);
+                      localStorage.setItem("FCMToken", token);
+                    }
+                  }
+                })
+                .catch((err) =>
+                  console.log("Notification permission error:", err)
+                );
+              setPermissionStatus(permission);
+              if (permission === "granted") {
+                console.log("🔔 Notification permission granted!");
+              } else {
+                console.warn("⚠️ Notification permission denied!");
               }
-            }
-          })
-          .catch((err) => console.log("Notification permission error:", err));
-        setPermissionStatus(permission);
-        if (permission === "granted") {
-          console.log("🔔 Notification permission granted!");
+            });
+          }
         } else {
-          console.warn("⚠️ Notification permission denied!");
+          console.log("Notification not supported in this browser");
         }
+      };
+
+      checkIsSupported();
+    } catch (error) {
+      setAlert({
+        isVisible: true,
+        message: "Notfication Not supported",
+        severity: "error",
       });
     }
   };
