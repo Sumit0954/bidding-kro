@@ -32,4 +32,5 @@ export const AdminApiUrls = Object.freeze({
   FETCH_BIDS_REPORT: "/report/admin/bid/",
   FETCH_PARTICIAPATION_REPORTS: "/report/admin/bid/participant/",
   FETCH_FEEDBACK_REPORT: "/report/admin/feedback/",
+  FETCH_TRANSACTION_REPORT: "/report/admin/transaction/",
 });

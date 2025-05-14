@@ -126,7 +126,14 @@ export const transactions_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return data?.row?.original?.company?.name;
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/companies/${data?.row?.original?.company?.id}`}
+        >
+          {data?.row?.original?.company?.name}
+        </NavLink>
+      );
     },
   },
   {
@@ -1602,7 +1609,17 @@ export const transaction_report_column = [
     accessor: "formatted_number",
     align: "left",
     disablePadding: false,
-    width: 100, // Add a uniform width
+    width: 100,
+    Cell: (data) => {
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/transactions/${data?.row?.original?.id}`}
+        >
+          {data?.row?.original?.formatted_number}
+        </NavLink>
+      );
+    },
   },
   {
     Header: "Order ID",
@@ -1610,14 +1627,19 @@ export const transaction_report_column = [
     align: "left",
     disablePadding: false,
     width: 120, // Change to uniform width
+    Cell: (data) => {
+      return data?.row?.original?.order_id;
+    },
   },
-
   {
     Header: "Company Name",
     accessor: "company",
     align: "left",
     disablePadding: false,
     width: 150, // Change to uniform width
+    Cell: (data) => {
+      return data?.row?.original?.company?.name;
+    },
   },
   {
     Header: "Bid ID",
@@ -1625,6 +1647,9 @@ export const transaction_report_column = [
     align: "left",
     disablePadding: false,
     width: 100, // Add a uniform width
+    Cell: (data) => {
+      return data?.row?.original?.bid?.formatted_number;
+    },
   },
   {
     Header: "Bid Title",
@@ -1632,6 +1657,9 @@ export const transaction_report_column = [
     align: "left",
     disablePadding: false,
     width: 100, // Add a uniform width
+    Cell: (data) => {
+      return data?.row?.original?.bid?.title;
+    },
   },
   {
     Header: "Status",
@@ -1639,6 +1667,17 @@ export const transaction_report_column = [
     align: "left",
     disablePadding: false,
     width: 100, // Add a uniform width
+    Cell: (data) => {
+      return (
+        <p
+          style={{
+            color: data?.row?.original?.status === "success" ? "green" : "red",
+          }}
+        >
+          {data?.row?.original?.status}
+        </p>
+      );
+    },
   },
 ];
 
@@ -2009,6 +2048,58 @@ export const rating_report_data = [
     },
   },
 ];
+export const transaction_report_data = [
+  {
+    Header: "Transaction id",
+    accessor: (row) => {
+      console.log(row, " transation");
+      return row?.formatted_number;
+    },
+  },
+  {
+    Header: "Order id",
+    accessor: (row) => {
+      return row?.order_id;
+    },
+  },
+  {
+    Header: "Company Name",
+    accessor: (row) => {
+      return row?.company?.name;
+    },
+  },
+  {
+    Header: "Bid Id",
+    accessor: (row) => {
+      return row?.bid?.formatted_number;
+    },
+  },
+  {
+    Header: "Bid Title",
+    accessor: (row) => {
+      return row?.bid?.title;
+    },
+  },
+  {
+    Header: "Status",
+    accessor: (row) => {
+      return row?.status;
+    },
+  },
+  {
+    Header: "Created At",
+    accessor: (row) => {
+      return row?.created_at;
+    },
+  },
+  {
+    Header: "Paid Amount",
+    accessor: (row) => {
+      return row?.amount;
+    },
+  },
+];
+
 // report download data columns
 
 // report column handler
@@ -2094,11 +2185,11 @@ const reportColumns = {
     api: AdminApiUrls?.FETCH_FEEDBACK_REPORT,
     downloadData: rating_report_data,
   },
-  Transaction: {
+  "Transaction": {
     name: "Transaction",
     column: transaction_report_column,
-    api: null,
-    downloadData: "",
+    api: AdminApiUrls?.FETCH_TRANSACTION_REPORT,
+    downloadData: transaction_report_data,
   },
 };
 

@@ -39,7 +39,8 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { useForm } from "react-hook-form";
 import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
-
+import AccessDenied from "../../../pages/error/AccessDenied";
+import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 const AdminReport = () => {
   const [reportType, setReportType] = useState("Total Companies");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,6 +53,8 @@ const AdminReport = () => {
   const [cityValue, setCityValue] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [accessDenied, setAccessDenied] = useState(null);
+  const [screenLoader, setScreenLoader] = useState(true);
   const { setAlert } = useContext(AlertContext);
   const [dateRange, setDateRange] = useState([
     {
@@ -179,7 +182,7 @@ const AdminReport = () => {
         API = `${api}?${params}`;
       }
 
-      if (name === "RatingAnalysis") {
+      if (name === "RatingAnalysis" || name === "Transaction") {
         params.append("start_date", start_date);
         params.append("end_date", end_date);
         API = `${api}?${params}`;
@@ -197,12 +200,17 @@ const AdminReport = () => {
       } else {
       }
     } catch (error) {
-      setAlert({
-        isVisible: true,
-        message: "Somthing went wrong",
-        severity: "error",
-      });
+      console.log(error, " : error");
+      if (error?.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error?.response?.data?.detail,
+          severity: "error",
+        });
+        setAccessDenied(error?.status);
+      }
     }
+    setScreenLoader(false);
   };
 
   const formattedCategories = categories.map((cat) => ({
@@ -224,11 +232,18 @@ const AdminReport = () => {
     getCategories();
   }, []);
 
-  // Update when the date range updated
+  // Update when the parameters changed
   useEffect(() => {
     fetchAdminReports();
   }, [dateRange, column, stateValue, cityValue, selectedCategory]);
 
+  if (accessDenied === 403) {
+    return <AccessDenied />;
+  }
+
+  if (screenLoader) {
+    return <ScreenLoader />;
+  }
   return (
     <>
       <Alert severity="info" className="my-3">
@@ -479,7 +494,7 @@ const reportTopics = [
   },
   {
     icon: <HourglassEmptyTwoTone fontSize="large" sx={{ color: "orange" }} />,
-    label: "Unregister Companies",
+    label: "Unregistered Companies",
   },
   {
     icon: <GavelTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
@@ -520,10 +535,6 @@ const reportTopics = [
   {
     icon: <AssessmentTwoTone fontSize="large" sx={{ color: "#4CAF50" }} />,
     label: "Rating analyses",
-  },
-  {
-    icon: <MonetizationOnTwoTone fontSize="large" sx={{ color: "	#b95f17" }} />,
-    label: "Revenue",
   },
   {
     icon: <AssuredWorkloadTwoTone fontSize="large" sx={{ color: "green" }} />,
