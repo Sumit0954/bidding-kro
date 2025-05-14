@@ -1,12 +1,10 @@
 // import styles from "./TransactionList.module.scss";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { Box, Alert, TextField, Button, TableCell } from "@mui/material";
 import { transactions_column } from "../../../elements/CustomDataTable/AdminColumnData";
 import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
-import styles from "./TransactionList.module.scss";
-import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { Controller, useForm } from "react-hook-form";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import cn from "classnames";
@@ -26,6 +24,7 @@ const TransactionList = () => {
   });
 
   const { setAlert } = useContext(AlertContext);
+
   const onSubmit = async (data) => {
     try {
       const updateTransactionAmount = new FormData();
@@ -61,6 +60,7 @@ const TransactionList = () => {
       </TableCell>
     );
   };
+
   const getTransactions = async () => {
     try {
       const response = await _sendAPIRequest(

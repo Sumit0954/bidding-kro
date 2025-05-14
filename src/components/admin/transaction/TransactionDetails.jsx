@@ -87,7 +87,7 @@ const TransactionDetails = () => {
             </div>
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>
+              <p className={styles["col-data"]} style={{ cursor: "pointer" }}>
                 <Tooltip title={transactionDetails?.bid?.title}>
                   {truncateString(transactionDetails?.bid?.title, 30)}
                 </Tooltip>
@@ -128,11 +128,7 @@ const TransactionDetails = () => {
             <div className="col">
               <h6 className={styles["col-heading"]}>Order Id</h6>
               <p className={styles["col-data"]}>
-                <NavLink
-                  to={`/admin/transactions/payments/${transactionDetails?.razorpay_order_id}`}
-                >
-                  {transactionDetails?.razorpay_order_id}
-                </NavLink>
+                {transactionDetails?.order_id}
               </p>
             </div>
             <div className="col">
