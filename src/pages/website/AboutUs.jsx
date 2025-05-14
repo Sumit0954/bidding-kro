@@ -10,7 +10,7 @@ import {
   Grow,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import styles from "./Banner.module.scss";
+import styles from "./AboutUs.module.scss";
 import aboutUsbanner from "../../../src/assets/images/website/home/about-us-banner.avif";
 import who_we_are_img from "../../assets/images/website/about-us/who-we-are.jpg";
 import vission_misson_img from "../../assets/images/website/about-us/vision-misson.jpg";
@@ -32,6 +32,25 @@ const AboutUs = () => {
   };
   return (
     <>
+      <div className={styles["banner"]}>
+        <div className={styles["banner-content"]}>
+          <div className={styles["overlay"]}></div> {/* dark layer */}
+          <div className={styles["banner-text"]}>
+            <h1>About Us</h1>
+            <p>
+              Empowering businesses with smarter, faster, and transparent
+              solutions. We’re committed to transforming the way you connect,
+              collaborate, and grow.
+            </p>
+          </div>
+          <img
+            src={aboutUsbanner}
+            alt="About Us Banner"
+            className={styles["blog-banner-img"]}
+          />
+        </div>
+      </div>
+
       <div
         className={styles["aboutUsWrapper"]}
         style={{
@@ -42,14 +61,6 @@ const AboutUs = () => {
           padding: "0", // Ensure no padding around the background
         }}
       >
-        <div className={styles["banner"]}>
-          <img
-            src={aboutUsbanner}
-            alt="BlogBanner"
-            className={styles["blog-banner-img"]}
-          />
-        </div>
-
         {/* About Us Content */}
         <Container sx={{ py: 8 }}>
           <Grid container spacing={4} alignItems="center">
