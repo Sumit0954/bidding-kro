@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import styles from "./AdminHeader.module.scss";
 import cn from "classnames";
 import UserIcon from "../../assets/images/portal/layout/icons/user-icon.svg";
+import AdminIcon from "../../assets/images/portal/layout/icons/adminIcon.svg";
+
 import AccountSettingMenu from "../../elements/DropdownMenu/AccountSettingMenu";
 import { Box } from "@mui/material";
 import { AuthContext } from "../../contexts/AuthProvider";
@@ -60,7 +62,7 @@ const AdminHeader = () => {
               >
                 <div className={styles["icon-container"]}>
                   <Box className={cn("cursor")} onClick={handleClick}>
-                    <img src={UserIcon} alt="NotificationIcon" />
+                    <img src={AdminIcon} alt="NotificationIcon" />
                   </Box>
                   <AccountSettingMenu
                     open={open}
