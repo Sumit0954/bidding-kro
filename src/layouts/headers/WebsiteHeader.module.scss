@@ -165,5 +165,18 @@
         display: block;
       }
     }
+
+    .loggedin-profile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-right: 20px;
+      margin-bottom: 10px;
+      margin-left: 5px;
+      font-size: 18px;
+      text-decoration: none;
+      color: var(--primary-color);
+    }
   }
 }
