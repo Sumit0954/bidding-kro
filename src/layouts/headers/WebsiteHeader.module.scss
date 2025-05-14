@@ -82,6 +82,10 @@
     color: var(--primary-color);
   }
 
+  ul li {
+    text-align: left;
+  }
+
   .btn-container {
     display: flex;
     gap: 8px;
@@ -106,12 +110,34 @@
       }
     }
   }
+  .capsule-button {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: var(--secondary-color);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
+    }
+  }
 }
 
 @media screen and (max-width: 575px) {
   .custom-navbar {
     .logo-img {
       height: 38px;
+    }
+
+    .custom-navlink {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .btn-container {

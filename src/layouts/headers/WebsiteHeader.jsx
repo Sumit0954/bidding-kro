@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useState } from "react";
 import styles from "./WebsiteHeader.module.scss";
 import cn from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -7,15 +7,10 @@ import { Avatar, Tooltip } from "@mui/material";
 import {
   AirplayOutlined,
   GroupOutlined,
-  Info,
-  LibraryBooks,
   LibraryBooksTwoTone,
   Login,
-  PermPhoneMsg,
   PermPhoneMsgTwoTone,
-  PersonAdd,
   PersonAddTwoTone,
-  TryOutlined,
 } from "@mui/icons-material";
 
 const WebsiteHeader = () => {
@@ -29,8 +24,16 @@ const WebsiteHeader = () => {
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }, 200);
+    }, 300);
   };
+
+  const handleNavLinkClick = () => {
+    const navbar = document.getElementById("navbarTogglerDemo02");
+    if (navbar?.classList.contains("show")) {
+      navbar.classList.remove("show"); // hide the menu
+    }
+  };
+
   return (
     <header>
       <nav
@@ -63,6 +66,8 @@ const WebsiteHeader = () => {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <NavLink
+                  onClick={handleNavLinkClick}
+                  to="/about"
                   className={({ isActive }) =>
                     cn([
                       "nav-link",
@@ -71,13 +76,13 @@ const WebsiteHeader = () => {
                       { [styles["active-link"]]: isActive },
                     ])
                   }
-                  to="/about"
                 >
                   About <GroupOutlined sx={{ fontSize: 20, ml: 1 }} />
                 </NavLink>
               </li>
               <li className="nav-item">
                 <NavLink
+                  onClick={handleNavLinkClick}
                   className={({ isActive }) =>
                     cn([
                       "nav-link",
@@ -94,6 +99,7 @@ const WebsiteHeader = () => {
               </li>
               <li className="nav-item">
                 <NavLink
+                  onClick={handleNavLinkClick}
                   className={({ isActive }) =>
                     cn([
                       "nav-link",
@@ -123,6 +129,7 @@ const WebsiteHeader = () => {
                 <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                   <li className="nav-item">
                     <NavLink
+                      onClick={handleNavLinkClick}
                       className={({ isActive }) =>
                         cn([
                           "nav-link",
@@ -138,6 +145,7 @@ const WebsiteHeader = () => {
                   </li>
                   <li className="nav-item">
                     <NavLink
+                      onClick={handleNavLinkClick}
                       className={({ isActive }) =>
                         cn([
                           "nav-link",
@@ -153,12 +161,10 @@ const WebsiteHeader = () => {
                   </li>
                   <li className="nav-item">
                     <button
-                      className={cn(
-                        "nav-link",
-                        "px-3",
-                        styles["custom-navlink"]
-                      )}
-                      onClick={handleBookADemmoClick}
+                      className={styles["capsule-button"]}
+                      onClick={() => {
+                        handleNavLinkClick(), handleBookADemmoClick();
+                      }}
                     >
                       Book A Demo{" "}
                       <AirplayOutlined sx={{ fontSize: 20, ml: 1 }} />
