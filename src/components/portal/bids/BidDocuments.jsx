@@ -14,8 +14,6 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { extractFileExtension } from "../../../helpers/common";
-import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
-import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
@@ -28,10 +26,7 @@ const BidDocuments = () => {
   const { setAlert } = useContext(AlertContext);
   const [documents, setDocuments] = useState([]);
   const [status, setStatus] = useState("");
-  const [activateBid, setActivateBid] = useState(false);
-  const [showThankyou, setShowThankyou] = useState(false);
   const [screenLoader, setScreenLoader] = useState(true);
-  const { userDetails } = useContext(UserDetailsContext);
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     document: null,
@@ -171,39 +166,6 @@ const BidDocuments = () => {
     setDeleteDetails({ open: false, document: null, message: "" }); // Close the popup after delete
   };
 
-  // const handleDeleteDocument = async (data) => {
-  //   const { id, name } = data;
-  //   if (id) {
-  //     try {
-  //       const response = await _sendAPIRequest(
-  //         "DELETE",
-  //         PortalApiUrls.DELETE_DOCUMENT + `${id}/`,
-  //         "",
-  //         true
-  //       );
-  //       if (response.status === 204) {
-  //         setAlert({
-  //           isVisible: true,
-  //           message: `Document ${name} has been deleted.`,
-  //           severity: "success",
-  //         });
-  //         window.location.reload();
-  //       }
-  //     } catch (error) {
-  //       const { data } = error.response;
-  //       if (data) {
-  //         if (data.error) {
-  //           setAlert({
-  //             isVisible: true,
-  //             message: data.error,
-  //             severity: "error",
-  //           });
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
   const addAction = (cell) => {
     if (cell.column.id === "action") {
       return (
@@ -259,25 +221,6 @@ const BidDocuments = () => {
             <div className={cn("row", styles["form-section"])}>
               <div className={styles["documents-section"]}>
                 <h4>Upload Documents</h4>
-
-                {status === "active" ? (
-                  <button
-                    className={cn("btn", "button", "approve")}
-                    type="button"
-                    disabled
-                  >
-                    Active
-                  </button>
-                ) : (
-                  <button
-                    className={cn("btn", "button")}
-                    type="button"
-                    onClick={() => setActivateBid(true)}
-                    disabled={status === "cancelled" ? true : false}
-                  >
-                    Activate Bid
-                  </button>
-                )}
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -355,14 +298,6 @@ const BidDocuments = () => {
                       Upload
                     </button>
                   )}
-                  {/* <button
-                    className={cn("btn", "button")}
-                    type="submit"
-                    disabled={status === "cancelled" ? true : false}
-                    onClick={() => navigate(`/portal/bids/details/${id}`)}
-                  >
-                    Procced further
-                  </button> */}
                 </div>
               </form>
               <Alert severity="info" sx={{ marginBottom: "15px" }}>
@@ -421,25 +356,6 @@ const BidDocuments = () => {
           </div>
         </div>
       </div>
-
-      {activateBid && (
-        <RazorpayPaymentHandler
-          userData={userDetails}
-          setActivateBid={setActivateBid}
-          setShowThankyou={setShowThankyou}
-          id={id}
-        />
-      )}
-
-      {showThankyou && (
-        <ThankyouModal
-          showThankyou={showThankyou}
-          setShowThankyou={setShowThankyou}
-          heading={"Payment Successful!"}
-          description={`Your bid has been activated successfully!`}
-          showLogin={false}
-        />
-      )}
     </>
   );
 };
