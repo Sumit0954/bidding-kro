@@ -7,27 +7,96 @@
   margin: 30px auto !important;
   margin-bottom: 0 !important;
   align-items: center;
-
-  .btn-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-  }
+  flex-wrap: wrap;
 }
 
-.address-accordion {
-  box-shadow: var(--glow-shadow) !important;
+.address-section h4 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
 }
 
 .custom-accordion-summary {
-  >div {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
+  .accordion-header-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
 
-    .delete-btn {
-      padding: 0;
+  // CustomBadge.scss
+  .billing-badge {
+    font-weight: 500;
+    font-size: 0.75rem;
+    height: 20px;
+    border-radius: 10px;
+    padding: 0 6px;
+    color: white;
+    background-color: var(--primary-color); // same as MUI warning main color
+  }
+
+  @keyframes shake {
+    0% {
+      transform: rotate(0deg);
     }
+    25% {
+      transform: rotate(8deg);
+    }
+    50% {
+      transform: rotate(-10deg);
+    }
+    75% {
+      transform: rotate(8deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .delete-btn {
+    position: absolute;
+    top: 4px; // changed from bottom to top to place it in the top-right
+    right: 4px;
+    padding: 4px;
+    color: #555;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: red;
+
+      svg {
+        animation: shake 0.4s ease-in-out;
+      }
+    }
+  }
+}
+
+.address-section .btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 📱 Responsive behavior for small screens */
+@media screen and (max-width: 768px) {
+  .address-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .address-section .btn-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .address-section h4 {
+    font-size: 1rem;
+    align-items: center;
+  }
+
+  .btn-container .btn {
+    width: 100%;
   }
 }

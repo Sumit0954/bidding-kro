@@ -8,6 +8,8 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Chip,
   IconButton,
   Typography,
 } from "@mui/material";
@@ -17,10 +19,11 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { modifiedData } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
-import { useNavigate } from "react-router-dom";
+import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 
-const AddressForm = ({ addresses, id }) => {
-  const navigate = useNavigate();
+const AddressForm = ({ addresses }) => {
+  const [defaultAddress, setDefaultAddress] = useState(null);
+
   const { control, reset } = useForm({
     defaultValues: {
       addresses: addresses,
@@ -100,13 +103,6 @@ const AddressForm = ({ addresses, id }) => {
         <div className={styles["btn-container"]}>
           <button
             type="button"
-            className={cn("btn", "button", styles["custom-btn"])}
-            onClick={() => navigate(`/portal/company-profile/category/${id}`)}
-          >
-            Back
-          </button>
-          <button
-            type="button"
             className={cn(
               "btn",
               "button",
@@ -126,6 +122,13 @@ const AddressForm = ({ addresses, id }) => {
           index={index}
           address={item}
           onDelete={handleDeleteAddress}
+          defaultAddress={defaultAddress}
+          setDefaultAddress={setDefaultAddress}
+          fields={fields}
+          formCount={formCount}
+          setFormCount={setFormCount}
+          append={append}
+          remove={remove}
         />
       ))}
     </>
@@ -134,11 +137,29 @@ const AddressForm = ({ addresses, id }) => {
 
 export default AddressForm;
 
-const IndividualAddressForm = ({ address, index, onDelete }) => {
+const IndividualAddressForm = ({
+  address,
+  index,
+  onDelete,
+  defaultAddress,
+  setDefaultAddress,
+  fields,
+  formCount,
+  setFormCount,
+  append,
+  remove,
+}) => {
   const { control, handleSubmit, setError, watch } = useForm({
     defaultValues: {
       address: address,
     },
+  });
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    index: null,
+    address_id: null,
   });
   const { setAlert } = useContext(AlertContext);
   const [states, setStates] = useState([]);
@@ -236,152 +257,253 @@ const IndividualAddressForm = ({ address, index, onDelete }) => {
       }
     }
   };
+  const isBillingAddressAvailable = fields.some((address) => {
+    return address?.id && address?.is_billing_address;
+  });
 
-  const submitForm = async (data, index) => {
-    setLoading(true);
+  const submitAddressForm = async (data, checked) => {
+    try {
+      let formData = new FormData();
 
-    let formData = new FormData();
-    if (data) {
-      formData.append("address", data.street);
-      formData.append("state", data.state.lable);
-      formData.append("city", data.city.lable);
-      formData.append("pincode", data.pincode);
-      formData.append("latitude", geoLocation.latitude);
-      formData.append("longitude", geoLocation.longitude);
-      formData.append("json_id", geoLocation.json_id);
+      if (data) {
+        formData.append("address", data.street);
+        formData.append("state", data.state.lable);
+        formData.append("city", data.city.lable);
+        formData.append("pincode", data.pincode);
+        formData.append("latitude", geoLocation.latitude);
+        formData.append("longitude", geoLocation.longitude);
+        formData.append("json_id", geoLocation.json_id);
+        if (checked) formData.append("is_billing_address", true);
 
-      try {
-        const response = await _sendAPIRequest(
-          "POST",
-          PortalApiUrls.CREATE_ADDRESS,
-          formData,
-          true
-        );
-        if (response.status === 201) {
-          window.location.reload();
+        try {
+          const response = await _sendAPIRequest(
+            "POST",
+            PortalApiUrls.CREATE_ADDRESS,
+            formData,
+            true
+          );
+          if (response.status === 201) {
+            append(response?.data);
+            remove(index);
+            setFormCount(formCount - 1);
+            setLoading(false);
+            setDefaultAddress(null);
+          }
+        } catch (error) {
           setLoading(false);
-        }
-      } catch (error) {
-        setLoading(false);
-        const { data } = error.response;
-        if (error.status === 403) {
-          setAlert({
-            isVisible: true,
-            message: error.response.data.detail,
-            severity: "error",
-          });
-        }
-        if (data) {
-          setErrors(data, watch, setError);
-
-          if (data.error) {
+          const { data } = error.response;
+          if (error.status === 403) {
             setAlert({
               isVisible: true,
-              message: data.error,
+              message: error.response.data.detail,
               severity: "error",
             });
           }
+          if (data) {
+            setErrors(data, watch, setError);
+
+            if (data.error) {
+              setAlert({
+                isVisible: true,
+                message: data.error,
+                severity: "error",
+              });
+            }
+          }
+          setDefaultAddress(null);
         }
       }
+    } catch (error) {}
+  };
+
+  const submitForm = async (data) => {
+    setLoading(true);
+
+    if (defaultAddress !== null) {
+      if (isBillingAddressAvailable) {
+        setAlert({
+          isVisible: true,
+          message: "You had already selected deafult address",
+          severity: "error",
+        });
+        setLoading(false);
+      } else {
+        submitAddressForm(data, true);
+      }
+    } else {
+      submitAddressForm(data);
     }
   };
 
+  const handleDeleteAddress = (choice) => {
+    if (choice) {
+      onDelete(deleteDetails?.index, deleteDetails?.address_id);
+      deleteDetails.open = false;
+    } else {
+      deleteDetails.open = false;
+    }
+  };
   return (
-    <form onSubmit={handleSubmit((data) => submitForm(data, index))}>
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["address-accordion"]}`,
-        }}
-      >
-        <AccordionSummary className={styles["custom-accordion-summary"]}>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Address {address.id && "Line"} {index + 1}
-          </Typography>
-          <IconButton className={styles["delete-btn"]}>
-            <Delete onClick={() => onDelete(index, address.id)} />
-          </IconButton>
-        </AccordionSummary>
-        {address.id && (
-          <AccordionDetails>{`${address.address}, ${address.city}, ${address.state}, ${address.country} - ${address.pincode}`}</AccordionDetails>
-        )}
-
-        {!address.id && (
-          <AccordionDetails>
-            <div className="row">
-              <div className="col-lg-12">
-                <CustomInput
-                  control={control}
-                  label="Street Address"
-                  name="street"
-                  placeholder="Street Address"
-                  rules={{
-                    required: "Street Address is required.",
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-4">
-                <SearchSelect
-                  control={control}
-                  options={states}
-                  label="State"
-                  name="state"
-                  placeholder="State"
-                  rules={{
-                    required: "State  is required.",
-                  }}
-                  setValue={setStateValue}
-                  value={stateValue}
-                />
-              </div>
-              <div className="col-lg-4">
-                <SearchSelect
-                  control={control}
-                  options={cities}
-                  label="City"
-                  name="city"
-                  placeholder="City"
-                  rules={{
-                    required: "City  is required.",
-                  }}
-                  handleInputChange={handleCityInputChange}
-                  setValue={setCityValue}
-                  value={cityValue}
-                />
-              </div>
-              <div className="col-lg-4">
-                <CustomInput
-                  control={control}
-                  label="Pincode"
-                  name="pincode"
-                  placeholder="Pincode"
-                  rules={{
-                    required: "Pincode  is required.",
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row mt-2">
-              <div className="col text-end">
-                {loading ? (
-                  <ButtonLoader size={60} />
-                ) : (
-                  <button
-                    type="submit"
-                    className={cn("btn", "button", styles["custom-btn"])}
-                    onClick={handleSubmit((data) => submitForm(data, index))}
-                  >
-                    Save Address
-                  </button>
+    <>
+      <form onSubmit={handleSubmit((data) => submitForm(data, index))}>
+        <Accordion
+          defaultExpanded
+          square={true}
+          classes={{
+            root: `custom-accordion ${styles["address-accordion"]}`,
+          }}
+        >
+          <AccordionSummary className={styles["custom-accordion-summary"]}>
+            <div className={styles["accordion-header-container"]}>
+              <Typography classes={{ root: "custom-accordion-heading" }}>
+                Address
+                {address?.is_billing_address && (
+                  <Box component="span" sx={{ ml: 1 }}>
+                    <Chip
+                      label="Billing Address"
+                      size="small"
+                      className={styles["billing-badge"]}
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "0.75rem",
+                        height: "20px",
+                        borderRadius: "10px",
+                        padding: "0 6px",
+                        color: "white",
+                        bgcolor: "",
+                      }}
+                    />
+                  </Box>
                 )}
-              </div>
+              </Typography>
+              <IconButton
+                className={styles["delete-btn"]}
+                onClick={() =>
+                  setDeleteDetails({
+                    open: true,
+                    title: "Delete Address Confirmation",
+                    message: "Are you sure you want to delete this address",
+                    index: index,
+                    address_id: address.id,
+                  })
+                }
+              >
+                <Delete />
+              </IconButton>
             </div>
-          </AccordionDetails>
-        )}
-      </Accordion>
-    </form>
+          </AccordionSummary>
+
+          {address.id && (
+            <AccordionDetails>{`${address.address}, ${address.city}, ${address.state}, ${address.country} - ${address.pincode}`}</AccordionDetails>
+          )}
+
+          {!address.id && (
+            <AccordionDetails>
+              <div className="row">
+                <div className="col-lg-12">
+                  <CustomInput
+                    control={control}
+                    label="Street Address"
+                    name="street"
+                    placeholder="Street Address"
+                    rules={{
+                      required: "Street Address is required.",
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-4">
+                  <SearchSelect
+                    control={control}
+                    options={states}
+                    label="State"
+                    name="state"
+                    placeholder="State"
+                    rules={{
+                      required: "State  is required.",
+                    }}
+                    setValue={setStateValue}
+                    value={stateValue}
+                  />
+                </div>
+                <div className="col-lg-4">
+                  <SearchSelect
+                    control={control}
+                    options={cities}
+                    label="City"
+                    name="city"
+                    placeholder="City"
+                    rules={{
+                      required: "City  is required.",
+                    }}
+                    handleInputChange={handleCityInputChange}
+                    setValue={setCityValue}
+                    value={cityValue}
+                  />
+                </div>
+                <div className="col-lg-4">
+                  <CustomInput
+                    control={control}
+                    label="Pincode"
+                    name="pincode"
+                    placeholder="Pincode"
+                    rules={{
+                      required: "Pincode  is required.",
+                    }}
+                  />
+                </div>
+              </div>
+              {!isBillingAddressAvailable && (
+                <div className="row mt-3">
+                  <div className="col">
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        className="form-check-input"
+                        name="defaultAddress"
+                        value={defaultAddress}
+                        id={`default-radio-${defaultAddress}`}
+                        checked={defaultAddress === index}
+                        onChange={() => setDefaultAddress(index)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`default-radio-${index}`}
+                      >
+                        Set as billing address
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="row mt-2">
+                <div className="col text-center">
+                  {loading ? (
+                    <ButtonLoader size={60} />
+                  ) : (
+                    <button
+                      type="submit"
+                      className={cn("btn", "button", styles["custom-btn"])}
+                      onClick={handleSubmit((data) => submitForm(data, index))}
+                    >
+                      Save Address
+                    </button>
+                  )}
+                </div>
+              </div>
+            </AccordionDetails>
+          )}
+        </Accordion>
+      </form>
+      {deleteDetails?.open && (
+        <DeleteDialog
+          title={deleteDetails.title}
+          message={deleteDetails.message}
+          handleClick={handleDeleteAddress}
+        />
+      )}
+    </>
   );
 };

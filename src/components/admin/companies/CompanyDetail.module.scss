@@ -1,13 +1,23 @@
-.col-heading{
+.col-heading {
   font-size: 15px;
   color: var(--admin-text-color-2);
 }
+// CustomBadge.scss
+.billing-badge {
+  font-weight: 500;
+  font-size: 0.75rem;
+  height: 20px;
+  border-radius: 10px;
+  padding: 0 6px;
+  color: white;
+  background-color: var(--primary-color); // same as MUI warning main color
+}
 
-.col-data{
+.col-data {
   margin-bottom: 0;
   font-size: 14px;
 
-  a{
+  a {
     text-decoration: none;
   }
 }

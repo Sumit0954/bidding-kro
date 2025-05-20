@@ -4,6 +4,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Chip,
   Divider,
   IconButton,
@@ -295,7 +296,16 @@ const CompanyDetail = ({ companyDetails }) => {
                   <div className="row">
                     <div className="col">
                       <h6 className={styles["col-heading"]}>
-                        Address Line {index + 1}
+                        Address
+                        {item?.is_billing_address && (
+                          <Box component="span" sx={{ ml: 1 }}>
+                            <Chip
+                              label="Billing Address"
+                              size="small"
+                              className={styles["billing-badge"]}
+                            />
+                          </Box>
+                        )}
                       </h6>
                       <p className={styles["col-data"]}>
                         {`${item.address}, ${item.city}, ${item.state}, ${item.country} - ${item.pincode}`}
