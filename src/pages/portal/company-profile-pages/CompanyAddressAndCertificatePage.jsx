@@ -33,7 +33,10 @@ const CompanyAddressAndCertificatePage = () => {
           >
             <div className={cn("row", styles["form-section"])}>
               <AddressForm addresses={addresses} id={id} />
-              <CertificateForm certificates={certificates} />
+              <CertificateForm
+                certificates={certificates}
+                setCertificates={setCertificates}
+              />
               <div
                 className={styles["btn-container"]}
                 style={{

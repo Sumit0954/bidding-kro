@@ -12,7 +12,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import QueryFormModal from "../../../elements/CustomModal/QueryFormModal";
 
-const CertificateForm = ({ certificates }) => {
+const CertificateForm = ({ certificates, setCertificates }) => {
   const [certificateTypes, setCertificateTypes] = useState([]);
   const [preview, setPreview] = useState(null);
   const {
@@ -56,6 +56,7 @@ const CertificateForm = ({ certificates }) => {
     getCertificateTypes();
   }, []);
 
+  console.log(certificates, " : certificate");
   const handleDeleteCertificate = async (certificate_id) => {
     try {
       const data = { certificate_id: certificate_id };
@@ -71,7 +72,11 @@ const CertificateForm = ({ certificates }) => {
           message: `Certificate has been deleted.`,
           severity: "success",
         });
-        window.location.reload();
+        setCertificates((prevcertificates) =>
+          prevcertificates.filter(
+            (certificate) => certificate?.id !== certificate_id
+          )
+        );
       }
     } catch (error) {
       const { data } = error.response;
@@ -93,7 +98,6 @@ const CertificateForm = ({ certificates }) => {
       }
     }
   };
-
   const submitForm = async (data) => {
     setLoading(true);
 
@@ -109,8 +113,13 @@ const CertificateForm = ({ certificates }) => {
         true
       );
       if (response.status === 201) {
-        window.location.reload();
+        // console.log(response, " : response");
+        setCertificates((prevCertificate) => [
+          ...prevCertificate,
+          response?.data,
+        ]);
         setLoading(false);
+        setPreview(null);
       }
     } catch (error) {
       setLoading(false);
@@ -133,8 +142,11 @@ const CertificateForm = ({ certificates }) => {
           });
         }
       }
+      setPreview(null);
     }
   };
+
+  console.log(certificates, " : certificates");
 
   return (
     <>
@@ -197,15 +209,28 @@ const CertificateForm = ({ certificates }) => {
                 variant="contained"
                 tabIndex={-1}
                 startIcon={<CloudUpload />}
+                className={"updload-certificate-btn"}
                 sx={{
-                  width: "15rem",
+                  width: {
+                    xs: "100%",
+                    sm: "15rem",
+                  },
+                  fontSize: {
+                    xs: "0.75rem",
+                    sm: "0.875rem",
+                  },
+                  padding: {
+                    xs: "0.5rem 1rem",
+                    sm: "0.75rem 1.5rem",
+                  },
                   backgroundColor: "var(--primary-color)",
                   "&:hover": {
                     backgroundColor: "var(--secondary-color)",
                   },
+                  textAlign: "center",
                 }}
               >
-                Choose a Certificate
+                Choose Certificate
                 <input
                   {...register("file", {
                     required: "Certificate file is required.",
