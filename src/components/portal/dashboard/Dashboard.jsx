@@ -74,33 +74,33 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const checkNotificationPermission = () => {
-      if (isNotificationSupported()) {
+    if (isNotificationSupported()) {
+      const checkNotificationPermission = () => {
         setPermissionStatus(Notification.permission);
-      }
-    };
-    const registerTokenIfAllowed = async () => {
-      if (Notification.permission === "granted") {
-        console.log("Auto-registering token after login...");
+        const registerTokenIfAllowed = async () => {
+          if (Notification.permission === "granted") {
+            console.log("Auto-registering token after login...");
 
-        const messaging = getMessaging();
-        const token = await getToken(messaging, {
-          vapidKey:
-            "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
-        });
+            const messaging = getMessaging();
+            const token = await getToken(messaging, {
+              vapidKey:
+                "BHNz8PeJeBl7HKgF_URU_cYjxMgijGUFVPlDDOEAp0jO0qEGbzj80IBT8uOmSbY-xhfx94g8f9c4nK1yWO0cOJY",
+            });
 
-        if (token) {
-          const oldToken = localStorage.getItem("FCMToken");
-          if (token !== oldToken) {
-            await RegisterFCMToken(token);
-            localStorage.setItem("FCMToken", token);
+            if (token) {
+              const oldToken = localStorage.getItem("FCMToken");
+              if (token !== oldToken) {
+                await RegisterFCMToken(token);
+                localStorage.setItem("FCMToken", token);
+              }
+            }
           }
-        }
-      }
-    };
+        };
+        registerTokenIfAllowed();
+      };
 
-    checkNotificationPermission();
-    registerTokenIfAllowed();
+      checkNotificationPermission();
+    }
   }, [userID]);
 
   const requestPermission = () => {

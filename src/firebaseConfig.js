@@ -15,7 +15,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 export default firebaseApp;
 
 // Get Firebase Messaging Instance
-const messaging = getMessaging();
+// const messaging = getMessaging();
 
 // Handle Foreground Notifications
 // onMessage(messaging, (payload) => {
