@@ -280,6 +280,7 @@ const CompanyProfile = () => {
                       variant="contained"
                       tabIndex={-1}
                       startIcon={<CloudUpload />}
+                      className={styles["upload-logo-btn"]}
                       sx={{
                         width: "15rem",
                         backgroundColor: "var(--primary-color)",
@@ -296,6 +297,7 @@ const CompanyProfile = () => {
                         className="visually-hidden-input"
                       />
                     </Button>
+
                     <p className={styles["img-suggestion"]}>
                       200KB max. JPEG, PNG, JPG format only. Suggested photo
                       width and height: 200*100px.
