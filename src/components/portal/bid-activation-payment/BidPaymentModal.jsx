@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Modal,
   Box,
@@ -13,6 +13,10 @@ import styles from "./BidPaymentModal.module.scss";
 import bid_payment from "../../../assets/images/portal/bids/bid-payment.jpg";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { AlertContext } from "../../../contexts/AlertProvider";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { NavLink } from "react-router-dom";
+import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 
 export default function BidPaymentModal({
   activateBid,
@@ -24,7 +28,12 @@ export default function BidPaymentModal({
   checkBidConfirmation,
 }) {
   const intervalRef = useRef(null);
+  const { setAlert } = useContext(AlertContext);
+  const [btnLoader, setBtnLoader] = useState(false);
+  const { companyDetails } = useContext(CompanyDetailsContext);
+
   const fetchOrderStatus = async () => {
+    setBtnLoader(true);
     const bidFormData = new FormData();
     bidFormData.append("bid", bidid);
     try {
@@ -44,7 +53,30 @@ export default function BidPaymentModal({
         }, 15000);
         setTimeout(() => setConfirmPaymentLoading(false), 900000);
       }
-    } catch (error) {}
+    } catch (error) {
+      if (error?.status === 400) {
+        if (error?.response?.data?.error_code === 1005) {
+          setAlert({
+            isVisible: true,
+            message: (
+              <>
+                {error?.response?.data?.error_description}
+                {" - "}
+                <NavLink
+                  to={`/portal/company-profile/address-certificate/${companyDetails?.id}`}
+                  className={styles["address-link"]}
+                >
+                  Click here
+                </NavLink>
+              </>
+            ),
+            severity: "error",
+          });
+        }
+        setActivateBid(false);
+      }
+    }
+    setBtnLoader(false);
   };
   const verifyBidPayment = async () => {
     const bidFormData = new FormData();
@@ -130,15 +162,20 @@ export default function BidPaymentModal({
                 </Typography>
               </Box>
             </Box>
-            <Button
-              fullWidth
-              variant="contained"
-              color="info"
-              className={styles.payButton}
-              onClick={() => fetchOrderStatus()}
-            >
-              Pay Now
-            </Button>
+
+            {btnLoader ? (
+              <ButtonLoader size={60} />
+            ) : (
+              <Button
+                fullWidth
+                variant="contained"
+                color="info"
+                className={styles.payButton}
+                onClick={() => fetchOrderStatus()}
+              >
+                Pay Now
+              </Button>
+            )}
           </CardContent>
         </Card>
       </Box>

@@ -29,3 +29,13 @@
     background-color: var(--secondary-color) !important;
   }
 }
+
+.address-link {
+  color: white;
+  text-decoration: none;
+  transition: text-decoration 0.2s;
+
+  &.address-link:hover {
+    text-decoration: underline;
+  }
+}
