@@ -248,23 +248,12 @@ const Livebids = ({ listType }) => {
               </Card>
             ))
           ) : (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                bgcolor: "#f0f4f8",
-                p: 2,
-                backgroundColor: "none",
-              }}
-            >
+            <>
               <Box
                 component="img"
                 src={NoliveBidImg}
                 alt="No Bid Available"
-                sx={{ width: "400px", mb: 2 }}
+                className={styles["no-bid-img"]}
               />
               <Typography
                 variant="h5"
@@ -273,7 +262,7 @@ const Livebids = ({ listType }) => {
               >
                 No Live Bid Available
               </Typography>
-            </Box>
+            </>
           )}
 
           {/* Upcoming Bids Section Divider */}
@@ -390,7 +379,7 @@ const Livebids = ({ listType }) => {
                 component="img"
                 src={NoliveBidImg}
                 alt="No Bid Available"
-                sx={{ width: "400px", mb: 2 }}
+                className={styles["no-bid-img"]}
               />
               <Typography
                 variant="h5"

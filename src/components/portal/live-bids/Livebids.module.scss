@@ -38,18 +38,21 @@
 
 .countDown_label {
   font-size: 12px !important; /* Adjust font size for label */
-  font-weight :900;
+  font-weight: 900;
+}
+
+.no-bid-img {
+  width: 350px;
 }
 
 @media (max-width: 600px) {
   .countDown_timer {
-    width: 50px; /* Smaller size for mobile */
-    height: 50px;
+    width: 60px; /* Smaller size for mobile */
+    height: 60px;
   }
 
   .countDown_value {
     font-size: 8px; /* Adjust font size */
-
   }
 
   .countDown_label {
@@ -60,12 +63,15 @@
     font-size: 12px; /* Smaller button font */
     padding: 6px 16px; /* Adjust padding */
   }
+  .no-bid-img {
+    width: 200px;
+  }
 }
 
 @media (max-width: 400px) {
   .countDown_timer {
-    width: 40px;
-    height: 40px;
+    width: 60px; /* Smaller size for mobile */
+    height: 60px;
   }
 
   .countDown_value {
@@ -80,5 +86,7 @@
     font-size: 10px;
     padding: 4px 12px;
   }
+  .no-bid-img {
+    width: 200px;
+  }
 }
-

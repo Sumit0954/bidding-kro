@@ -122,10 +122,27 @@ function LivebidDetail() {
   return (
     <Container maxWidth="lg">
       <Grid container justifyContent="space-between" alignItems="center">
-        <Typography variant="h5" fontWeight="bold">
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{
+            fontSize: {
+              xs: "1rem", // small screen (e.g., phones)
+              sm: "1.25rem", // tablets
+              md: "1.5rem", // desktops
+            },
+            marginBottom: {
+              xs: "10px",
+            },
+            textAlign: {
+              xs: "center",
+            },
+          }}
+        >
           {truncateString(bid?.title, 50)}
         </Typography>
-        <Box textAlign="center" className={styles["bidEndTime"]}>
+
+        <Box textAlign="center" className={styles["bidEndTime"]} >
           <Typography variant="subtitle2" fontWeight="bold">
             Bid Ends in
           </Typography>
@@ -136,7 +153,27 @@ function LivebidDetail() {
           <Typography variant="caption">Hours Minutes Seconds</Typography>
         </Box>
       </Grid>
-      <Typography variant="subtitle1">
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: {
+            xs: "1rem", // small screen (e.g., phones)
+            sm: "1.25rem", // tablets
+            md: "1.3rem", // desktops
+          },
+          marginBottom: {
+            xs: "10px",
+          },
+          marginTop: {
+            xs: "10px",
+          },
+          textAlign: {
+            xs: "center",
+            sm : "left",
+            md : "left"
+          },
+        }}
+      >
         Bid ID: <strong>EB240000{bid?.id}</strong> |{" "}
         {type !== "created" && `Buyer: ${bid?.company?.name} |`} Published:{" "}
         {dateTimeFormatter(bid?.created_at)}

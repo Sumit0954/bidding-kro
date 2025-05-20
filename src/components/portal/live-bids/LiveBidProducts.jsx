@@ -217,7 +217,6 @@ const LiveBidProducts = ({
         sx={{
           maxWidth: "100%",
           margin: "auto",
-          padding: 2,
         }}
       >
         {/* Top Information Box */}
@@ -251,7 +250,17 @@ const LiveBidProducts = ({
             {/* View Details Button */}
             <Grid container justifyContent="space-between" sx={{ mb: 1 }}>
               <Grid item>
-                <Typography variant="h6" fontWeight="bold" color={"#062d72"}>
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  color={"#062d72"}
+                  sx={{
+                    textAlign: {
+                      xs: "center",
+                      md: "left",
+                    },
+                  }}
+                >
                   {liveBidproduct?.product?.title}
                 </Typography>
                 {isTimeUp ? (
@@ -305,7 +314,17 @@ const LiveBidProducts = ({
                 <Typography
                   variant="body2"
                   color="primary"
-                  sx={{ cursor: "pointer", textTransform: "uppercase" }}
+                  sx={{
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                    textAlign: {
+                      xs: "center",
+                      md: "right",
+                    },
+                    marginTop: {
+                      xs: "5px",
+                    },
+                  }}
                   onClick={() => setShowSpecification(true)}
                 >
                   View Details
