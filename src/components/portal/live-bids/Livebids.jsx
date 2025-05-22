@@ -408,7 +408,7 @@ const Livebids = ({ listType }) => {
             component="img"
             src={NoliveBidImg}
             alt="No Bid Available"
-            sx={{ width: "400px", mb: 2 }}
+            className={styles["no-bid-img"]}
           />
           <Typography variant="h5" color="textSecondary" fontWeight={"bolder"}>
             No Bid Available
