@@ -200,7 +200,7 @@ const CompanyDetail = ({ companyDetails }) => {
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No categories selected
+              No Categories selected
             </Typography>
           )}
         </AccordionDetails>
@@ -376,7 +376,7 @@ const CompanyDetail = ({ companyDetails }) => {
             </ImageList>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              No Address added
+              No Certificate added
             </Typography>
           )}
         </AccordionDetails>
