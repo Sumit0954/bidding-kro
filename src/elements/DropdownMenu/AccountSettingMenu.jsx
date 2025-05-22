@@ -13,6 +13,7 @@ import { logout } from "../../utils/AxiosInterceptors";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import { getMessaging, getToken } from "firebase/messaging";
+import fallback_user_img from "../../assets/images/portal/company-profile/fallback-profile-img.jpg";
 
 const AccountSettingMenu = ({
   open,
@@ -92,12 +93,12 @@ const AccountSettingMenu = ({
         {from === "Portal" && userDetails && (
           <MenuItem>
             <Avatar
-              src={companyDetails?.logo}
+              src={companyDetails?.logo || fallback_user_img}
               alt="ProfileImg"
               variant="square" // Make Avatar square (better for logos)
               sx={{
-                width: 68, // or your needed size
-                height: 60,
+                width: 50, // or your needed size
+                height: 50,
                 objectFit: "contain", // Important to prevent image from stretching
                 backgroundColor: "transparent", // Optional: white background for better logo visibility
                 padding: "1px", // Optional: small padding inside avatar
@@ -122,15 +123,15 @@ const AccountSettingMenu = ({
                 <ListItemIcon>
                   {userDetails ? (
                     <Avatar
-                      src={userDetails?.profile_image}
-                      alt="user_proflie"
+                      src={userDetails?.profile_image || fallback_user_img}
+                      alt="ProfileImg"
                       variant="square" // Make Avatar square (better for logos)
                       sx={{
-                        width: 68, // or your needed size
-                        height: 60,
+                        width: 50, // or your needed size
+                        height: 50,
                         objectFit: "contain", // Important to prevent image from stretching
                         backgroundColor: "transparent", // Optional: white background for better logo visibility
-                        padding: "2px", // Optional: small padding inside avatar
+                        padding: "1px", // Optional: small padding inside avatar
                         border: "1px solid gray", // Optional: soft border
                         borderRadius: "50%",
                       }}
