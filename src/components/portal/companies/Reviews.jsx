@@ -11,43 +11,11 @@ import { useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import fallback_user_img from "../../../assets/images/portal/company-profile/fallback-profile-img.jpg";
 
 const Reviews = ({ id, companyDetail }) => {
   const [companyReviews, setCompanyReviews] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
-
-  const reviews = [
-    {
-      name: "Tushar Sharma",
-      review:
-        "I have had the pleasure of working with AppCode Technologies, and I am thoroughly impressed with their services. Their expertise in digital solutions, combined with a client-centric approach, makes their proficiency in the latest technologies and trends remarkable.",
-      rating: 5,
-    },
-    {
-      name: "Priya Patel",
-      review:
-        "AppCode Technologies has been an incredible partner for our business. Their attention to detail and innovative solutions helped us streamline our operations. The team is professional, responsive, and always ready to go above and beyond.",
-      rating: 4,
-    },
-    {
-      name: "Siddharth Desai",
-      review:
-        "We have been working with AppCode Technologies for over a year now, and their team has consistently delivered high-quality results. Their ability to understand our unique needs and provide tailored solutions is unparalleled.",
-      rating: 5,
-    },
-    {
-      name: "Ananya Gupta",
-      review:
-        "From the start, AppCode Technologies demonstrated a deep understanding of our project requirements. Their seamless execution and constant communication made the entire process smooth and efficient. Highly recommend their services!",
-      rating: 4,
-    },
-    {
-      name: "Ravi Kumar",
-      review:
-        "I’ve worked with many tech firms, but AppCode Technologies stands out for their commitment to delivering results. The team is skilled, professional, and provides valuable insights into every stage of the project.",
-      rating: 5,
-    },
-  ];
 
   const fetchCompanyReviews = async () => {
     try {
@@ -100,35 +68,49 @@ const Reviews = ({ id, companyDetail }) => {
             mb: 4,
           }}
         >
-          {/* Average Rating Number */}
-          <Typography
-            variant="h4"
-            component="span"
-            sx={{ fontWeight: "bold", mr: 1 }}
-          >
-            {companyReviews?.rating?.avg_rating?.toFixed(1)}
-          </Typography>
-
-          {/* Rating Stars */}
-          <Rating
-            value={Number(companyReviews?.rating?.avg_rating?.toFixed(1))}
-            readOnly
-            size="large"
-            precision={0.5} // Allows fractional star ratings
-            sx={{ fontSize: "40px", mr: 1 }}
-          />
+          {companyReviews?.rating?.avg_rating !== null ? (
+            <Rating
+              value={Number(companyReviews?.rating?.avg_rating?.toFixed(1))}
+              readOnly
+              size="large"
+              precision={0.5}
+              sx={{ fontSize: "40px", mr: 1 }}
+            />
+          ) : (
+            <Typography variant="body1" align="center" color="primary">
+              No review Yet for this Company
+            </Typography>
+          )}
         </Box>
         <Grid container spacing={3}>
           {companyReviews?.comments?.map((review, index) => (
             <Grid item xs={12} key={index}>
               <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
                 <CardContent>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Avatar sx={{ width: 56, height: 56, mr: 2 }}>
-                      {review?.rating_company?.logo === null
-                        ? review?.rating_company?.name.charAt(0)
-                        : review?.rating_company?.logo}
-                    </Avatar>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: { xs: "column", sm: "row" },
+                      alignItems: { xs: "center", sm: "flex-start" },
+                      textAlign: { xs: "center", sm: "left" },
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={review?.rating_company?.logo || fallback_user_img}
+                      alt="Company Logo"
+                      sx={{
+                        width: { xs: 60, sm: 68, md: 60 },
+                        height: { xs: 60, sm: 60, md: 60 },
+                        objectFit: "contain",
+                        borderRadius: "50%",
+                        border: "1px solid black",
+                        mb: { xs: 1, sm: 0 },
+                        mr: { sm: 2 },
+                      }}
+                    />
+
                     <Box>
                       <Typography variant="h6" component="div">
                         {review?.rating_company?.name}
@@ -136,7 +118,12 @@ const Reviews = ({ id, companyDetail }) => {
                       <Rating value={review.rating} readOnly size="small" />
                     </Box>
                   </Box>
-                  <Typography variant="body2" color="textSecondary">
+
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ textAlign: { xs: "center", sm: "left" } }}
+                  >
                     {review.comment}
                   </Typography>
                 </CardContent>
