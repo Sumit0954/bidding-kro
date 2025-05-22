@@ -50,7 +50,7 @@ const BlogDetail = () => {
         <img
           src={blogDetail?.banner_image}
           alt="BlogBanner"
-          className={styles["blog-details-img"]}
+          className={styles["blog-banner-img"]}
         />
       </div>
 
