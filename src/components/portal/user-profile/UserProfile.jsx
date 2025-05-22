@@ -252,6 +252,9 @@ const UserProfile = () => {
                       name="designation"
                       placeholder="Designation "
                       inputType="text"
+                      rules={{
+                        required: "Your Desgnation is required",
+                      }}
                     />
                   </div>
                 </div>
