@@ -2110,7 +2110,7 @@ const reportColumns = {
     api: AdminApiUrls?.FETCH_COMPANY_REPORT,
     downloadData: total_companies_data,
   },
-  "Unregister Companies": {
+  "Unregistered Companies": {
     name: "UnregisteredCompanies",
     column: unregistered_companies_column,
     api: AdminApiUrls?.FETCH_CUSTOMER_REPORT,
@@ -2130,7 +2130,7 @@ const reportColumns = {
     downloadData: bids_report_data,
     query_type: "non_l1_awarded",
   },
-  "Non Participator Companies": {
+  "Accepted But Not Participated": {
     name: "NonParticipatorCompanies",
     column: non_participation_companies_column,
     api: AdminApiUrls?.FETCH_PARTICIAPATION_REPORTS,
@@ -2185,7 +2185,7 @@ const reportColumns = {
     api: AdminApiUrls?.FETCH_FEEDBACK_REPORT,
     downloadData: rating_report_data,
   },
-  "Transaction": {
+  Transaction: {
     name: "Transaction",
     column: transaction_report_column,
     api: AdminApiUrls?.FETCH_TRANSACTION_REPORT,
@@ -2200,4 +2200,3 @@ export const reportColumnHandler = (type) => {
     query_type: selectedReport?.query_type || "", // Adding query_type
   };
 };
-// report column handler
