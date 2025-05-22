@@ -4,15 +4,15 @@ import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { convertFileSize } from "../../helpers/common";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../helpers/api";
-import classNames from "classnames";
 import DeleteDialog from "../CustomDialog/DeleteDialog";
 import { useContext, useEffect, useState } from "react";
-import { Select, MenuItem, FormControl, Tooltip, Button } from "@mui/material";
+import { Select, MenuItem, FormControl, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../store/tabSlice";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { AlertContext } from "../../contexts/AlertProvider";
+import { Download } from "@mui/icons-material";
 
 const patchBidStatus = async (id, formData, setAlert) => {
   try {
@@ -36,7 +36,6 @@ const patchBidStatus = async (id, formData, setAlert) => {
     }
   }
 };
-
 const onCloneBidClick = async (id, navigate, setAlert) => {
   try {
     const response = await _sendAPIRequest(
@@ -78,7 +77,6 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
     <>
       <p
         className={styles["table-link"]}
-        // style={{ color: "#0d6efd" }}
         style={{
           color: "#0d6efd",
           display: "flex",
@@ -102,7 +100,6 @@ const CloneConfirmation = ({ id, onCloneConfirm }) => {
     </>
   );
 };
-
 const DeleteConfirmation = ({ id, onDeleteConfirm }) => {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -132,7 +129,6 @@ const DeleteConfirmation = ({ id, onDeleteConfirm }) => {
     </>
   );
 };
-
 const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
   try {
     const response = await _sendAPIRequest(
@@ -143,8 +139,6 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
     );
     if (response?.status === 204) {
       dispatch(setActiveTab(2));
-      // window.location.reload();
-      // Optional: Trigger a refresh or redirect as needed
     }
   } catch (error) {
     if (error.status === 403) {
@@ -173,7 +167,6 @@ export const created_bids_column = [
     disablePadding: false,
     width: 120, // Change to uniform width
     Cell: (data) => {
-      const hasRequest = data?.row?.original?.has_bid_request;
       const bidId = data?.row?.original?.id;
 
       const dispatch = useDispatch();
@@ -184,21 +177,11 @@ export const created_bids_column = [
         navigate(`/portal/bids/details/${bidId}`);
       };
       return (
-        // <NavLink
-        //   className={styles["table-link"]}
-        //   to={`/portal/bids/details/${data?.row?.original?.id}`}
-        // >
-        //   {`${truncateString(data?.row?.original?.title, 30)}${
-        //     data?.row?.original?.type === "L1" ? "" : " (QCBS)"
-        //   }`}
-        // </NavLink>
         <Tooltip title={"Click here to see the BId Details"} arrow>
           <span
             onClick={handleViewRequestClick}
             style={{
               color: "#0d6efd",
-              // fontWeight: "bold",
-              // textDecoration: "underline",
               cursor: "pointer",
             }}
             className={styles["table-link"]}
@@ -370,14 +353,6 @@ export const created_bids_column = [
           id={data?.row?.original?.id}
           onCloneConfirm={(id) => onCloneBidClick(id, navigate, setAlert)}
         />
-
-        // <p
-        //   className={styles["table-link"]}
-        //   style={{ color: "#0d6efd" }}
-        //   onClick={() => onCloneBidClick(data?.row?.original?.id, navigate)}
-        // >
-        //   Clone Bid
-        // </p>
       );
     },
   },
@@ -448,8 +423,6 @@ export const invited_bids_column = [
             onClick={handleViewRequestClick}
             style={{
               color: "#0d6efd",
-              // fontWeight: "bold",
-              // textDecoration: "underline",
               cursor: "pointer",
             }}
             className={styles["table-link"]}
@@ -457,12 +430,6 @@ export const invited_bids_column = [
             {truncateString(data?.row?.original?.bid?.title, 30)}
           </span>
         </Tooltip>
-        // <NavLink
-        //   className={styles["table-link"]}
-        //   to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
-        // >
-        //   {truncateString(data?.row?.original?.bid?.title, 30)}
-        // </NavLink>
       );
     },
   },
@@ -669,29 +636,9 @@ export const invited_bids_column = [
                   data?.row?.original?.bid?.bid_open_date !== null
                 ? data?.row?.original?.status
                 : data?.row?.original?.sample?.invite_status}
-              {/* {data?.row?.original?.status} */}
             </span>
           </Tooltip>
         </div>
-
-        // <NavLink
-        //   className={`status-column ${data?.row?.original?.status}`}
-        //   to={`/portal/bids/details/${data?.row?.original?.bid?.id}/?type=invited`}
-        //   style={{
-        //     color: `${
-        //       data?.row?.original?.status === "accepted"
-        //         ? "#22bb33" // Green for accepted
-        //         : data?.row?.original?.status === "pending"
-        //         ? "#FFBF00" // Yellow for pending
-        //         : "red" // Default red for other status
-        //     }`,
-        //     textDecoration: "none",
-        //     fontWeight: "bold",
-        //     textTransform: "uppercase",
-        //   }}
-        // >
-        //   {data?.row?.original?.status}
-        // </NavLink>
       );
     },
   },
@@ -858,30 +805,30 @@ export const documents_column = [
     align: "left",
     disablePadding: false,
     width: 160,
+    Cell: (data) => {
+      return (
+        <Tooltip title={data?.row?.original?.file_name}>
+          {truncateString(data?.row?.original?.file_name, 20)}
+        </Tooltip>
+      );
+    },
   },
   {
     Header: "Document Type",
     accessor: "type",
     align: "left",
     disablePadding: false,
-    width: 160,
+    width: 140,
     Cell: (data) => {
-      const handlePreviewDocument = (data) => {
-        const { file } = data; // File URL
-        const link = document.createElement("a");
-        link.href = file;
-        link.target = "_blank"; // Opens in new tab
-        link.rel = "noopener noreferrer"; // Security enhancement
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      };
       return (
-        <div
-          className={styles["document-type"]}
-          onClick={() => handlePreviewDocument(data.row.original)}
-        >
-          {data?.row?.original?.type}
+        <div className={styles["document-type"]}>
+          <a
+            href={data?.row?.original?.file}
+            target="_blank"
+            className={styles["preview-download"]}
+          >
+            {data?.row?.original?.type}
+          </a>
         </div>
       );
     },
@@ -909,10 +856,23 @@ export const documents_column = [
   {
     Header: "Action",
     accessor: "action",
-    align: "center",
+    align: "left",
     disablePadding: false,
-    width: 100,
-    hideSortIcon: true,
+    width: 60,
+    Cell: (data) => {
+      return (
+        <IconButton className="p-0">
+          <a
+            href={data?.row?.original?.file}
+            target="_blank"
+            className={styles["doc-download"]}
+          >
+            {" "}
+            <Download />
+          </a>
+        </IconButton>
+      );
+    },
   },
 ];
 
@@ -938,7 +898,6 @@ export const companies_column = [
       );
     },
   },
-
   {
     Header: "Company Email",
     accessor: "business_email",
@@ -1018,74 +977,6 @@ export const Invite_request_column = [
   },
 ];
 
-export const Pending_request_column = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  return [
-    {
-      Header: "Company Name",
-      accessor: "name",
-      align: "left",
-      disablePadding: false,
-      width: 160,
-      Cell: (data) => {
-        return (
-          <NavLink
-            className={styles["table-link"]}
-            to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
-          >
-            {data?.row?.original?.requestor?.name}
-          </NavLink>
-        );
-      },
-    },
-    {
-      Header: "Company Email",
-      accessor: "business_email",
-      align: "left",
-      disablePadding: false,
-      width: 160,
-      Cell: (data) => {
-        return data?.row?.original?.requestor?.business_email;
-      },
-    },
-    {
-      Header: "Mobile No.",
-      accessor: "business_mobile",
-      align: "left",
-      disablePadding: false,
-      width: 150,
-      Cell: (data) => {
-        return data?.row?.original?.requestor?.business_mobile;
-      },
-    },
-    {
-      Header: "Action",
-      accessor: "action",
-      align: "center",
-      disablePadding: false,
-      width: 100,
-      hideSortIcon: true,
-    },
-    {
-      Header: "",
-      accessor: "delete",
-      align: "center",
-      disablePadding: false,
-      width: 80,
-      Cell: (data) => {
-        return (
-          <DeleteConfirmation
-            id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
-            onDeleteConfirm={(id) => onDeleteBidClick(id, dispatch, navigate)} // Pass dispatch and navigate
-          />
-        );
-      },
-    },
-  ];
-};
-
 export const l1_participants_column = [
   {
     Header: "Company Name",
@@ -1154,56 +1045,6 @@ export const l1_participants_column = [
   },
 ];
 
-export const products_Column = ({
-  setShowSpecification,
-  setSelectedProduct,
-}) => [
-  {
-    Header: "Product Title",
-    accessor: "title",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-    Cell: (data) => {
-      return data.row.original.title;
-    },
-  },
-  {
-    Header: "Quantity",
-    accessor: "quantity",
-    align: "left",
-    disablePadding: true,
-    width: 160,
-  },
-  {
-    Header: "Reserve Price",
-    accessor: "reserved_price",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-  },
-  {
-    Header: "Specification",
-    accessor: "specification",
-    align: "left",
-    disablePadding: false,
-    width: 160,
-    Cell: (data) => {
-      return (
-        <p
-          className={styles["table-link"]}
-          onClick={() => {
-            setSelectedProduct(data.row.original);
-            setShowSpecification(true);
-          }}
-        >
-          View Specification
-        </p>
-      );
-    },
-  },
-];
-
 export const PreviousBids_column = [
   {
     Header: "Bid Name",
@@ -1244,182 +1085,6 @@ export const PreviousBids_column = [
     hideSortIcon: true,
     Cell: (data) => {
       return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
-    },
-  },
-];
-
-export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
-  {
-    Header: "Company Name",
-    accessor: "company_Name",
-    align: "left",
-    disablePadding: false,
-    width: 150, // Add a uniform width
-    Cell: (data) => {
-      return `${data.row.original.company.name}`;
-    },
-  },
-  {
-    Header: "Sample Status",
-    accessor: "company_email",
-    align: "left",
-    disablePadding: false,
-    width: 150,
-    Cell: (data) => {
-      const [participant, setParticipant] = useState();
-
-      useEffect(() => {
-        if (id) {
-          const getParticipants = async () => {
-            try {
-              const response = await _sendAPIRequest(
-                "GET",
-                PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
-                "",
-                true
-              );
-              if (response.status === 200) {
-                // const participants = response.data.participants;
-                setParticipant(response.data);
-              }
-            } catch (error) {
-              console.log(error);
-            }
-          };
-
-          getParticipants();
-        }
-      }, [
-        id,
-        participant?.sample?.is_received,
-        participant?.sample?.approval_status,
-      ]);
-
-      const [status, setStatus] = useState(
-        data.row.original.sample.is_received
-      );
-
-      const { setAlert } = useContext(AlertContext);
-
-      const handleStatusChange = (event) => {
-        const newStatus = event.target.value;
-        setStatus(newStatus);
-        setParticipant((prevDetails) => ({
-          ...prevDetails,
-          is_received: newStatus,
-        }));
-
-        const formData = {
-          is_received: newStatus,
-        };
-        patchBidStatus(data.row.original.id, formData, setAlert);
-        if (onActionComplete) {
-          onActionComplete();
-        }
-      };
-
-      return (
-        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
-          <Select
-            value={status}
-            onChange={handleStatusChange}
-            style={{
-              color: status === true ? "green" : "red",
-              height: "35px",
-              fontSize: "14px", // Conditional color for the select box
-            }}
-          >
-            <MenuItem value="true" style={{ color: "green" }}>
-              Received
-            </MenuItem>
-            <MenuItem value="false" style={{ color: "red" }}>
-              Not Received
-            </MenuItem>
-          </Select>
-        </FormControl>
-      );
-    },
-  },
-  {
-    Header: "Sample Approval Status",
-    accessor: "mobile_number",
-    align: "left",
-    disablePadding: false,
-    width: 150, // Add a uniform width
-    Cell: (data) => {
-      const [participant, setParticipant] = useState();
-      const { setAlert } = useContext(AlertContext);
-      const [status, setStatus] = useState(
-        data.row.original.sample.approval_status === "rejected"
-          ? "reject"
-          : data.row.original.sample.approval_status === "pending"
-          ? "pending"
-          : "approve"
-      );
-
-      const handleStatusChange = (event) => {
-        const newActionStatus = event.target.value;
-        setStatus(newActionStatus);
-
-        const formData = {
-          action: newActionStatus,
-        };
-        patchBidStatus(
-          data.row.original.id,
-          formData,
-          setAlert,
-          true,
-          data.row.original.company.id
-        );
-
-        if (onActionComplete) {
-          onActionComplete();
-        }
-
-        setParticipant((prevDetails) => ({
-          ...prevDetails,
-          approval_status: newActionStatus,
-        }));
-      };
-
-      return (
-        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
-          <Select
-            disabled={status === "approve"}
-            value={status}
-            onChange={handleStatusChange}
-            sx={{
-              color:
-                status === "pending"
-                  ? "#FFC72C"
-                  : status === "approve"
-                  ? "green"
-                  : "red",
-              height: "35px", // Adjust the height of the dropdown
-              fontSize: "14px", // Adjust the font size inside the dropdown
-              "&.Mui-disabled": {
-                color: status === "approve" ? "green" : "inherit", // Keep green when disabled for 'approve'
-              },
-
-              "& .Mui-disabled": {
-                WebkitTextFillColor: status === "approve" ? "green" : "inherit", // For the selected text
-              },
-            }}
-          >
-            {status === "pending" && (
-              <MenuItem value="pending" disabled sx={{ color: "#FFC72C" }}>
-                Pending
-              </MenuItem>
-            )}
-            <MenuItem value="approve" sx={{ color: "green" }}>
-              Approved
-            </MenuItem>
-            <MenuItem value="reject" sx={{ color: "red" }}>
-              Not Approved
-            </MenuItem>
-          </Select>
-        </FormControl>
-      );
     },
   },
 ];
@@ -1481,23 +1146,17 @@ export const ProductBid_column = [
   {
     Header: "Bid Position",
     accessor: "position",
-    // align: "left",
     disablePadding: false,
-    // width: 160,
   },
   {
     Header: "Company Name",
     accessor: "company.name",
-    // align: "center",
     disablePadding: false,
-    // width: 160,
   },
   {
     Header: "Bid Amount",
     accessor: "amount",
-    // align: "right",
     disablePadding: false,
-    // width: 160,
   },
 ];
 
@@ -1722,6 +1381,298 @@ export const getTeamListColumn = (onToggleStatus) => [
             />
           )}
         </>
+      );
+    },
+  },
+];
+
+export const products_Column = ({
+  setShowSpecification,
+  setSelectedProduct,
+}) => [
+  {
+    Header: "Product Title",
+    accessor: "title",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return data.row.original.title;
+    },
+  },
+  {
+    Header: "Quantity",
+    accessor: "quantity",
+    align: "left",
+    disablePadding: true,
+    width: 160,
+  },
+  {
+    Header: "Reserve Price",
+    accessor: "reserved_price",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+  },
+  {
+    Header: "Specification",
+    accessor: "specification",
+    align: "left",
+    disablePadding: false,
+    width: 160,
+    Cell: (data) => {
+      return (
+        <p
+          className={styles["table-link"]}
+          onClick={() => {
+            setSelectedProduct(data.row.original);
+            setShowSpecification(true);
+          }}
+        >
+          View Specification
+        </p>
+      );
+    },
+  },
+];
+
+export const Pending_request_column = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  return [
+    {
+      Header: "Company Name",
+      accessor: "name",
+      align: "left",
+      disablePadding: false,
+      width: 160,
+      Cell: (data) => {
+        return (
+          <NavLink
+            className={styles["table-link"]}
+            to={`/portal/companies/details/${data?.row?.original?.requestor?.id}`}
+          >
+            {data?.row?.original?.requestor?.name}
+          </NavLink>
+        );
+      },
+    },
+    {
+      Header: "Company Email",
+      accessor: "business_email",
+      align: "left",
+      disablePadding: false,
+      width: 160,
+      Cell: (data) => {
+        return data?.row?.original?.requestor?.business_email;
+      },
+    },
+    {
+      Header: "Mobile No.",
+      accessor: "business_mobile",
+      align: "left",
+      disablePadding: false,
+      width: 150,
+      Cell: (data) => {
+        return data?.row?.original?.requestor?.business_mobile;
+      },
+    },
+    {
+      Header: "Action",
+      accessor: "action",
+      align: "center",
+      disablePadding: false,
+      width: 100,
+      hideSortIcon: true,
+    },
+    {
+      Header: "",
+      accessor: "delete",
+      align: "center",
+      disablePadding: false,
+      width: 80,
+      Cell: (data) => {
+        return (
+          <DeleteConfirmation
+            id={data?.row?.original?.id} // Assuming `id` is the unique identifier for the row
+            onDeleteConfirm={(id) => onDeleteBidClick(id, dispatch, navigate)} // Pass dispatch and navigate
+          />
+        );
+      },
+    },
+  ];
+};
+
+export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
+  {
+    Header: "Company Name",
+    accessor: "company_Name",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+    Cell: (data) => {
+      return `${data.row.original.company.name}`;
+    },
+  },
+  {
+    Header: "Sample Status",
+    accessor: "company_email",
+    align: "left",
+    disablePadding: false,
+    width: 150,
+    Cell: (data) => {
+      const [participant, setParticipant] = useState();
+
+      useEffect(() => {
+        if (id) {
+          const getParticipants = async () => {
+            try {
+              const response = await _sendAPIRequest(
+                "GET",
+                PortalApiUrls.PARTICIPANTS_LIST + `${id}/`,
+                "",
+                true
+              );
+              if (response.status === 200) {
+                setParticipant(response.data);
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          };
+
+          getParticipants();
+        }
+      }, [
+        id,
+        participant?.sample?.is_received,
+        participant?.sample?.approval_status,
+      ]);
+
+      const [status, setStatus] = useState(
+        data.row.original.sample.is_received
+      );
+
+      const { setAlert } = useContext(AlertContext);
+
+      const handleStatusChange = (event) => {
+        const newStatus = event.target.value;
+        setStatus(newStatus);
+        setParticipant((prevDetails) => ({
+          ...prevDetails,
+          is_received: newStatus,
+        }));
+
+        const formData = {
+          is_received: newStatus,
+        };
+        patchBidStatus(data.row.original.id, formData, setAlert);
+        if (onActionComplete) {
+          onActionComplete();
+        }
+      };
+
+      return (
+        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
+          <Select
+            value={status}
+            onChange={handleStatusChange}
+            style={{
+              color: status === true ? "green" : "red",
+              height: "35px",
+              fontSize: "14px", // Conditional color for the select box
+            }}
+          >
+            <MenuItem value="true" style={{ color: "green" }}>
+              Received
+            </MenuItem>
+            <MenuItem value="false" style={{ color: "red" }}>
+              Not Received
+            </MenuItem>
+          </Select>
+        </FormControl>
+      );
+    },
+  },
+  {
+    Header: "Sample Approval Status",
+    accessor: "mobile_number",
+    align: "left",
+    disablePadding: false,
+    width: 150, // Add a uniform width
+    Cell: (data) => {
+      const [participant, setParticipant] = useState();
+      const { setAlert } = useContext(AlertContext);
+      const [status, setStatus] = useState(
+        data.row.original.sample.approval_status === "rejected"
+          ? "reject"
+          : data.row.original.sample.approval_status === "pending"
+          ? "pending"
+          : "approve"
+      );
+
+      const handleStatusChange = (event) => {
+        const newActionStatus = event.target.value;
+        setStatus(newActionStatus);
+
+        const formData = {
+          action: newActionStatus,
+        };
+        patchBidStatus(
+          data.row.original.id,
+          formData,
+          setAlert,
+          true,
+          data.row.original.company.id
+        );
+
+        if (onActionComplete) {
+          onActionComplete();
+        }
+
+        setParticipant((prevDetails) => ({
+          ...prevDetails,
+          approval_status: newActionStatus,
+        }));
+      };
+
+      return (
+        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
+          <Select
+            disabled={status === "approve"}
+            value={status}
+            onChange={handleStatusChange}
+            sx={{
+              color:
+                status === "pending"
+                  ? "#FFC72C"
+                  : status === "approve"
+                  ? "green"
+                  : "red",
+              height: "35px", // Adjust the height of the dropdown
+              fontSize: "14px", // Adjust the font size inside the dropdown
+              "&.Mui-disabled": {
+                color: status === "approve" ? "green" : "inherit", // Keep green when disabled for 'approve'
+              },
+
+              "& .Mui-disabled": {
+                WebkitTextFillColor: status === "approve" ? "green" : "inherit", // For the selected text
+              },
+            }}
+          >
+            {status === "pending" && (
+              <MenuItem value="pending" disabled sx={{ color: "#FFC72C" }}>
+                Pending
+              </MenuItem>
+            )}
+            <MenuItem value="approve" sx={{ color: "green" }}>
+              Approved
+            </MenuItem>
+            <MenuItem value="reject" sx={{ color: "red" }}>
+              Not Approved
+            </MenuItem>
+          </Select>
+        </FormControl>
       );
     },
   },
