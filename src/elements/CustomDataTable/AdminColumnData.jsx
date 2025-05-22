@@ -1005,7 +1005,6 @@ export const completed_bids_column = [
     disablePadding: false,
     width: 100, // Add a uniform width
     Cell: (data) => {
-      console.log(data?.row?.original, "bids");
       return data?.row?.original?.formatted_number;
     },
   },
@@ -1148,7 +1147,6 @@ export const non_participation_companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      console.log(data, " : particiapants");
       return <b>Company {data?.row?.original?.bid?.company?.id}</b>;
     },
   },
@@ -1638,7 +1636,14 @@ export const transaction_report_column = [
     disablePadding: false,
     width: 150, // Change to uniform width
     Cell: (data) => {
-      return data?.row?.original?.company?.name;
+      return (
+        <NavLink
+          className={styles["table-link"]}
+          to={`/admin/companies/${data?.row?.original?.company?.id}`}
+        >
+          {data?.row?.original?.company?.name}
+        </NavLink>
+      );
     },
   },
   {
