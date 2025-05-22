@@ -8,7 +8,14 @@ import cn from "classnames";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { documents_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import { useNavigate, useParams } from "react-router-dom";
-import { Delete } from "@mui/icons-material";
+import {
+  BrowseGallery,
+  Delete,
+  DocumentScanner,
+  Upload,
+  UploadFile,
+  UploadTwoTone,
+} from "@mui/icons-material";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
@@ -263,7 +270,7 @@ const BidDocuments = () => {
                               onClick={handleBrowseClick}
                               disabled={status === "cancelled" ? true : false}
                             >
-                              Click To Upload
+                              <DocumentScanner /> Choose a document
                             </button>
                           </label>
                         </Box>
@@ -295,7 +302,7 @@ const BidDocuments = () => {
                       type="submit"
                       disabled={status === "cancelled" ? true : false}
                     >
-                      Upload
+                      <UploadTwoTone/> Upload
                     </button>
                   )}
                 </div>
