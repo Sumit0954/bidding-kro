@@ -9,21 +9,16 @@ import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import Reviews from "../../../components/portal/companies/Reviews";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import { truncateString } from "../../../helpers/formatter";
 
 const CompanyDetailPage = () => {
   const { id } = useParams();
   const [value, setValue] = useState(0);
   const [companyDetail, setCompanyDetail] = useState({});
-   const [screenLoader, setScreenLoader] = useState(true);
+  const [screenLoader, setScreenLoader] = useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  const truncatelength = (title, maxlength) => {
-    return title?.length > maxlength
-      ? title.substring(0, maxlength) + "..."
-      : title;
   };
 
   useEffect(() => {
@@ -38,11 +33,11 @@ const CompanyDetailPage = () => {
           );
           if (response.status === 200) {
             setCompanyDetail(response.data);
-            setScreenLoader(false)
+            setScreenLoader(false);
           }
         } catch (error) {
           console.log(error);
-          setScreenLoader
+          setScreenLoader(false);
         }
       };
       getCompanyDetails();
@@ -60,7 +55,7 @@ const CompanyDetailPage = () => {
       Companies
     </NavLink>,
     <Typography key="2" color="text.primary">
-      {truncatelength(companyDetail.name, 40)}
+      {truncateString(companyDetail.name, 40)}
     </Typography>,
   ];
 
@@ -78,6 +73,14 @@ const CompanyDetailPage = () => {
         <Tabs
           value={value}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            "@media (max-width: 600px)": {
+              width: "100%", // Tabs take full width only on mobile
+              marginBottom: "1rem", // Adds spacing below tabs for mobile
+            },
+          }}
           aria-label="bid-detail-tabs"
         >
           <Tab label="About" {...a11yProps(0)} />
