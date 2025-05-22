@@ -10,7 +10,7 @@ import {
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CloseIcon from "@mui/icons-material/Close";
 import styles from "./WebsiteVideoReview.module.scss";
-
+import aboutBiddingkaroVideo from "../../assets/images/website/home/aboutBidddingkaro.mov";
 const VideoReviewSection = () => {
   const [open, setOpen] = useState(false);
 
@@ -126,21 +126,16 @@ const VideoReviewSection = () => {
           <Box
             sx={{
               width: "100%",
-              minHeight: "400px",
+              minHeight: "100px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <iframe
-              width="100%"
-              height="100%"
-              // src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-              title="Bidding Karo Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            <video width="100%" height="100%" controls autoPlay>
+              <source src={aboutBiddingkaroVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </Box>
         </Box>
       </Dialog>
