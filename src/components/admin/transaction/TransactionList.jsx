@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import cn from "classnames";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
+import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
@@ -35,14 +36,15 @@ const TransactionList = () => {
         updateTransactionAmount,
         true
       );
-      if (response) {
+      if (response?.status === 200) {
         setAlert({
           isVisible: true,
           message: "Bid Transaction Amount has been updated",
           severity: "success",
         });
-        // ✅ Clear the input field
-        reset({ amount: "" });
+        reset({
+          amount: response?.data?.amount,
+        });
       }
     } catch (error) {
       setAlert({
@@ -76,7 +78,26 @@ const TransactionList = () => {
       console.log(error);
     }
   };
+
+  const getPaymentAmount = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls?.BID_PRICE_AMOUNT,
+        "",
+        true
+      );
+
+      if (response?.status === 200) {
+        console.log(response?.data?.amount, " Amount");
+        reset({
+          amount: response?.data?.amount,
+        });
+      }
+    } catch (error) {}
+  };
   useEffect(() => {
+    getPaymentAmount();
     getTransactions();
   }, []);
 
@@ -110,7 +131,6 @@ const TransactionList = () => {
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                placeholder="Enter amount"
                 variant="outlined"
                 size="small"
                 sx={{ minWidth: "150px" }}
