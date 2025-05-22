@@ -35,7 +35,7 @@ const AddteamForm = () => {
     role: "",
   });
 
-  const roles = ["owner", "manager", "executive", "qa"];
+  const roles = ["OWNER", "MANAGER", "EXECUTIVE", "QUALITY ASSISTANT"];
 
   const permissions = [
     { action: "Company Profile Creation", roles: [true, false, false, false] },
@@ -62,7 +62,6 @@ const AddteamForm = () => {
     { action: "Add Team Members ", roles: [true, false, false, false] },
   ];
 
-  // ✅ Handle change for controlled inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (
@@ -80,7 +79,6 @@ const AddteamForm = () => {
     }));
   };
 
-  // ✅ Handle form submission
   const handleAddMember = async () => {
     try {
       const payload = new FormData();
@@ -136,7 +134,6 @@ const AddteamForm = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      {/* ✅ Title */}
       <Typography
         variant="h5"
         gutterBottom
@@ -146,7 +143,6 @@ const AddteamForm = () => {
         ADD TEAM MEMBER
       </Typography>
 
-      {/* ✅ First and Last Name */}
       <Box className={styles["first_last_name_fields"]}>
         <TextField
           label="First Name"
@@ -170,7 +166,6 @@ const AddteamForm = () => {
         />
       </Box>
 
-      {/* ✅ Email, Mobile & Role */}
       <Box className={styles["email_mobile_role_fields"]}>
         <TextField
           label="Email"
@@ -200,6 +195,7 @@ const AddteamForm = () => {
           <InputLabel>Role</InputLabel>
           <Select
             name="role"
+            label="role"
             value={formData.role}
             onChange={handleChange}
             className={styles["addMember-fields"]}
@@ -213,7 +209,6 @@ const AddteamForm = () => {
         </FormControl>
       </Box>
 
-      {/* ✅ Permissions Table */}
       <TableContainer component={Paper} style={{ marginTop: "20px" }}>
         <Table>
           <TableHead>
@@ -245,7 +240,6 @@ const AddteamForm = () => {
         </Table>
       </TableContainer>
 
-      {/* ✅ Submit Button */}
       <Button
         variant="contained"
         style={{ marginTop: "20px", float: "right", color: "white" }}
