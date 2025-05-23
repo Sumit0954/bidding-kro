@@ -161,7 +161,7 @@ const WebsiteHeader = () => {
                   </li>
                   <li className="nav-item">
                     <button
-                      className={styles["capsule-button"]}
+                      className={styles["book-a-demo"]}
                       onClick={() => {
                         handleNavLinkClick(), handleBookADemmoClick();
                       }}
