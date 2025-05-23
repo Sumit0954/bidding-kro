@@ -839,6 +839,7 @@ const BidDetailsPage = () => {
           activateBid={activateBid}
           setActivateBid={setActivateBid}
           bidAmount={bidAmount}
+          setBidAmount={setBidAmount}
           setConfirmPaymentLoading={setConfirmPaymentLoading}
           bidid={bidDetails?.id}
           setShowThankyou={setShowThankyou}

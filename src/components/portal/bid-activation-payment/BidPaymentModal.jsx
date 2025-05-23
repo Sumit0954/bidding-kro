@@ -22,6 +22,7 @@ export default function BidPaymentModal({
   activateBid,
   setActivateBid,
   bidAmount,
+  setBidAmount,
   setConfirmPaymentLoading,
   setShowThankyou,
   bidid,
@@ -49,7 +50,7 @@ export default function BidPaymentModal({
         setActivateBid(false);
         setConfirmPaymentLoading(true);
         intervalRef.current = setInterval(() => {
-          verifyBidPayment();
+          verifyBidPayment(bidid);
         }, 15000);
         setTimeout(() => setConfirmPaymentLoading(false), 900000);
       }
@@ -78,7 +79,7 @@ export default function BidPaymentModal({
     }
     setBtnLoader(false);
   };
-  const verifyBidPayment = async () => {
+  const verifyBidPayment = async (bidid) => {
     const bidFormData = new FormData();
     bidFormData.append("bid", bidid);
     try {
@@ -96,10 +97,19 @@ export default function BidPaymentModal({
           checkBidConfirmation(response?.data);
           clearInterval(intervalRef.current);
         }
+        if (
+          payment_status === "NEW" ||
+          payment_status === "AUTHORIZATION_FAILED"
+        ) {
+          const amountWithGST = parseFloat(response?.data?.amount);
+          const baseAmount = (amountWithGST / 1.18).toFixed(2);
+          setBidAmount(baseAmount);
+        }
       }
     } catch (error) {}
   };
   useEffect(() => {
+    verifyBidPayment(bidid);
     return () => {
       clearInterval(intervalRef.current);
     };
