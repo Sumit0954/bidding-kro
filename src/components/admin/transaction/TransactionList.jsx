@@ -10,9 +10,16 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import cn from "classnames";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
+  const { setAlert } = useContext(AlertContext);
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+  });
   const {
     control,
     handleSubmit,
@@ -23,9 +30,6 @@ const TransactionList = () => {
       amount: "",
     },
   });
-
-  const { setAlert } = useContext(AlertContext);
-
   const onSubmit = async (data) => {
     try {
       const updateTransactionAmount = new FormData();
@@ -62,7 +66,6 @@ const TransactionList = () => {
       </TableCell>
     );
   };
-
   const getTransactions = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -78,7 +81,6 @@ const TransactionList = () => {
       console.log(error);
     }
   };
-
   const getPaymentAmount = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -96,11 +98,17 @@ const TransactionList = () => {
       }
     } catch (error) {}
   };
+
+  const handlePaymentUpdation = (choice) => {
+    setDeleteDetails({ open: false, title: "", message: "" });
+    if (choice) {
+      handleSubmit(onSubmit)();
+    }
+  };
   useEffect(() => {
     getPaymentAmount();
     getTransactions();
   }, []);
-
   return (
     <>
       <Box
@@ -111,7 +119,6 @@ const TransactionList = () => {
           marginBottom: "10px",
         }}
         component="form"
-        onSubmit={handleSubmit(onSubmit)}
       >
         <Alert severity="info" sx={{ flex: 1, marginRight: 2 }}>
           <p style={{ margin: 0 }}>
@@ -143,19 +150,36 @@ const TransactionList = () => {
           {isSubmitting ? (
             <ButtonLoader size={60} />
           ) : (
-            <button type="submit" className={cn("btn", "button")}>
+            <button
+              type="button"
+              onClick={() =>
+                setDeleteDetails({
+                  open: true,
+                  title: "Bid price change confirmtion",
+                  message:
+                    "Are you sure want to change the bid activation amount",
+                })
+              }
+              className={cn("btn", "button")}
+            >
               Update Amount
             </button>
           )}
         </Box>
       </Box>
-
       <DataTable
         propsColumn={transactions_column}
         propsData={transactions}
         action={addAction}
         customClassName="admin-data-table"
       />
+      {deleteDetails?.open && (
+        <DeleteDialog
+          title={deleteDetails.title}
+          message={deleteDetails.message}
+          handleClick={handlePaymentUpdation}
+        />
+      )}
     </>
   );
 };
