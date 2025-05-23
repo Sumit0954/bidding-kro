@@ -571,7 +571,7 @@ const Dashboard = () => {
           Recent Created Bids
         </Typography>
         <DataTable
-          propsColumn={created_bids_column}
+          propsColumn={created_bids_column(setScreenLoader)}
           propsData={createdBids}
           action={addCreatedAction}
           customClassName="portal-data-table"

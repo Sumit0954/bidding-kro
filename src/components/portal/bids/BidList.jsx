@@ -276,7 +276,7 @@ const BidList = ({ listType }) => {
 
       {listType === "created" ? (
         <DataTable
-          propsColumn={created_bids_column}
+          propsColumn={created_bids_column(setScreenLoader)}
           propsData={createdBids}
           action={addCreatedAction}
           customClassName="portal-data-table"

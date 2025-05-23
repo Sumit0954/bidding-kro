@@ -36,7 +36,8 @@ const patchBidStatus = async (id, formData, setAlert) => {
     }
   }
 };
-const onCloneBidClick = async (id, navigate, setAlert) => {
+const onCloneBidClick = async (id, navigate, setAlert, setScreenLoader) => {
+  setScreenLoader(true);
   try {
     const response = await _sendAPIRequest(
       "POST",
@@ -45,10 +46,12 @@ const onCloneBidClick = async (id, navigate, setAlert) => {
       true
     );
     if (response?.status === 201) {
+      setScreenLoader(false);
       navigate(`/portal/bids/categories/${response.data.id}`);
     }
   } catch (error) {
     if (error.status === 403) {
+      setScreenLoader(false);
       setAlert({
         isVisible: true,
         message: error.response.data.detail,
@@ -152,7 +155,7 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
   }
 };
 
-export const created_bids_column = [
+export const created_bids_column = (setScreenLoader) => [
   {
     Header: "Bid ID",
     accessor: "formatted_number",
@@ -351,7 +354,9 @@ export const created_bids_column = [
       return (
         <CloneConfirmation
           id={data?.row?.original?.id}
-          onCloneConfirm={(id) => onCloneBidClick(id, navigate, setAlert)}
+          onCloneConfirm={(id) =>
+            onCloneBidClick(id, navigate, setAlert, setScreenLoader)
+          }
         />
       );
     },
