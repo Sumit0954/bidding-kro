@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-// import company_log from ""
+import { useState } from "react";
 import styles from "./Summary.module.scss";
 import cn from "classnames";
 import {
@@ -13,25 +12,22 @@ import {
   Divider,
   Stack,
   StepConnector,
-  TableCell,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { ExpandMore, HourglassEmpty } from "@mui/icons-material";
-import { dateTimeFormatter } from "../../../../helpers/formatter";
+import {
+  dateTimeFormatter,
+  truncateString,
+} from "../../../../helpers/formatter";
 import DOMPurify from "dompurify";
-import { getLableByValue } from "../../../../helpers/common";
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
-import {
-  l1_participants_column,
-  products_Column,
-} from "../../../../elements/CustomDataTable/PortalColumnData";
-import { AlertContext } from "../../../../contexts/AlertProvider";
-import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
+import { products_Column } from "../../../../elements/CustomDataTable/PortalColumnData";
 import { useLocation, useNavigate } from "react-router-dom";
-import ProductSpecification from "../../../../elements/CustomModal/ProductSpecificationModal";
 import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
 import {
   CheckCircleOutline,
@@ -41,85 +37,20 @@ import {
 import { Step, StepLabel, Stepper } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../../../store/tabSlice";
-import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const Summary = ({ bidDetails }) => {
-  const [participantDetail, setParticipantDetail] = useState({});
-  const { setAlert } = useContext(AlertContext);
   const [showSpecification, setShowSpecification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [screenLoader, setScreenLoader] = useState(true);
-  const [deleteDetails, setDeleteDetails] = useState({
-    open: false,
-    title: "",
-    message: "",
-    id: null,
-  });
-  const type = new URLSearchParams(useLocation().search).get("type");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (bidDetails?.id) {
-      const getParticipants = async () => {
-        try {
-          const response = await _sendAPIRequest(
-            "GET",
-            PortalApiUrls.PARTICIPANTS_LIST + `${bidDetails?.id}/`,
-            "",
-            true
-          );
-          if (response.status === 200) {
-            setParticipantDetail(response.data);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      getParticipants();
-    }
-  }, [bidDetails, bidDetails?.participant?.status]);
-  const revokeParticipant = async (company_id) => {
-    try {
-      const response = await _sendAPIRequest(
-        "PUT",
-        PortalApiUrls.REVOKE_PARTICIPANT + `${bidDetails?.id}/`,
-        { company: company_id },
-        true
-      );
-      if (response.status === 204) {
-        setAlert({
-          isVisible: true,
-          message: "Participants Revoked Successfully",
-          severity: "success",
-        });
-        setDeleteDetails({ open: false, title: "", message: "", id: null });
-        window.location.reload();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDeleteConfirmation = (choice) => {
-    if (choice) {
-      revokeParticipant(deleteDetails.id);
-    } else {
-      setDeleteDetails({ open: false, title: "", message: "", id: null });
-    }
-  };
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // Detect mobile screens
+  const type = new URLSearchParams(useLocation().search).get("type");
 
   const productsColumns = products_Column({
     setShowSpecification,
     setSelectedProduct,
   });
-
-  const truncatelength = (title, maxlength) => {
-    return title?.length > maxlength
-      ? title.substring(0, maxlength) + "..."
-      : title;
-  };
-
-  const dispatch = useDispatch();
 
   const handleViewRequestClick = (tabvalue) => {
     dispatch(setActiveTab(tabvalue)); // Set the active tab
@@ -378,7 +309,6 @@ const Summary = ({ bidDetails }) => {
         : []),
     ];
   }
-
   const chatWithBuyer = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -395,7 +325,6 @@ const Summary = ({ bidDetails }) => {
       console.log(error);
     }
   };
-  console.log(bidDetails, " : bidDetails");
   return (
     <>
       {type === "invited" ? (
@@ -405,12 +334,20 @@ const Summary = ({ bidDetails }) => {
             width: "100%",
             fontSize: "0.8rem",
             lineHeight: 1.2,
+            overflowX: isSmallScreen ? "auto" : "visible", // horizontal scroll on mobile
           }}
         >
           <Stepper
-            alternativeLabel
+            alternativeLabel={!isSmallScreen} // switch to vertical if needed
+            nonLinear
             activeStep={2} // Set active step index
-            sx={{ padding: "0.5rem" }}
+            sx={{
+              padding: "0.5rem",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: isSmallScreen ? "1rem" : "0",
+              minWidth: isSmallScreen ? "600px" : "auto", // Prevent breaking layout
+            }}
           >
             {steps.map((step, index) => {
               const iconColor = step.icon.props.style.color;
@@ -424,6 +361,7 @@ const Summary = ({ bidDetails }) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        fontSize: isSmallScreen ? "1rem" : "inherit",
                       },
                     }}
                   >
@@ -432,13 +370,16 @@ const Summary = ({ bidDetails }) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        textAlign: "center",
                       }}
                     >
                       <span
                         style={{
-                          color: iconColor, // Match text color with icon
-                          fontSize: "0.8rem",
+                          color: iconColor,
+                          fontSize: isSmallScreen ? "0.7rem" : "0.8rem",
                           marginLeft: "8px",
+                          whiteSpace: "nowrap",
+                          display: isSmallScreen ? "none" : "inline", // 👈 Hide label on small screens
                         }}
                       >
                         {step.label}
@@ -489,7 +430,7 @@ const Summary = ({ bidDetails }) => {
                 <h6 className={styles["col-heading"]}>Bid Title</h6>
                 <p className={styles["col-data"]}>
                   {" "}
-                  {truncatelength(bidDetails?.title, 30)}
+                  {truncateString(bidDetails?.title, 30)}
                 </p>
               </div>
             </Tooltip>
@@ -819,7 +760,9 @@ const Summary = ({ bidDetails }) => {
         <AccordionDetails>
           <Stack direction="row" flexWrap="wrap" gap="10px">
             {bidDetails?.category?.map((category) => {
-              return <Chip label={category?.name} />;
+              return (
+                <Chip label={category?.name} className={styles["categories"]} />
+              );
             })}
           </Stack>
         </AccordionDetails>

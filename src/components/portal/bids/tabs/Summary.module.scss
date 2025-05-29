@@ -16,6 +16,11 @@
   }
 }
 
+.categories {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
 .bids-detail-accordion {
   box-shadow: var(--glow-shadow) !important;
 
@@ -42,7 +47,6 @@
 }
 
 @media print {
-
   @page {
     margin: 10mm;
   }
@@ -128,12 +132,10 @@
   }
 }
 
-.navigator{
+.navigator {
   cursor: pointer;
 }
 
-.navigator:hover{
-  color: var(--secondary-color)
+.navigator:hover {
+  color: var(--secondary-color);
 }
-
-

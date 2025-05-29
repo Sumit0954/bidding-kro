@@ -1,17 +1,7 @@
-import {
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Modal,
-  Typography,
-} from "@mui/material";
-import React, { useContext, useState } from "react";
+import { Box, Chip, IconButton, Modal, Typography } from "@mui/material";
 import styles from "./Modal.module.scss";
 import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
-import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
 import CloseIcon from "@mui/icons-material/Close";
 
 const ProductSpecificationModal = ({
@@ -22,13 +12,16 @@ const ProductSpecificationModal = ({
   const handleClose = () => {
     setShowSpecification(false);
   };
-  console.log(selectedProduct?.min_decrement_amount);
   return (
     <>
       <Modal
         open={showSpecification}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
+        sx={{
+          backdropFilter: "blur(4px)",
+          backgroundColor: "rgba(0,0,0,0.4)",
+        }}
       >
         <Box className={cn("container", styles["modal-container"])}>
           <Box className="row">
@@ -74,7 +67,20 @@ const ProductSpecificationModal = ({
               </Box>
               <span>
                 <Box className="row mb-2">
-                  <Box className="col text-start">{selectedProduct.title}</Box>
+                  <Box className="col text-start">
+                    <Chip
+                      label={selectedProduct.title}
+                      color="primary"
+                      variant="outlined"
+                      sx={{
+                        fontSize: "0.95rem",
+                        padding: "0 8px",
+                        borderRadius: "8px",
+                        backgroundColor: "#f0f7ff",
+                        color: "#1976d2",
+                      }}
+                    />
+                  </Box>
                 </Box>
               </span>
               <Box className="row">
