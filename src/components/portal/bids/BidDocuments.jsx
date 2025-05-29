@@ -149,7 +149,7 @@ const BidDocuments = () => {
             message: `Document ${name} has been deleted.`,
             severity: "success",
           });
-          window.location.reload();
+          setDocuments((prevDoc) => prevDoc.filter((doc) => doc?.id !== id));
           setScreenLoader(false);
         }
       } catch (error) {
@@ -288,7 +288,7 @@ const BidDocuments = () => {
                   <div>
                     <h5>
                       File selected! Now, click the "Upload" button to upload
-                      your file {file.name}
+                      your file
                     </h5>
                   </div>
                 )}
@@ -302,7 +302,7 @@ const BidDocuments = () => {
                       type="submit"
                       disabled={status === "cancelled" ? true : false}
                     >
-                      <UploadTwoTone/> Upload
+                      <UploadTwoTone /> Upload
                     </button>
                   )}
                 </div>
