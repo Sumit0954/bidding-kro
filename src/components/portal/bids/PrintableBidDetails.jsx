@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import styles from "./tabs/Summary.module.scss";
 import {
   Accordion,
@@ -9,20 +9,28 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { dateTimeFormatter } from "../../../helpers/formatter";
+import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import DOMPurify from "dompurify";
 import { convertFileSize, getLableByValue } from "../../../helpers/common";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
+import DataTable from "../../../elements/CustomDataTable/DataTable";
+import { products_Column } from "../../../elements/CustomDataTable/PortalColumnData";
 
-const PrintableBidDetails = forwardRef((props, ref) => {
+const PrintableBidDetails = forwardRef(({ bidDetails }, ref) => {
+  const [showSpecification, setShowSpecification] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const productsColumns = products_Column({
+    setShowSpecification,
+    setSelectedProduct,
+  });
   return (
     <div className="container-fluid" ref={ref}>
       <Accordion
         defaultExpanded
         square={true}
         classes={{
-          root: `custom-accordion ${styles["printable-accordion"]}`,
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
         }}
       >
         <AccordionSummary>
@@ -35,120 +43,189 @@ const PrintableBidDetails = forwardRef((props, ref) => {
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid ID</h6>
               <p className={styles["col-data"]}>
-                {props?.bidDetails?.formatted_number}
+                {bidDetails?.formatted_number}
               </p>
             </div>
+
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Title</h6>
-              <p className={styles["col-data"]}>{props?.bidDetails?.title}</p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Reserve Bid Price</h6>
               <p className={styles["col-data"]}>
-                ₹ {props?.bidDetails?.reserved_price}
+                {" "}
+                {truncateString(bidDetails?.title, 30)}
               </p>
             </div>
-          </div>
-          <Divider classes={{ root: "custom-divider" }} />
-          <div className="row">
+
             <div className="col">
               <h6 className={styles["col-heading"]}>Bid Type</h6>
               <p className={styles["col-data"]}>
-                {props?.bidDetails?.type_meta?.name}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Product Quantity</h6>
-              <p className={styles["col-data"]}>
-                {parseInt(props?.bidDetails?.product_quantity)}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Unit</h6>
-              <p className={styles["col-data"]}>
-                {getLableByValue(props?.bidDetails?.product_unit)}
-              </p>
+                {bidDetails?.type}
+                {bidDetails?.type === "L1"
+                  ? " ( Commercial Bid )"
+                  : " ( Quality & Cost Based Selection )"}
+              </p>{" "}
             </div>
           </div>
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
-              <h6 className={styles["col-heading"]}>Opening Date and Time</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Opening Date and Time
+              </h6>
               <p className={styles["col-data"]}>
-                {dateTimeFormatter(props?.bidDetails?.bid_start_date)}
+                {bidDetails?.bid_close_date
+                  ? dateTimeFormatter(bidDetails?.bid_open_date)
+                  : "-"}
               </p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Closing Date and Time</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Closing Date and Time
+              </h6>
               <p className={styles["col-data"]}>
-                {dateTimeFormatter(props?.bidDetails?.bid_end_date)}
+                {bidDetails?.bid_close_date
+                  ? dateTimeFormatter(bidDetails?.bid_close_date)
+                  : "-"}
               </p>
             </div>
             <div className="col">
-              <h6 className={styles["col-heading"]}>Delivery Timeline</h6>
+              <h6 className={styles["col-heading"]}>
+                Bid Created Date and Time
+              </h6>
               <p className={styles["col-data"]}>
-                {dateTimeFormatter(props?.bidDetails?.delivery_date, false)}
+                {`${dateTimeFormatter(bidDetails?.created_at)}`}
               </p>
             </div>
           </div>
+          {bidDetails.type === "QCBS" && (
+            // type === "invited" &&
+            // bidDetails?.participant?.sample?.invite_status === "accepted" &&
+            <>
+              <Divider classes={{ root: "custom-divider" }} />
+              <div className="row">
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>
+                    Sample Receiving Opening Date
+                  </h6>
+                  <p className={styles["col-data"]}>
+                    {bidDetails?.sample_receive_start_date
+                      ? dateTimeFormatter(bidDetails?.sample_receive_start_date)
+                      : "-"}
+                  </p>
+                </div>
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>
+                    Sample Receiving Closing Date
+                  </h6>
+                  <p className={styles["col-data"]}>
+                    {bidDetails?.sample_receive_end_date
+                      ? dateTimeFormatter(bidDetails?.sample_receive_end_date)
+                      : "-"}
+                  </p>
+                </div>
+                <div className="col"></div>
+              </div>
+            </>
+          )}
           <Divider classes={{ root: "custom-divider" }} />
           <div className="row">
             <div className="col">
-              <h6 className={styles["col-heading"]}>Description</h6>
-              <p
-                className={styles["col-data"]}
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(props?.bidDetails?.description),
-                }}
-              ></p>
+              <h6 className={styles["col-heading"]}>Total reserved price</h6>
+              <p className={styles["col-data"]}>
+                ₹ {bidDetails?.total_reserved_price}
+              </p>
+            </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Total Bid amount</h6>
+              <p className={styles["col-data"]}>
+                ₹{" "}
+                {bidDetails?.total_bid_amount !== null
+                  ? bidDetails?.total_bid_amount
+                  : "-"}
+              </p>
+            </div>
+            <div className="col">
+              <h6 className={styles["col-heading"]}>Total Saving</h6>
+              <p className={styles["col-data"]}>
+                {" "}
+                ₹
+                {bidDetails?.total_bid_amount !== null
+                  ? bidDetails?.total_reserved_price -
+                    bidDetails?.total_bid_amount
+                  : " -"}
+              </p>
             </div>
           </div>
         </AccordionDetails>
       </Accordion>
 
-      {props?.bidDetails?.amendment?.length > 0 && (
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["printable-accordion"]}`,
-          }}
-        >
-          <AccordionSummary>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Amendments
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className="row">
-              {props?.bidDetails?.amendment?.map((amendment) => {
-                return (
-                  <>
-                    <h6 className={styles["col-heading"]}>
-                      {dateTimeFormatter(amendment?.created_at)}
-                    </h6>
-                    <p
-                      className={cn(
-                        styles["col-data"],
-                        styles["amendment-data"]
-                      )}
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(amendment?.text),
-                      }}
-                    ></p>
-                  </>
-                );
-              })}
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      )}
-
+      {/* Description */}
       <Accordion
         defaultExpanded
         square={true}
         classes={{
-          root: `custom-accordion ${styles["printable-accordion"]}`,
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Description
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {bidDetails?.amendment?.length > 0 &&
+            bidDetails?.amendment
+              ?.sort((latest, previous) => previous.id - latest.id)
+              .map((amendment) => {
+                if (amendment.field_name === "description") {
+                  return (
+                    <Accordion
+                      defaultExpanded
+                      square={true}
+                      classes={{
+                        root: `custom-accordion ${styles["bids-detail-accordion"]} ${styles["nested-accordion-heading"]}`,
+                      }}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMore />}>
+                        <Typography
+                          classes={{ root: "custom-accordion-heading" }}
+                        >
+                          Amendment ({dateTimeFormatter(amendment?.created_at)})
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div className="row">
+                          <p
+                            className={styles["col-data"]}
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(amendment.text),
+                            }}
+                          ></p>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                }
+
+                return null;
+              })}
+
+          <div className="row">
+            <p
+              className={styles["col-data"]}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(bidDetails?.description),
+              }}
+            ></p>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Delivery Term  */}
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
         }}
       >
         <AccordionSummary>
@@ -157,11 +234,48 @@ const PrintableBidDetails = forwardRef((props, ref) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
+          {bidDetails?.amendment?.length > 0 &&
+            bidDetails?.amendment
+              ?.sort((latest, previous) => previous.id - latest.id)
+              .map((amendment) => {
+                if (amendment.field_name === "delivery_terms") {
+                  return (
+                    <Accordion
+                      defaultExpanded
+                      square={true}
+                      classes={{
+                        root: `custom-accordion ${styles["bids-detail-accordion"]} ${styles["nested-accordion-heading"]}`,
+                      }}
+                    >
+                      <AccordionSummary>
+                        <Typography
+                          classes={{ root: "custom-accordion-heading" }}
+                        >
+                          Amendment ({dateTimeFormatter(amendment?.created_at)})
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div className="row">
+                          <p
+                            className={styles["col-data"]}
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(amendment.text),
+                            }}
+                          ></p>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                }
+
+                return null;
+              })}
+
           <div className="row">
             <p
               className={styles["col-data"]}
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(props?.bidDetails?.delivery_terms),
+                __html: DOMPurify.sanitize(bidDetails?.delivery_terms),
               }}
             ></p>
           </div>
@@ -172,7 +286,7 @@ const PrintableBidDetails = forwardRef((props, ref) => {
         defaultExpanded
         square={true}
         classes={{
-          root: `custom-accordion ${styles["printable-accordion"]}`,
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
         }}
       >
         <AccordionSummary>
@@ -181,23 +295,100 @@ const PrintableBidDetails = forwardRef((props, ref) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
+          {bidDetails?.amendment?.length > 0 &&
+            bidDetails?.amendment
+              ?.sort((latest, previous) => previous.id - latest.id)
+              .map((amendment) => {
+                if (amendment.field_name === "payment_terms") {
+                  return (
+                    <Accordion
+                      defaultExpanded
+                      square={true}
+                      classes={{
+                        root: `custom-accordion ${styles["bids-detail-accordion"]} ${styles["nested-accordion-heading"]}`,
+                      }}
+                    >
+                      <AccordionSummary>
+                        <Typography
+                          classes={{ root: "custom-accordion-heading" }}
+                        >
+                          Amendment ({dateTimeFormatter(amendment?.created_at)})
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <div className="row">
+                          <p
+                            className={styles["col-data"]}
+                            dangerouslySetInnerHTML={{
+                              __html: DOMPurify.sanitize(amendment.text),
+                            }}
+                          ></p>
+                        </div>
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                }
+
+                return null;
+              })}
           <div className="row">
             <p
               className={styles["col-data"]}
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(props?.bidDetails?.payment_terms),
+                __html: DOMPurify.sanitize(bidDetails?.payment_terms),
               }}
             ></p>
           </div>
         </AccordionDetails>
       </Accordion>
 
-      {props?.bidDetails?.eligiblity_criteria && (
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Products
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <DataTable
+            propsColumn={productsColumns}
+            propsData={bidDetails?.product || []}
+          />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        defaultExpanded
+        square={true}
+        classes={{
+          root: `custom-accordion ${styles["bids-detail-accordion"]}`,
+        }}
+      >
+        <AccordionSummary>
+          <Typography classes={{ root: "custom-accordion-heading" }}>
+            Categories ({bidDetails?.category?.length})
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack direction="row" flexWrap="wrap" gap="10px">
+            {bidDetails?.category?.map((category) => {
+              return <Chip label={category?.name} />;
+            })}
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+
+      {bidDetails?.eligiblity_criteria && (
         <Accordion
           defaultExpanded
           square={true}
           classes={{
-            root: `custom-accordion ${styles["printable-accordion"]}`,
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
           }}
         >
           <AccordionSummary>
@@ -206,13 +397,48 @@ const PrintableBidDetails = forwardRef((props, ref) => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
+            {bidDetails?.amendment?.length > 0 &&
+              bidDetails?.amendment
+                ?.sort((latest, previous) => previous.id - latest.id)
+                .map((amendment) => {
+                  if (amendment.field_name === "eligiblity_criteria ") {
+                    return (
+                      <Accordion
+                        defaultExpanded
+                        square={true}
+                        classes={{
+                          root: `custom-accordion ${styles["bids-detail-accordion"]} ${styles["nested-accordion-heading"]}`,
+                        }}
+                      >
+                        <AccordionSummary>
+                          <Typography
+                            classes={{ root: "custom-accordion-heading" }}
+                          >
+                            Amendment (
+                            {dateTimeFormatter(amendment?.created_at)})
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <div className="row">
+                            <p
+                              className={styles["col-data"]}
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(amendment?.text),
+                              }}
+                            ></p>
+                          </div>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  }
+
+                  return null;
+                })}
             <div className="row">
               <p
                 className={styles["col-data"]}
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
-                    props?.bidDetails?.eligiblity_criteria
-                  ),
+                  __html: DOMPurify.sanitize(bidDetails?.eligiblity_criteria),
                 }}
               ></p>
             </div>
@@ -220,12 +446,12 @@ const PrintableBidDetails = forwardRef((props, ref) => {
         </Accordion>
       )}
 
-      {props?.bidDetails?.technical_specification && (
+      {bidDetails?.technical_specification && (
         <Accordion
           defaultExpanded
           square={true}
           classes={{
-            root: `custom-accordion ${styles["printable-accordion"]}`,
+            root: `custom-accordion ${styles["bids-detail-accordion"]}`,
           }}
         >
           <AccordionSummary>
@@ -234,118 +460,54 @@ const PrintableBidDetails = forwardRef((props, ref) => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
+            {bidDetails?.amendment?.length > 0 &&
+              bidDetails?.amendment
+                ?.sort((latest, previous) => previous.id - latest.id)
+                .map((amendment) => {
+                  if (amendment.field_name === "technical_specification") {
+                    return (
+                      <Accordion
+                        defaultExpanded
+                        square={true}
+                        classes={{
+                          root: `custom-accordion ${styles["bids-detail-accordion"]} ${styles["nested-accordion-heading"]}`,
+                        }}
+                      >
+                        <AccordionSummary>
+                          <Typography
+                            classes={{ root: "custom-accordion-heading" }}
+                          >
+                            Amendment (
+                            {dateTimeFormatter(amendment?.created_at)})
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <div className="row">
+                            <p
+                              className={styles["col-data"]}
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(amendment?.text),
+                              }}
+                            ></p>
+                          </div>
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  }
+
+                  return null;
+                })}
+
             <div className="row">
               <p
                 className={styles["col-data"]}
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(
-                    props?.bidDetails?.technical_specification
+                    bidDetails?.technical_specification
                   ),
                 }}
               ></p>
             </div>
-          </AccordionDetails>
-        </Accordion>
-      )}
-
-      <Accordion
-        defaultExpanded
-        square={true}
-        classes={{
-          root: `custom-accordion ${styles["printable-accordion"]}`,
-        }}
-      >
-        <AccordionSummary>
-          <Typography classes={{ root: "custom-accordion-heading" }}>
-            Categories ({props?.bidDetails?.category?.length})
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Stack direction="row" flexWrap="wrap" gap="10px">
-            {props?.bidDetails?.category?.map((category) => {
-              return <Chip label={category?.name} />;
-            })}
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
-
-      {props?.bidDetails?.question?.length > 0 && (
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["printable-accordion"]}`,
-          }}
-        >
-          <AccordionSummary>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Questions For Suppliers
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {props?.bidDetails?.question?.map((question, index) => {
-              return (
-                <div className="row">
-                  <p className={styles["col-data"]}>
-                    <span>{`Question ${index + 1} - `}</span>
-                    {question.text}
-                  </p>
-                </div>
-              );
-            })}
-          </AccordionDetails>
-        </Accordion>
-      )}
-
-      {props?.bidDetails?.document?.length > 0 && (
-        <Accordion
-          defaultExpanded
-          square={true}
-          classes={{
-            root: `custom-accordion ${styles["printable-accordion"]}`,
-          }}
-        >
-          <AccordionSummary>
-            <Typography classes={{ root: "custom-accordion-heading" }}>
-              Documents
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {props?.bidDetails?.document?.map((document, index) => {
-              return (
-                <>
-                  <div className="row">
-                    <div className="col">
-                      <h6 className={styles["col-heading"]}>Document Name</h6>
-                      <p className={styles["col-data"]}>
-                        <NavLink to={document.file}>{document.name}</NavLink>
-                      </p>
-                    </div>
-                    <div className="col">
-                      <h6 className={styles["col-heading"]}>Document Type</h6>
-                      <p className={styles["col-data"]}>{document.type}</p>
-                    </div>
-                    <div className="col">
-                      <h6 className={styles["col-heading"]}>Document Size</h6>
-                      <p className={styles["col-data"]}>
-                        {convertFileSize(document.size)}
-                      </p>
-                    </div>
-                    <div className="col">
-                      <h6 className={styles["col-heading"]}>
-                        Document Upload Date
-                      </h6>
-                      <p className={styles["col-data"]}>
-                        {dateTimeFormatter(document.created_at)}
-                      </p>
-                    </div>
-                  </div>
-                  {index < props?.bidDetails?.document?.length - 1 && (
-                    <Divider classes={{ root: "custom-divider" }} />
-                  )}
-                </>
-              );
-            })}
           </AccordionDetails>
         </Accordion>
       )}

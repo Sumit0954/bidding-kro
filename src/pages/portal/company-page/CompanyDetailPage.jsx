@@ -1,7 +1,7 @@
 import About from "../../../components/portal/companies/About";
 import PreviousBids from "../../../components/portal/companies/PreviousBids";
 import { Box, Breadcrumbs, Button, Tab, Tabs, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
 import PropTypes from "prop-types";
@@ -10,12 +10,17 @@ import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import Reviews from "../../../components/portal/companies/Reviews";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { truncateString } from "../../../helpers/formatter";
+import { useReactToPrint } from "react-to-print";
+import { Print } from "@mui/icons-material";
 
 const CompanyDetailPage = () => {
   const { id } = useParams();
   const [value, setValue] = useState(0);
   const [companyDetail, setCompanyDetail] = useState({});
   const [screenLoader, setScreenLoader] = useState(true);
+  const contentRef = useRef(null);
+
+  const handlePrint = useReactToPrint({ contentRef });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -68,6 +73,11 @@ const CompanyDetailPage = () => {
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         </div>
+        {value === 0 && (
+          <button className={cn("btn", "button")} onClick={handlePrint}>
+            <Print />
+          </button>
+        )}
       </div>
       <Box sx={{ width: "100%" }}>
         <Tabs
@@ -88,9 +98,8 @@ const CompanyDetailPage = () => {
           <Tab label="Reviews" {...a11yProps(2)} />
         </Tabs>
       </Box>
-
       <TabPanel value={value} index={0}>
-        <About About={About} companyDetail={companyDetail} />
+        <About About={About} ref={contentRef} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <PreviousBids

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./LetterOfIntent.module.scss";
 import {
   Accordion,
@@ -6,23 +6,20 @@ import {
   AccordionSummary,
   Typography,
 } from "@mui/material";
-import {
-  ExpandMore,
-  ExpandMoreRounded,
-  PrintOutlined,
-} from "@mui/icons-material";
+import { ExpandMoreRounded, Print } from "@mui/icons-material";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { dateTimeFormatter } from "../../../../helpers/formatter";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
-// import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 const LetterOfIntent = ({ bidDetails }) => {
-  const componentRef = useRef(null);
   const [expanded, setExpanded] = useState(true);
   const [screenLoader, setScreenLoader] = useState(true);
+  const contentRef = useRef(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   const [letterOfIntent, setLetterOfIntent] = useState([]);
-  console.log(letterOfIntent, " : letterOfIntent");
+
   const fetchLetterofIntent = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -60,6 +57,7 @@ const LetterOfIntent = ({ bidDetails }) => {
       <div className={styles["heading"]}>
         <Typography variant="h6">Company Name</Typography>
       </div>
+
       {letterOfIntent.map((letter) => {
         return (
           <>
@@ -76,16 +74,40 @@ const LetterOfIntent = ({ bidDetails }) => {
                 </div>
               </AccordionSummary>
               <AccordionDetails>
-                <div ref={componentRef}>
+                <div ref={contentRef}>
                   <div className={styles["loi-content"]}>
-                    <div className={styles["bid-Letter"]}>
+                    <div
+                      className={styles["bid-Letter"]}
+                      style={{
+                        position: "relative",
+                        textAlign: "center",
+                        paddingRight: "40px", // leave space so text doesn't overlap icon
+                      }}
+                    >
                       <Typography
                         variant="h6"
                         className={styles["bid-letter-contnet"]}
+                        style={{ margin: 0 }}
                       >
                         LETTER OF INTENT FOR BID AWARD
                       </Typography>
+
+                      <button
+                        onClick={reactToPrintFn}
+                        className={styles["no-print"]}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Print />
+                      </button>
                     </div>
+
                     <br />
                     <Typography>
                       Date: {dateTimeFormatter(letter?.created_at)}
@@ -110,9 +132,15 @@ const LetterOfIntent = ({ bidDetails }) => {
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{letter?.buyer?.name}</td>
-                          <td>{letter?.buyer?.business_email}</td>
-                          <td>{letter?.buyer?.business_mobile}</td>
+                          <td data-label="Company Name">
+                            {letter?.buyer?.name}
+                          </td>
+                          <td data-label="Company Email">
+                            {letter?.buyer?.business_email}
+                          </td>
+                          <td data-label="Contact">
+                            {letter?.buyer?.business_mobile}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -136,17 +164,15 @@ const LetterOfIntent = ({ bidDetails }) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {letter?.buyer?.address?.map((address) => {
-                              return (
-                                <tr>
-                                  <td>{address?.address}</td>
-                                  <td>{address?.city}</td>
-                                  <td>{address?.country}</td>
-                                  <td>{address?.pincode}</td>
-                                  <td>{address?.state}</td>
-                                </tr>
-                              );
-                            })}
+                            {letter?.buyer?.address?.map((address) => (
+                              <tr>
+                                <td data-label="Address">{address?.address}</td>
+                                <td data-label="City">{address?.city}</td>
+                                <td data-label="Country">{address?.country}</td>
+                                <td data-label="Pincode">{address?.pincode}</td>
+                                <td data-label="State">{address?.state}</td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </>
@@ -169,10 +195,18 @@ const LetterOfIntent = ({ bidDetails }) => {
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{letter?.supplier?.name}</td>
-                          <td>{letter?.supplier?.business_email}</td>
-                          <td>{letter?.supplier?.business_mobile}</td>
-                          <td>{letter?.supplier?.gstin}</td>
+                          <td data-label="Company Name">
+                            {letter?.supplier?.name}
+                          </td>
+                          <td data-label="Company Email">
+                            {letter?.supplier?.business_email}
+                          </td>
+                          <td data-label="Contact">
+                            {letter?.supplier?.business_mobile}
+                          </td>
+                          <td data-label="GST No.">
+                            {letter?.supplier?.gstin}
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -202,17 +236,15 @@ const LetterOfIntent = ({ bidDetails }) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {letter?.supplier?.address?.map((address) => {
-                              return (
-                                <tr>
-                                  <td>{address?.address}</td>
-                                  <td>{address?.city}</td>
-                                  <td>{address?.country}</td>
-                                  <td>{address?.pincode}</td>
-                                  <td>{address?.state}</td>
-                                </tr>
-                              );
-                            })}
+                            {letter?.supplier?.address?.map((address) => (
+                              <tr>
+                                <td data-label="Address">{address?.address}</td>
+                                <td data-label="City">{address?.city}</td>
+                                <td data-label="Country">{address?.country}</td>
+                                <td data-label="Pincode">{address?.pincode}</td>
+                                <td data-label="State">{address?.state}</td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </>
@@ -252,6 +284,7 @@ const LetterOfIntent = ({ bidDetails }) => {
                         ))}
                       </tbody>
                     </table>
+
                     <Typography variant="h6">
                       <strong>Intent Statement:</strong>
                     </Typography>
@@ -274,10 +307,10 @@ const LetterOfIntent = ({ bidDetails }) => {
 
                     <Typography>
                       For any modifications or queries, please contact at{" "}
-                      {letter?.buyer?.business_email} or
+                      {letter?.buyer?.business_email} or{" "}
                       {letter?.buyer?.business_mobile}.
                     </Typography>
-                    {/* New sections added */}
+
                     <Typography variant="h6" sx={{ marginTop: "20px" }}>
                       <strong>Delivery Term </strong>
                     </Typography>
@@ -291,8 +324,6 @@ const LetterOfIntent = ({ bidDetails }) => {
                     <Typography>
                       {letter?.bid?.payment_terms.replace(/<p>|<\/p>/g, "")}
                     </Typography>
-
-                    {/* Other sections remain unchanged */}
                   </div>
                 </div>
               </AccordionDetails>
@@ -300,8 +331,6 @@ const LetterOfIntent = ({ bidDetails }) => {
           </>
         );
       })}
-
-      {/* {addInvitaion && <FeedbackModal addInvitaion={addInvitaion} />} */}
     </>
   );
 };

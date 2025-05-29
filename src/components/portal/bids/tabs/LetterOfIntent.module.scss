@@ -2,13 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
+  position: relative;
+  flex-wrap: wrap;
+  padding-right: 40px;
 }
 .heading {
   display: flex;
@@ -18,56 +14,95 @@
   background-color: var(--primary-color);
   color: white;
 }
-.print-icon {
-  cursor: pointer;
+.bid-letter-contnet {
+  padding-bottom: 8px;
+  display: inline-block;
+  border-bottom: 4px solid black;
+  font-size: 1.2rem;
+  text-align: center;
 }
+
+.print-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
 .loi-content {
   padding: 20px;
   border: 1px solid #ccc;
   margin-top: 10px;
   border-radius: 5px;
+  overflow-x: hidden;
 }
+
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
 .loi-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  min-width: 600px;
 }
+
 .loi-table th,
 .loi-table td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
+  white-space: nowrap;
 }
+
 .loi-table th {
   background-color: #f5f5f5;
 }
 
-.bid-letter-contnet{
-    padding-bottom: 8px;
-    border-bottom: 2px;
-    display: inline-block;
-    border-bottom:  4px solid black;
+.award-btn {
+  background-color: var(--primary-color) !important;
 }
 
-.no-print{
-  justify-content: end;
+.award-btn:hover {
+  background-color: var(--secondary-color) !important;
 }
 
+@media (max-width: 768px) {
+  .bid-letter-contnet {
+    font-size: 1rem;
+  }
 
+  .print-icon {
+    font-size: 18px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .loi-table {
+    font-size: 14px;
+  }
+
+  .loi-table th,
+  .loi-table td {
+    padding: 6px;
+  }
+}
 @media print {
   .no-print {
     display: none !important;
   }
-}
-
-.feedback-button {
-  background-color: #FFC107;
-}
-
-.award-btn{
-  background-color: var(--primary-color) !important;
-}
-
-.award-btn:hover{
-  background-color: var(--secondary-color) !important;
 }

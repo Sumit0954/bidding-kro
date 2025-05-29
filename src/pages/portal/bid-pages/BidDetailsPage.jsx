@@ -39,26 +39,25 @@ import { setActiveTab } from "../../../store/tabSlice";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
-import { PrintOutlined } from "@mui/icons-material";
+import { Print, PrintOutlined } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import BidPaymentModal from "../../../components/portal/bid-activation-payment/BidPaymentModal";
 import { truncateString } from "../../../helpers/formatter";
 import PaymentLoader from "../../../components/portal/bid-activation-payment/PaymentLoader";
-
+import { useReactToPrint } from "react-to-print";
 const BidDetailsPage = () => {
   const [addAmendment, setAddAmendment] = useState(false);
   const navigate = useNavigate();
-  const { userDetails } = useContext(UserDetailsContext);
   const [activateBid, setActivateBid] = useState(false);
   const [showThankyou, setShowThankyou] = useState(false);
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
   const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
-  const status = new URLSearchParams(useLocation().search).get("status");
-  const [value, setValue] = useState(status === "acceptanceStatus" ? 2 : 0);
+  const contentRef = useRef(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   const [participant, setParticipant] = useState();
   const [screenLoader, setScreenLoader] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -260,7 +259,7 @@ const BidDetailsPage = () => {
 
   if (confirmPaymentLoading) {
     return <PaymentLoader />;
-  }
+    }
 
   return (
     <>
@@ -269,7 +268,9 @@ const BidDetailsPage = () => {
         {/* Breadcrumb and Buttons Container */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center w-100">
           {/* Breadcrumb */}
-          <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
+          <Breadcrumbs separator=">"  aria-label="breadcrumb">
+            {breadcrumbs}
+          </Breadcrumbs>
 
           {/* Buttons Section */}
           <div className="d-flex flex-column flex-md-row gap-2 mt-2 mt-md-0">
@@ -409,12 +410,19 @@ const BidDetailsPage = () => {
                     Cancel Bid
                   </button>
                 </Tooltip>
+                <Tooltip title="Print this bid">
+                  <button
+                    className={cn("btn", "button")}
+                    onClick={reactToPrintFn}
+                  >
+                    <Print />
+                  </button>
+                </Tooltip>
               </>
             )}
           </div>
         </div>
       </div>
-
       {/*NOTE AND WARNINGS IN BIDDETAILS  */}
       {type === "invited" || type === "related" ? null : (
         <>
@@ -861,7 +869,7 @@ const BidDetailsPage = () => {
 
       {/*PRINT BID MODAL IN BIDDETAILS  */}
       <div className="print-only">
-        <PrintableBidDetails ref={componentRef} bidDetails={bidDetails} />
+        <PrintableBidDetails ref={contentRef} bidDetails={bidDetails} />
       </div>
     </>
   );
