@@ -259,7 +259,7 @@ const BidDetailsPage = () => {
 
   if (confirmPaymentLoading) {
     return <PaymentLoader />;
-    }
+  }
 
   return (
     <>
@@ -268,7 +268,7 @@ const BidDetailsPage = () => {
         {/* Breadcrumb and Buttons Container */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center w-100">
           {/* Breadcrumb */}
-          <Breadcrumbs separator=">"  aria-label="breadcrumb">
+          <Breadcrumbs separator=">" aria-label="breadcrumb">
             {breadcrumbs}
           </Breadcrumbs>
 
@@ -841,7 +841,7 @@ const BidDetailsPage = () => {
         />
       )}
 
-      {/*RAZORPAY PAYEMENT IN BIDDETAILS  */}
+      {/*HDFC PAYEMENT MODAL  */}
       {activateBid && (
         <BidPaymentModal
           activateBid={activateBid}
@@ -852,6 +852,7 @@ const BidDetailsPage = () => {
           bidid={bidDetails?.id}
           setShowThankyou={setShowThankyou}
           checkBidConfirmation={checkBidConfirmation}
+          bidDetails={bidDetails}
         />
       )}
 

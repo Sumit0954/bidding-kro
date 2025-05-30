@@ -17,6 +17,7 @@ import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { NavLink } from "react-router-dom";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
+import { truncateString } from "../../../helpers/formatter";
 
 export default function BidPaymentModal({
   activateBid,
@@ -27,6 +28,7 @@ export default function BidPaymentModal({
   setShowThankyou,
   bidid,
   checkBidConfirmation,
+  bidDetails,
 }) {
   const intervalRef = useRef(null);
   const { setAlert } = useContext(AlertContext);
@@ -131,12 +133,12 @@ export default function BidPaymentModal({
             <Box sx={{ mt: 2 }}>
               <Grid container spacing={1}>
                 {[
-                  { label: "Bid ID", value: "EB25000248" },
+                  { label: "Bid ID", value: `${bidDetails?.formatted_number}` },
                   {
                     label: "Bid Title",
-                    value: "Bid for Acoustic Baffles, Acou...",
+                    value: `${truncateString(bidDetails?.title, 30)}`,
                   },
-                  { label: "Type", value: "QCBS" },
+                  { label: "Type", value: `${bidDetails?.type}` },
                 ].map((item, index) => (
                   <Grid item xs={12} key={index} className={styles.bidRow}>
                     <Typography variant="body2" className={styles.boldLabel}>
