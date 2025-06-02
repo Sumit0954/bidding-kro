@@ -1,6 +1,6 @@
-# 🛒 Bidding Kro Frontend
+# 🛒 Bidding Karo Frontend
 
-**Bidding Kro** is a comprehensive bidding platform enabling buyers and suppliers to participate in structured bidding processes such as **L1 (Lowest Price)** and **QCBS (Quality and Cost Based Selection)**. This project serves developers, product managers, and client.
+**Bidding Karo** is a comprehensive bidding platform enabling buyers and suppliers to participate in structured bidding processes such as **L1 (Lowest Price)** and **QCBS (Quality and Cost Based Selection)**. This project serves developers, product managers, and client.
 
 ---
 
