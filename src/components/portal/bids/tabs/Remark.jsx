@@ -22,19 +22,17 @@ const Remark = ({ bidDetails }) => {
   const formSubmit = async (data) => {
     setLoading(true);
 
-    // Prepare the form data
     const formData = new FormData();
     formData.append("remarks", data.remark);
 
     try {
       const response = await _sendAPIRequest(
         "PUT",
-        `${PortalApiUrls.REMARK}${bidDetails?.id}/`, // Use bidDetails.id
+        `${PortalApiUrls.REMARK}${bidDetails?.id}/`,
         formData,
         true
       );
 
-      // Handle successful response
       if (response.status === 200 || response.status === 204) {
         setAlert({
           isVisible: true,
@@ -65,8 +63,8 @@ const Remark = ({ bidDetails }) => {
           label={
             <Typography variant="body1">
               By clicking this you agree to{" "}
-              <NavLink>bid's terms & conditions</NavLink> and{" "}
-              <NavLink href="#">company's terms & conditions</NavLink>
+              <a href="/terms-and-conditions">terms & conditions</a> and{" "}
+              <a href="/privacy-policy">Privacy & policy</a>
             </Typography>
           }
         />
