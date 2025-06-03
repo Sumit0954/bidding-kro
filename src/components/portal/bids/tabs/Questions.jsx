@@ -16,7 +16,6 @@ const Questions = ({ bidDetails }) => {
   const [submittedAnswers, setSubmittedAnswers] = useState({});
   const [screenLoader, setScreenLoader] = useState(true);
 
-  // Fetch questions and answers from API on component mount and after successful form submission
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -51,7 +50,7 @@ const Questions = ({ bidDetails }) => {
         message: "Answer is required for the current question.",
         severity: "error",
       });
-      return; // prevent submission if the answer is empty
+      return;
     }
 
     setLoading((prev) => ({ ...prev, [questionId]: true }));
@@ -138,9 +137,6 @@ const Questions = ({ bidDetails }) => {
                   multiline={true}
                   showLabel={false}
                   inputType="textarea"
-                  // rules={{
-                  //   required: "Answer is required.",
-                  // }}
                   placeholder="Write your answer here..."
                   defaultValue={answer || ""}
                 />
@@ -149,7 +145,11 @@ const Questions = ({ bidDetails }) => {
                 {loading[question.id] ? (
                   <ButtonLoader size={60} />
                 ) : (
-                  <button className="btn button" type="submit">
+                  <button
+                    className="btn button"
+                    type="submit"
+                    style={{ float: "right" }}
+                  >
                     {answer ? "Update Answer" : "Submit"}
                   </button>
                 )}
