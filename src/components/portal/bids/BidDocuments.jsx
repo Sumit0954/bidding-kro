@@ -337,7 +337,9 @@ const BidDocuments = () => {
                 className={cn("btn", "button")}
                 type="submit"
                 disabled={status === "cancelled"}
-                onClick={() => navigate(`/portal/bids/details/${id}`)}
+                onClick={() =>
+                  navigate(`/portal/bids/details/${id}?activeTab=0`)
+                }
               >
                 {documents?.length > 0 ? "proceed further" : "Skip"}
               </button>
