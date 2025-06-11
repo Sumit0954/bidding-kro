@@ -1,3 +1,9 @@
+/**
+ * Removes the '+91' country code prefix from a phone number string.
+ *
+ * @param {string} number - The phone number string, possibly including '+91'.
+ * @returns {string} - The phone number string without the '+91' prefix.
+ */
 export const numberFormatter = (number) => {
   if (number) {
     const parts = number?.split(" ");
@@ -6,12 +12,24 @@ export const numberFormatter = (number) => {
   }
 };
 
+/**
+ * Adds the '+91' country code prefix to a phone number.
+ *
+ * @param {string} number - The phone number string without country code.
+ * @returns {string} - The phone number prefixed with '+91'.
+ */
 export const addCountryCode = (number) => {
   if (number) {
     return "+91" + number;
   }
 };
 
+/**
+ * Transforms an array of objects into a new format with 'label' and 'value' keys.
+ *
+ * @param {Array<{ name: string, id: string|number }>} data - The input array to transform.
+ * @returns {Array<{ label: string, value: string|number }>} - The modified array.
+ */
 export const modifiedData = (data) => {
   let modified = [];
   data?.forEach((element) => {
@@ -20,6 +38,12 @@ export const modifiedData = (data) => {
   return modified;
 };
 
+/**
+ * Ensures the given URL starts with 'https://' or 'http://'.
+ *
+ * @param {string} inputUrl - The URL to validate and format.
+ * @returns {string} - A properly formatted URL starting with 'https://' or 'http://'.
+ */
 export const formatUrl = (inputUrl) => {
   if (!inputUrl.startsWith("http://") && !inputUrl.startsWith("https://")) {
     return `https://${inputUrl}`;
@@ -27,6 +51,12 @@ export const formatUrl = (inputUrl) => {
   return inputUrl;
 };
 
+/**
+ * Formats a date into 'YYYY-MM-DD' format.
+ *
+ * @param {Date|string|number} date - A valid date object or date string/number.
+ * @returns {string} - The formatted date string.
+ */
 export const dateFormatter = (date) => {
   const newDate = new Date(date);
   const yyyy = newDate.getFullYear();
@@ -35,6 +65,13 @@ export const dateFormatter = (date) => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
+/**
+ * Formats a date into a human-readable string like 'Jan 01, 2024 10:30 AM'.
+ *
+ * @param {Date|string|number} date - A valid date object or value.
+ * @param {boolean} [showTime=true] - Whether to include time in the output.
+ * @returns {string} - The formatted date-time string.
+ */
 export const dateTimeFormatter = (date, showTime = true) => {
   const newDate = new Date(date);
 
@@ -69,6 +106,13 @@ export const dateTimeFormatter = (date, showTime = true) => {
   }`;
 };
 
+/**
+ * Returns a date string in 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:mm' format.
+ *
+ * @param {Date|string|number} date - A valid date object or value.
+ * @param {boolean} [showTime=true] - Whether to include time in the output.
+ * @returns {string} - The formatted date string with or without time.
+ */
 export const retrieveDateFormat = (date, showTime = true) => {
   const newDate = new Date(date);
   const year = newDate.getFullYear();
@@ -84,6 +128,13 @@ export const retrieveDateFormat = (date, showTime = true) => {
   return formatted;
 };
 
+/**
+ * Truncates a string to a specified length.
+ *
+ * @param {string} title - The input string to truncate.
+ * @param {number} maxlength - The maximum allowed length.
+ * @returns {string} Truncated string with ellipsis if required.
+ */
 export const truncateString = (title, maxlength) => {
   return title?.length > maxlength
     ? title.substring(0, maxlength) + "..."

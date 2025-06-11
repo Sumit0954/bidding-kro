@@ -1,3 +1,7 @@
+/**
+ * @constant {Object} PortalApiUrls
+ * @description Contains all admin-related API endpoint URLs used throughout the application.
+ */
 export const PortalApiUrls = Object.freeze({
   GET_USER_PROFILE: "/user/customer/profile/",
   UPDATE_USER_PROFILE: "/user/customer/profile/",

@@ -1,7 +1,5 @@
 import {
   Box,
-  Checkbox,
-  // IconButton,
   Paper,
   Table,
   TableBody,
@@ -14,19 +12,16 @@ import {
   TextField,
   ThemeProvider,
   Toolbar,
-  // Tooltip,
   Typography,
   alpha,
   createTheme,
 } from "@mui/material";
 
 import { useTable } from "react-table";
-// import { Delete } from "@mui/icons-material";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./DataTable.module.scss";
 import { visuallyHidden } from "@mui/utils";
 import { debounce } from "lodash";
-import cn from "classnames";
 
 function descendingComparator(a, b, orderBy) {
   if (b.values[orderBy] < a.values[orderBy]) {
@@ -57,15 +52,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-    headerGroups,
-  } = props;
+  const { order, orderBy, onRequestSort, headerGroups } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -74,17 +61,6 @@ function EnhancedTableHead(props) {
     <TableHead>
       {headerGroups.map((headerGroup) => (
         <TableRow {...headerGroup.getHeaderGroupProps()}>
-          {/* <TableCell padding="checkbox">
-            <Checkbox
-              color="primary"
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-              inputProps={{
-                "aria-label": "select all desserts",
-              }}
-            />
-          </TableCell> */}
           {headerGroup.headers.map((column) => (
             <TableCell
               sx={{ minWidth: column.width }}
@@ -206,6 +182,35 @@ const theme = createTheme({
     },
   },
 });
+/**
+ * DataTable Component
+ *
+ * A customizable and reusable table component built using `react-table` and Material-UI (MUI).
+ * It supports sorting, pagination, searching, row selection, and custom cell rendering.
+ *
+ * @component
+ *
+ * @param {Object[]} propsColumn - Array of column definitions compatible with `react-table`.
+ * @param {Object[]} propsData - Array of data objects to be rendered in the table.
+ * @param {Function} [action] - Function to render custom cell content. Receives a cell object from `react-table`.
+ * @param {string} [customClassName=""] - Optional custom class to style the table container.
+ * @param {boolean} [isSingleSelection=false] - Flag to determine if only one row can be selected at a time.
+ * @param {Function} [setSelectedRow] - Callback function to set the currently selected row(s).
+ * @param {boolean} [hideToolbar=false] - Flag to hide the top toolbar with the search bar.
+ * @param {boolean} [hidePagination=false] - Flag to hide the pagination controls at the bottom.
+ *
+ * @returns {JSX.Element} A themed Material-UI Table with advanced features.
+ *
+ * @example
+ * <DataTable
+ *   propsColumn={columns}
+ *   propsData={data}
+ *   action={(cell) => <CustomCellRenderer cell={cell} />}
+ *   customClassName="my-table"
+ *   isSingleSelection={true}
+ *   setSelectedRow={handleSelect}
+ * />
+ */
 
 const DataTable = ({
   propsColumn,
@@ -251,26 +256,6 @@ const DataTable = ({
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  // const visibleRows = useMemo(() => {
-  //   if (searchQuery) {
-  //     const filtered = rows.filter((row) =>
-  //       row.allCells.some((cell) =>
-  //         String(cell.value).toLowerCase().includes(searchQuery.toLowerCase())
-  //       )
-  //     );
-
-  //     return stableSort(filtered, getComparator(order, orderBy)).slice(
-  //       page * rowsPerPage,
-  //       page * rowsPerPage + rowsPerPage
-  //     );
-  //   } else {
-  //     return stableSort(rows, getComparator(order, orderBy)).slice(
-  //       page * rowsPerPage,
-  //       page * rowsPerPage + rowsPerPage
-  //     );
-  //   }
-  // }, [order, orderBy, page, rowsPerPage, rows, searchQuery]);
 
   const visibleRows = useMemo(() => {
     if (searchQuery) {

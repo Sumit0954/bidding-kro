@@ -1,18 +1,24 @@
 import * as XLSX from "@e965/xlsx";
 import { dateTimeFormatter } from "../helpers/formatter";
-
+/**
+ * Exports tabular data to an Excel (.xlsx) file using specified columns and custom formatting.
+ *
+ * @param {Array<Object>} data - The data to export, typically an array of objects representing rows.
+ * @param {Array<Object>} columns - The column configuration used for table rendering. Each column should have:
+ *   - `accessor` (string | function): Field name or a function to derive value from a row.
+ *   - `Header` (string): The column title to be used in the Excel header row.
+ * @param {string} [fileName="data.xlsx"] - The name of the downloaded Excel file.
+ * @param {Array<string>} [excludeColumns=[]] - List of `accessor` keys to exclude from the export.
+ *
+ * @example
+ * exportToExcel(data, columns, "bids.xlsx", ["internal_id"]);
+ */
 export const exportToExcel = (
   data,
   columns,
   fileName = "data.xlsx",
   excludeColumns = []
 ) => {
-  // console.log("Exclude Columns:", excludeColumns);
-  // console.log(
-  //   "Original Columns:",
-  //   columns.map((col) => col.accessor)
-  // );
-
   // Filter out dynamic excluded columns
   const filteredColumns = columns.filter(
     (col) => !excludeColumns.includes(col.accessor)

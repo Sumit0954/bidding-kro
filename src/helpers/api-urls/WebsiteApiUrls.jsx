@@ -1,3 +1,7 @@
+/**
+ * @constant {Object} WebsiteApiUrls
+ * @description Contains all admin-related API endpoint URLs used throughout the application.
+ */
 export const WebsiteApiUrls = Object.freeze({
   SEND_OTP: "/user/customer/register/send_otp/",
   RESEND_OTP: "/user/customer/resend_otp/",
@@ -13,5 +17,5 @@ export const WebsiteApiUrls = Object.freeze({
   WEBSITE_BLOGS: "/blog/",
   WEBSITE_BLOG_DETAIL: "/blog/",
   CONTACT_US: "/support/contact/",
-  GET_IN_TOUCH : "/support/get_in_touch/"
+  GET_IN_TOUCH: "/support/get_in_touch/",
 });

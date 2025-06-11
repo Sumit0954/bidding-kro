@@ -2198,6 +2198,18 @@ const reportColumns = {
   },
 };
 
+/**
+ * Returns the configuration for a given report type.
+ *
+ * @param {string} type - The type of the report.
+ * @returns {{
+ *   name: string,
+ *   column: Array<object>,
+ *   api: string,
+ *   downloadData: Array<object>,
+ *   query_type: string
+ * }} - The report configuration including name, column definitions, API endpoint, downloadable data, and query type.
+ */
 export const reportColumnHandler = (type) => {
   const selectedReport = reportColumns[type];
   return {

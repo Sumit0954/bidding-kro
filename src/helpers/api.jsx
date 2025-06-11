@@ -1,6 +1,18 @@
 import axios from "axios";
 import { axiosInstance } from "../utils/AxiosInterceptors";
 
+/**
+ * Makes an API request with the specified method, URL, and data.
+ *
+ * @export
+ * @param {'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'} action - HTTP method in uppercase.
+ * @param {string} url - The endpoint URL.
+ * @param {object} [data] - The payload/data to be sent with the request.
+ * @param {boolean} [useAuthInstance=false] - Whether to use the authenticated API instance.
+ * @param {object} [headers={}] - Optional custom headers to include in the request.
+ * @returns {Promise<any>} - Returns a Promise resolving to the API response.
+ */
+
 export default async function _sendAPIRequest(
   action,
   url,
