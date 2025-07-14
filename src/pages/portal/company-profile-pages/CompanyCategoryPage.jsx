@@ -1,10 +1,9 @@
-import React from "react";
-import CategoryForm from "../../../components/portal/company-profile/CategoryForm";
+import CategoriesManagement from "../../../components/portal/categories/CategoriesManagement";
 
 const CompanyCategoryPage = () => {
   return (
     <>
-      <CategoryForm />
+      <CategoriesManagement type={"company"} />
     </>
   );
 };
