@@ -1,17 +1,109 @@
 .request-btn {
-    background-color: #00c8ff28;
-    width: 100px;
-    text-align: center;
-    border-radius: 5px;
-    padding: 2px;
-    text-transform: uppercase;
-    color: var(--secondary-color);
-    font-weight: 600;
-    border: none;
-    display: contents;
-  
-    &.disable {
-      color: var(--gray);
-      background-color: var(--disable);
-    }
+  background-color: #00c8ff28;
+  width: 100px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 2px;
+  text-transform: uppercase;
+  color: var(--secondary-color);
+  font-weight: 600;
+  border: none;
+  display: contents;
+
+  &.disable {
+    color: var(--gray);
+    background-color: var(--disable);
   }
+}
+
+.customInput {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0, 120, 255, 0.2);
+}
+
+.customInput .MuiOutlinedInput-root {
+  border-radius: 6px;
+}
+
+.customInput .MuiOutlinedInput-root fieldset {
+  border-color: #1a73e8;
+}
+
+.customInput .MuiOutlinedInput-root:hover fieldset {
+  border-color: #1669c1;
+}
+
+.customInput .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.3);
+}
+
+.searchResultBox {
+  margin-top: 1rem; // equivalent to `mt={4}`
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px; // `borderRadius: 1` in MUI is usually 8px
+  padding: 16px;
+  background-color: #f9fbfc;
+}
+
+.searchProductCard {
+  width: 100%;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchProductCard:hover {
+  background-color: #f0f8ff;
+  cursor: pointer;
+}
+
+.ancestorText-depth0 {
+  color: var(--mui-palette-primary-main);
+  font-weight: 600;
+}
+
+.ancestorText-depth1 {
+  color: var(--mui-palette-text-primary);
+  font-weight: 500;
+}
+
+.ancestorText-depth2 {
+  color: var(--mui-palette-text-secondary);
+  font-weight: 400;
+}
+
+.depth {
+  display: inline;
+  margin-right: 0.5rem;
+}
+
+.depth0 {
+  color: var(--primary-color); // fallback if MUI variable not available
+  font-weight: 600 !important;
+}
+
+.depth1 {
+  color: var(--mui-text-primary, #000);
+  font-weight: 500 !important;
+}
+
+.depth2 {
+  color: var(--mui-text-secondary, #666);
+  font-weight: 400 !important;
+}
+
+.selectedChip {
+  font-weight: 500 !important;
+  background-color: var(--primary-color, #062d72) !important;
+  color: white !important;
+}
+
+.selectedChip .MuiChip-deleteIcon,
+.selectedChip svg {
+  color: white !important;
+  fill: white !important;
+}

@@ -2,30 +2,16 @@ import styles from "./BidForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
-import DateTimeRangePicker from "../../../elements/CustomDateTimePickers/DateTimeRangePicker";
-import {
-  getMinMaxDate,
-  getProductUnits,
-  // bidType,
-  getBidTypes,
-} from "../../../helpers/common";
+import { getMinMaxDate, getBidTypes } from "../../../helpers/common";
 import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import {
-  dateFormatter,
-  modifiedData,
-  retrieveDateFormat,
-} from "../../../helpers/formatter";
+import { dateFormatter, retrieveDateFormat } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
-import SearchSelect from "../../../elements/CustomSelect/SearchSelect";
-import { dateValidator } from "../../../helpers/validation";
-import { useLocation } from "react-router-dom";
-import { useBidData } from "./BidCategories";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
 const BidForm = () => {
@@ -36,13 +22,11 @@ const BidForm = () => {
     setError,
     reset,
     setValue,
-    clearErrors,
+
     formState: { dirtyFields },
   } = useForm();
   const navigate = useNavigate();
-  const location = useLocation();
   const { action, id } = useParams();
-  const [bidType, setBidType] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [searchedBids, setSearchedBids] = useState([]);
@@ -295,73 +279,6 @@ const BidForm = () => {
       retrieveBid();
     }
   }, [id, reset]);
-
-  const handleTitleInputChange = async (event, value) => {
-    if (value.length >= 4) {
-      setValue("title", value);
-      const params = { title: value };
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          PortalApiUrls.SEARCH_BIDS,
-          params,
-          true
-        );
-        if (response.status === 200) {
-          setSearchedBids(response.data);
-        }
-      } catch (error) {
-        setError(
-          "title",
-          { message: "There is no bid related to this keyword." },
-          { shouldFocus: true }
-        );
-      }
-    } else {
-      setSearchedBids([]);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (titleValue) handleTitleInputChange("", titleValue);
-  // }, [titleValue]);
-
-  const handleTitleChange = async (event, value) => {
-    if (value.id) {
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          PortalApiUrls.RETRIEVE_CREATED_BID + `${value.id}/`,
-          "",
-          true
-        );
-        if (response.status === 200) {
-          setTitleValue(response.data.title);
-          setValue(
-            "bid_start_date",
-            retrieveDateFormat(response.data.bid_start_date),
-            { shouldValidate: true }
-          );
-          setValue(
-            "bid_end_date",
-            retrieveDateFormat(response.data.bid_end_date),
-            { shouldValidate: true }
-          );
-          setValue(
-            "delivery_date",
-            retrieveDateFormat(response.data.delivery_date, false),
-            { shouldValidate: true }
-          );
-          reset({
-            ...response.data,
-            type: response.data.type_meta.id,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
 
   const handleFormdata = async (id) => {
     try {

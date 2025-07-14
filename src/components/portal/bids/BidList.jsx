@@ -1,20 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import {
   created_bids_column,
   invited_bids_column,
   related_bids_column,
 } from "../../../elements/CustomDataTable/PortalColumnData";
-import { TableCell } from "@mui/material";
+import {
+  Box,
+  Chip,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TableCell,
+  TextField,
+  Typography,
+} from "@mui/material";
 import styles from "./BidList.module.scss";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
-import { useForm } from "react-hook-form";
-import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
-import SearchBar from "../../../elements/CustomSelect/SearchBar";
 import RequestModal from "../../../elements/CustomModal/RequestModal";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
-import { exportToExcel } from "../../../utils/exportToExcel";
+import { Close } from "@mui/icons-material";
+import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 
 const BidList = ({ listType }) => {
   const [sendRequest, setSendRequest] = useState(false);
@@ -22,39 +29,36 @@ const BidList = ({ listType }) => {
   const [createdBids, setCreatedBids] = useState([]);
   const [inviteBids, setInviteBids] = useState([]);
   const [relatedBids, setRelatedBids] = useState([]);
-  const [categories, setCategories] = useState({ 0: [] });
-  const [rootCategory, setRootCategory] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState([]);
-  const [selectedRow, setSelectedRow] = useState({});
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [products, setProducts] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const loaderRef = useRef();
+  const debounceTimeout = useRef(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [screenLoader, setScreenLoader] = useState(true);
 
   // To Created Bid List
-  const getCreatedBidList = async () => {
-    const categoryArray = Array.isArray(selectedCategory)
-      ? selectedCategory
-      : [selectedCategory];
-
-    const params = new URLSearchParams();
-
-    categoryArray.forEach((category) => {
-      if (category !== undefined && category !== "") {
-        params.append("category", category); // This will append without the []
-      }
-    });
+  const getCreatedBidList = async (productIds = []) => {
     try {
+      const queryParams = productIds.length
+        ? `?category=${productIds.join("&category=")}`
+        : "";
+
       const response = await _sendAPIRequest(
         "GET",
-        PortalApiUrls.CREATED_LIST_BIDS,
-        params,
+        `${PortalApiUrls.CREATED_LIST_BIDS}${queryParams}`,
+        "",
         true
       );
+
       if (response.status === 200) {
         setCreatedBids(response.data);
         setScreenLoader(false);
       }
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch (error) {}
   };
 
   // To Invited Bid List
@@ -92,20 +96,9 @@ const BidList = ({ listType }) => {
   };
 
   useEffect(() => {
-    if (listType === "created" && selectedCategory.length > 0) {
-      getCreatedBidList();
-    }
-  }, [selectedCategory]);
-
-  // useEffect(() => {
-  //   if (listType == "created") {
-  //     getCreatedBidList();
-  //   } else if (listType == "invited") {
-  //     getInvitedBidList();
-  //   } else if (listType == "related") {
-  //     getRelatedBidList();
-  //   }
-  // }, [sendRequest]);
+    const productIds = selectedProducts.map((p) => p.id);
+    getCreatedBidList(productIds);
+  }, [selectedProducts]);
 
   useEffect(() => {
     const fetchBidList = {
@@ -114,10 +107,10 @@ const BidList = ({ listType }) => {
       related: getRelatedBidList,
     };
 
-    fetchBidList[listType]?.(); // Calls the function based on listType if it exists
+    fetchBidList[listType]?.();
   }, [sendRequest]);
 
-  const addCreatedAction = (cell) => {
+  const addCreatedAction = (cell) => { 
     return (
       <TableCell {...cell.getCellProps()} align={cell.column.align}>
         {" "}
@@ -135,65 +128,121 @@ const BidList = ({ listType }) => {
     );
   };
 
-  const { control } = useForm();
+  const fetchProducts = async (keyword, pageNo = 1, isNewSearch = false) => {
+    if (!keyword || keyword.trim().split(" ").length > 3) return;
 
-  const handleCategorySelection = (selected) => {
-    // console.log(selected, "Selected category");
-    if (selected && selected.value) {
-      setRootCategory(selected.value);
-    } else {
-      setRootCategory(null);
-    }
-  };
-
-  const getCategories = async (parent_categories, depth) => {
-    const params = new URLSearchParams();
-    parent_categories.forEach((value) => {
-      if (value !== undefined) {
-        params.append("parent_category", value);
-      }
-    });
+    if (isNewSearch) setLoading(true);
+    else setIsFetchingMore(true);
 
     try {
-      const response = await _sendAPIRequest(
+      const query = new URLSearchParams({
+        keyword: keyword.trim(),
+        ancestors: true,
+        page: pageNo,
+      }).toString();
+
+      const res = await _sendAPIRequest(
         "GET",
-        PortalApiUrls.GET_CATEGORIES,
-        params,
+        `${PortalApiUrls.SEARCH_CATEGORIES}?${query}`,
+        "",
         true
       );
-      if (response.status === 200) {
-        const mappedCategories = response.data.map((category) => ({
-          lable: category.name, // 'label' is used by Autocomplete to display
-          value: category.id, // 'value' is used for internal management
-          depth: category.depth,
-        }));
-        setCategories((prevCategories) => ({
-          ...prevCategories,
-          [depth]: mappedCategories,
-        }));
+
+      const grouped = groupByIndustry(res.data.results);
+      setHasMore(res.data.next !== null);
+
+      if (isNewSearch) {
+        console.log(res.data.results.length, " : Response");
+        setProducts(res.data.results.length ? grouped : {});
+      } else {
+        setProducts((prev) => {
+          const merged = { ...prev };
+          Object.entries(grouped).forEach(([industry, items]) => {
+            merged[industry] = [...(merged[industry] || []), ...items];
+          });
+          return merged;
+        });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Failed to fetch products", err);
+    } finally {
+      setLoading(false);
+      setIsFetchingMore(false);
+    }
+  };
+
+  const groupByIndustry = (items) => {
+    const grouped = {};
+    items.forEach((item) => {
+      const topAncestor = item.ancestors.find((a) => a.depth === 0);
+      const industry = topAncestor?.name || "Others";
+
+      if (!grouped[industry]) grouped[industry] = [];
+      grouped[industry].push(item);
+    });
+    return grouped;
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setPage(1);
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
+    if (value.trim().length >= 3) {
+      debounceTimeout.current = setTimeout(() => {
+        fetchProducts(value, 1, true);
+      }, 500);
+    } else {
+      setProducts({});
+      setHasMore(false);
+    }
+  };
+
+  const handleProductSelectFromSearch = (item) => {
+    setSearchTerm("");
+    setProducts({});
+    if (!selectedProducts.some((p) => p.id === item.id)) {
+      setSelectedProducts((prev) => [...prev, item]);
     }
   };
 
   useEffect(() => {
-    if (listType == "created") {
-      getCategories([], 0);
-      console.log("listtype", listType);
-    }
-  }, []);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && !loading && !isFetchingMore && hasMore) {
+          const nextPage = page + 1;
+          setPage(nextPage);
+          fetchProducts(searchTerm, nextPage);
+        }
+      },
+      { threshold: 1 }
+    );
+    const current = loaderRef.current;
+    if (current) observer.observe(current);
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, [loading, isFetchingMore, hasMore, searchTerm, page]);
 
-  useEffect(() => {
-    setSelectedCategory(rootCategory);
-  }, [rootCategory]);
-
-  const handleOptionChange = (ancestors) => {
-    // console.log(ancestors, "ancestorsancestors");
-    setSelectedCategory(ancestors);
+  const getHighlightedText = (text, highlight) => {
+    if (!highlight.trim()) return text;
+    const words = highlight
+      .trim()
+      .split(/\s+/)
+      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const regex = new RegExp(`(${words.join("|")})`, "gi");
+    return text.split(regex).map((part, i) =>
+      regex.test(part) ? (
+        <span key={i} style={{ backgroundColor: "yellow" }}>
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
   };
-
-  // useEffect(() => {}, [rootCategory]);
 
   const handlerequest = (data) => {
     setSendRequest(true);
@@ -233,45 +282,137 @@ const BidList = ({ listType }) => {
   return (
     <>
       {listType === "created" && (
-        <div className="row">
-          <div className="col-lg-3">
-            <CustomSelect
-              control={control}
-              name="Industry"
-              placeholder="Industry"
-              options={categories[0]}
-              handleChange={handleCategorySelection}
-              multiple={false}
-            />
-          </div>
-          <div className="col-lg-9">
-            <SearchBar
-              name="product_search"
-              placeholder="Search Your Category"
-              control={control}
-              rootCategory={rootCategory}
-              value={undefined}
-              ancestors={false}
-              onAncestorsChange={handleOptionChange}
-              disabled={!rootCategory}
-              multiple={true}
-            />
-          </div>
-          {/* {listType === "created" && (
-            <button
-              onClick={() =>
-                exportToExcel(
-                  createdBids,
-                  created_bids_column,
-                  "Created_Bids.xlsx",
-                  ["clone_bid", "reserved_price"]
-                )
-              }
-            >
-              Export to Excel
-            </button>
-          )} */}
-        </div>
+        <Box>
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="Search according to product or category"
+            autoComplete="off"
+            className={styles.customInput}
+            InputProps={{
+              startAdornment: selectedProducts.map((product) => (
+                <Chip
+                  key={product.id}
+                  label={product.name}
+                  className={styles.selectedChip}
+                  size="medium"
+                  onDelete={() =>
+                    setSelectedProducts((prev) =>
+                      prev.filter((p) => p.id !== product.id)
+                    )
+                  }
+                  sx={{ m: 0.3 }}
+                />
+              )),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setProducts({});
+                      setSelectedProducts([]);
+                    }}
+                    aria-label="clear search"
+                  >
+                    <Close fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {loading && page === 1 && (
+            <Box textAlign="center" mt={2}>
+              <ButtonLoader size={60} />
+            </Box>
+          )}
+
+          {!loading && (
+            <>
+              {Object.keys(products).length > 0 ? (
+                <Box mt={4} className={styles.searchResultBox}>
+                  {Object.entries(products).map(([industry, items]) => (
+                    <Box key={industry} mb={3}>
+                      {items.map((item, index) => (
+                        <Paper
+                          key={`${item.id}_${index}`}
+                          onClick={() => handleProductSelectFromSearch(item)}
+                          elevation={2}
+                          className={styles.searchProductCard}
+                          sx={{ p: { xs: 1, sm: 2 } }}
+                        >
+                          <Box
+                            display="flex"
+                            flexDirection={{ xs: "column", sm: "row" }}
+                            justifyContent="space-between"
+                            alignItems={{ xs: "flex-start", sm: "center" }}
+                            rowGap={1}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight={600}
+                              sx={{
+                                wordBreak: "break-word",
+                                maxWidth: { xs: "100%", sm: "40%" },
+                              }}
+                            >
+                              {getHighlightedText(item.name, searchTerm)}
+                            </Typography>
+
+                            <Box
+                              display="flex"
+                              flexWrap="wrap"
+                              justifyContent={{
+                                xs: "flex-start",
+                                sm: "flex-end",
+                              }}
+                              maxWidth={{ xs: "100%", sm: "60%" }}
+                            >
+                              {item.ancestors.map((a, idx) => (
+                                <Typography
+                                  key={idx}
+                                  variant="body2"
+                                  className={`${styles.depth} ${
+                                    a.depth === 0
+                                      ? styles.depth0
+                                      : a.depth === 1
+                                      ? styles.depth1
+                                      : styles.depth2
+                                  }`}
+                                  sx={{ ml: 0.5 }}
+                                >
+                                  {a.name}
+                                  {idx !== item.ancestors.length - 1 && " ➤"}
+                                </Typography>
+                              ))}
+                            </Box>
+                          </Box>
+                        </Paper>
+                      ))}
+                    </Box>
+                  ))}
+
+                  {/* ⏳ Infinite Scroll Loader */}
+                  <Box ref={loaderRef} textAlign="center" mt={2}>
+                    {(isFetchingMore || hasMore) && (
+                      <Typography variant="body2" color="text.secondary">
+                        Loading more products <ButtonLoader size={60} />
+                      </Typography>
+                    )}
+                    {!hasMore && !isFetchingMore && (
+                      <Typography variant="body2" color="text.secondary">
+                        No more products to load.
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              ) : null}
+            </>
+          )}
+        </Box>
       )}
 
       {listType === "created" ? (
@@ -281,7 +422,6 @@ const BidList = ({ listType }) => {
           action={addCreatedAction}
           customClassName="portal-data-table"
           isSingleSelection={true}
-          setSelectedRow={setSelectedRow}
         />
       ) : listType === "invited" ? (
         <DataTable
