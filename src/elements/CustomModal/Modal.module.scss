@@ -1,38 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
 
 .modal {
-  backdrop-filter: "blur(4px)";
-  background-color: "rgba(0,0,0,0.4)";
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.4);
 }
+
 .modal-container {
   position: absolute;
   top: 50%;
-  left: 60%;
+  left: 50%; // Center horizontally
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
-
-  b &:focus-visible {
-    outline: none !important;
-  }
+  outline: none;
 
   .modal-section {
+    position: relative; // Needed for absolute children
     background-color: var(--white);
     width: 800px;
     text-align: center;
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 8px;
-
-    .search-company-head {
-      padding-bottom: 5px;
-      border-bottom: 1px solid var(--secondary-color);
-      text-align: left;
-      color: var(--primary-color);
-    }
-
-    .search-company-table {
-      text-align: left;
-    }
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 
     img {
       width: 80px;
@@ -42,16 +31,11 @@
       color: gray;
     }
 
-    .amendment-info {
-      margin-bottom: 0;
-
-      span {
-        font-weight: bold;
-      }
-
-      strong {
-        color: var(--error);
-      }
+    .title {
+      font-size: 20px;
+      color: var(--primary-color);
+      font-weight: 600;
+      margin: 1rem 0;
     }
 
     .modal-header {
@@ -69,23 +53,51 @@
       }
     }
 
-    .title {
-      font-size: 20px;
+    .search-company-head {
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--secondary-color);
+      text-align: left;
       color: var(--primary-color);
-      font-weight: 600;
-      margin: 1rem 0;
     }
+
+    .search-company-table {
+      text-align: left;
+    }
+
+    .amendment-info {
+      margin-bottom: 0;
+
+      span {
+        font-weight: bold;
+      }
+
+      strong {
+        color: var(--error);
+      }
+    }
+
+    // Close button styling inside modal
+    .MuiIconButton-root {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1;
+    }
+  }
+
+  &:focus-visible {
+    outline: none !important;
   }
 }
 
 .detail_Box {
-  background-color: #f8f9fa; /* Light background for contrast */
+  background-color: #f8f9fa;
   padding: 12px 16px;
-  border-radius: 12px; /* Curved border */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  border: 2px solid var(--primary-color); /* Border for separation */
-  margin-bottom: 10px; /* Add spacing below each box */
+  border: 2px solid var(--primary-color);
+  margin-bottom: 10px;
 }

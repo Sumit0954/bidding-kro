@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Typography,
   Modal,
@@ -10,7 +9,6 @@ import {
   Table,
 } from "@mui/material";
 import styles from "./Modal.module.scss";
-import Check from "../../assets/images/common/check.svg";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
 import { Close } from "@mui/icons-material";
@@ -44,13 +42,15 @@ const ThankyouModal = ({
                 onClick={handleClose}
                 sx={{
                   position: "absolute",
-                  right: 180,
-                  top: 8,
-                  color: (theme) => theme.palette.grey[500],
+                  top: "12px",
+                  right: "12px",
+                  zIndex: 2,
+                  color: "#666", // optional
                 }}
               >
                 <Close />
               </IconButton>
+
               <img
                 src={paymentSuccess}
                 alt="Check"
