@@ -353,6 +353,20 @@ const CategoriesManagement = ({ type }) => {
     const industry = getItemByName(industries, rawIndustry);
     if (!industry) return;
 
+    const isAlreadySelected = selectedIndustries.some(
+      (i) => i.id === industry.id
+    );
+    const isLimitReached = selectedIndustries.length >= 3;
+
+    if (!isAlreadySelected && isLimitReached) {
+      setAlert({
+        isVisible: true,
+        message: "You can select only 3 industries.",
+        severity: "warning",
+      });
+      return;
+    }
+
     const updatedIndustries = mergeSelections(selectedIndustries, industry);
     setSelectedIndustries(updatedIndustries);
 
@@ -786,7 +800,6 @@ const CategoriesManagement = ({ type }) => {
     }
   }
 
-  console.log(companyDetails, " : companyDetails");
   return (
     <>
       <Alert severity="info" className="my-3">
@@ -1003,6 +1016,8 @@ const CategoriesManagement = ({ type }) => {
                     !selectedIndustries.some((i) => i.id === industry.id)
                 )
                 .map((industry) => {
+                  const isDisabled = selectedIndustries.length >= 3;
+
                   const isMatch =
                     searchIndustry &&
                     industry.name
@@ -1012,9 +1027,12 @@ const CategoriesManagement = ({ type }) => {
                   return (
                     <Chip
                       key={industry.id}
+                      disabled={isDisabled}
                       onClick={() => {
-                        handleIndustrySelect(industry);
-                        setSearchIndustry(""); // clear input after select
+                        if (!isDisabled) {
+                          handleIndustrySelect(industry);
+                          setSearchIndustry(""); 
+                        }
                       }}
                       label={
                         <Box
@@ -1032,12 +1050,13 @@ const CategoriesManagement = ({ type }) => {
                       variant={isMatch ? "outlined" : "filled"}
                       className={`${styles.industryChip} ${
                         isMatch ? styles.match : ""
-                      }`}
+                      } ${isDisabled ? styles.disabledChip : ""}`}
                     />
                   );
                 })}
         </Box>
       </Box>
+
       {/* Select Categories */}
       {selectedIndustries.length > 0 && (
         <Box className={styles.categoryWrapper}>
@@ -1135,8 +1154,6 @@ const CategoriesManagement = ({ type }) => {
                     label={showAllCategories ? "Show Less" : "Show More"}
                     onClick={() => setShowAllCategories((prev) => !prev)}
                     className={styles.showMoreChip}
-                    color="primary"
-                    variant="outlined"
                   />
                 )}
               </>

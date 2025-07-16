@@ -302,13 +302,10 @@
   flex-direction: column;
 }
 
-
 .searchProductCard:hover {
   background-color: #f0f8ff;
   cursor: pointer;
 }
-
-
 
 .ancestorText-depth0 {
   color: var(--mui-palette-primary-main);
@@ -360,4 +357,16 @@
   margin: 4px;
   font-weight: bold;
   cursor: pointer;
+  color: white !important;
+  background-color: var(--primary-color) !important;
+  border: none !important;
+
+  &.showMoreChip:hover{
+    background-color: var(--secondary-color) !important;
+  }
+}
+
+.disabledChip {
+  opacity: 0.5;
+  pointer-events: none;
 }
