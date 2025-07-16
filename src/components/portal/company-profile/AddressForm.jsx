@@ -338,9 +338,21 @@ const IndividualAddressForm = ({
   const handleDeleteAddress = (choice) => {
     if (choice) {
       onDelete(deleteDetails?.index, deleteDetails?.address_id);
-      deleteDetails.open = false;
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        index: null,
+        address_id: null,
+      });
     } else {
-      deleteDetails.open = false;
+      setDeleteDetails({
+        open: false,
+        title: "",
+        message: "",
+        index: null,
+        address_id: null,
+      });
     }
   };
   return (
