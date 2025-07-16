@@ -1,10 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
 
 .modal-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
+  padding: 1rem;
   display: flex;
   justify-content: center;
 
@@ -12,23 +14,63 @@
     outline: none !important;
   }
 
-  .modal-section{
+  .modal-section {
     background-color: var(--white);
-    width: 800px;
+    width: 100%;
+    max-width: 600px;
     text-align: center;
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid #e0e0e0;
 
-    img{
-      width: 80px;
+    img {
+      width: 70px;
+      height: auto;
     }
 
-    .modal-title{
-      font-family: "Bubblegum Sans", sans-serif;
+    .modal-title {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.6rem;
+      font-weight: bold;
     }
 
-    .modal-desc{
+    .modal-desc {
       color: gray;
+      font-size: 1rem;
+    }
+
+    .btn {
+      margin-top: 1.5rem;
+    }
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .modal-section {
+    padding: 1.5rem;
+    .modal-title {
+      font-size: 1.4rem;
+    }
+    .modal-desc {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-section {
+    padding: 1rem;
+    .modal-title {
+      font-size: 1.2rem;
+    }
+    .modal-desc {
+      font-size: 0.9rem;
+    }
+
+    img {
+      width: 60px;
     }
   }
 }

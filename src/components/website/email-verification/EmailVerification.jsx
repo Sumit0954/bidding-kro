@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, IconButton, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./EmailVerification.module.scss";
 import EmailIcon from "../../../assets/images/common/email.png";
@@ -7,9 +7,11 @@ import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { login } from "../../../utils/AxiosInterceptors";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import _sendAPIRequest from "../../../helpers/api";
+import { Close } from "@mui/icons-material";
 
 const EmailVerification = () => {
   const [success, setSuccess] = useState(false);
+  const [isfalied, setIsfalied] = useState(false);
   let [queryParams] = useSearchParams();
   const type = queryParams.get("type");
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const EmailVerification = () => {
         );
         if (response.status === 200) {
           setSuccess(true);
+          console.log(response.status, " : error 1");
           login(response.data, "PORTAL");
           if (type === "reset") {
             window.location.href = "/reset-password";
@@ -37,8 +40,10 @@ const EmailVerification = () => {
           }
         }
       } catch (error) {
+        console.log(error, " : error 2");
         if (error.response.status === 400) {
-          setSuccess(false);
+          setSuccess(true);
+          setIsfalied(true);
         }
       }
     };
@@ -51,6 +56,7 @@ const EmailVerification = () => {
       <Box className={cn("container", styles["modal-container"])}>
         <Box className="row">
           <Box className={styles["modal-section"]}>
+        
             <img src={EmailIcon} alt="EmailIcon" />
             <Typography
               className={cn("my-3", styles["modal-title"])}
@@ -58,9 +64,9 @@ const EmailVerification = () => {
               variant="h3"
               component="h3"
             >
-              {success
-                ? "Email Verification Successfull"
-                : "Email Verification Failed"}
+              {success && isfalied
+                ? "Email Verification Failed "
+                : "Email Verification Successfull"}
             </Typography>
             <Typography
               className={cn("my-3", styles["modal-desc"])}
@@ -72,7 +78,7 @@ const EmailVerification = () => {
                 : "Your email verification has been failed."}
             </Typography>
 
-            {type === "verify" && success && (
+            {type === "verify" && success && !isfalied && (
               <NavLink to={"/portal"} className="btn button">
                 Continue to Dashboard
               </NavLink>
