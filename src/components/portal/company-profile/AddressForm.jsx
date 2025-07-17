@@ -20,6 +20,7 @@ import { modifiedData } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
+import { stateCodesList } from "../../../helpers/common";
 
 const AddressForm = ({ addresses }) => {
   const [defaultAddress, setDefaultAddress] = useState(null);
@@ -273,8 +274,8 @@ const IndividualAddressForm = ({
         formData.append("latitude", geoLocation.latitude);
         formData.append("longitude", geoLocation.longitude);
         formData.append("json_id", geoLocation.json_id);
+        formData.append("state_code", stateCodesList[data?.state?.lable]);
         if (checked) formData.append("is_billing_address", true);
-
         try {
           const response = await _sendAPIRequest(
             "POST",

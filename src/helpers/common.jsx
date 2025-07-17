@@ -53,6 +53,46 @@ export const getProductUnits = () => {
   return units.sort((a, b) => a.lable.localeCompare(b.lable));
 };
 
+export const stateCodesList = {
+  "Andhra Pradesh": "AD",
+  "Arunachal Pradesh": "AR",
+  Assam: "AS",
+  Bihar: "BR",
+  Chandigarh: "CH",
+  Chhattisgarh: "CG",
+  Delhi: "DL",
+  Goa: "GA",
+  Gujarat: "GJ",
+  Haryana: "HR",
+  "Himachal Pradesh": "HP",
+  "Jammu and Kashmir": "JK",
+  Jharkhand: "JH",
+  Karnataka: "KA",
+  Kerala: "KL",
+  Ladakh: "LA",
+  "Lakshadweep Islands": "LD",
+  "Madhya Pradesh": "MP",
+  Maharashtra: "MH",
+  Manipur: "MN",
+  Meghalaya: "ML",
+  Mizoram: "MZ",
+  Nagaland: "NL",
+  Odisha: "OD",
+  Puducherry: "PY",
+  Punjab: "PB",
+  Rajasthan: "RJ",
+  Sikkim: "SK",
+  "Tamil Nadu": "TN",
+  Telangana: "TS",
+  Tripura: "TR",
+  "Uttar Pradesh": "UP",
+  Uttarakhand: "UK",
+  "West Bengal": "WB",
+  "Andaman and Nicobar Islands": "AN",
+  "Dadra and Nagar Haveli and Daman and Diu": "DN",
+  // "Other Territory": "OT",
+};
+
 export const getLableByValue = (value) => {
   const units = getProductUnits();
   const unit = units.find((unit) => unit.value === value);
