@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import _sendAPIRequest from "../../helpers/api";
 import { WebsiteApiUrls } from "../../helpers/api-urls/WebsiteApiUrls";
 import { login } from "../../utils/AxiosInterceptors";
+import { useEffect } from "react";
 
 const HomePage = () => {
   let [queryParams] = useSearchParams();
@@ -18,7 +19,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const submitForm = async () => {
-    console.log(type)
+    console.log(type);
     let formData = new FormData();
     formData.append("token", queryParams.get("token"));
     formData.append("salt", queryParams.get("salt"));
@@ -36,8 +37,7 @@ const HomePage = () => {
           console.log("password-reset");
           navigate("/reset-password");
         } else {
-          const showReset = localStorage.getItem("showReset");
-          navigate(showReset ? "/reset-password" : "/portal");
+          navigate("/portal");
           console.log("password-reset");
         }
       }
@@ -46,9 +46,10 @@ const HomePage = () => {
     }
   };
 
-  if (type === "reset") {
+  useEffect(() => {
     submitForm();
-  }
+  }, [type]);
+
   return (
     <>
       <Banner />
