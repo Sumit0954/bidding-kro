@@ -6,9 +6,11 @@ import styles from "../../../components/portal/company-profile/CompanyProfile.mo
 import cn from "classnames";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { AlertContext } from "../../../contexts/AlertProvider";
 
 const CompanyAddressAndCertificatePage = () => {
   const { companyDetails } = useContext(CompanyDetailsContext);
+  const { setAlert } = useContext(AlertContext);
   const [addresses, setAddresses] = useState([
     { street: "", city: "", state: "", pincode: "" },
   ]);
@@ -17,8 +19,8 @@ const CompanyAddressAndCertificatePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAddresses(companyDetails?.address);
-    setCertificates(companyDetails?.certificate);
+    setAddresses(companyDetails?.address || []);
+    setCertificates(companyDetails?.certificate || []);
   }, [companyDetails]);
 
   return (
@@ -32,7 +34,11 @@ const CompanyAddressAndCertificatePage = () => {
             )}
           >
             <div className={cn("row", styles["form-section"])}>
-              <AddressForm addresses={addresses} id={id} />
+              <AddressForm
+                addresses={addresses}
+                id={id}
+                setAddresses={setAddresses}
+              />
               <CertificateForm
                 certificates={certificates}
                 setCertificates={setCertificates}
@@ -58,7 +64,18 @@ const CompanyAddressAndCertificatePage = () => {
                 <button
                   type="button"
                   className={cn("btn", "button")}
-                  onClick={() => navigate("/portal/bids")}
+                  onClick={() => {
+                    if (!addresses || addresses.length === 0) {
+                      setAlert({
+                        isVisible: true,
+                        message:
+                          "Please add the address before proceeding further.",
+                        severity: "error",
+                      });
+                      return;
+                    }
+                    navigate("/portal/bids");
+                  }}
                 >
                   Finish
                 </button>

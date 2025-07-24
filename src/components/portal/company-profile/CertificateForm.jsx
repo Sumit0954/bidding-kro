@@ -56,7 +56,6 @@ const CertificateForm = ({ certificates, setCertificates }) => {
     getCertificateTypes();
   }, []);
 
-  console.log(certificates, " : certificate");
   const handleDeleteCertificate = async (certificate_id) => {
     try {
       const data = { certificate_id: certificate_id };
@@ -146,8 +145,6 @@ const CertificateForm = ({ certificates, setCertificates }) => {
     }
   };
 
-  console.log(certificates, " : certificates");
-
   return (
     <>
       <div className={styles["certificate-section"]}>
@@ -176,9 +173,6 @@ const CertificateForm = ({ certificates, setCertificates }) => {
               options={certificateTypes}
               label="Certificate Type"
               multiple={false}
-              rules={{
-                required: "Certificate type is required.",
-              }}
             />
           </div>
           {/* Flex container for the buttons */}

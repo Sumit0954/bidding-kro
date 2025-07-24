@@ -8,6 +8,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Chip,
   IconButton,
@@ -22,7 +23,7 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
 import { stateCodesList } from "../../../helpers/common";
 
-const AddressForm = ({ addresses }) => {
+const AddressForm = ({ addresses, setAddresses }) => {
   const [defaultAddress, setDefaultAddress] = useState(null);
 
   const { control, reset } = useForm({
@@ -43,8 +44,14 @@ const AddressForm = ({ addresses }) => {
 
   useEffect(() => {
     reset({ addresses });
-    setFormCount(addresses?.length);
-  }, [addresses, reset]);
+
+    if (!addresses || addresses.length === 0) {
+      append({ street: "", city: "", state: "", pincode: "" });
+      setFormCount(1);
+    } else {
+      setFormCount(addresses.length);
+    }
+  }, [addresses, reset, append]);
 
   const handleAddAddress = () => {
     if (formCount < MAX_ADDRESS_COUNT) {
@@ -52,8 +59,32 @@ const AddressForm = ({ addresses }) => {
       setFormCount(formCount + 1);
     }
   };
-
   const handleDeleteAddress = async (index, address_id) => {
+    const updateAddressState = (indexToRemove) => {
+      // Remove from react-hook-form or form state
+      remove(indexToRemove);
+      setFormCount((prev) => prev - 1);
+
+      // Remove from addresses state
+      const updatedAddresses = addresses.filter((_, i) => i !== indexToRemove);
+      setAddresses(updatedAddresses);
+
+      // Show alert if no address remains
+      if (updatedAddresses.length === 0) {
+        setAlert({
+          isVisible: true,
+          message: "You must have at least one address to proceed.",
+          severity: "error",
+        });
+      } else {
+        setAlert({
+          isVisible: true,
+          message: `Address line ${index + 1} has been deleted.`,
+          severity: "success",
+        });
+      }
+    };
+
     if (address_id) {
       try {
         const data = { address_id: address_id };
@@ -64,43 +95,39 @@ const AddressForm = ({ addresses }) => {
           true
         );
         if (response.status === 204) {
-          remove(index);
-          setFormCount(formCount - 1);
-          setAlert({
-            isVisible: true,
-            message: `Address line ${index + 1} has been deleted.`,
-            severity: "success",
-          });
+          updateAddressState(index);
         }
       } catch (error) {
-        const { data } = error.response;
+        const { data } = error.response || {};
         if (error.status === 403) {
           setAlert({
             isVisible: true,
             message: error.response.data.detail,
             severity: "error",
           });
-        }
-        if (data) {
-          if (data.error) {
-            setAlert({
-              isVisible: true,
-              message: data.error,
-              severity: "error",
-            });
-          }
+        } else if (data?.error) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
         }
       }
     } else {
-      remove(index);
-      setFormCount(formCount - 1);
+      // Local address (not saved to server yet)
+      updateAddressState(index);
     }
   };
 
   return (
     <>
+      <Alert severity="info" className="my-3">
+        At least one billing address has to be selected.
+      </Alert>
       <div className={styles["address-section"]}>
-        <h4 className="mb-0">Addresses ({formCount})</h4>
+        <h4 className="mb-0">
+          Addresses ({formCount}) <span style={{ color: "red" }}>*</span>
+        </h4>
         <div className={styles["btn-container"]}>
           <button
             type="button"
@@ -130,6 +157,8 @@ const AddressForm = ({ addresses }) => {
           setFormCount={setFormCount}
           append={append}
           remove={remove}
+          setAddresses={setAddresses}
+          forceExpand={addresses.length === 0} // Pass prop
         />
       ))}
     </>
@@ -145,10 +174,11 @@ const IndividualAddressForm = ({
   defaultAddress,
   setDefaultAddress,
   fields,
-  formCount,
   setFormCount,
   append,
   remove,
+  setAddresses,
+  forceExpand,
 }) => {
   const { control, handleSubmit, setError, watch } = useForm({
     defaultValues: {
@@ -262,77 +292,96 @@ const IndividualAddressForm = ({
     return address?.id && address?.is_billing_address;
   });
 
-  const submitAddressForm = async (data, checked) => {
+  const submitAddressForm = async (data, checked, onSuccess, onFailure) => {
     try {
       let formData = new FormData();
 
       if (data) {
         formData.append("address", data.street);
-        formData.append("state", data.state.lable);
-        formData.append("city", data.city.lable);
+        formData.append("state", data.state.label);
+        formData.append("city", data.city.label);
         formData.append("pincode", data.pincode);
         formData.append("latitude", geoLocation.latitude);
         formData.append("longitude", geoLocation.longitude);
         formData.append("json_id", geoLocation.json_id);
         formData.append("state_code", stateCodesList[data?.state?.lable]);
         if (checked) formData.append("is_billing_address", true);
-        try {
-          const response = await _sendAPIRequest(
-            "POST",
-            PortalApiUrls.CREATE_ADDRESS,
-            formData,
-            true
-          );
-          if (response.status === 201) {
-            append(response?.data);
-            remove(index);
-            setFormCount(formCount - 1);
-            setLoading(false);
-            setDefaultAddress(null);
-          }
-        } catch (error) {
-          setLoading(false);
-          const { data } = error.response;
-          if (error.status === 403) {
-            setAlert({
-              isVisible: true,
-              message: error.response.data.detail,
-              severity: "error",
-            });
-          }
-          if (data) {
-            setErrors(data, watch, setError);
 
-            if (data.error) {
-              setAlert({
-                isVisible: true,
-                message: data.error,
-                severity: "error",
-              });
-            }
-          }
+        const response = await _sendAPIRequest(
+          "POST",
+          PortalApiUrls.CREATE_ADDRESS,
+          formData,
+          true
+        );
+
+        if (response.status === 201) {
+          append(response?.data);
+          remove(index); // assuming this is part of form control
+          setFormCount((prev) => prev - 1);
           setDefaultAddress(null);
+          setLoading(false);
+
+          if (onSuccess) onSuccess(response?.data);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      setLoading(false);
+      const { data } = error.response || {};
+
+      if (error.status === 403) {
+        setAlert({
+          isVisible: true,
+          message: error.response.data.detail,
+          severity: "error",
+        });
+      }
+
+      if (data) {
+        setErrors(data, watch, setError);
+        if (data.error) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
+        }
+      }
+
+      setDefaultAddress(null);
+      if (onFailure) onFailure();
+    }
   };
 
   const submitForm = async (data) => {
     setLoading(true);
 
+    const onSuccess = (newAddress) => {
+      setAddresses((prev) => [...prev, newAddress]);
+      setAlert({
+        isVisible: true,
+        message: "Address has been added successfully",
+        severity: "success",
+      });
+    };
+
+    const onFailure = () => {
+      setLoading(false); // Also stops loading if failed
+    };
+
     if (defaultAddress !== null) {
       if (isBillingAddressAvailable) {
         setAlert({
           isVisible: true,
-          message: "You had already selected deafult address",
+          message: "You have already selected a default address",
           severity: "error",
         });
         setLoading(false);
+        return;
       } else {
-        submitAddressForm(data, true);
+        await submitAddressForm(data, true, onSuccess, onFailure);
       }
     } else {
-      submitAddressForm(data);
+      await submitAddressForm(data, false, onSuccess, onFailure);
     }
   };
 
@@ -360,7 +409,7 @@ const IndividualAddressForm = ({
     <>
       <form onSubmit={handleSubmit((data) => submitForm(data, index))}>
         <Accordion
-          defaultExpanded
+          defaultExpanded={forceExpand || !address.id}
           square={true}
           classes={{
             root: `custom-accordion ${styles["address-accordion"]}`,
@@ -369,7 +418,7 @@ const IndividualAddressForm = ({
           <AccordionSummary className={styles["custom-accordion-summary"]}>
             <div className={styles["accordion-header-container"]}>
               <Typography classes={{ root: "custom-accordion-heading" }}>
-                Address
+                Address {index + 1}
                 {address?.is_billing_address && (
                   <Box component="span" sx={{ ml: 1 }}>
                     <Chip
@@ -470,10 +519,10 @@ const IndividualAddressForm = ({
               {!isBillingAddressAvailable && (
                 <div className="row mt-3">
                   <div className="col">
-                    <div className="form-check">
+                    <div className={styles["form-check"]}>
                       <input
                         type="radio"
-                        className="form-check-input"
+                        className={styles["form-check-input"]}
                         name="defaultAddress"
                         value={defaultAddress}
                         id={`default-radio-${defaultAddress}`}
@@ -481,8 +530,8 @@ const IndividualAddressForm = ({
                         onChange={() => setDefaultAddress(index)}
                       />
                       <label
-                        className="form-check-label"
-                        htmlFor={`default-radio-${index}`}
+                        className={styles["form-check-label"]}
+                        htmlFor={`default-radio-${defaultAddress}`}
                       >
                         Set as billing address
                       </label>
