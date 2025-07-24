@@ -12,6 +12,8 @@ const ProductSpecificationModal = ({
   const handleClose = () => {
     setShowSpecification(false);
   };
+
+  console.log(selectedProduct, " : selectedProduct");
   return (
     <>
       <Modal
@@ -92,6 +94,18 @@ const ProductSpecificationModal = ({
                 <Box className="row mb-2">
                   <Box className="col text-start">
                     {selectedProduct.specification.replace(/<\/?p>/g, "")}
+                  </Box>
+                </Box>
+              </span>
+              <Box className="row">
+                <Box className={cn("col text-start ", styles["title"])}>
+                  Technical Specification :
+                </Box>
+              </Box>
+              <span>
+                <Box className="row mb-2">
+                  <Box className="col text-start">
+                    {selectedProduct.technical_specification}
                   </Box>
                 </Box>
               </span>

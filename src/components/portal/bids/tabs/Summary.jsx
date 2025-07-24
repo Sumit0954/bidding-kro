@@ -27,7 +27,7 @@ import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
 import { products_Column } from "../../../../elements/CustomDataTable/PortalColumnData";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import ProductSpecificationModal from "../../../../elements/CustomModal/ProductSpecificationModal";
 import {
   CheckCircleOutline,
@@ -794,13 +794,12 @@ const Summary = ({ bidDetails }) => {
                     : bidDetails?.company?.logo
                 }
               />
-              <Typography
-                component="a"
-                href="#"
-                className={styles["company-name"]}
+              <NavLink
+                className={styles["table-link"]}
+                to={`/portal/companies/details/${bidDetails?.company?.id}`}
               >
                 {bidDetails?.company?.name}
-              </Typography>
+              </NavLink>
             </Box>
             <Button
               variant="contained"

@@ -139,3 +139,12 @@
 .navigator:hover {
   color: var(--secondary-color);
 }
+
+.table-link {
+  text-decoration: none;
+  color: rgb(30, 157, 241);
+
+  &.table-link:hover {
+    text-decoration: underline;
+  }
+}

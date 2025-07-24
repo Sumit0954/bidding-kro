@@ -14,23 +14,21 @@
 
 .btn-container {
   display: flex;
-  justify-content: end;
+  flex-direction: row;
+  justify-content: flex-end;
   gap: 10px;
 }
 
-/* Responsive: Stack elements and make button full width on small screens */
+/* Stack vertically on smaller screens */
 @media (max-width: 768px) {
-  .bid-form-section {
-    flex-direction: column; /* Stack heading and button */
-    align-items: stretch; /* Make button take full width */
-  }
-
   .btn-container {
+    flex-direction: column; /* Stack vertically */
+    align-items: stretch; /* Stretch buttons full width */
     width: 100%;
-    justify-content: center; /* Center the button */
+    gap: 10px;
   }
 
-  .bid-form-section button {
-    width: 100%; /* Make button full width */
+  .btn-container button {
+    width: 100%; /* Full width button */
   }
 }

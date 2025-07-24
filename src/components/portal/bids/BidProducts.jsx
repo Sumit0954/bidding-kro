@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 import { ExpandMore, Info } from "@mui/icons-material";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
-import { useBidData } from "./BidCategories";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import MinimumPriceDiffModal from "../../../elements/CustomModal/MinimumPriceDiffModal";
 
@@ -37,20 +36,12 @@ const BidProducts = () => {
   const [productList, setProductList] = useState([]); // For fetched products
   const [expanded, setExpanded] = useState(null); // Track which form is open
   const [screenLoader, setScreenLoader] = useState(true);
-  // const { formData, productData } = useBidData();
-  const [bidDetails, setBidDetails] = useState({});
   const { setAlert } = useContext(AlertContext);
   const [showPriceDiffModal, setShowPriceDiffModal] = useState(false);
 
-  const location = useLocation();
-  // const { productData } = location.state || {};
-
-  const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
 
   const MAX_PRODUCTS = productData?.length;
-
-  // Function to fetch product list
 
   const fetchProductList = async () => {
     try {
@@ -81,11 +72,25 @@ const BidProducts = () => {
     setValue(`reserved_price${index}`, product.reserved_price);
     setValue(`min_decrement_amount${index}`, product.min_decrement_amount);
     setValue(`Product_specification${index}`, product.specification);
+    setValue(
+      `technical_specification${index}`,
+      product.technical_specification
+    );
   };
 
   // Handle form submission for adding a product
   const submitForm = async (data) => {
     setLoading(true);
+
+    if (data.technical_specification.split("").length > 100) {
+      setLoading(false);
+      setAlert({
+        isVisible: true,
+        message: "Technical Specification should not exceed 100 words.",
+        severity: "error",
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", data.product_title);
@@ -93,6 +98,7 @@ const BidProducts = () => {
     formData.append("unit", data.product_unit);
     formData.append("reserved_price", data.reserved_price);
     formData.append("min_decrement_amount", data.min_decrement_amount);
+    formData.append("technical_specification", data.technical_specification);
     formData.append(
       "specification",
       data.Product_specification || "No specification provided."
@@ -139,8 +145,16 @@ const BidProducts = () => {
   // Handle editing product
   const editProduct = async (data, product_id, index) => {
     setLoading(true);
-    console.log("Form Data : ", data);
-    console.log("index : ", index);
+
+    if (data[`technical_specification${index}`].split("").length > 100) {
+      setLoading(false);
+      setAlert({
+        isVisible: true,
+        message: "Technical Specification should not exceed 100 words.",
+        severity: "error",
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", data[`product_title${index}`]);
@@ -150,6 +164,10 @@ const BidProducts = () => {
     formData.append(
       "min_decrement_amount",
       data[`min_decrement_amount${index}`]
+    );
+    formData.append(
+      "technical_specification",
+      data[`technical_specification${index}`]
     );
     formData.append("specification", data[`Product_specification${index}`]);
 
@@ -165,7 +183,7 @@ const BidProducts = () => {
         true
       );
       if (response?.status === 200) {
-        fetchProductList(); // Refetch list after edit
+        fetchProductList();
         setScreenLoader(false);
       }
     } catch (error) {
@@ -245,26 +263,24 @@ const BidProducts = () => {
     });
   };
 
-  // const transformedProductData = productData.map((product) => ({
-  //   lable: product.name, // use 'lable' instead of 'label'
-  //   value: product.name, // keep 'value' as expected
-  // }));
-
   const selectedProduct = productList.map((product) => ({
-    lable: product.title, // use 'lable' instead of 'label'
-    value: product.title, // keep 'value' as expected
+    lable: product.title,
+    value: product.title,
   }));
 
-  const transformedProductData = productData
-    .filter((available) =>
-      productList.every((added) => available?.name !== added?.title)
-    )
-    .map((available) => ({
-      lable: available.name,
-      value: available.name,
-    }));
+  const transformedProductData = productData.map((available) => ({
+    lable: available.name,
+    value: available.name,
+  }));
 
-  productData;
+  // const transformedProductData = productData
+  //   .filter((available) =>
+  //     productList.every((added) => available?.name !== added?.title)
+  //   )
+  //   .map((available) => ({
+  //     lable: available.name,
+  //     value: available.name,
+  //   }));
 
   useEffect(() => {
     if (id) {
@@ -432,6 +448,21 @@ const BidProducts = () => {
                         </div>
                         <div className="row">
                           <div className="col-lg-12">
+                            <CustomInput
+                              control={control}
+                              label="Technical Specification"
+                              name={`technical_specification${index}`}
+                              placeholder="Technical Specification"
+                              inputType="text"
+                              rules={{
+                                required:
+                                  "Technical Specification is required.",
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-lg-12">
                             <CustomCkEditor
                               control={control}
                               name={`Product_specification${index}`}
@@ -439,7 +470,6 @@ const BidProducts = () => {
                             />
                           </div>
                         </div>
-
                         <div className="my-3">
                           {loading ? (
                             <ButtonLoader size={60} />
@@ -566,6 +596,20 @@ const BidProducts = () => {
                     </div>
                     <div className="row">
                       <div className="col-lg-12">
+                        <CustomInput
+                          control={control}
+                          label="Technical Specification"
+                          name="technical_specification"
+                          placeholder="Technical Specification"
+                          inputType="text"
+                          rules={{
+                            required: "Technical Specification is required.",
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-12">
                         <CustomCkEditor
                           control={control}
                           name="Product_specification"
@@ -573,7 +617,6 @@ const BidProducts = () => {
                         />
                       </div>
                     </div>
-
                     <div className={cn("my-3", styles["btn-container"])}>
                       {loading ? (
                         <ButtonLoader size={60} />
@@ -592,21 +635,19 @@ const BidProducts = () => {
               <button
                 type="button"
                 className={cn("btn", "button")}
-                // disabled={bidStatus === "cancelled" ? true : false}
                 onClick={() => navigate(`/portal/bids/update/${id}`)}
               >
                 Back
               </button>
+
               {submitLoader ? (
                 <ButtonLoader size={60} />
               ) : (
                 <button
                   type="submit"
                   className={cn("btn", "button")}
-                  // disabled={bidStatus === "cancelled" ? true : false}
                   onClick={() => procedFurther()}
                 >
-                  {/* {id ? "Update Bid" : "Create Bid"} */}
                   Save & Next
                 </button>
               )}
