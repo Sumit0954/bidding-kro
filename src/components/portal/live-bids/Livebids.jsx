@@ -43,7 +43,7 @@ const CountdownTimer = ({ endDate }) => {
       setTimeLeft(calculateRemainingTime);
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, [calculateRemainingTime]);
 
   const { hours, minutes, seconds } = timeLeft;
@@ -68,7 +68,6 @@ const CountdownTimer = ({ endDate }) => {
   );
 };
 
-// Main Component
 const Livebids = ({ listType }) => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [btnLoader, setBtnLoader] = useState(false);
@@ -76,32 +75,47 @@ const Livebids = ({ listType }) => {
   const [upcomingBids, serUpcomingBids] = useState([]);
   const navigate = useNavigate();
 
-  // Fetching the API for the list of live bids
-  useEffect(() => {
-    const retrieveLiveBids = async () => {
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          listType === "Created"
-            ? PortalApiUrls.LIVE_BID_LIST_FOR_BUYER
-            : PortalApiUrls.LIVE_BID_LIST_FOR_SUPPLIER,
-          "",
-          true
-        );
+  const retrieveLiveBids = useCallback(async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        listType === "Created"
+          ? PortalApiUrls.LIVE_BID_LIST_FOR_BUYER
+          : PortalApiUrls.LIVE_BID_LIST_FOR_SUPPLIER,
+        "",
+        true
+      );
 
-        if (response.status === 200) {
-          setLiveBids(response?.data?.live_bids);
-          serUpcomingBids(response?.data?.upcoming_bids);
-        }
-      } catch (error) {
-        console.error("Error fetching live bids:", error);
-      } finally {
-        setScreenLoader(false);
+      if (response.status === 200) {
+        setLiveBids(response?.data?.live_bids);
+        serUpcomingBids(response?.data?.upcoming_bids);
+      }
+    } catch (error) {
+      console.error("Error fetching live bids:", error);
+    } finally {
+      setScreenLoader(false);
+    }
+  }, [listType]);
+
+  useEffect(() => {
+    let interval;
+
+    if (upcomingBids.length > 0) {
+      interval = setInterval(() => {
+        retrieveLiveBids();
+      }, 15000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
       }
     };
+  }, [upcomingBids, retrieveLiveBids]);
 
+  useEffect(() => {
     retrieveLiveBids();
-  }, [listType]);
+  }, []);
 
   if (screenLoader) {
     return <ScreenLoader />;
@@ -282,10 +296,10 @@ const Livebids = ({ listType }) => {
                     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
                     overflow: "hidden",
                     opacity: 0.6,
-                    cursor: "wait", // show waiting cursor
-                    pointerEvents: "auto", // allow tooltip to work
+                    cursor: "wait",
+                    pointerEvents: "auto",
                   }}
-                  onClick={(e) => e.preventDefault()} // block click behavior
+                  onClick={(e) => e.preventDefault()}
                 >
                   <CardContent>
                     <Grid container spacing={2}>
@@ -297,13 +311,6 @@ const Livebids = ({ listType }) => {
                           sx={{ mb: 1 }}
                         >
                           Bid ID: <strong>{bid?.formatted_number}</strong>
-                          {/* {listType === "Created" ? null : (
-                          <>
-                            {" "}
-                            | Place Bid Count:
-                            <strong>{String("6").padStart(2, "0")}</strong>
-                          </>
-                        )} */}
                         </Typography>
                         <Tooltip title={bid?.title}>
                           <Typography
