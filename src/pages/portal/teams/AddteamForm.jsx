@@ -86,7 +86,7 @@ const AddteamForm = () => {
       payload.append("last_name", formData.last_name);
       payload.append("email", formData.email);
       payload.append("mobile_number", `+91${formData.mobile_number}`);
-      payload.append("role", formData.role);
+      payload.append("role", formData.role.toLocaleLowerCase());
 
       const response = await _sendAPIRequest(
         "POST",
@@ -104,7 +104,6 @@ const AddteamForm = () => {
 
         navigate("/portal/teams");
 
-        // ✅ Clear form after successful submission
         setFormData({
           first_name: "",
           last_name: "",
@@ -114,18 +113,32 @@ const AddteamForm = () => {
         });
       }
     } catch (error) {
-      console.log(error, " : error");
 
-      if (error.status === 403) {
+      if (error?.status === 403) {
         setAlert({
           isVisible: true,
           message: error.response.data.detail,
           severity: "error",
         });
-      } else if (error.status == 400) {
+      } else if (error?.status == 400) {
+        const message =
+          error?.response?.data.hasOwnProperty("email") &&
+          error?.response?.data.hasOwnProperty("mobile_number")
+            ? "Email existed and invalid phone number"
+            : error?.response?.data.hasOwnProperty("email")
+            ? "User with this email already exists."
+            : error?.response?.data.hasOwnProperty("mobile_number")
+            ? "Enter a valid phone number."
+            : "Something Went Wrong";
         setAlert({
           isVisible: true,
-          message: "Please Fill out the required field",
+          message,
+          severity: "error",
+        });
+      } else {
+        setAlert({
+          isVisible: true,
+          message: "Server Error",
           severity: "error",
         });
       }
