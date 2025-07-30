@@ -43,15 +43,7 @@ const CompanyAddressAndCertificatePage = () => {
                 certificates={certificates}
                 setCertificates={setCertificates}
               />
-              <div
-                className={styles["btn-container"]}
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  gap: "10px",
-                }}
-              >
+              <div className={styles["btn-container"]}>
                 <button
                   type="button"
                   className={cn("btn", "button", styles["custom-btn"])}
