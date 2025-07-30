@@ -7,16 +7,13 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import SupportSuccesspopUp from "./SupportSuccesspopUp";
 
 const SupportForm = () => {
   const [btnLoader, setbtnLoader] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const [IsSuccess, setIsSuccess] = useState(false);
+  const { handleSubmit, control, reset } = useForm();
 
   const onSubmit = async (data) => {
     setbtnLoader(true);
@@ -34,11 +31,7 @@ const SupportForm = () => {
 
       if (response?.status === 201) {
         setbtnLoader(false);
-        setAlert({
-          isVisible: true,
-          message: "Complaint has been succesfully submitted",
-          severity: "success",
-        });
+        setIsSuccess(true);
       }
     } catch (error) {
       setbtnLoader(false);
@@ -52,66 +45,71 @@ const SupportForm = () => {
     reset();
   };
 
+  console.log(IsSuccess, " : IsSuccess");
   return (
     <>
-      <Box
-        sx={{
-          maxWidth: 900,
-          margin: "auto",
-          p: 3,
-          background: "#f9fcff",
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="h6" fontWeight="bold">
-          We Are Here to Assist You
-        </Typography>
-        <Typography variant="body2" sx={{ mb: 3 }}>
-          Please complete the form below for your complaints.
-        </Typography>
+      {IsSuccess ? (
+        <SupportSuccesspopUp />
+      ) : (
+        <Box
+          sx={{
+            maxWidth: 900,
+            margin: "auto",
+            p: 3,
+            background: "#f9fcff",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" fontWeight="bold">
+            We Are Here to Assist You
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 3 }}>
+            Please complete the form below for your complaints.
+          </Typography>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <CustomInput
-                control={control}
-                name="complaint_subject"
-                label="Complaint Subject"
-                inputType="text"
-                placeholder="Enter your complaint issue"
-                rules={{
-                  required: "Complaint subject is required",
-                }}
-              />
-            </Grid>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <CustomInput
+                  control={control}
+                  name="complaint_subject"
+                  label="Complaint Subject"
+                  inputType="text"
+                  placeholder="Enter your complaint issue"
+                  rules={{
+                    required: "Complaint subject is required",
+                  }}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <CustomCkEditor
-                control={control}
-                name="complaint_description"
-                label="Describe your complaint briefly"
-                rules={{
-                  required: "Description is required",
-                }}
-              />
-            </Grid>
+              <Grid item xs={12}>
+                <CustomCkEditor
+                  control={control}
+                  name="complaint_description"
+                  label="Describe your complaint briefly"
+                  rules={{
+                    required: "Description is required",
+                  }}
+                />
+              </Grid>
 
-            <Grid item xs={12} textAlign="right">
-              {btnLoader ? (
-                <ButtonLoader size={60} />
-              ) : (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  className="btn button"
-                >
-                  Submit
-                </Button>
-              )}
+              <Grid item xs={12} textAlign="right">
+                {btnLoader ? (
+                  <ButtonLoader size={60} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className="btn button"
+                  >
+                    Submit
+                  </Button>
+                )}
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </Box>
+          </form>
+        </Box>
+      )}
     </>
   );
 };
