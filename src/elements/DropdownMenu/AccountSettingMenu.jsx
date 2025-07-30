@@ -27,6 +27,7 @@ const AccountSettingMenu = ({
     setAnchorEl(null);
   };
 
+  console.log(companyDetails, " : companyDetails");
   const DeleteFCMToken = async (OldFCMToken) => {
     try {
       const formData = new FormData();
@@ -146,7 +147,7 @@ const AccountSettingMenu = ({
 
             <NavLink
               to={
-                companyDetails
+                Object.keys(companyDetails).length !== 0
                   ? "/portal/company-profile/update"
                   : "/portal/company-profile/create"
               }
