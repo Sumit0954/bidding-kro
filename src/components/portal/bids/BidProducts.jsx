@@ -41,7 +41,7 @@ const BidProducts = () => {
 
   const productData = JSON.parse(localStorage.getItem("productData"));
 
-  const MAX_PRODUCTS = productData?.length;
+  const MAX_PRODUCTS = 5;
 
   const fetchProductList = async () => {
     try {
@@ -330,19 +330,30 @@ const BidProducts = () => {
           <div className={styles["form-container"]}>
             <div className={styles["bid-form-section"]}>
               <h4>Products ({productList?.length})</h4>
-              <button
-                type="button"
-                style={{ marginBottom: "5px" }}
-                className={cn(
-                  "btn",
-                  "button",
-                  productList?.length >= MAX_PRODUCTS ? "disable" : ""
-                )}
-                onClick={() => setAddFormOpen(true)}
-                disabled={productList.length >= MAX_PRODUCTS ? true : false}
+              <Tooltip
+                title={
+                  productList.length >= MAX_PRODUCTS
+                    ? "Product limit reached"
+                    : "Add more product"
+                }
+                arrow
               >
-                + Add Product
-              </button>
+                <span>
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px", cursor: "pointer" }}
+                    className={cn(
+                      "btn",
+                      "button",
+                      productList?.length >= MAX_PRODUCTS ? "disable" : ""
+                    )}
+                    onClick={() => setAddFormOpen(true)}
+                    disabled={productList.length >= MAX_PRODUCTS}
+                  >
+                    + Add Product
+                  </button>
+                </span>
+              </Tooltip>
             </div>
 
             {/* List of existing products */}
@@ -532,7 +543,6 @@ const BidProducts = () => {
                         />
                       </div>
                     </div>
-
                     <div className="row">
                       <div className="col-lg-6">
                         <CustomInput
