@@ -37,4 +37,8 @@ export const AdminApiUrls = Object.freeze({
   FETCH_PARTICIAPATION_REPORTS: "/report/admin/bid/participant/",
   FETCH_FEEDBACK_REPORT: "/report/admin/feedback/",
   FETCH_TRANSACTION_REPORT: "/report/admin/transaction/",
+  CLOSE_CONTACT_QUERY: "/support/admin/contact/",
+  CLOSE_BOOK_A_DEMO_QUERY: "/support/admin/get_in_touch/",
+  CLOSE_SUPPORT_QUERY: "/support/admin/ticket/",
+  CLOSE_MISSING_DATA_QUERY_QUERY: "/support/admin/missing_data_request/",
 });

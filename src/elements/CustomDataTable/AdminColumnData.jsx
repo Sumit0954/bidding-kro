@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./DataTable.module.scss";
 import { dateTimeFormatter, truncateString } from "../../helpers/formatter";
 import { Button, Chip, Popover, Rating, Stack, Tooltip } from "@mui/material";
@@ -15,7 +15,7 @@ export const companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return <b># {data?.row?.original?.id}</b>;
+      return <b>{data?.row?.original?.formatted_number}</b>;
     },
   },
   {
@@ -257,7 +257,7 @@ export const Admin_list_column = [
     align: "left",
     disablePadding: false,
     Cell: (data) => {
-      return <b># {data.row.original.id}</b>;
+      return <b>ADM00{data.row.original.id}</b>;
     },
   },
   {
@@ -507,36 +507,46 @@ export const contact_us_queries_column = [
     },
   },
   {
-    Header: "Is Read",
+    Header: "Inbox",
     accessor: "is_read",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
+      const navigate = useNavigate();
       return (
-        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {!data?.row?.original?.is_read && (
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: "#FEBE10",
-                animation: "blinker 1s infinite",
-              }}
-            ></span>
-          )}
+        <Tooltip title={"Click to read"}>
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            {!data?.row?.original?.is_read && (
+              <span
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FEBE10",
+                  animation: "blinker 1s infinite",
+                }}
+              ></span>
+            )}
 
-          <b style={{ color: "green" }}>Read</b>
+            <b
+              style={{ color: "green" }}
+              onClick={() =>
+                navigate(`/admin/queries/contact-us/${data?.row?.original?.id}`)
+              }
+            >
+              Read
+            </b>
 
-          {/* Blinker animation style */}
-          <style>
-            {`
+            {/* Blinker animation style */}
+            <style>
+              {`
               @keyframes blinker {
                 50% { opacity: 0; }
               }
             `}
-          </style>
-        </span>
+            </style>
+          </span>
+        </Tooltip>
       );
     },
   },
@@ -547,6 +557,25 @@ export const contact_us_queries_column = [
     disablePadding: false,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Status",
+    accessor: "Is_closed",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      const navigate = useNavigate();
+      return (
+        <b
+          style={{ color: data?.row?.original?.is_closed ? "green" : "orange" }}
+          onClick={() =>
+            navigate(`/admin/queries/contact-us/${data?.row?.original?.id}`)
+          }
+        >
+          {data?.row?.original?.is_closed ? "Closed" : "Pending"}
+        </b>
+      );
     },
   },
 ];
@@ -590,36 +619,48 @@ export const get_in_touch_queries_column = [
     },
   },
   {
-    Header: "Is Read",
+    Header: "Inbox",
     accessor: "is_read",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
+      const navigate = useNavigate();
       return (
-        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {!data?.row?.original?.is_read && (
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: "#FEBE10",
-                animation: "blinker 1s infinite",
-              }}
-            ></span>
-          )}
+        <Tooltip title={"Click to read"}>
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            {!data?.row?.original?.is_read && (
+              <span
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FEBE10",
+                  animation: "blinker 1s infinite",
+                }}
+              ></span>
+            )}
 
-          <b style={{ color: "green" }}>Read</b>
+            <b
+              style={{ color: "green" }}
+              onClick={() =>
+                navigate(
+                  `/admin/queries/get-in-touch/${data?.row?.original?.id}`
+                )
+              }
+            >
+              Read
+            </b>
 
-          {/* Blinker animation style */}
-          <style>
-            {`
+            {/* Blinker animation style */}
+            <style>
+              {`
               @keyframes blinker {
                 50% { opacity: 0; }
               }
             `}
-          </style>
-        </span>
+            </style>
+          </span>
+        </Tooltip>
       );
     },
   },
@@ -630,6 +671,25 @@ export const get_in_touch_queries_column = [
     disablePadding: false,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Status",
+    accessor: "Is_closed",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      const navigate = useNavigate();
+      return (
+        <b
+          style={{ color: data?.row?.original?.is_closed ? "green" : "orange" }}
+          onClick={() =>
+            navigate(`/admin/queries/get-in-touch/${data?.row?.original?.id}`)
+          }
+        >
+          {data?.row?.original?.is_closed ? "Closed" : "Pending"}
+        </b>
+      );
     },
   },
 ];
@@ -667,46 +727,79 @@ export const missing_data_queries_column = [
     },
   },
   {
-    Header: "Is Read",
+    Header: "Inbox",
     accessor: "is_read",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
+      const navigate = useNavigate();
       return (
-        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {!data?.row?.original?.is_read && (
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: "#FEBE10",
-                animation: "blinker 1s infinite",
-              }}
-            ></span>
-          )}
+        <Tooltip title={"Click to read"}>
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            {!data?.row?.original?.is_read && (
+              <span
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FEBE10",
+                  animation: "blinker 1s infinite",
+                }}
+              ></span>
+            )}
 
-          <b style={{ color: "green" }}>Read</b>
+            <b
+              style={{ color: "green" }}
+              onClick={() =>
+                navigate(
+                  `/admin/queries/missing-data-query/${data?.row?.original?.id}`
+                )
+              }
+            >
+              Read
+            </b>
 
-          {/* Blinker animation style */}
-          <style>
-            {`
+            {/* Blinker animation style */}
+            <style>
+              {`
               @keyframes blinker {
                 50% { opacity: 0; }
               }
             `}
-          </style>
-        </span>
+            </style>
+          </span>
+        </Tooltip>
       );
     },
   },
   {
-    Header: "Sended At",
+    Header: "Received At",
     accessor: "created_at",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Status",
+    accessor: "Is_closed",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      const navigate = useNavigate();
+      return (
+        <b
+          style={{ color: data?.row?.original?.is_closed ? "green" : "orange" }}
+          onClick={() =>
+            navigate(
+              `/admin/queries/missing-data-query/${data?.row?.original?.id}`
+            )
+          }
+        >
+          {data?.row?.original?.is_closed ? "Closed" : "Pending"}
+        </b>
+      );
     },
   },
 ];
@@ -745,36 +838,49 @@ export const customer_support_column = [
     },
   },
   {
-    Header: "Is Read",
+    Header: "Inbox",
     accessor: "is_read",
     align: "left",
     disablePadding: false,
     Cell: (data) => {
+      const navigate = useNavigate();
+      console.log(data, " : Check");
       return (
-        <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {!data?.row?.original?.is_read && (
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: "#FEBE10",
-                animation: "blinker 1s infinite",
-              }}
-            ></span>
-          )}
+        <Tooltip title={"Click to read"}>
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            {!data?.row?.original?.is_read && (
+              <span
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FEBE10",
+                  animation: "blinker 1s infinite",
+                }}
+              ></span>
+            )}
 
-          <b style={{ color: "green" }}>Read</b>
+            <b
+              style={{ color: "green" }}
+              onClick={() =>
+                navigate(
+                  `/admin/queries/customer-support/${data?.row?.original?.id}`
+                )
+              }
+            >
+              Read
+            </b>
 
-          {/* Blinker animation style */}
-          <style>
-            {`
+            {/* Blinker animation style */}
+            <style>
+              {`
               @keyframes blinker {
                 50% { opacity: 0; }
               }
             `}
-          </style>
-        </span>
+            </style>
+          </span>
+        </Tooltip>
       );
     },
   },
@@ -785,6 +891,27 @@ export const customer_support_column = [
     disablePadding: false,
     Cell: (data) => {
       return dateTimeFormatter(data?.row?.original?.created_at);
+    },
+  },
+  {
+    Header: "Status",
+    accessor: "Is_closed",
+    align: "left",
+    disablePadding: false,
+    Cell: (data) => {
+      const navigate = useNavigate();
+      return (
+        <b
+          style={{ color: data?.row?.original?.is_closed ? "green" : "orange" }}
+          onClick={() =>
+            navigate(
+              `/admin/queries/customer-support/${data?.row?.original?.id}`
+            )
+          }
+        >
+          {data?.row?.original?.is_closed ? "Closed" : "Pending"}
+        </b>
+      );
     },
   },
 ];
@@ -899,7 +1026,7 @@ export const total_companies_column = [
     disablePadding: false,
     width: 150,
     Cell: (data) => {
-      return <b># {data?.row?.original?.id}</b>;
+      return <b>{data?.row?.original?.formatted_number}</b>;
     },
   },
   {
@@ -1361,16 +1488,16 @@ export const activated_bids_column = [
   },
 ];
 export const revoked_companies_column = [
-  {
-    Header: "Company Id",
-    accessor: "id",
-    align: "left",
-    disablePadding: false,
-    width: 150,
-    Cell: (data) => {
-      return <b># {data?.row?.original?.bid?.company?.id}</b>;
-    },
-  },
+  // {
+  //   Header: "Company Id",
+  //   accessor: "id",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  //   Cell: (data) => {
+  //     return <b>{data?.row?.original?.bid?.company?.id}</b>;
+  //   },
+  // },
   {
     Header: "Company Name",
     accessor: "name",
@@ -1470,16 +1597,16 @@ export const live_bids_column = [
   },
 ];
 export const pending_activation_column = [
-  {
-    Header: "Company ID",
-    accessor: "id",
-    align: "left",
-    disablePadding: false,
-    width: 150,
-    Cell: (data) => {
-      return <b>Company {data?.row?.original?.id}</b>;
-    },
-  },
+  // {
+  //   Header: "Company ID",
+  //   accessor: "id",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 150,
+  //   Cell: (data) => {
+  //     return <b>Company {data?.row?.original?.id}</b>;
+  //   },
+  // },
   {
     Header: "Company Name",
     accessor: "name",
