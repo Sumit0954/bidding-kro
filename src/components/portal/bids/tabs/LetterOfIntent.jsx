@@ -61,7 +61,7 @@ const LetterOfIntent = ({ bidDetails }) => {
       {letterOfIntent.map((letter) => {
         return (
           <>
-            <Accordion onChange={handleAccordionChange}>
+            <Accordion onChange={handleAccordionChange} defaultExpanded={true}>
               <AccordionSummary expandIcon={<ExpandMoreRounded />}>
                 <div
                   style={{
@@ -239,12 +239,21 @@ const LetterOfIntent = ({ bidDetails }) => {
                             {letter?.supplier?.address?.map((address) => (
                               <tr>
                                 <td data-label="Address">{address?.address}</td>
-                                <td data-label="City">{address?.city}</td>
+                                <td data-label="City">
+                                  {address?.city !== "undefined"
+                                    ? address?.city
+                                    : "Not Declared"}
+                                </td>
                                 <td data-label="Country">{address?.country}</td>
                                 <td data-label="Pincode">{address?.pincode}</td>
-                                <td data-label="State">{address?.state}</td>
+                                <td data-label="State">
+                                  {address?.state !== "undefined"
+                                    ? address?.state
+                                    : "Not Declared"}
+                                </td>
                               </tr>
                             ))}
+                            {console.log(letter?.supplier?.address, " LOI")}
                           </tbody>
                         </table>
                       </>
