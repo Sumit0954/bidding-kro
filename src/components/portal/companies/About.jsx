@@ -70,7 +70,14 @@ const About = forwardRef((_, ref) => {
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>Website Url</h6>
-                <a className={styles["col-data"]}>{companyDetail?.website}</a>
+                <a
+                  className={styles["col-data"]}
+                  href={companyDetail?.website}
+                  style={{ cursor: "pointer" }}
+                  target="_blank"
+                >
+                  {companyDetail?.website}
+                </a>
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>Organisation Type</h6>
