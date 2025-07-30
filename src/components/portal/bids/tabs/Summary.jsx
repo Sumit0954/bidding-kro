@@ -600,7 +600,7 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Delivery Term  */}
+      {/* Delivery Terms  */}
       <Accordion
         defaultExpanded
         square={true}
@@ -610,7 +610,7 @@ const Summary = ({ bidDetails }) => {
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
-            Delivery Term
+            Delivery Terms
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -662,7 +662,7 @@ const Summary = ({ bidDetails }) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Payment Term */}
+      {/* Payment Terms */}
       <Accordion
         defaultExpanded
         square={true}
@@ -672,7 +672,7 @@ const Summary = ({ bidDetails }) => {
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography classes={{ root: "custom-accordion-heading" }}>
-            Payment Term
+            Payment Terms
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
