@@ -1049,7 +1049,7 @@ export const PreviousBids_column = [
     accessor: "title",
     align: "left",
     disablePadding: false,
-    width: 160,
+    width: 280,
     Cell: (data) => {
       return data?.row?.original?.title;
     },
@@ -1059,7 +1059,7 @@ export const PreviousBids_column = [
     accessor: "type",
     align: "left",
     disablePadding: false,
-    width: 160,
+    width: 280,
     Cell: (data) => {
       return data?.row?.original?.type;
     },
@@ -1074,17 +1074,17 @@ export const PreviousBids_column = [
       return dateTimeFormatter(data?.row?.original?.bid_close_date);
     },
   },
-  {
-    Header: "Buyer’s Rating",
-    accessor: "buyer’s rating",
-    align: "left",
-    disablePadding: false,
-    width: 100,
-    hideSortIcon: true,
-    Cell: (data) => {
-      return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
-    },
-  },
+  // {
+  //   Header: "Buyer’s Rating",
+  //   accessor: "buyer’s rating",
+  //   align: "left",
+  //   disablePadding: false,
+  //   width: 100,
+  //   hideSortIcon: true,
+  //   Cell: (data) => {
+  //     return data?.row?.original?.rating ? data?.row?.original?.rating : "-";
+  //   },
+  // },
 ];
 export const Sample_Bid_Invitations_result_log = [
   {
