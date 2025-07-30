@@ -20,13 +20,7 @@ import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { CloudUpload } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
+import { Button } from "@mui/material";
 
 const CompanyProfile = () => {
   const {
@@ -113,7 +107,11 @@ const CompanyProfile = () => {
             const mobile_number = addCountryCode(value);
             createFormData.append(key, mobile_number);
           } else if (key === "website") {
-            createFormData.append(key, formatUrl(value));
+            if (value && value.trim() !== "") {
+              createFormData.append(key, formatUrl(value));
+            } else {
+              createFormData.append(key, "");
+            }
           } else if (
             value !== undefined &&
             value !== null &&
@@ -138,7 +136,11 @@ const CompanyProfile = () => {
                 const mobile_number = addCountryCode(value);
                 updateFormData.append(key, mobile_number);
               } else if (key === "website") {
-                updateFormData.append(key, formatUrl(value));
+                if (value && value.trim() !== "") {
+                  updateFormData.append(key, formatUrl(value));
+                } else {
+                  updateFormData.append(key, "");
+                }
               } else {
                 updateFormData.append(key, value ? value : "");
               }
@@ -148,7 +150,6 @@ const CompanyProfile = () => {
         return null;
       });
     }
-    /* -- */
 
     if (action === "create") {
       try {
@@ -257,6 +258,7 @@ const CompanyProfile = () => {
     }
   }, [action, reset, companyDetails, userDetails]);
 
+  console.log(companyDetails, " : companyDetails");
   return (
     <>
       <div className="container">
@@ -265,6 +267,28 @@ const CompanyProfile = () => {
             <div className={cn("row", styles["form-section"])}>
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className="row">
+                  {companyDetails?.formatted_number && (
+                    <div className="d-flex justify-content-between align-items-start mb-3">
+                      <div></div> {/* Placeholder for spacing */}
+                      <div
+                        style={{
+                          backgroundColor: "#e6f2ff",
+                          padding: "8px 16px",
+                          borderRadius: "8px",
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                          color: "#003366",
+                          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        Company ID:{" "}
+                        <span style={{ color: "#0052cc" }}>
+                          {companyDetails?.formatted_number}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   <label>Company Logo</label>
                   <div className={styles["img-container"]}>
                     <div className={styles["img-box"]}>
@@ -332,6 +356,10 @@ const CompanyProfile = () => {
                       name="avg_annual_revenue"
                       placeholder="Ex. 200"
                       inputType="number"
+                      inputProps={{
+                        step: "any", // <-- This is important
+                        min: 0,
+                      }}
                     />
                   </div>
                   <div className="col-lg-6">
@@ -340,9 +368,7 @@ const CompanyProfile = () => {
                       label="Website Url"
                       name="website"
                       placeholder="www.example.com"
-                      rules={{
-                        required: "Website Url is required.",
-                      }}
+                      inputType="text"
                     />
                   </div>
                 </div>
@@ -365,6 +391,9 @@ const CompanyProfile = () => {
                       options={organizationTypes}
                       label="Organization Type"
                       multiple={false}
+                      rules={{
+                        required: "Organization Type is required.",
+                      }}
                     />
                   </div>
                 </div>
@@ -398,27 +427,6 @@ const CompanyProfile = () => {
 
                 <div className="row">
                   <div className="col-lg-6">
-                    {/* {gstRegistered === "No" ? (
-                      <>
-                        <Box>
-                          <label>GST Registered</label>
-                        </Box>
-                        <RadioGroup defaultValue="No" row>
-                          <FormControlLabel
-                            value="Yes"
-                            control={<Radio />}
-                            label="Yes"
-                            onClick={() => setGstRegistered("Yes")}
-                          />
-                          <FormControlLabel
-                            value="No"
-                            control={<Radio />}
-                            label="No"
-                            onClick={() => setGstRegistered("No")}
-                          />
-                        </RadioGroup>
-                      </>
-                    ) : ( */}
                     <CustomInput
                       control={control}
                       label="GST"
@@ -429,7 +437,6 @@ const CompanyProfile = () => {
                         required: "GST is required.",
                       }}
                     />
-                    {/* )}  */}
                   </div>
                   <div className="col-lg-6">
                     <CustomInput

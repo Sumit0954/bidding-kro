@@ -17,7 +17,7 @@
       .img-box {
         img.logo-img {
           width: 200px;
-          height: 100px;
+          height: 9rem;
           aspect-ratio: 2 / 1;
           padding: 2px;
           border: 2px solid var(--primary-color);
@@ -42,7 +42,7 @@
           width: 100%;
           img.logo-img {
             width: 100%;
-            height: auto;
+            height: 9rem;
           }
         }
 
@@ -61,4 +61,18 @@
   }
 }
 
-// ✅ Bootstrap grid already helps, just ensure correct col-sm for inputs
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse; // Puts Finish on top, Back below
+    align-items: stretch; // Makes children take full width
+    gap: 0.75rem;
+
+    button {
+      width: 100%;
+    }
+  }
+}
