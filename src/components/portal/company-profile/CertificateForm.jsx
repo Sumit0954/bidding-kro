@@ -2,7 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from "./CertificateForm.module.scss";
 import cn from "classnames";
 import { useForm } from "react-hook-form";
-import { Alert, Button, ImageList, ImageListItem } from "@mui/material";
+import {
+  Alert,
+  Button,
+  ImageList,
+  ImageListItem,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Cancel, CloudUpload } from "@mui/icons-material";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
@@ -26,10 +33,10 @@ const CertificateForm = ({ certificates, setCertificates }) => {
   const { setAlert } = useContext(AlertContext);
   const [loading, setLoading] = useState(false);
   const [showQueryForm, setShowQueryForm] = useState(false);
-
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const certificate = watch("file");
   useEffect(() => {
-    // Update previews on file change
     if (typeof certificate === "object" && certificate?.length > 0) {
       setPreview(URL.createObjectURL(certificate[0]));
     }
@@ -175,9 +182,7 @@ const CertificateForm = ({ certificates, setCertificates }) => {
               multiple={false}
             />
           </div>
-          {/* Flex container for the buttons */}
           <div className="col-lg-6 d-flex justify-content-end align-items-start gap-2 mt-4">
-            {/* Upload Certificate button */}
             {preview ? (
               <div className={styles["img-box"]}>
                 <img
@@ -222,6 +227,12 @@ const CertificateForm = ({ certificates, setCertificates }) => {
                     backgroundColor: "var(--secondary-color)",
                   },
                   textAlign: "center",
+                  whiteSpace: "nowrap", // ✅ Prevent text wrapping
+                  overflow: "hidden", // ✅ Hide overflow if it ever happens
+                  textOverflow: "ellipsis", // ✅ Show "..." if overflow happens
+                  display: "inline-flex", // ✅ Keeps icon + label aligned
+                  justifyContent: "center", // ✅ Center content
+                  alignItems: "center", // ✅ Center vertically
                 }}
               >
                 Choose Certificate
@@ -256,30 +267,34 @@ const CertificateForm = ({ certificates, setCertificates }) => {
         </div>
       </form>
 
-      <ImageList cols={5} gap={10} sx={{ overflowY: "unset" }}>
+      <ImageList
+        cols={isSmallScreen ? 1 : 5}
+        gap={10}
+        sx={{ overflowY: "unset" }}
+      >
         {certificates?.map((item, index) => (
-          <>
-            <ImageListItem key={index}>
-              <img
-                srcSet={`${item.file}?w=164&h=164&fit=contain&auto=format&dpr=2 2x`}
-                src={item.file}
-                alt={`Certificate ${index + 1}`}
-                loading="lazy"
-              />
-              <Button
-                onClick={() => handleDeleteCertificate(item.id)}
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  zIndex: 1,
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Cancel sx={{ color: "var(--gray)" }} />
-              </Button>
-            </ImageListItem>
-          </>
+          <ImageListItem key={index} sx={{ position: "relative" }}>
+            <img
+              srcSet={`${item.file}?w=164&h=164&fit=contain&auto=format&dpr=2 2x`}
+              src={item.file}
+              alt={`Certificate ${index + 1}`}
+              loading="lazy"
+              style={{ width: "100%", height: "auto" }}
+            />
+            <Button
+              onClick={() => handleDeleteCertificate(item.id)}
+              sx={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                zIndex: 1,
+                minWidth: "unset",
+                padding: 0,
+              }}
+            >
+              <Cancel sx={{ color: "red" }} />
+            </Button>
+          </ImageListItem>
         ))}
       </ImageList>
 
