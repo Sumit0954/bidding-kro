@@ -1,5 +1,5 @@
 import RegistrationBannnerImg from "../../../assets/images/website/home/registration-banner.jpg";
-import styles from "./RegistrationBanner.module.scss";
+import styles from "../contactus/Banner.module.scss";
 
 const RegistrationBanner = () => {
   return (
@@ -8,7 +8,7 @@ const RegistrationBanner = () => {
         <img
           src={RegistrationBannnerImg}
           alt="RegistrationBannner"
-          className={styles["banner-img"]}
+          className={styles["blog-banner-img"]}
         />
       </div>
     </>

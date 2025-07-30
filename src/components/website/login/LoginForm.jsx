@@ -17,7 +17,6 @@ const LoginForm = () => {
   const [isPhoneLogin, setIsPhoneLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState(false);
   const [email, setEmail] = useState();
 
@@ -65,7 +64,7 @@ const LoginForm = () => {
         setAlert({
           isVisible: true,
           message: data.error_description,
-          severity: "error",
+          severity: "warning",
         });
         try {
           const formData = { email: parsedData.email };

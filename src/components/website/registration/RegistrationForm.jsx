@@ -49,17 +49,14 @@ const RegistrationForm = () => {
       }
     } catch (error) {
       setLoading(false);
-      const { data } = error.response;
+      const message = error?.response?.data?.error;
 
-      if (data) {
-        const { error } = data;
-        if (error) {
-          setAlert({
-            isVisible: true,
-            message: error,
-            severity: "error",
-          });
-        }
+      if (message) {
+        setAlert({
+          isVisible: true,
+          message,
+          severity: "error",
+        });
       }
     }
   };

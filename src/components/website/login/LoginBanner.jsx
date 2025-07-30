@@ -1,6 +1,5 @@
-import styles from "./LoginBanner.module.scss";
 import LoginBannerImg from "../../../assets/images/website/home/login-banner.jpg";
-
+import styles from "../contactus/Banner.module.scss";
 const LoginBanner = () => {
   return (
     <>
@@ -8,7 +7,7 @@ const LoginBanner = () => {
         <img
           src={LoginBannerImg}
           alt="LoginBanner"
-          className={styles["banner-img"]}
+          className={styles["blog-banner-img"]}
         />
       </div>
     </>
