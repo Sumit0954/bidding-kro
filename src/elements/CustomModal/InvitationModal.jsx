@@ -178,15 +178,15 @@ const InvitationModal = ({
                     {bidDetails?.type}
                   </Box>
                 </Tooltip>
-                <Tooltip title={dateTimeFormatter(bidDetails?.bid_close_date)}>
+                <Tooltip title={dateTimeFormatter(bidDetails?.bid_open_date)}>
                   <Box
                     className="col-lg-4 text-start"
                     sx={{ cursor: "pointer" }}
                   >
-                    <strong>Closed on: </strong>
-                    {bidDetails?.bid_close_date === null
+                    <strong>Open on: </strong>
+                    {bidDetails?.bid_open_date === null
                       ? "Still to be declare"
-                      : dateTimeFormatter(bidDetails?.bid_close_date)}
+                      : dateTimeFormatter(bidDetails?.bid_open_date)}
                   </Box>
                 </Tooltip>
               </Box>
