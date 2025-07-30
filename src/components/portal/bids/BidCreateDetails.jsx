@@ -1,13 +1,12 @@
 import styles from "./BidForm.module.scss";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
 import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
-import { useLocation } from "react-router-dom";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
@@ -18,25 +17,21 @@ const BidCreateDetails = () => {
     watch,
     setError,
     reset,
-    setValue,
-    clearErrors,
     formState: { dirtyFields },
   } = useForm();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
   const [bidStatus, setBidStatus] = useState("");
   const [screenLoader, setScreenLoader] = useState(true);
-  const { action, id } = useParams();
+  const { id } = useParams();
   const [isCreate, setIsCreate] = useState();
 
   const submitForm = async (data) => {
     setLoading(true);
     let updateFormData = new FormData();
 
-    /* Build FormData */
     if (data) {
       Object.entries(data).map((item) => {
         const [key, value] = item;
@@ -142,6 +137,9 @@ const BidCreateDetails = () => {
                       control={control}
                       name="eligiblity_criteria"
                       label="Eligiblity Criteria"
+                      rules={{
+                        required: "Eligiblity Criteria is required.",
+                      }}
                     />
                   </div>
                 </div>
@@ -150,9 +148,9 @@ const BidCreateDetails = () => {
                     <CustomCkEditor
                       control={control}
                       name="delivery_terms"
-                      label="Delivery Term"
+                      label="Delivery Terms"
                       rules={{
-                        required: "Delivery Term is required.",
+                        required: "Delivery Terms is required.",
                       }}
                     />
                   </div>
@@ -162,9 +160,9 @@ const BidCreateDetails = () => {
                     <CustomCkEditor
                       control={control}
                       name="payment_terms"
-                      label="Payment Term"
+                      label="Payment Terms"
                       rules={{
-                        required: "Payment Term is required.",
+                        required: "Payment Terms is required.",
                       }}
                     />
                   </div>

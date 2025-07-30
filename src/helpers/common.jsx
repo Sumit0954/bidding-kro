@@ -47,6 +47,7 @@ export const getProductUnits = () => {
     { lable: "Pellet (plt)", value: "plt" },
     { lable: "Standard Cubic Feet (scf)", value: "scf" },
     { lable: "Cylinder (cy)", value: "cy" },
+    { lable: "Number (num)", value: "num" },
   ];
 
   // return units;
