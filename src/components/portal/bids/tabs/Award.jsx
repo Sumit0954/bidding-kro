@@ -35,7 +35,6 @@ import { AlertContext } from "../../../../contexts/AlertProvider";
 import DeleteDialog from "../../../../elements/CustomDialog/DeleteDialog";
 const Analysis = ({ bidDetails }) => {
   const [selectedSupplier, setSelectedSupplier] = useState("");
-  const [btnLoader, setBtnLoader] = useState(false);
   const [screenLoader, setScreenLoader] = useState(true);
   const [open, setOpen] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(false);
@@ -191,10 +190,10 @@ const Analysis = ({ bidDetails }) => {
         return (
           <>
             <Accordion
-              expanded={expandedIndex === index}
+              expanded={true}
               onChange={(event) => handleAccordionChange(index, event)}
               key={index}
-              defaultExpanded={false}
+              defaultExpanded={true}
               sx={{
                 margin: "16px 0",
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -220,7 +219,7 @@ const Analysis = ({ bidDetails }) => {
 
                   <Box display="flex" alignItems="center" gap={2}>
                     {isExpanded === false &&
-                    expandedIndex === index &&
+                    index === 0 &&
                     awardBidder.award_status === "pending" ? (
                       <>
                         <Button
