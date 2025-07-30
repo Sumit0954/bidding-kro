@@ -35,7 +35,13 @@ const UserDetailsProvider = (props) => {
 
   return (
     <UserDetailsContext.Provider
-      value={{ userDetails, setUserDetails, noCompany, setNoCompany }}
+      value={{
+        userDetails,
+        setUserDetails,
+        noCompany,
+        setNoCompany,
+        getUserProfile,
+      }}
     >
       {props.children}
     </UserDetailsContext.Provider>
