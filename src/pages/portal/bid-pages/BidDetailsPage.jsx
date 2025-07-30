@@ -246,6 +246,18 @@ const BidDetailsPage = () => {
     }
   };
 
+  const isWithinThreeHoursOfBidOpen = (bidOpenDate) => {
+    if (!bidOpenDate) return false;
+
+    const bidOpenTime = new Date(bidOpenDate);
+    const now = new Date();
+
+    // Subtract 3 hours from bid open time
+    const cutoffTime = new Date(bidOpenTime.getTime() - 3 * 60 * 60 * 1000);
+
+    return now >= cutoffTime;
+  };
+
   const isInviteDisabled =
     bidDetails?.status !== "active" ||
     (bidDetails?.type === "L1" && bidDetails?.bid_close_date === null) ||
@@ -373,7 +385,8 @@ const BidDetailsPage = () => {
                       onClick={() => setAddAmendment(true)}
                       disabled={
                         bidDetails?.status === "cancelled" ||
-                        bidDetails?.amendment?.length === 3
+                        bidDetails?.amendment?.length === 3 ||
+                        isWithinThreeHoursOfBidOpen(bidDetails?.bid_open_date)
                       }
                     >
                       Amendments
