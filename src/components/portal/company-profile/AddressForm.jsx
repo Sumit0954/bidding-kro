@@ -293,13 +293,14 @@ const IndividualAddressForm = ({
   });
 
   const submitAddressForm = async (data, checked, onSuccess, onFailure) => {
+    console.log(data, " : data");
     try {
       let formData = new FormData();
 
       if (data) {
         formData.append("address", data.street);
-        formData.append("state", data.state.label);
-        formData.append("city", data.city.label);
+        formData.append("state", data.state.lable);
+        formData.append("city", data.city.lable);
         formData.append("pincode", data.pincode);
         formData.append("latitude", geoLocation.latitude);
         formData.append("longitude", geoLocation.longitude);
