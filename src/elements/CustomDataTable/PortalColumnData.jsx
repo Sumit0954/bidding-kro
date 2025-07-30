@@ -26,6 +26,7 @@ const patchBidStatus = async (id, formData, setAlert) => {
     if (response.status === 204) {
     }
   } catch (error) {
+    console.log(error, " : response");
     if (error.status === 403) {
       console.log(error.status, " :error");
       setAlert({
@@ -154,7 +155,6 @@ const onDeleteBidClick = async (bid_requested_id, dispatch, navigate) => {
     console.error("Error deleting bid", error);
   }
 };
-
 export const created_bids_column = (setScreenLoader) => [
   {
     Header: "Bid ID",
@@ -393,7 +393,6 @@ export const created_bids_column = (setScreenLoader) => [
     },
   },
 ];
-
 export const invited_bids_column = [
   {
     Header: "Bid ID",
@@ -681,7 +680,6 @@ export const invited_bids_column = [
     },
   },
 ];
-
 export const related_bids_column = [
   {
     Header: "Bid ID",
@@ -802,7 +800,6 @@ export const related_bids_column = [
     width: 150,
   },
 ];
-
 export const documents_column = [
   {
     Header: "Document Name",
@@ -880,7 +877,6 @@ export const documents_column = [
     },
   },
 ];
-
 export const companies_column = [
   {
     Header: "Company Name",
@@ -926,7 +922,6 @@ export const companies_column = [
     hideSortIcon: true,
   },
 ];
-
 export const Invite_request_column = [
   {
     Header: "Company Name",
@@ -981,7 +976,6 @@ export const Invite_request_column = [
     hideSortIcon: true,
   },
 ];
-
 export const l1_participants_column = [
   {
     Header: "Company Name",
@@ -1049,7 +1043,6 @@ export const l1_participants_column = [
     hideSortIcon: true,
   },
 ];
-
 export const PreviousBids_column = [
   {
     Header: "Bid Name",
@@ -1093,7 +1086,6 @@ export const PreviousBids_column = [
     },
   },
 ];
-
 export const Sample_Bid_Invitations_result_log = [
   {
     Header: "Company Name",
@@ -1123,7 +1115,7 @@ export const Sample_Bid_Invitations_result_log = [
     Header: "Status",
     accessor: "status",
     align: "left",
-    width: 150, // Change to uniform width
+    width: 80, // Change to uniform width
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -1146,7 +1138,6 @@ export const Sample_Bid_Invitations_result_log = [
     },
   },
 ];
-
 export const ProductBid_column = [
   {
     Header: "Bid Position",
@@ -1164,7 +1155,6 @@ export const ProductBid_column = [
     disablePadding: false,
   },
 ];
-
 export const Bid_pricing_column = [
   {
     Header: "Product Title",
@@ -1217,7 +1207,6 @@ export const Bid_pricing_column = [
     },
   },
 ];
-
 export const ProductBid_column2 = [
   {
     Header: "Product Title",
@@ -1281,7 +1270,6 @@ export const ProductBid_column2 = [
     },
   },
 ];
-
 export const getTeamListColumn = (onToggleStatus) => [
   {
     Header: "First Name",
@@ -1390,7 +1378,6 @@ export const getTeamListColumn = (onToggleStatus) => [
     },
   },
 ];
-
 export const products_Column = ({
   setShowSpecification,
   setSelectedProduct,
@@ -1440,7 +1427,6 @@ export const products_Column = ({
     },
   },
 ];
-
 export const Pending_request_column = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1507,14 +1493,143 @@ export const Pending_request_column = () => {
     },
   ];
 };
+const SampleStatusCell = ({ data, onActionComplete }) => {
+  const [participant, setParticipant] = useState();
+  const { setAlert } = useContext(AlertContext);
+  const [status, setStatus] = useState(
+    data.row.original.sample.approval_status === "rejected"
+      ? "reject"
+      : data.row.original.sample.approval_status === "pending"
+      ? "pending"
+      : "approve"
+  );
+  const [deleteDetails, setDeleteDetails] = useState({
+    open: false,
+    title: "",
+    message: "",
+    formData: null,
+    isSamplePending: null,
+    supplierName: null,
+  });
+  const handleSampleApproved = (choice) => {
+    setDeleteDetails({ open: false, title: "", message: "", formData: null });
+    if (choice) {
+      setStatus("approve");
+      patchBidStatus(
+        data.row.original.id,
+        deleteDetails?.formData,
+        setAlert,
+        true,
+        data.row.original.company.id
+      );
+    }
+    if (onActionComplete) {
+      onActionComplete();
+    }
+    setParticipant((prevDetails) => ({
+      ...prevDetails,
+      approval_status: newActionStatus,
+    }));
+  };
+  const handleStatusChange = (event) => {
+    console.log(data?.row?.original?.sample?.is_received, " supplier");
+    const newActionStatus = event.target.value;
+    const formData = {
+      action: newActionStatus,
+    };
+    if (newActionStatus === "approve") {
+      setDeleteDetails({
+        open: true,
+        title: "Sample Approve Confirmation",
+        message: (
+          <>
+            Are you sure you want to approve the sample of{" "}
+            <b>{data?.row?.original?.company?.name}</b>?
+          </>
+        ),
+        formData: formData,
+        isSamplePending:
+          data?.row?.original?.sample?.is_received === false ? true : null,
+        supplierName: data?.row?.original?.company?.name,
+      });
+    } else if (newActionStatus === "reject") {
+      setStatus(newActionStatus);
+      patchBidStatus(
+        data.row.original.id,
+        formData,
+        setAlert,
+        true,
+        data.row.original.company.id
+      );
+    }
 
-export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
+    setParticipant((prevDetails) => ({
+      ...prevDetails,
+      approval_status: newActionStatus,
+    }));
+  };
+  return (
+    <>
+      <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
+        <Select
+          disabled={status === "approve"}
+          value={status}
+          onChange={handleStatusChange}
+          sx={{
+            color:
+              status === "pending"
+                ? "#FFC72C"
+                : status === "approve"
+                ? "green"
+                : "red",
+            height: "35px",
+            fontSize: "14px",
+            "&.Mui-disabled": {
+              color: status === "approve" ? "green" : "inherit",
+            },
+            "& .Mui-disabled": {
+              WebkitTextFillColor: status === "approve" ? "green" : "inherit",
+            },
+          }}
+        >
+          {status === "pending" && (
+            <MenuItem value="pending" disabled sx={{ color: "#FFC72C" }}>
+              Pending
+            </MenuItem>
+          )}
+          <MenuItem value="approve" sx={{ color: "green" }}>
+            Approved
+          </MenuItem>
+          <MenuItem value="reject" sx={{ color: "red" }}>
+            Not Approved
+          </MenuItem>
+        </Select>
+      </FormControl>
+
+      {deleteDetails?.open && (
+        <DeleteDialog
+          open={deleteDetails.open}
+          title={deleteDetails.title}
+          message={deleteDetails.message}
+          handleClick={handleSampleApproved}
+          supplierName={deleteDetails?.supplierName}
+          isSamplePending={deleteDetails?.isSamplePending}
+        />
+      )}
+    </>
+  );
+};
+export const Sample_Bid_Invitations_column = ({
+  id,
+  onActionComplete,
+  setIsSampleApproved,
+}) => [
   {
     Header: "Company Name",
     accessor: "company_Name",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
+    width: 100, // Add a uniform width
     Cell: (data) => {
       return `${data.row.original.company.name}`;
     },
@@ -1524,7 +1639,7 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
     accessor: "company_email",
     align: "left",
     disablePadding: false,
-    width: 150,
+    width: 100,
     Cell: (data) => {
       const [participant, setParticipant] = useState();
 
@@ -1604,81 +1719,9 @@ export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
     accessor: "mobile_number",
     align: "left",
     disablePadding: false,
-    width: 150, // Add a uniform width
-    Cell: (data) => {
-      const [participant, setParticipant] = useState();
-      const { setAlert } = useContext(AlertContext);
-      const [status, setStatus] = useState(
-        data.row.original.sample.approval_status === "rejected"
-          ? "reject"
-          : data.row.original.sample.approval_status === "pending"
-          ? "pending"
-          : "approve"
-      );
-
-      const handleStatusChange = (event) => {
-        const newActionStatus = event.target.value;
-        setStatus(newActionStatus);
-
-        const formData = {
-          action: newActionStatus,
-        };
-        patchBidStatus(
-          data.row.original.id,
-          formData,
-          setAlert,
-          true,
-          data.row.original.company.id
-        );
-
-        if (onActionComplete) {
-          onActionComplete();
-        }
-
-        setParticipant((prevDetails) => ({
-          ...prevDetails,
-          approval_status: newActionStatus,
-        }));
-      };
-
-      return (
-        <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
-          <Select
-            disabled={status === "approve"}
-            value={status}
-            onChange={handleStatusChange}
-            sx={{
-              color:
-                status === "pending"
-                  ? "#FFC72C"
-                  : status === "approve"
-                  ? "green"
-                  : "red",
-              height: "35px", // Adjust the height of the dropdown
-              fontSize: "14px", // Adjust the font size inside the dropdown
-              "&.Mui-disabled": {
-                color: status === "approve" ? "green" : "inherit", // Keep green when disabled for 'approve'
-              },
-
-              "& .Mui-disabled": {
-                WebkitTextFillColor: status === "approve" ? "green" : "inherit", // For the selected text
-              },
-            }}
-          >
-            {status === "pending" && (
-              <MenuItem value="pending" disabled sx={{ color: "#FFC72C" }}>
-                Pending
-              </MenuItem>
-            )}
-            <MenuItem value="approve" sx={{ color: "green" }}>
-              Approved
-            </MenuItem>
-            <MenuItem value="reject" sx={{ color: "red" }}>
-              Not Approved
-            </MenuItem>
-          </Select>
-        </FormControl>
-      );
-    },
+    width: 100,
+    Cell: (cellData) => (
+      <SampleStatusCell data={cellData} onActionComplete={onActionComplete} />
+    ),
   },
 ];
