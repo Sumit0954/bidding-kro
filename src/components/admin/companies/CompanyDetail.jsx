@@ -121,6 +121,15 @@ const CompanyDetail = forwardRef(({ companyDetails }, ref) => {
                   }}
                 ></p>
               </div>
+               <div className="col">
+                <h6 className={styles["col-heading"]}>Company Id</h6>
+                <p
+                  className={styles["col-data"]}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(companyDetails?.formatted_number),
+                  }}
+                ></p>
+              </div>
             </div>
           </AccordionDetails>
         </Accordion>
