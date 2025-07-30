@@ -30,7 +30,7 @@ const EmailVerification = () => {
         );
         if (response.status === 200) {
           setSuccess(true);
-          console.log(response.status, " : error 1");
+          console.log(response.status, " : status");
           login(response.data, "PORTAL");
           if (type === "reset") {
             window.location.href = "/reset-password";
@@ -56,7 +56,6 @@ const EmailVerification = () => {
       <Box className={cn("container", styles["modal-container"])}>
         <Box className="row">
           <Box className={styles["modal-section"]}>
-        
             <img src={EmailIcon} alt="EmailIcon" />
             <Typography
               className={cn("my-3", styles["modal-title"])}
@@ -73,9 +72,9 @@ const EmailVerification = () => {
               id="modal-modal-description"
               sx={{ mt: 2 }}
             >
-              {success
+              {!isfalied
                 ? "Your email has been successfully verified."
-                : "Your email verification has been failed."}
+                : "Your email verification has been asdasdsadasd."}
             </Typography>
 
             {type === "verify" && success && !isfalied && (
