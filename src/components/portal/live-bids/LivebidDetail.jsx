@@ -1,22 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   AlertTitle,
   Container,
   Typography,
   Box,
-  Paper,
-  TextField,
-  Button,
   Grid,
-  ButtonBase,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import LiveBidProducts from "./LiveBidProducts";
 import styles from "./LivebidDetail.module.scss";
-import { useLocation, useNavigate } from "react-router-dom";
-import cn from "classnames";
+import { useLocation } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import TermAndConditionModal from "../../../elements/CustomModal/TermAndConditionModal";
@@ -104,7 +97,9 @@ function LivebidDetail() {
       console.error("Error fetching live bid data:", error);
     }
   };
-
+  {
+    console.log(bid, " : bid ");
+  }
   useEffect(() => {
     fetchLiveBidData();
     const interval = setInterval(fetchLiveBidData, 10000);
@@ -119,6 +114,8 @@ function LivebidDetail() {
   if (screenLoader) {
     return <ScreenLoader />;
   }
+
+  console.log(bid?.formatted_number, " : Number ");
   return (
     <Container maxWidth="lg">
       <Grid container justifyContent="space-between" alignItems="center">
@@ -142,7 +139,7 @@ function LivebidDetail() {
           {truncateString(bid?.title, 50)}
         </Typography>
 
-        <Box textAlign="center" className={styles["bidEndTime"]} >
+        <Box textAlign="center" className={styles["bidEndTime"]}>
           <Typography variant="subtitle2" fontWeight="bold">
             Bid Ends in
           </Typography>
@@ -169,12 +166,12 @@ function LivebidDetail() {
           },
           textAlign: {
             xs: "center",
-            sm : "left",
-            md : "left"
+            sm: "left",
+            md: "left",
           },
         }}
       >
-        Bid ID: <strong>EB240000{bid?.id}</strong> |{" "}
+        Bid ID: <strong>{bid?.formatted_number}</strong> |{" "}
         {type !== "created" && `Buyer: ${bid?.company?.name} |`} Published:{" "}
         {dateTimeFormatter(bid?.created_at)}
       </Typography>
