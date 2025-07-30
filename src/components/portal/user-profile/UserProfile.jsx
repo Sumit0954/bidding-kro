@@ -25,10 +25,10 @@ const UserProfile = () => {
     getValues,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm();
   const [profileImage, setProfileImage] = useState(UserImg);
-  const { userDetails } = useContext(UserDetailsContext);
+  const { userDetails, getUserProfile } = useContext(UserDetailsContext);
   const { companyDetails } = useContext(CompanyDetailsContext);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
@@ -56,30 +56,33 @@ const UserProfile = () => {
     setLoading(true);
     let updateFormData = new FormData();
     let excludeFields = ["email", "mobile_number"];
-    data.whatsapp_number = addCountryCode(data.whatsapp_number);
 
-    // Don't send profile_image if not updated
+    // ✅ Handle WhatsApp number: Send empty string if user cleared it
+    if (typeof data.whatsapp_number === "string") {
+      const trimmed = data.whatsapp_number.trim();
+      if (trimmed) {
+        data.whatsapp_number = addCountryCode(trimmed);
+      } else {
+        data.whatsapp_number = ""; // Explicitly send empty string
+      }
+    }
+
     if (typeof data.profile_image !== "object") {
       excludeFields.push("profile_image");
     }
 
-    /* Build FormData */
     if (data) {
-      Object.entries(data).map((item) => {
-        const [key, value] = item;
-
+      Object.entries(data).forEach(([key, value]) => {
         if (!excludeFields.includes(key)) {
           if (typeof value === "object" && value?.length > 0) {
             updateFormData.append(key, value[0], value[0].name);
           } else {
-            updateFormData.append(key, value ? value : "");
+            updateFormData.append(key, value ?? "");
           }
         }
       });
     }
-    /* -- */
 
-    console.log(userDetails, " :");
     try {
       const response = await _sendAPIRequest(
         "PATCH",
@@ -88,12 +91,12 @@ const UserProfile = () => {
         true
       );
       if (response.status === 200) {
-        setLoading(false);
         setAlert({
           isVisible: true,
           message: "Profile has been updated successfully.",
           severity: "success",
         });
+        await getUserProfile();
         if (companyDetails) {
           navigate("/portal/company-profile/update");
         } else {
@@ -102,14 +105,11 @@ const UserProfile = () => {
       }
     } catch (error) {
       const { data } = error.response;
-      if (data) {
-        const { profile_image } = data;
-        if (profile_image) {
-          setError("profile_image", {
-            type: "focus",
-            message: profile_image,
-          });
-        }
+      if (data?.profile_image) {
+        setError("profile_image", {
+          type: "focus",
+          message: data.profile_image,
+        });
       }
       setLoading(false);
     }
@@ -237,10 +237,13 @@ const UserProfile = () => {
                       placeholder="WhatsApp"
                       inputType="tel"
                       rules={{
-                        required: "Phone number is required",
-                        pattern: {
-                          value: phoneValidator,
-                          message: "Please enter a valid phone number",
+                        required: "Mobile number is required.",
+                        validate: (value) => {
+                          const formatted = value.replace(/\D/g, ""); // Remove non-digits
+                          return (
+                            formatted.length === 10 ||
+                            "Please enter a valid 10-digit number."
+                          );
                         },
                       }}
                     />
@@ -253,7 +256,7 @@ const UserProfile = () => {
                       placeholder="Designation "
                       inputType="text"
                       rules={{
-                        required: "Your Desgnation is required",
+                        required: "Designation is required.",
                       }}
                     />
                   </div>
