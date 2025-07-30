@@ -63,7 +63,7 @@ const LoginForm = () => {
       if (data.error_code === 1001) {
         setAlert({
           isVisible: true,
-          message: data.error_description,
+          message: "Please verify your mail",
           severity: "warning",
         });
         try {
