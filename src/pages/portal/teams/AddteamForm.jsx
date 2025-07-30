@@ -80,6 +80,29 @@ const AddteamForm = () => {
   };
 
   const handleAddMember = async () => {
+    const { first_name, last_name, email, mobile_number, role } = formData;
+
+    // Collect missing fields
+    const missingFields = [];
+    if (!first_name) missingFields.push("First Name");
+    if (!last_name) missingFields.push("Last Name");
+    if (!email) missingFields.push("Email");
+    if (!mobile_number) missingFields.push("Mobile Number");
+    if (!role) missingFields.push("Role");
+
+    if (missingFields.length > 0) {
+      const message =
+        missingFields.length === 1
+          ? `${missingFields[0]} is required.`
+          : `${missingFields.join(", ")} are required.`;
+
+      setAlert({
+        isVisible: true,
+        message,
+        severity: "warning",
+      });
+      return;
+    }
     try {
       const payload = new FormData();
       payload.append("first_name", formData.first_name);
@@ -113,7 +136,6 @@ const AddteamForm = () => {
         });
       }
     } catch (error) {
-
       if (error?.status === 403) {
         setAlert({
           isVisible: true,
