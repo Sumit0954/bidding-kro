@@ -248,13 +248,9 @@ const BidDetailsPage = () => {
 
   const isWithinThreeHoursOfBidOpen = (bidOpenDate) => {
     if (!bidOpenDate) return false;
-
     const bidOpenTime = new Date(bidOpenDate);
     const now = new Date();
-
-    // Subtract 3 hours from bid open time
     const cutoffTime = new Date(bidOpenTime.getTime() - 3 * 60 * 60 * 1000);
-
     return now >= cutoffTime;
   };
 
@@ -264,6 +260,11 @@ const BidDetailsPage = () => {
     (bidDetails?.type === "QCBS" &&
       (bidDetails?.sample_receive_start_date === null ||
         bidDetails?.sample_receive_end_date === null));
+
+  const isAmendmentDisabled =
+    bidDetails?.status === "cancelled" ||
+    bidDetails?.amendment?.length === 3 ||
+    isWithinThreeHoursOfBidOpen(bidDetails?.bid_open_date);
 
   if (screenLoader) {
     return <ScreenLoader />;
@@ -378,16 +379,30 @@ const BidDetailsPage = () => {
                 </Tooltip>
 
                 {participant?.participants.length > 0 ? (
-                  <Tooltip title={"Make Amendments On This Bid"} arrow>
+                  <Tooltip
+                    title={
+                      isWithinThreeHoursOfBidOpen(bidDetails?.bid_open_date)
+                        ? "Less than 3 hours left for live bid"
+                        : bidDetails?.amendment?.length === 3
+                        ? "! Amendments limit exceeded"
+                        : "Make a Amendment on this bid"
+                    }
+                    arrow
+                  >
                     <button
-                      className="btn button"
+                      className="button"
                       type="button"
-                      onClick={() => setAddAmendment(true)}
-                      disabled={
-                        bidDetails?.status === "cancelled" ||
-                        bidDetails?.amendment?.length === 3 ||
-                        isWithinThreeHoursOfBidOpen(bidDetails?.bid_open_date)
-                      }
+                      onClick={() => {
+                        if (!isAmendmentDisabled) {
+                          setAddAmendment(true);
+                        }
+                      }}
+                      style={{
+                        ...(isAmendmentDisabled && {
+                          opacity: 0.5,
+                          cursor: "not-allowed",
+                        }),
+                      }}
                     >
                       Amendments
                     </button>
@@ -841,6 +856,8 @@ const BidDetailsPage = () => {
         <AmendmentModal
           addAmendment={addAmendment}
           setAddAmendment={setAddAmendment}
+          bidDetails={bidDetails}
+          setBidDetails={setBidDetails}
           id={id}
         />
       )}

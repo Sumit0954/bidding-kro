@@ -140,3 +140,31 @@ export const truncateString = (title, maxlength) => {
     ? title.substring(0, maxlength) + "..."
     : title;
 };
+
+export const convertHtmlToText = (html) => {
+  if (!html) return "";
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  // Clean all elements except allowed tags
+  const allowedTags = ["A", "STRONG", "B", "BR"];
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+
+  let node;
+  while ((node = walker.nextNode())) {
+    if (!allowedTags.includes(node.nodeName)) {
+      const parent = node.parentNode;
+      while (node.firstChild) {
+        parent.insertBefore(node.firstChild, node);
+      }
+      parent.removeChild(node);
+    } else if (node.nodeName === "A") {
+      // Ensure <a> has target _blank and rel attributes
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noopener noreferrer");
+    }
+  }
+
+  return doc.body.innerHTML.trim();
+};

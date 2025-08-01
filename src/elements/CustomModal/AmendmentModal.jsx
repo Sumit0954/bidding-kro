@@ -10,20 +10,33 @@ import { AlertContext } from "../../contexts/AlertProvider";
 import { ButtonLoader } from "../CustomLoader/Loader";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { Close } from "@mui/icons-material";
+import { convertHtmlToText } from "../../helpers/formatter";
 
-const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
-  const handleClose = () => {
-    setAddAmendment(false);
-  };
-
+const AmendmentModal = ({
+  addAmendment,
+  setAddAmendment,
+  bidDetails,
+  setBidDetails,
+  id,
+}) => {
   const { control, handleSubmit, watch, setError, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const [bidDetails, setBidDetails] = useState({});
 
+  const handleClose = () => {
+    setAddAmendment(false);
+  };
   const submitForm = async (data) => {
     setLoading(true);
-
+    if (convertHtmlToText(data?.text).length > 255) {
+      setAlert({
+        isVisible: true,
+        message: "Ensure this field has no more than 255 characters.",
+        severity: "error",
+      });
+      setLoading(false);
+      return;
+    }
     try {
       const response = await _sendAPIRequest(
         "POST",
@@ -34,7 +47,10 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       if (response.status === 201) {
         setLoading(false);
         setAddAmendment(false);
-        window.location.reload();
+        setBidDetails((prev) => ({
+          ...prev,
+          amendment: [...(prev.amendment || []), response?.data],
+        }));
         setAlert({
           isVisible: true,
           message: "Amendment created successfully!",
@@ -43,16 +59,18 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       }
     } catch (error) {
       setLoading(false);
-      const { data } = error.response;
-      setAddAmendment(false);
+      console.log(error, " : error");
 
-      if (error.status === 403) {
+      const { data } = error?.response;
+
+      if (error) {
         setAlert({
           isVisible: true,
           message: error.response.data.detail,
           severity: "error",
         });
       }
+
       if (data) {
         setErrors(data, watch, setError);
 
@@ -88,28 +106,6 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (id) {
-      const retrieveBid = async () => {
-        try {
-          const response = await _sendAPIRequest(
-            "GET",
-            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
-            "",
-            true
-          );
-          if (response.status === 200) {
-            setBidDetails(response.data);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      retrieveBid();
-    }
-  }, [id]);
 
   return (
     <>
@@ -169,10 +165,6 @@ const AmendmentModal = ({ addAmendment, setAddAmendment, id }) => {
                           value: "eligiblity_criteria",
                         },
                         { lable: "Payment Terms", value: "payment_terms" },
-                        {
-                          lable: "Technical Specification",
-                          value: "technical_specification",
-                        },
                       ]}
                       placeholder="Select Field"
                       rules={{
