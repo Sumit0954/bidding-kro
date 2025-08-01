@@ -4,7 +4,7 @@ import { Box, Typography, Grid } from "@mui/material";
 import styles from "./BlogList.module.scss"; // Import SCSS
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
-import { truncateString } from "../../../helpers/formatter";
+import { convertHtmlToText, truncateString } from "../../../helpers/formatter";
 import { NavLink } from "react-router-dom";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 
@@ -53,15 +53,20 @@ const BlogList = () => {
                 <Typography variant="caption" className={styles.subtitle}>
                   {blog.title}
                 </Typography>
-                <Typography variant="h6" className={styles.title}>
-                  {blog.slug}
-                </Typography>
               </Box>
 
               {/* Hidden Description */}
               <Box className={styles.description}>
                 <Typography variant="body2">
-                  {truncateString(blog.description, 100)}
+                  <div
+                    className={styles["col-data"]}
+                    style={{ whiteSpace: "pre-line" }}
+                    dangerouslySetInnerHTML={{
+                      __html: convertHtmlToText(
+                        truncateString(blog.description, 100) || ""
+                      ),
+                    }}
+                  ></div>
                 </Typography>
               </Box>
             </Box>
