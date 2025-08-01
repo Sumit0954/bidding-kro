@@ -1,5 +1,5 @@
 import styles from "./About.module.scss";
-import React, { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -14,7 +14,7 @@ import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { useParams } from "react-router-dom";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../../helpers/api";
-import { convertHtmlToText } from "../../../helpers/formatter";
+import DOMPurify from "../../../utils/DomPurifier";
 const About = forwardRef((_, ref) => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [companyDetail, setCompanyDetail] = useState({});
@@ -139,7 +139,7 @@ const About = forwardRef((_, ref) => {
                   className={styles["col-data"]}
                   style={{ whiteSpace: "pre-line" }}
                   dangerouslySetInnerHTML={{
-                    __html: convertHtmlToText(companyDetail?.description || ""),
+                    __html: DOMPurify.sanitize(companyDetail?.description),
                   }}
                 ></div>
               </div>

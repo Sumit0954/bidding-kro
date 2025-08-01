@@ -18,7 +18,6 @@ import {
 import { Download, ExpandMore } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { convertHtmlToText } from "../../../helpers/formatter";
 
 const CompanyDetail = forwardRef(({ companyDetails }, ref) => {
   const [expanded, setExpanded] = useState("Summary");
@@ -119,9 +118,7 @@ const CompanyDetail = forwardRef(({ companyDetails }, ref) => {
                   className={styles["col-data"]}
                   style={{ whiteSpace: "pre-line" }}
                   dangerouslySetInnerHTML={{
-                    __html: convertHtmlToText(
-                      companyDetails?.description || ""
-                    ),
+                    __html: DOMPurify.sanitize(companyDetails?.description),
                   }}
                 ></div>
               </div>

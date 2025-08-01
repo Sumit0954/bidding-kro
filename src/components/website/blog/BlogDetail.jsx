@@ -6,7 +6,7 @@ import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { AlertContext } from "../../../contexts/AlertProvider";
-import { convertHtmlToText } from "../../../helpers/formatter";
+import DOMPurify from "../../../utils/DomPurifier";
 
 const BlogDetail = () => {
   const { slug } = useParams();
@@ -73,7 +73,7 @@ const BlogDetail = () => {
                   <div
                     className={styles["blog-description"]}
                     dangerouslySetInnerHTML={{
-                      __html: convertHtmlToText(blogDetail?.description || ""),
+                      __html: DOMPurify.sanitize(blogDetail?.description),
                     }}
                   ></div>
                 </div>

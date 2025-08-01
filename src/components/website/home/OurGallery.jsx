@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import styles from "./OurGallery.module.scss";
-import GalleryImg1 from "../../../assets/images/website/home/blog1.avif";
-import GalleryImg2 from "../../../assets/images/website/home/blog2.avif";
-import GalleryImg3 from "../../../assets/images/website/home/blog3.jpg";
+
 import blogBgImg from "../../../assets/images/website/home/blog-bg-imge.jpg";
 
-import { Pagination } from "swiper/modules";
 import {
   Card,
   CardContent,
@@ -22,8 +19,9 @@ import { styled } from "@mui/system";
 import { Swiper, SwiperSlide } from "swiper/react";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
-import { convertHtmlToText, truncateString } from "../../../helpers/formatter";
 import { NavLink } from "react-router-dom";
+import DOMPurify from "../../../utils/DomPurifier";
+import { truncateString } from "../../../helpers/formatter";
 
 const RecentBlogs = () => {
   const [blogss, setBlogs] = useState([]);
@@ -85,14 +83,11 @@ const RecentBlogs = () => {
           {blog.title}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {}
           <div
             className={styles["col-data"]}
             style={{ whiteSpace: "pre-line" }}
             dangerouslySetInnerHTML={{
-              __html: convertHtmlToText(
-                truncateString(blog.description, 100) || ""
-              ),
+              __html: DOMPurify.sanitize(truncateString(blog.description, 300)),
             }}
           ></div>
         </Typography>

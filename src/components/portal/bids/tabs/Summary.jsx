@@ -19,11 +19,10 @@ import {
 } from "@mui/material";
 import { ExpandMore, HourglassEmpty } from "@mui/icons-material";
 import {
-  convertHtmlToText,
   dateTimeFormatter,
   truncateString,
 } from "../../../../helpers/formatter";
-import DOMPurify from "dompurify";
+
 import DataTable from "../../../../elements/CustomDataTable/DataTable";
 import _sendAPIRequest from "../../../../helpers/api";
 import { PortalApiUrls } from "../../../../helpers/api-urls/PortalApiUrls";
@@ -38,7 +37,7 @@ import {
 import { Step, StepLabel, Stepper } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../../../../store/tabSlice";
-
+import DOMPurify from "../../../../utils/DomPurifier";
 const Summary = ({ bidDetails }) => {
   const [showSpecification, setShowSpecification] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -593,7 +592,7 @@ const Summary = ({ bidDetails }) => {
               className={styles["col-data"]}
               style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{
-                __html: convertHtmlToText(bidDetails?.description || ""),
+                __html: DOMPurify.sanitize(bidDetails?.description),
               }}
             ></div>
           </div>

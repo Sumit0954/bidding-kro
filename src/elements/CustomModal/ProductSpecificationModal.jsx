@@ -3,7 +3,7 @@ import styles from "./Modal.module.scss";
 import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
 import CloseIcon from "@mui/icons-material/Close";
-import { convertHtmlToText } from "../../helpers/formatter";
+import DOMPurify from "../../utils/DomPurifier";
 
 const ProductSpecificationModal = ({
   showSpecification,
@@ -98,8 +98,8 @@ const ProductSpecificationModal = ({
                       className={styles["col-data"]}
                       style={{ whiteSpace: "pre-line" }}
                       dangerouslySetInnerHTML={{
-                        __html: convertHtmlToText(
-                          selectedProduct.specification || ""
+                        __html: DOMPurify.sanitize(
+                          selectedProduct.specification
                         ),
                       }}
                     ></div>

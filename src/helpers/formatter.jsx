@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 /**
  * Removes the '+91' country code prefix from a phone number string.
  *
@@ -168,3 +169,15 @@ export const convertHtmlToText = (html) => {
 
   return doc.body.innerHTML.trim();
 };
+
+export const dompurifier = DOMPurify.addHook(
+  "afterSanitizeAttributes",
+  function (node) {
+    if (node.tagName === "A") {
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noopener noreferrer");
+    }
+  }
+);
+
+export default DOMPurify;

@@ -1,5 +1,5 @@
 import { Alert, Box, IconButton, Modal, Typography } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import cn from "classnames";
 import styles from "./Modal.module.scss";
 import { useForm } from "react-hook-form";

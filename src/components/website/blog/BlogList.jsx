@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import BlogImg5 from "../../../assets/images/blog/bolg-list-img.jpg";
+import { useEffect, useState } from "react";
 import { Box, Typography, Grid } from "@mui/material";
 import styles from "./BlogList.module.scss"; // Import SCSS
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
-import { convertHtmlToText, truncateString } from "../../../helpers/formatter";
 import { NavLink } from "react-router-dom";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import DOMPurify from "../../../utils/DomPurifier";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -62,9 +61,7 @@ const BlogList = () => {
                     className={styles["col-data"]}
                     style={{ whiteSpace: "pre-line" }}
                     dangerouslySetInnerHTML={{
-                      __html: convertHtmlToText(
-                        truncateString(blog.description, 100) || ""
-                      ),
+                      __html: DOMPurify.sanitize(blog.description),
                     }}
                   ></div>
                 </Typography>

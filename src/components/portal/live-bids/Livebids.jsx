@@ -16,8 +16,8 @@ import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import NoliveBidImg from "../../../assets/images/portal/bids/no_live_bid.png";
-import { convertHtmlToText, truncateString } from "../../../helpers/formatter";
-
+import { truncateString } from "../../../helpers/formatter";
+import DOMPurify from "../../../utils/DomPurifier";
 // CountdownTimer Component
 const CountdownTimer = ({ endDate }) => {
   const calculateRemainingTime = useCallback(() => {
@@ -208,7 +208,7 @@ const Livebids = ({ listType }) => {
                           className={styles["col-data"]}
                           style={{ whiteSpace: "pre-line" }}
                           dangerouslySetInnerHTML={{
-                            __html: convertHtmlToText(bid?.description || ""),
+                            __html: DOMPurify.sanitize(bid?.description),
                           }}
                         ></div>
                       </Typography>
@@ -346,7 +346,7 @@ const Livebids = ({ listType }) => {
                             className={styles["col-data"]}
                             style={{ whiteSpace: "pre-line" }}
                             dangerouslySetInnerHTML={{
-                              __html: convertHtmlToText(bid?.description || ""),
+                              __html: DOMPurify.sanitize(bid?.description),
                             }}
                           ></div>
                         </Typography>
