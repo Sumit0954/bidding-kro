@@ -14,7 +14,7 @@ import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { useParams } from "react-router-dom";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import _sendAPIRequest from "../../../helpers/api";
-
+import { convertHtmlToText } from "../../../helpers/formatter";
 const About = forwardRef((_, ref) => {
   const [screenLoader, setScreenLoader] = useState(true);
   const [companyDetail, setCompanyDetail] = useState({});
@@ -131,14 +131,17 @@ const About = forwardRef((_, ref) => {
               </div>
             </div>
             <Divider classes={{ root: "custom-divider" }} />
+            {console.log(companyDetail?.description, " : description")}
             <div className="row">
               <div className="col">
                 <h6 className={styles["col-heading"]}>Description</h6>
-                <p className={styles["col-data"]}>
-                  {companyDetail?.description
-                    ? companyDetail.description.replace(/<\/?p>/g, "")
-                    : "No description available"}
-                </p>
+                <div
+                  className={styles["col-data"]}
+                  style={{ whiteSpace: "pre-line" }}
+                  dangerouslySetInnerHTML={{
+                    __html: convertHtmlToText(companyDetail?.description || ""),
+                  }}
+                ></div>
               </div>
             </div>
           </AccordionDetails>

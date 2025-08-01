@@ -17,7 +17,7 @@ import { products_Column } from "../../../elements/CustomDataTable/PortalColumnD
 import _sendAPIRequest from "../../../helpers/api";
 import { AdminApiUrls } from "../../../helpers/api-urls/AdminApiUrls";
 import { useEffect, useRef, useState } from "react";
-import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
+import { convertHtmlToText, dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import ProductSpecificationModal from "../../../elements/CustomModal/ProductSpecificationModal";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Documents from "../../portal/bids/tabs/Documents";
@@ -160,9 +160,13 @@ const PortalBidDetail = () => {
           </AccordionSummary>
           <AccordionDetails>
             <div className="row">
-              <p className={styles["col-data"]}>
-                {bidDetails?.description.replace(/<\/?p>/g, "")}
-              </p>
+              <div
+                className={styles["col-data"]}
+                style={{ whiteSpace: "pre-line" }}
+                dangerouslySetInnerHTML={{
+                  __html: convertHtmlToText(bidDetails?.description || ""),
+                }}
+              ></div>
             </div>
           </AccordionDetails>
         </Accordion>

@@ -3,6 +3,7 @@ import styles from "./Modal.module.scss";
 import cn from "classnames";
 import _sendAPIRequest from "../../helpers/api";
 import CloseIcon from "@mui/icons-material/Close";
+import { convertHtmlToText } from "../../helpers/formatter";
 
 const ProductSpecificationModal = ({
   showSpecification,
@@ -93,7 +94,15 @@ const ProductSpecificationModal = ({
               <span>
                 <Box className="row mb-2">
                   <Box className="col text-start">
-                    {selectedProduct.specification.replace(/<\/?p>/g, "")}
+                    <div
+                      className={styles["col-data"]}
+                      style={{ whiteSpace: "pre-line" }}
+                      dangerouslySetInnerHTML={{
+                        __html: convertHtmlToText(
+                          selectedProduct.specification || ""
+                        ),
+                      }}
+                    ></div>
                   </Box>
                 </Box>
               </span>

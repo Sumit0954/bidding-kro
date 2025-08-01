@@ -128,6 +128,7 @@ const UserProfile = () => {
     });
   }, [reset, userDetails]);
 
+  console.log(userDetails?.user?.first_name, " : userDetails");
   return (
     <>
       <div className="container">
@@ -177,7 +178,7 @@ const UserProfile = () => {
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-6" style={{ cursor: "not-allowed" }}>
                     <CustomInput
                       control={control}
                       label="First Name"
@@ -186,9 +187,10 @@ const UserProfile = () => {
                       rules={{
                         required: "First name is required.",
                       }}
+                      disableField={true}
                     />
                   </div>
-                  <div className="col-lg-6">
+                  <div className="col-lg-6" style={{ cursor: "not-allowed" }}>
                     <CustomInput
                       control={control}
                       label="Last Name"
@@ -197,11 +199,12 @@ const UserProfile = () => {
                       rules={{
                         required: "Last name is required.",
                       }}
+                      disableField={true}
                     />
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-6" style={{ cursor: "not-allowed" }}>
                     <CustomInput
                       control={control}
                       label="Email"
@@ -214,7 +217,7 @@ const UserProfile = () => {
                       disableField={true}
                     />
                   </div>
-                  <div className="col-lg-6">
+                  <div className="col-lg-6" style={{ cursor: "not-allowed" }}>
                     <CustomInput
                       control={control}
                       label="Mobile"

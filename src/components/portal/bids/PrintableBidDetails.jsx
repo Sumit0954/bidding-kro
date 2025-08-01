@@ -9,13 +9,14 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
+import { convertHtmlToText, dateTimeFormatter, truncateString } from "../../../helpers/formatter";
 import DOMPurify from "dompurify";
 import { convertFileSize, getLableByValue } from "../../../helpers/common";
 import cn from "classnames";
 import { NavLink } from "react-router-dom";
 import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { products_Column } from "../../../elements/CustomDataTable/PortalColumnData";
+import { ExpandMore } from "@mui/icons-material";
 
 const PrintableBidDetails = forwardRef(({ bidDetails }, ref) => {
   const [showSpecification, setShowSpecification] = useState(false);
@@ -210,12 +211,13 @@ const PrintableBidDetails = forwardRef(({ bidDetails }, ref) => {
               })}
 
           <div className="row">
-            <p
+            <div
               className={styles["col-data"]}
+              style={{ whiteSpace: "pre-line" }}
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(bidDetails?.description),
+                __html: convertHtmlToText(bidDetails?.description || ""),
               }}
-            ></p>
+            ></div>
           </div>
         </AccordionDetails>
       </Accordion>

@@ -18,6 +18,7 @@ import {
 import { Download, ExpandMore } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import DOMPurify from "dompurify";
+import { convertHtmlToText } from "../../../helpers/formatter";
 
 const CompanyDetail = forwardRef(({ companyDetails }, ref) => {
   const [expanded, setExpanded] = useState("Summary");
@@ -114,19 +115,27 @@ const CompanyDetail = forwardRef(({ companyDetails }, ref) => {
             <div className="row">
               <div className="col">
                 <h6 className={styles["col-heading"]}>Description</h6>
-                <p
+                <div
                   className={styles["col-data"]}
+                  style={{ whiteSpace: "pre-line" }}
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(companyDetails?.description),
+                    __html: convertHtmlToText(
+                      companyDetails?.description || ""
+                    ),
                   }}
-                ></p>
+                ></div>
               </div>
-               <div className="col">
+            </div>
+            <Divider classes={{ root: "custom-divider" }} />
+            <div className="row">
+              <div className="col">
                 <h6 className={styles["col-heading"]}>Company Id</h6>
                 <p
                   className={styles["col-data"]}
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(companyDetails?.formatted_number),
+                    __html: DOMPurify.sanitize(
+                      companyDetails?.formatted_number
+                    ),
                   }}
                 ></p>
               </div>

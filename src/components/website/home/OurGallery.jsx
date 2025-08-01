@@ -22,7 +22,7 @@ import { styled } from "@mui/system";
 import { Swiper, SwiperSlide } from "swiper/react";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
-import { truncateString } from "../../../helpers/formatter";
+import { convertHtmlToText, truncateString } from "../../../helpers/formatter";
 import { NavLink } from "react-router-dom";
 
 const RecentBlogs = () => {
@@ -85,7 +85,16 @@ const RecentBlogs = () => {
           {blog.title}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          {truncateString(blog.description, 100)}
+          {}
+          <div
+            className={styles["col-data"]}
+            style={{ whiteSpace: "pre-line" }}
+            dangerouslySetInnerHTML={{
+              __html: convertHtmlToText(
+                truncateString(blog.description, 100) || ""
+              ),
+            }}
+          ></div>
         </Typography>
         <NavLink to={`/blogs/${blog.slug}`} style={{ textDecoration: "none" }}>
           <Typography
