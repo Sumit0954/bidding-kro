@@ -6,6 +6,7 @@ import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import { AlertContext } from "../../../contexts/AlertProvider";
+import { convertHtmlToText } from "../../../helpers/formatter";
 
 const BlogDetail = () => {
   const { slug } = useParams();
@@ -54,24 +55,33 @@ const BlogDetail = () => {
         />
       </div>
 
-      <div className="container-fluid mt-5">
-        <div className="row">
-          {/* Main Content Column: Cover Image + Blog Content */}
+      <div className="container mt-5">
+        <div className="row g-5">
           <div className="col-lg-9 col-md-8">
-            <img
-              src={blogDetail?.cover_image}
-              alt="Cover"
-              className={styles["blog-cover-img"]}
-            />
-
-            <div className="mt-4">
-              <h2 className="blog-title">{blogDetail?.title}</h2>
-              <p className="blog-description">{blogDetail?.description}</p>
+            <div className={styles["blog-content-box"]}>
+              <img
+                src={blogDetail?.cover_image}
+                alt="Cover"
+                className={styles["blog-cover-img"]}
+              />
+              <div className="mt-4">
+                <div className={styles["blog-title-wrapper"]}>
+                  <h2 className={styles["blog-title"]}>{blogDetail?.title}</h2>
+                  <span className={styles["blog-title-underline"]}></span>
+                </div>
+                <div className={styles["blog-description-wrapper"]}>
+                  <div
+                    className={styles["blog-description"]}
+                    dangerouslySetInnerHTML={{
+                      __html: convertHtmlToText(blogDetail?.description || ""),
+                    }}
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Sidebar Column: Latest Blogs */}
-          <div className="col-lg-3 col-md-4 mt-md-0 mt-4">
+          <div className="col-lg-3 col-md-4">
             <div className={styles["latest-blogs-box"]}>
               <h5 className={styles["section-title"]}>Latest Blogs</h5>
               <ul className={styles["styled-list"]}>
