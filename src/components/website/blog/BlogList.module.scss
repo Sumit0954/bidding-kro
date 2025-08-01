@@ -34,12 +34,14 @@
   }
 
   &:hover .content {
-    transform: translateY(-30px);
+    transform: translateY(-70px); // Move title up more clearly
   }
 
   &:hover .description {
     transform: translateY(0%);
     opacity: 1;
+    pointer-events: auto;
+    -webkit-line-clamp: 4; // Expand to 4 lines on hover
   }
 }
 
@@ -59,11 +61,15 @@
   position: absolute;
   bottom: 20px;
   left: 0;
-  width: 100%;
+  width: 22%;
   color: #fff;
   padding: 16px;
   transition: transform 0.4s ease-in-out;
   z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .subtitle {
@@ -87,8 +93,19 @@
   width: 100%;
   color: #fff;
   padding: 16px;
+  z-index: 2;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // Show only 2 lines
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   transform: translateY(100%);
   opacity: 0;
-  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
-  z-index: 2;
+  pointer-events: none;
+
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out,
+    -webkit-line-clamp 0.4s ease-in-out;
 }
