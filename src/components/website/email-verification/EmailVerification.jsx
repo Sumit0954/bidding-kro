@@ -74,7 +74,7 @@ const EmailVerification = () => {
             >
               {!isfalied
                 ? "Your email has been successfully verified."
-                : "Your email verification has been Failed."}
+                : "The verification link has either expired or invalid. Please try to login again"}
             </Typography>
 
             {type === "verify" && success && !isfalied && (
