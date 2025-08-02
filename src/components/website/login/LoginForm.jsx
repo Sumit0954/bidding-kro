@@ -25,22 +25,22 @@ const LoginForm = () => {
   };
 
   const submitForm = async (data) => {
-    const formData = {
-      email: data.email.toLowerCase(),
-      password: data.password,
-    };
-
     setLoading(true);
     const url = isPhoneLogin
       ? WebsiteApiUrls.LOGIN_MOBILE
       : WebsiteApiUrls.LOGIN_EMAIL;
 
-    if (isPhoneLogin) {
-      data.mobile_number = addCountryCode(data.mobile_number);
-    }
-
     try {
-      const response = await _sendAPIRequest("POST", url, formData);
+      const loginData = isPhoneLogin
+        ? {
+            mobile_number: addCountryCode(data.mobile_number),
+            password: data.password,
+          }
+        : {
+            email: data.email.toLowerCase(),
+            password: data.password,
+          };
+      const response = await _sendAPIRequest("POST", url, loginData);
       if (response.status === 200) {
         setLoading(false);
         login(response.data, "PORTAL");
