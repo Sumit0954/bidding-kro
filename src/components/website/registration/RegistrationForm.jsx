@@ -30,9 +30,17 @@ const RegistrationForm = () => {
   const { setAlert } = useContext(AlertContext);
 
   const submitForm = async (data) => {
-    setLoading(true);
-    setRegisterData(data);
+    // console.log(data, " : email check");
     const mobile_number = addCountryCode(data.mobile_number);
+    const formData = new FormData();
+    formData.append("email", data.email.toLowerCase());
+    formData.append("first_name", data.first_name);
+    formData.append("last_name", data.last_name);
+    formData.append("mobile_number", mobile_number);
+    formData.append("password", data.password);
+
+    setLoading(true);
+    setRegisterData(formData);
 
     try {
       const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {

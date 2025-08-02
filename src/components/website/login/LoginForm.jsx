@@ -25,6 +25,11 @@ const LoginForm = () => {
   };
 
   const submitForm = async (data) => {
+    const formData = {
+      email: data.email.toLowerCase(),
+      password: data.password,
+    };
+
     setLoading(true);
     const url = isPhoneLogin
       ? WebsiteApiUrls.LOGIN_MOBILE
@@ -35,7 +40,7 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await _sendAPIRequest("POST", url, data);
+      const response = await _sendAPIRequest("POST", url, formData);
       if (response.status === 200) {
         setLoading(false);
         login(response.data, "PORTAL");
@@ -68,6 +73,7 @@ const LoginForm = () => {
         });
         try {
           const formData = { email: parsedData.email };
+
           const response = await _sendAPIRequest(
             "POST",
             WebsiteApiUrls.RESEND_VERIFY_EMAIL,
