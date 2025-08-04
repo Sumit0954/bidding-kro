@@ -202,7 +202,7 @@ const RegistrationOTP = () => {
           showThankyou={showThankyou}
           setShowThankyou={setShowThankyou}
           heading={"Thank You!"}
-          description={`Your registration has been successful. Please check your ${registerData.email} to verify your account.`}
+          description={`Your registration has been successful. Please check your mail to verify your account.`}
         />
       )}
     </>
