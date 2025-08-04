@@ -30,16 +30,7 @@ const LoginForm = () => {
     const url = isPhoneLogin
       ? WebsiteApiUrls.LOGIN_MOBILE
       : WebsiteApiUrls.LOGIN_EMAIL;
-    const loginData = isPhoneLogin
-      ? {
-          mobile_number: addCountryCode(data.mobile_number),
-          password: data.password,
-        }
-      : {
-          email: data.email.toLowerCase(),
-          password: data.password,
-        };
-    console.log(loginData, " : loginData");
+
     try {
       const loginData = isPhoneLogin
         ? {
