@@ -81,10 +81,30 @@ const CompanyProfile = () => {
     }
   };
 
-  // Fetch Dropdown's List Data
   useEffect(() => {
     getOrganizationType();
   }, []);
+
+  useEffect(() => {
+    if (action === "create") {
+      reset({
+        business_mobile: numberFormatter(userDetails?.user?.mobile_number),
+        business_email: userDetails?.user?.email,
+      });
+    }
+
+    if (action === "update") {
+      if (companyDetails?.gstin) setGstRegistered("Yes");
+      setCompanyLogo(companyDetails?.logo || DummyLogo);
+      reset({
+        ...companyDetails,
+        organization_type: companyDetails?.organization_type,
+        business_mobile: numberFormatter(companyDetails?.business_mobile),
+        business_email: companyDetails?.business_email,
+        category: companyDetails?.category_meta?.id,
+      });
+    }
+  }, [action, reset, companyDetails, userDetails]);
 
   const submitForm = async (data) => {
     setLoading(true);
@@ -237,28 +257,6 @@ const CompanyProfile = () => {
     }
   };
 
-  useEffect(() => {
-    if (action === "create") {
-      reset({
-        business_mobile: numberFormatter(userDetails?.user?.mobile_number),
-        business_email: userDetails?.user?.email,
-      });
-    }
-
-    if (action === "update") {
-      if (companyDetails?.gstin) setGstRegistered("Yes");
-      setCompanyLogo(companyDetails?.logo || DummyLogo);
-      reset({
-        ...companyDetails,
-        organization_type: companyDetails?.organization_type,
-        business_mobile: numberFormatter(companyDetails?.business_mobile),
-        business_email: companyDetails?.business_email,
-        category: companyDetails?.category_meta?.id,
-      });
-    }
-  }, [action, reset, companyDetails, userDetails]);
-
-  console.log(companyDetails, " : companyDetails");
   return (
     <>
       <div className="container">
@@ -357,7 +355,7 @@ const CompanyProfile = () => {
                       placeholder="Ex. 200"
                       inputType="number"
                       inputProps={{
-                        step: "any", // <-- This is important
+                        step: "any",
                         min: 0,
                       }}
                     />
@@ -435,6 +433,18 @@ const CompanyProfile = () => {
                       inputType="text"
                       rules={{
                         required: "GST is required.",
+                        validate: (gstNumber) => {
+                          const gstRegex =
+                            /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+                          if (!gstNumber || typeof gstNumber !== "string")
+                            return false;
+
+                          if (!gstRegex.test(gstNumber.toUpperCase())) {
+                            return "GST number is not valid. Check and re-enter.";
+                          }
+                          return true;
+                        },
                       }}
                     />
                   </div>
