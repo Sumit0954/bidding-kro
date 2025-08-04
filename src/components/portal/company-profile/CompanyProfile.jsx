@@ -115,7 +115,6 @@ const CompanyProfile = () => {
     if (data) {
       Object.entries(data).map((item) => {
         const [key, value] = item;
-
         if (action === "create") {
           if (
             key === "logo" &&
@@ -132,6 +131,8 @@ const CompanyProfile = () => {
             } else {
               createFormData.append(key, "");
             }
+          } else if (key === "organization_type") {
+            createFormData.append(key, value);
           } else if (
             value !== undefined &&
             value !== null &&
