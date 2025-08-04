@@ -40,77 +40,77 @@ const LoginForm = () => {
           password: data.password,
         };
     console.log(loginData, " : loginData");
-    // try {
-    //   const loginData = isPhoneLogin
-    //     ? {
-    //         mobile_number: addCountryCode(data.mobile_number),
-    //         password: data.password,
-    //       }
-    //     : {
-    //         email: data.email.toLowerCase(),
-    //         password: data.password,
-    //       };
-    //   const response = await _sendAPIRequest("POST", url, loginData);
-    //   if (response.status === 200) {
-    //     setLoading(false);
-    //     login(response.data, "PORTAL");
-    //     window.location.href = "/portal";
-    //     setAlert({
-    //       isVisible: true,
-    //       message: "Login Successfully",
-    //       severity: "success",
-    //     });
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
-    //   const { data, config } = error.response;
-    //   const parsedData = JSON.parse(config?.data);
-    //   setEmail(parsedData.email);
+    try {
+      const loginData = isPhoneLogin
+        ? {
+            mobile_number: addCountryCode(data.mobile_number),
+            password: data.password,
+          }
+        : {
+            email: data.email.toLowerCase(),
+            password: data.password,
+          };
+      const response = await _sendAPIRequest("POST", url, loginData);
+      if (response.status === 200) {
+        setLoading(false);
+        login(response.data, "PORTAL");
+        window.location.href = "/portal";
+        setAlert({
+          isVisible: true,
+          message: "Login Successfully",
+          severity: "success",
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      const { data, config } = error.response;
+      const parsedData = JSON.parse(config?.data);
+      setEmail(parsedData.email);
 
-    //   if (data.error_code === 9999) {
-    //     setAlert({
-    //       isVisible: true,
-    //       message: data.error,
-    //       severity: "error",
-    //     });
-    //   }
+      if (data.error_code === 9999) {
+        setAlert({
+          isVisible: true,
+          message: data.error,
+          severity: "error",
+        });
+      }
 
-    //   if (data.error_code === 1001) {
-    //     setAlert({
-    //       isVisible: true,
-    //       message: "Please verify your mail",
-    //       severity: "warning",
-    //     });
-    //     try {
-    //       const formData = { email: parsedData.email };
+      if (data.error_code === 1001) {
+        setAlert({
+          isVisible: true,
+          message: "Please verify your mail",
+          severity: "warning",
+        });
+        try {
+          const formData = { email: parsedData.email };
 
-    //       const response = await _sendAPIRequest(
-    //         "POST",
-    //         WebsiteApiUrls.RESEND_VERIFY_EMAIL,
-    //         formData
-    //       );
-    //       if (response.status === 204) {
-    //         setCheckEmail(true);
-    //       }
-    //     } catch (error) {
-    //       if (error.response.data.error_code === 1003) {
-    //         setAlert({
-    //           isVisible: true,
-    //           message: error.response.data.error_description,
-    //           severity: "error",
-    //         });
-    //       }
-    //     }
-    //   }
+          const response = await _sendAPIRequest(
+            "POST",
+            WebsiteApiUrls.RESEND_VERIFY_EMAIL,
+            formData
+          );
+          if (response.status === 204) {
+            setCheckEmail(true);
+          }
+        } catch (error) {
+          if (error.response.data.error_code === 1003) {
+            setAlert({
+              isVisible: true,
+              message: error.response.data.error_description,
+              severity: "error",
+            });
+          }
+        }
+      }
 
-    //   if (data.error_code === 1002) {
-    //     setAlert({
-    //       isVisible: true,
-    //       message: data.error_description,
-    //       severity: "error",
-    //     });
-    //   }
-    // }
+      if (data.error_code === 1002) {
+        setAlert({
+          isVisible: true,
+          message: data.error_description,
+          severity: "error",
+        });
+      }
+    }
     setLoading(false);
   };
 
