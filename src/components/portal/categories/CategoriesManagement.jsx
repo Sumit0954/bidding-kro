@@ -239,7 +239,7 @@ const CategoriesManagement = ({ type }) => {
   };
 
   const fetchProductsBySubCategories = async (subCategories = []) => {
-    if (subCategories.length === 0) return;
+    if (subCategories.length === 0) return {};
 
     try {
       const query = subCategories
@@ -267,8 +267,10 @@ const CategoriesManagement = ({ type }) => {
       });
 
       setSubcategoryProducts(grouped);
+      return grouped;
     } catch (err) {
       console.error("Failed to fetch products", err);
+      return {};
     }
   };
 
@@ -379,30 +381,60 @@ const CategoriesManagement = ({ type }) => {
       );
       setCategories(categories);
 
-      const category = getItemByName(categories, rawCategory);
-      if (!category) return;
+      const category =
+        getItemByName(categories, rawCategory) ||
+        categories.find((c) =>
+          item.name.toLowerCase().includes(c.name.toLowerCase())
+        );
 
-      const updatedCategories = mergeSelections(selectedCategories, category);
-      setSelectedCategories(updatedCategories);
+      let updatedCategories = selectedCategories;
+      if (category) {
+        updatedCategories = mergeSelections(selectedCategories, category);
+        setSelectedCategories(updatedCategories);
+      }
 
       const subCategories = await fetchChildCategories(
         updatedCategories.map((c) => c.id)
       );
       setSubCategories(subCategories);
 
-      const subcategory = getItemByName(subCategories, rawSubcategory);
-      if (!subcategory) return;
+      const subcategory =
+        getItemByName(subCategories, rawSubcategory) ||
+        subCategories.find((sc) =>
+          item.name.toLowerCase().includes(sc.name.toLowerCase())
+        );
 
-      const updatedSubCategories = mergeSelections(
-        selectedSubCategories,
-        subcategory
+      let updatedSubCategories = selectedSubCategories;
+      if (subcategory) {
+        updatedSubCategories = mergeSelections(
+          selectedSubCategories,
+          subcategory
+        );
+        setSelectedSubCategories(updatedSubCategories);
+      }
+
+      const groupedProducts = await fetchProductsBySubCategories(
+        updatedSubCategories
       );
-      setSelectedSubCategories(updatedSubCategories);
 
-      await fetchProductsBySubCategories([subcategory]);
+      const allProducts = Object.values(groupedProducts).flat();
 
-      const updatedProducts = mergeSelections(selectedProducts, item);
-      setSelectedProducts(updatedProducts);
+      const validProduct =
+        allProducts.find(
+          (product) =>
+            product.name?.toLowerCase().trim() ===
+            item.name?.toLowerCase().trim()
+        ) ||
+        allProducts.find((product) =>
+          item.name.toLowerCase().includes(product.name?.toLowerCase())
+        );
+
+      if (validProduct) {
+        const updatedProducts = mergeSelections(selectedProducts, validProduct);
+        setSelectedProducts(updatedProducts);
+      } else {
+        console.warn("No final product match found for:", item.name);
+      }
     } catch (error) {
       console.error("Auto-selecting error:", error);
     } finally {
@@ -1031,7 +1063,7 @@ const CategoriesManagement = ({ type }) => {
                       onClick={() => {
                         if (!isDisabled) {
                           handleIndustrySelect(industry);
-                          setSearchIndustry(""); 
+                          setSearchIndustry("");
                         }
                       }}
                       label={
