@@ -3,7 +3,7 @@ import styles from "./LoginForm.module.scss";
 import CustomInput from "../../../elements/CustomInput/CustomInput";
 import { useForm } from "react-hook-form";
 import cn from "classnames";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { login } from "../../../utils/AxiosInterceptors";
@@ -30,7 +30,6 @@ const LoginForm = () => {
     const url = isPhoneLogin
       ? WebsiteApiUrls.LOGIN_MOBILE
       : WebsiteApiUrls.LOGIN_EMAIL;
-
     try {
       const loginData = isPhoneLogin
         ? {
@@ -53,51 +52,59 @@ const LoginForm = () => {
         });
       }
     } catch (error) {
+      console.log(error, " : error");
       setLoading(false);
-      const { data, config } = error.response;
-      const parsedData = JSON.parse(config?.data);
-      setEmail(parsedData.email);
+      if (error.response !== "undefined") {
+        const { data, config } = error.response;
+        const parsedData = JSON.parse(config?.data);
+        setEmail(parsedData.email);
+        if (data.error_code === 9999) {
+          setAlert({
+            isVisible: true,
+            message: data.error,
+            severity: "error",
+          });
+        }
 
-      if (data.error_code === 9999) {
-        setAlert({
-          isVisible: true,
-          message: data.error,
-          severity: "error",
-        });
-      }
+        if (data.error_code === 1001) {
+          setAlert({
+            isVisible: true,
+            message: "Please verify your mail",
+            severity: "warning",
+          });
+          try {
+            const formData = { email: parsedData.email };
 
-      if (data.error_code === 1001) {
-        setAlert({
-          isVisible: true,
-          message: "Please verify your mail",
-          severity: "warning",
-        });
-        try {
-          const formData = { email: parsedData.email };
-
-          const response = await _sendAPIRequest(
-            "POST",
-            WebsiteApiUrls.RESEND_VERIFY_EMAIL,
-            formData
-          );
-          if (response.status === 204) {
-            setCheckEmail(true);
-          }
-        } catch (error) {
-          if (error.response.data.error_code === 1003) {
-            setAlert({
-              isVisible: true,
-              message: error.response.data.error_description,
-              severity: "error",
-            });
+            const response = await _sendAPIRequest(
+              "POST",
+              WebsiteApiUrls.RESEND_VERIFY_EMAIL,
+              formData
+            );
+            if (response.status === 204) {
+              setCheckEmail(true);
+            }
+          } catch (error) {
+            if (error.response.data.error_code === 1003) {
+              setAlert({
+                isVisible: true,
+                message: error.response.data.error_description,
+                severity: "error",
+              });
+            }
           }
         }
-      }
 
-      if (data.error_code === 1002) {
+        if (data.error_code === 1002) {
+          setAlert({
+            isVisible: true,
+            message: data.error_description,
+            severity: "error",
+          });
+        }
+      } else {
         setAlert({
           isVisible: true,
-          message: data.error_description,
+          message: error?.message,
           severity: "error",
         });
       }
@@ -126,6 +133,10 @@ const LoginForm = () => {
                         placeholder="Login with Mobile"
                         rules={{
                           required: "Mobile number is required.",
+                          pattern: {
+                            value: /^[6-9]\d{9}$/,
+                            message: "Enter a valid 10-digit mobile number.",
+                          },
                         }}
                       />
                     ) : (
@@ -136,6 +147,10 @@ const LoginForm = () => {
                         placeholder="Login with Email"
                         rules={{
                           required: "Email is required.",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Enter a valid email address.",
+                          },
                         }}
                       />
                     )}
