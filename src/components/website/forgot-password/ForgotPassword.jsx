@@ -11,6 +11,7 @@ import { addCountryCode } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import _sendAPIRequest from "../../../helpers/api";
+import { Pattern } from "@mui/icons-material";
 
 const ForgotPassword = () => {
   const { control, handleSubmit, setError } = useForm();
@@ -180,6 +181,10 @@ const ForgotPassword = () => {
                         inputType="tel"
                         rules={{
                           required: "Mobile number is required.",
+                          pattern: {
+                            value: /^[6-9]\d{9}$/,
+                            message: "Enter a valid 10-digit mobile number.",
+                          },
                         }}
                       />
                     ) : (
@@ -188,9 +193,12 @@ const ForgotPassword = () => {
                         label="Enter Email Address"
                         name="email"
                         placeholder="Email Address"
-                        inputType="tel"
                         rules={{
                           required: "Email address is required.",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Enter a valid email address.",
+                          },
                         }}
                       />
                     )}
