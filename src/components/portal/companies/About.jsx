@@ -70,21 +70,26 @@ const About = forwardRef((_, ref) => {
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>Website Url</h6>
-                <a
-                  className={styles["col-data"]}
-                  href={companyDetail?.website}
-                  style={{ cursor: "pointer" }}
-                  target="_blank"
-                >
-                  {companyDetail?.website}
-                </a>
+                {companyDetail?.website ? (
+                  <a
+                    className={styles["col-data"]}
+                    href={companyDetail?.website}
+                    style={{ cursor: "pointer" }}
+                    target="_blank"
+                  >
+                    {companyDetail?.website}
+                  </a>
+                ) : (
+                  "Not shared by company"
+                )}
               </div>
               <div className="col">
+                {console.log(companyDetail)}
                 <h6 className={styles["col-heading"]}>Organisation Type</h6>
                 <p className={styles["col-data"]}>
                   {companyDetail?.organization_type === null
                     ? "-"
-                    : companyDetail?.organization_type}
+                    : companyDetail?.organization_type?.name}
                 </p>
               </div>
             </div>
@@ -93,13 +98,17 @@ const About = forwardRef((_, ref) => {
               <div className="col">
                 <h6 className={styles["col-heading"]}>Year of incorporation</h6>
                 <p className={styles["col-data"]}>
-                  {companyDetail?.incorporation_year}
+                  {companyDetail?.incorporation_year
+                    ? companyDetail?.incorporation_year
+                    : "Not shared by company"}
                 </p>
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>No. of Employess</h6>
                 <p className={styles["col-data"]}>
-                  {companyDetail?.employee_count}
+                  {companyDetail?.employee_count
+                    ? companyDetail?.employee_count
+                    : "Not shared by company"}
                 </p>
               </div>
               <div className="col">
@@ -114,34 +123,46 @@ const About = forwardRef((_, ref) => {
                   Average Annual Revenue (last 3 years)
                 </h6>
                 <p className={styles["col-data"]}>
-                  {companyDetail?.avg_annual_revenue}
+                  {companyDetail?.avg_annual_revenue
+                    ? companyDetail?.avg_annual_revenue
+                    : "Not shared by company"}
                 </p>
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>Business Email</h6>
-                <p className={styles["col-data"]}>
+                <a
+                  className={styles["col-data"]}
+                  href={`mailto:${companyDetail?.business_email}`}
+                >
                   {companyDetail?.business_email}
-                </p>
+                </a>
               </div>
               <div className="col">
                 <h6 className={styles["col-heading"]}>Business Mobile</h6>
-                <p className={styles["col-data"]}>
+                <a
+                  href={`tel:${companyDetail?.business_mobile}`}
+                  className={styles["col-data"]}
+                  style={{ cursor: "pointer" }}
+                >
                   {companyDetail?.business_mobile}
-                </p>
+                </a>
               </div>
             </div>
             <Divider classes={{ root: "custom-divider" }} />
-            {console.log(companyDetail?.description, " : description")}
             <div className="row">
               <div className="col">
                 <h6 className={styles["col-heading"]}>Description</h6>
-                <div
-                  className={styles["col-data"]}
-                  style={{ whiteSpace: "pre-line" }}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(companyDetail?.description),
-                  }}
-                ></div>
+                {companyDetail?.description ? (
+                  <div
+                    className={styles["col-data"]}
+                    style={{ whiteSpace: "pre-line" }}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(companyDetail?.description),
+                    }}
+                  ></div>
+                ) : (
+                  "Not shared by company"
+                )}
               </div>
             </div>
           </AccordionDetails>
@@ -163,9 +184,15 @@ const About = forwardRef((_, ref) => {
 
           <AccordionDetails>
             <Stack direction="row" flexWrap="wrap" gap="10px">
-              {companyDetail?.category?.map((category) => {
-                return <Chip label={category?.name} />;
-              })}
+              {companyDetail?.category && companyDetail.category.length > 0 ? (
+                companyDetail.category.map((category) => (
+                  <Chip key={category?.id} label={category?.name} />
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No categories selected
+                </Typography>
+              )}
             </Stack>
           </AccordionDetails>
         </Accordion>
@@ -183,8 +210,6 @@ const About = forwardRef((_, ref) => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {console.log("address")}
-
             {companyDetail?.address?.length > 0 ? (
               companyDetail?.address?.map((item, index) => {
                 return (
