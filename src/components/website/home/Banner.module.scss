@@ -2,23 +2,22 @@
   .banner-img {
     height: 350px;
     width: 100%;
+    object-fit: cover;
   }
 }
 
 @media screen and (max-width: 768px) {
-  // Adjust for tablets and smaller devices
   .banner {
     .banner-img {
-      height: 450px; // Increase height for better visibility
+      height: 300px;
     }
   }
 }
 
 @media screen and (max-width: 480px) {
-  // Adjust specifically for mobile screens
   .banner {
     .banner-img {
-      height: 200px; // Increase height for better visibility on small screens
+      height: 200px;
     }
   }
 }

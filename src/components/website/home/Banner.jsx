@@ -28,6 +28,12 @@ const Banner = () => {
           <SwiperSlide key={index}>
             <img
               src={image}
+              srcSet={`
+    ${image}?w=480 480w,
+    ${image}?w=768 768w,
+    ${image}?w=1200 1200w
+  `}
+              sizes="(max-width: 480px) 480px, (max-width: 768px) 768px, 1200px"
               alt={`Banner ${index + 1}`}
               className={styles["banner-img"]}
             />
