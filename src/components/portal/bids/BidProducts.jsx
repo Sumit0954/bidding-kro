@@ -282,29 +282,6 @@ const BidProducts = () => {
   //     value: available.name,
   //   }));
 
-  useEffect(() => {
-    if (id) {
-      const retrieveBid = async () => {
-        try {
-          const response = await _sendAPIRequest(
-            "GET",
-            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
-            "",
-            true
-          );
-          if (response.status === 200) {
-            setBidDetails(response?.data);
-            setScreenLoader(false);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      retrieveBid();
-    }
-  }, [id]);
-
   const procedFurther = () => {
     if (productList?.length > 0) {
       setSubmitLoader(false);

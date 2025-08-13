@@ -5,7 +5,7 @@ import cn from "classnames";
 import { useContext, useEffect, useState } from "react";
 import CustomSelect from "../../../elements/CustomSelect/CustomSelect";
 import CustomCkEditor from "../../../elements/CustomEditor/CustomCkEditor";
-import { getMinMaxDate, getBidTypes } from "../../../helpers/common";
+import { getBidTypes } from "../../../helpers/common";
 import { useNavigate, useParams } from "react-router-dom";
 import _sendAPIRequest, { setErrors } from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -29,21 +29,8 @@ const BidForm = () => {
   const { action, id } = useParams();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertContext);
-  const [searchedBids, setSearchedBids] = useState([]);
   const [screenLoader, setScreenLoader] = useState(true);
-  const [titleValue, setTitleValue] = useState(null);
-  const [createdAt, setCreatedAt] = useState("");
   const [bidStatus, setBidStatus] = useState("");
-  // const { formData ,productData  } =
-  // useBidData();
-  const minDate = getMinMaxDate(2, 10, createdAt)[0]
-    .toISOString()
-    .split("T")[0];
-  const maxDate = getMinMaxDate(1, 10, createdAt)[1]
-    .toISOString()
-    .split("T")[0];
-  // const { formData, productData } = location.state || {};
-
   const formData = JSON.parse(localStorage.getItem("formData"));
   const productData = JSON.parse(localStorage.getItem("productData"));
 
@@ -109,11 +96,6 @@ const BidForm = () => {
         const [key, value] = item;
 
         if (action === "create") {
-          // formData.forEach((categoryItem, index) => {
-          //   createFormData.append(`category[${index}][category]`, categoryItem.category);
-          //   createFormData.append(`category[${index}][depth]`, categoryItem.depth);
-          // });
-
           if (key === "type") {
             createFormData.append(key, value);
           } else if (key === "delivery_date") {
@@ -244,41 +226,6 @@ const BidForm = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (id) {
-      const retrieveBid = async () => {
-        try {
-          const response = await _sendAPIRequest(
-            "GET",
-            PortalApiUrls.RETRIEVE_CREATED_BID + `${id}/`,
-            "",
-            true
-          );
-          if (response.status === 200) {
-            setCreatedAt(response.data.created_at);
-            setTitleValue(response.data.title);
-            setBidStatus(response.data.status);
-
-            reset({
-              ...response.data,
-              type: response.data.type_meta.id,
-              bid_start_date: retrieveDateFormat(response.data.bid_start_date),
-              bid_end_date: retrieveDateFormat(response.data.bid_end_date),
-              delivery_date: retrieveDateFormat(
-                response.data.delivery_date,
-                false
-              ),
-            });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      retrieveBid();
-    }
-  }, [id, reset]);
 
   const handleFormdata = async (id) => {
     try {
