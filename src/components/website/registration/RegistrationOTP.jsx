@@ -95,7 +95,6 @@ const RegistrationOTP = () => {
       }
     } catch (error) {
       setLoading(false);
-      console.log(first);
       const { data } = error.response;
 
       if (data) {
