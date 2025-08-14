@@ -28,7 +28,6 @@ const ForgotPassword = () => {
   };
 
   const submitForm = async (data) => {
-    console.log(data.email.toLowerCase(), " : email");
     setLoading(true);
     if (isPhoneReset) {
       data.mobile_number = addCountryCode(data.mobile_number);
@@ -99,7 +98,6 @@ const ForgotPassword = () => {
         const forgotEmail = {
           email: data.email.toLowerCase(),
         };
-        console.log(forgotEmail, " : forgotEmail");
         const response = await _sendApiRequest(
           "POST",
           WebsiteApiUrls.FORGOT_PASSWORD_EMAIL,

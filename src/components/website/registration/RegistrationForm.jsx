@@ -30,8 +30,8 @@ const RegistrationForm = () => {
   const { setAlert } = useContext(AlertContext);
 
   const submitForm = async (data) => {
-    // console.log(data, " : email check");
     const mobile_number = addCountryCode(data.mobile_number);
+    console.log(data.mobile_number, " : mobile number");
     const formData = new FormData();
     formData.append("email", data.email.toLowerCase());
     formData.append("first_name", data.first_name);
@@ -40,8 +40,9 @@ const RegistrationForm = () => {
     formData.append("password", data.password);
 
     setLoading(true);
-    setRegisterData(formData);
-
+    const formDataObj = Object.fromEntries(formData.entries());
+    console.log(formDataObj, " : formDataObj");
+    setRegisterData(formDataObj);
     try {
       const response = await _sendApiRequest("POST", WebsiteApiUrls.SEND_OTP, {
         mobile_number: mobile_number,

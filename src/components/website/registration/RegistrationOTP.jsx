@@ -44,8 +44,7 @@ const RegistrationOTP = () => {
   }, [initialCount]);
 
   const resendOTP = async () => {
-    const mobile_number = addCountryCode(registerData.mobile_number);
-
+    const mobile_number = registerData.mobile_number;
     try {
       const response = await _sendApiRequest(
         "POST",
@@ -71,9 +70,19 @@ const RegistrationOTP = () => {
 
   const submitForm = async () => {
     setLoading(true);
-    registerData.mobile_number = addCountryCode(registerData.mobile_number);
+
     registerData.otp = otp.join("");
 
+    if (registerData.otp === 0) {
+      setAlert({
+        isVisible: true,
+        message: "Please enter the OTP",
+        severity: "warning",
+      });
+      setLoading(false);
+      return;
+    }
+    console.log(registerData.otp);
     try {
       const response = await _sendApiRequest(
         "POST",
@@ -82,18 +91,19 @@ const RegistrationOTP = () => {
       );
       if (response.status === 201) {
         setLoading(false);
-
         setShowThankyou(true);
       }
     } catch (error) {
       setLoading(false);
+      console.log(first);
       const { data } = error.response;
 
       if (data) {
         const { email, mobile_number, error } = data;
+
         setAlert({
           isVisible: true,
-          message: "Something went wrong",
+          message: error,
           severity: "error",
         });
 

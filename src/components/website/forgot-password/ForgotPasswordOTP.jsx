@@ -68,7 +68,16 @@ const ForgotPasswordOTP = () => {
     let formData = new FormData();
     formData.append("mobile_number", mobile_number);
     formData.append("otp", otp.join(""));
-
+    let formdataExtracter = Object.fromEntries(formData.entries());
+    if (formdataExtracter?.otp === "") {
+      setAlert({
+        isVisible: true,
+        message: "Please enter the OTP",
+        severity: "warning",
+      });
+      setLoading(false);
+      return;
+    }
     try {
       const response = await _sendAPIRequest(
         "POST",
@@ -90,7 +99,7 @@ const ForgotPasswordOTP = () => {
         const { mobile_number, error } = data;
         setAlert({
           isVisible: true,
-          message:  "Something went wrong",
+          message: "Something went wrong",
           severity: "error",
         });
 
