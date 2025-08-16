@@ -11,10 +11,9 @@ import { addCountryCode } from "../../../helpers/formatter";
 import { AlertContext } from "../../../contexts/AlertProvider";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import _sendAPIRequest from "../../../helpers/api";
-import { Pattern } from "@mui/icons-material";
 
 const ForgotPassword = () => {
-  const { control, handleSubmit, setError } = useForm();
+  const { control, handleSubmit, setError, reset } = useForm();
   const [isPhoneReset, setIsPhoneReset] = useState(false);
   const navigate = useNavigate();
   const [checkEmail, setCheckEmail] = useState(false);
@@ -24,6 +23,7 @@ const ForgotPassword = () => {
   const { setAlert } = useContext(AlertContext);
 
   const handleResetMedium = () => {
+    reset();
     setIsPhoneReset(!isPhoneReset);
   };
 

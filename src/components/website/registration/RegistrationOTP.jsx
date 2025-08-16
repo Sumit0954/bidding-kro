@@ -9,7 +9,6 @@ import _sendApiRequest from "../../../helpers/api";
 import { WebsiteApiUrls } from "../../../helpers/api-urls/WebsiteApiUrls";
 import { ButtonLoader } from "../../../elements/CustomLoader/Loader";
 import { AlertContext } from "../../../contexts/AlertProvider";
-import { addCountryCode } from "../../../helpers/formatter";
 
 const RegistrationOTP = () => {
   const { handleSubmit } = useForm();
@@ -54,7 +53,7 @@ const RegistrationOTP = () => {
         }
       );
       if (response.status === 200) {
-        setInitialCount(45);
+        setInitialCount(60);
         setAlert({
           isVisible: true,
           message: "OTP has been send to your phone number ",
@@ -64,16 +63,20 @@ const RegistrationOTP = () => {
         setOtp(new Array(4).fill(""));
       }
     } catch (error) {
-      console.log(error);
+      if (error?.response?.data?.error) {
+        setAlert({
+          isVisible: true,
+          message: error?.response?.data?.error,
+          severity: "error",
+        });
+      }
     }
   };
 
   const submitForm = async () => {
     setLoading(true);
-
     registerData.otp = otp.join("");
-
-    if (registerData.otp === 0) {
+    if (registerData.otp === "") {
       setAlert({
         isVisible: true,
         message: "Please enter the OTP",
@@ -82,7 +85,6 @@ const RegistrationOTP = () => {
       setLoading(false);
       return;
     }
-    console.log(registerData.otp);
     try {
       const response = await _sendApiRequest(
         "POST",

@@ -55,11 +55,17 @@ const ForgotPasswordOTP = () => {
           message: "OTP has been send to your phone number",
           severity: "success",
         });
-        setInitialCount(45);
+        setInitialCount(60);
         setOtp(new Array(4).fill(""));
       }
     } catch (error) {
-      console.log(error);
+      if (error?.response?.data?.error) {
+        setAlert({
+          isVisible: true,
+          message: error?.response?.data?.error,
+          severity: "error",
+        });
+      }
     }
   };
 
@@ -91,6 +97,7 @@ const ForgotPasswordOTP = () => {
         window.location.href = "/reset-password";
       }
     } catch (error) {
+      console.log(error, " : error");
       setLoading(false);
 
       const { data } = error.response;
@@ -99,7 +106,7 @@ const ForgotPasswordOTP = () => {
         const { mobile_number, error } = data;
         setAlert({
           isVisible: true,
-          message: "Something went wrong",
+          message: error,
           severity: "error",
         });
 
