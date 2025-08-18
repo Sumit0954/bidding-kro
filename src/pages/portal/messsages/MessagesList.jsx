@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  TextField,
   List,
   ListItem,
   Avatar,
-  Divider,
   IconButton,
   ListItemText,
   ListItemAvatar,
   Tooltip,
 } from "@mui/material";
 import Messages from "./Messages";
-import MessageIcon from "@mui/icons-material/Message";
 import Badge from "@mui/material/Badge";
-import { dateTimeFormatter, truncateString } from "../../../helpers/formatter";
+import { truncateString } from "../../../helpers/formatter";
 import dayjs from "dayjs";
-import {
-  MessageRounded,
-  Person2Outlined,
-  PersonPinCircleOutlined,
-} from "@mui/icons-material";
+import { MessageRounded } from "@mui/icons-material";
 import styles from "./Messages.module.scss";
 import { useLocation } from "react-router-dom";
 import _sendAPIRequest from "../../../helpers/api";
@@ -34,7 +27,6 @@ const MessagesList = () => {
   const location = useLocation();
   const [chatList, setChatList] = useState([]);
   const [chatId, setChatID] = useState(location?.state?.chatId);
-  // const [chatId, setChatID] = useState("");
   const userID = localStorage.getItem("loginUserID");
   const [readStatus, setReadStatus] = useState({});
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -50,7 +42,6 @@ const MessagesList = () => {
       );
 
       if (response?.status === 200) {
-        console.log(response?.data, "object");
         setChatList(response?.data);
         setScreenLoader(false);
       }
@@ -60,43 +51,6 @@ const MessagesList = () => {
   useEffect(() => {
     getChatList();
   }, []);
-
-  // useEffect(() => {
-  //   if (chatList.length > 0) {
-  //     const firstChat = chatList.find((chat) =>
-  //       chat.read.some((c) => c?.company?.id !== userID)
-  //     );
-
-  //     if (firstChat) {
-  //       const firstCompany = firstChat.read.find(
-  //         (c) => c?.company?.id !== userID
-  //       )?.company?.name;
-  //       const firstChatId = firstChat.channel?.id;
-
-  //       if (firstCompany) setSelectedUser(firstCompany);
-  //       if (firstChatId) setChatID(firstChatId);
-  //     }
-  //   }
-  // }, [chatList]);
-
-  // useEffect(() => {
-  //   if (chatList.length > 0 && !selectedUser) {
-  //     // Ensure we don't override a manually selected user
-  //     const firstChat = chatList.find((chat) =>
-  //       chat.read.some((c) => c?.company?.id !== userID)
-  //     );
-
-  //     if (firstChat) {
-  //       const firstCompany = firstChat.read.find(
-  //         (c) => c?.company?.id !== userID
-  //       )?.company?.name;
-  //       const firstChatId = firstChat.channel?.id;
-
-  //       if (firstCompany) setSelectedUser(firstCompany);
-  //       if (firstChatId) setChatID(firstChatId);
-  //     }
-  //   }
-  // }, [chatList, selectedUser]); // Add `selectedUser` to dependency array
 
   useEffect(() => {
     if (chatList.length > 0 && !selectedUser) {
@@ -112,14 +66,9 @@ const MessagesList = () => {
       );
 
       if (recentChat) {
-        const recentCompany = recentChat.read.find(
-          (c) => c?.company?.id !== userID
-        )?.company?.name;
-        const recentChatId = recentChat.channel?.id;
         const recentCompanyID = recentChat.read.find(
           (c) => c?.company?.id !== userID
         )?.company?.id;
-
         // if (recentCompany) setSelectedUser(recentCompany);
         if (recentCompanyID) setSelectedUserID(recentCompanyID);
         // if (recentChatId) setChatID(recentChatId);
@@ -134,7 +83,7 @@ const MessagesList = () => {
         if (selConvo) setSelectedUser(selConvo);
       }
     }
-  }, [chatList, selectedUser]); // Prevent overwriting a manually selected user
+  }, [chatList, selectedUser]);
 
   const messageRead = async (chadId) => {
     try {
@@ -145,10 +94,9 @@ const MessagesList = () => {
         true
       );
       if (response?.status === 200) {
-        // Update read status without modifying chatList
         setReadStatus((prevStatus) => ({
           ...prevStatus,
-          [chadId]: true, // Mark this chat as read
+          [chadId]: true,
         }));
       }
     } catch (error) {
@@ -164,27 +112,8 @@ const MessagesList = () => {
     <>
       <Box sx={{ display: "flex" }}>
         {/* Sidebar */}
-        <Box
-          sx={{
-            width: "32%",
-            borderRight: "1px solid #ddd",
-            background: "#f7f7f7",
-            borderRadius: "10px 0 0 10px",
-            overflow: "hidden",
-          }}
-        >
-          <Box
-            sx={{
-              borderBottom: "1px solid #ddd",
-              padding: "5px 10px", // Same padding as chat header
-              height: "50px", // Same height as chat header
-              display: "flex",
-              alignItems: "center", // Ensures vertical alignment
-              background: "#f7f7f7",
-              fontWeight: "bold",
-              color: "#062d72",
-            }}
-          >
+        <Box className={styles["chat-sidebar"]}>
+          <Box className={styles["chat-sidebar__header"]}>
             {/* Icon Always Visible */}
             <IconButton color="inherit" sx={{ padding: "5px" }}>
               <MessageRounded />
@@ -201,135 +130,6 @@ const MessagesList = () => {
             )}
           </Box>
 
-          {/* <List sx={{ padding: "8px" }}>
-            
-            <Box className={styles["chat-list-container"]}>
-              {chatList
-                .slice()
-                .sort(
-                  (a, b) =>
-                    new Date(b.channel.last_message_at) -
-                    new Date(a.channel.last_message_at)
-                )
-                .map((user, userIndex) =>
-                  user.read.map((company, companyIndex) => {
-                    if (company?.company?.id !== userID) {
-                      return (
-                        <Tooltip
-                          title={company.company?.name}
-                          key={companyIndex}
-                        >
-                          <ListItem
-                            button
-                            selected={selectedUser === company.company?.name}
-                            onClick={() => {
-                              setSelectedUser(company.company?.name);
-                              setSelectedUserID(company?.company?.id);
-                              setChatID(user?.channel?.id);
-                              messageRead(user?.channel?.id);
-                            }}
-                            sx={{
-                              "&.Mui-selected": {
-                                background:
-                                  "linear-gradient(90deg, #4A90E2, #062d72)",
-                                color: "#fff",
-                                borderLeft: "4px solid #fff",
-                                transition: "all 0.3s ease-in-out",
-                              },
-                              "&:hover": {
-                                background:
-                                  selectedUser === company.company?.name
-                                    ? "linear-gradient(90deg, #4A90E2, #062d72)"
-                                    : "#e3eafc",
-                              },
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              padding: "8px 10px", // Reduced padding for a compact size
-                              borderRadius: "6px",
-                              marginBottom: "3px",
-                              transition: "all 0.3s ease-in-out",
-                            }}
-                          >
-                            
-                            <ListItemAvatar>
-                              <Badge
-                                badgeContent={
-                                  readStatus[user?.channel?.id]
-                                    ? 0
-                                    : user.read.find(
-                                        (company) =>
-                                          company?.company?.id === userID
-                                      )?.unread_messages || 0
-                                }
-                                color="error"
-                                overlap="circular"
-                                anchorOrigin={{
-                                  vertical: "top",
-                                  horizontal: "right",
-                                }}
-                              >
-                                <Avatar
-                                  sx={{
-                                    backgroundColor: "#062d72",
-                                    width: "35px", 
-                                    height: "35px",
-                                    fontSize: "14px", 
-                                  }}
-                                >
-                                  {company.company.name.charAt(0)}
-                                </Avatar>
-                              </Badge>
-                            </ListItemAvatar>
-
-                            
-                            {!isMobile && (
-                              <ListItemText
-                                primary={
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      fontWeight: "bold",
-                                      color:
-                                        selectedUser === company.company?.name
-                                          ? "#fff"
-                                          : "#333",
-                                    }}
-                                  >
-                                    {truncateString(company.company?.name, 13)}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Typography
-                                    variant="caption"
-                                    sx={{
-                                      color:
-                                        selectedUser === company.company?.name
-                                          ? "#fff"
-                                          : "gray",
-                                      fontSize: "12px", 
-                                    }}
-                                  >
-                                    {dayjs(user.channel.last_message_at).format(
-                                      "DD MMM, hh:mm A"
-                                    )}
-                                  </Typography>
-                                }
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  width: "100%",
-                                }}
-                              />
-                            )}
-                          </ListItem>
-                        </Tooltip>
-                      );
-                    }
-                  })
-                )}
-            </Box>
-          </List> */}
           <List sx={{ padding: "8px" }}>
             {/* Chat List Items */}
             <Box className={styles["chat-list-container"]}>
@@ -358,28 +158,11 @@ const MessagesList = () => {
                                 setChatID(user?.channel?.id);
                                 messageRead(user?.channel?.id);
                               }}
-                              sx={{
-                                "&.Mui-selected": {
-                                  background:
-                                    "linear-gradient(90deg, #4A90E2, #062d72)",
-                                  color: "#fff",
-                                  borderLeft: "4px solid #fff",
-                                  transition: "all 0.3s ease-in-out",
-                                },
-                                "&:hover": {
-                                  background:
-                                    selectedUser === company.company?.name
-                                      ? "linear-gradient(90deg, #4A90E2, #062d72)"
-                                      : "#e3eafc",
-                                },
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                padding: "8px 10px",
-                                borderRadius: "6px",
-                                marginBottom: "3px",
-                                transition: "all 0.3s ease-in-out",
-                              }}
+                              className={`${styles["chat-user-item"]} ${
+                                selectedUser === company.company?.name
+                                  ? styles["selected"]
+                                  : ""
+                              }`}
                             >
                               {/* Avatar with Badge */}
                               <ListItemAvatar>

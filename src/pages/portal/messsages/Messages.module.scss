@@ -5,7 +5,9 @@
   padding-bottom: 80px; // 10 * 4px = 40px (to match pb: 10)
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #dcdcdc, #b8b8b8);
+  background: url("../../../assets/images/portal/chat-management/chat-bg.png")
+    no-repeat center center;
+  background-size: cover;
   scroll-behavior: smooth;
   /* Scrollbar customizations */
   &::-webkit-scrollbar {
@@ -36,10 +38,11 @@
 }
 
 .chat-box-header {
-  border-bottom: 1px solid #ddd;
-  padding: 16px; // 2 * 8px = 16px (to match p: 2)
   display: flex;
-  align-items: center;
+  align-items: center; /* Ensures content is vertically centered */
+  padding: 5px 10px; /* Reduced padding */
+  height: 50px; /* Adjusted height */
+  border-bottom: 1px solid #ddd;
   background: #f7f7f7;
 }
 
@@ -64,5 +67,174 @@
   &::-webkit-scrollbar-track {
     background-color: #f1f1f1; /* Set the track color */
     border-radius: 10px; /* Round the track */
+  }
+}
+
+.user-icon {
+  margin-right: 8px !important;
+  background-color: #062d72 !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.message-box {
+  max-width: 70%;
+  margin-bottom: 16px; /* MUI spacing(2) */
+  padding: 10px 15px;
+  border-radius: 18px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.message-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sent-message {
+  background: linear-gradient(135deg, #f4f7ff, #e3e9ff);
+  align-self: flex-end;
+  color: #333;
+}
+
+.received-message {
+  background: linear-gradient(135deg, #86b0f9, #639af3);
+  align-self: flex-start;
+  color: #fff;
+}
+
+.message-time {
+  display: block;
+  text-align: right;
+  margin-top: 4px;
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Vertical centering */
+  text-align: center;
+  height: 100%; /* Ensures full height for vertical centering */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.empty-state-img {
+  width: 350px;
+  display: block;
+  margin: auto;
+}
+
+.empty-state-shadow {
+  width: 100px;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  margin: -120px 0px 0px 0px;
+  filter: blur(3px);
+}
+
+.encryption-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto; /* Pushes it to the bottom */
+  color: var(--mui-palette-text-secondary);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.encryption-note .lock-icon {
+  font-size: 16px;
+  margin-right: 4px; /* mr: 0.5 */
+}
+
+.chat-input-container {
+  padding: 12px 16px;
+  display: flex;
+  border-top: 1px solid #ddd;
+  background: #f9f9f9;
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.chat-form {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  background: white;
+  border-radius: 25px;
+  padding: 4px 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.chat-textfield {
+  margin-right: 8px;
+}
+
+.chat-textfield .MuiOutlinedInput-root {
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.chat-send-button {
+  color: #062d72 !important;
+  background: #e6efff !important;
+  border-radius: 50% !important;
+  padding: 8px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.chat-send-button:hover {
+  background: #d0e3ff;
+  transform: scale(1.05);
+}
+
+.chat-sidebar {
+  width: 32%;
+  border-right: 1px solid #ddd;
+  background: #f7f7f7;
+  border-radius: 10px 0 0 10px;
+  overflow: hidden;
+
+  &__header {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 10px; // Same padding as chat header
+    height: 50px; // Same height as chat header
+    display: flex;
+    align-items: center; // Ensures vertical alignment
+    background: #f7f7f7;
+    font-weight: bold;
+    color: #062d72;
+  }
+}
+
+.chat-user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 3px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background: #e3eafc;
+  }
+
+  &.selected {
+    background: linear-gradient(90deg, #4a90e2, #062d72) !important;
+    color: #fff;
+    border-left: 4px solid #fff;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background: linear-gradient(90deg, #4a90e2, #062d72) !important;
+    }
   }
 }

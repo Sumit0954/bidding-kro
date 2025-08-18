@@ -1,14 +1,14 @@
 import { Box, Typography, TextField, IconButton, Avatar } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import styles from "./Messages.module.scss";
-import { Person2Outlined } from "@mui/icons-material";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState, useRef } from "react";
 import { dateTimeFormatter } from "../../../helpers/formatter";
-import NoliveBidImg from "../../../assets/images/portal/bids/no_live_bid.png";
-import { TimeIcon } from "@mui/x-date-pickers";
+import NoMesimg from "../../../assets/images/portal/chat-management/No-message-img.png";
+import { Lock } from "@mui/icons-material";
+import classNames from "classnames";
 const Messages = ({
   selectedUser,
   chatId,
@@ -68,33 +68,17 @@ const Messages = ({
   };
 
   useEffect(() => {
-    if (chatId != undefined) {
+    if (chatId !== undefined) {
       getChatMessages();
     }
   }, [chatId, selectedUser, updateChat]);
 
-  console.log(selectedUser === "", " : selectedUser");
   return (
     <>
       <Box className={styles["chat-box"]}>
         {selectedUser !== "" && (
-          <Box
-            className={styles["chat-box-header"]}
-            sx={{
-              display: "flex",
-              alignItems: "center", // Ensures content is vertically centered
-              padding: "5px 10px", // Reduce padding
-              height: "50px", // Adjust height as needed
-            }}
-          >
-            <Avatar
-              sx={{
-                marginRight: 1,
-                backgroundColor: "#062d72",
-                width: 30,
-                height: 30,
-              }}
-            >
+          <Box className={styles["chat-box-header"]}>
+            <Avatar className={styles["user-icon"]}>
               {selectedUser.charAt(0)}
             </Avatar>
             <Typography variant="h6" sx={{ fontSize: "16px" }}>
@@ -117,39 +101,18 @@ const Messages = ({
                   <Box
                     key={`${messageIndex}-${msgIndex}`} // Unique key
                     ref={isLastMessage ? lastMessageRef : null} // Attach ref to last message
-                    sx={{
-                      maxWidth: "70%",
-                      marginBottom: 2,
-                      padding: "10px 15px",
-                      borderRadius: "18px",
-                      boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-                      background:
-                        msg?.company?.id === userID
-                          ? "linear-gradient(135deg, #f4f7ff, #e3e9ff)"
-                          : "linear-gradient(135deg, #86b0f9, #639af3)",
-                      alignSelf:
-                        msg?.company?.id === userID ? "flex-end" : "flex-start",
-                      color: msg?.company?.id === userID ? "#333" : "#fff",
-                      cursor: "pointer",
-                      transition:
-                        "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
+                    className={classNames(
+                      styles["message-box"],
+                      msg?.company?.id === userID
+                        ? styles["sent-message"]
+                        : styles["received-message"]
+                    )}
                   >
                     <Typography variant="body1">{msg.text}</Typography>
 
                     <Typography
                       variant="caption"
-                      sx={{
-                        display: "block",
-                        textAlign: "right",
-                        marginTop: 0.5,
-                        opacity: 0.7,
-                        fontSize: "12px",
-                      }}
+                      className={styles["message-time"]}
                     >
                       {dateTimeFormatter(msg?.created_at)}
                     </Typography>
@@ -159,31 +122,34 @@ const Messages = ({
             )
           ) : (
             <>
-              <Box
-                component="img"
-                src={NoliveBidImg}
-                alt="No Messages"
-                sx={{ width: "200px", display: "block", margin: "auto" }}
-              />
+              <Box className={styles["empty-state"]}>
+                {/* Laptop image */}
+                <Box
+                  component="img"
+                  src={NoMesimg}
+                  alt="No Messages"
+                  className={styles["empty-state-img"]}
+                />
+
+                {/* Shadow under laptop */}
+                <Box className={styles["empty-state-shadow"]} />
+
+                {/* End-to-end encryption note */}
+                <Box className={styles["encryption-note"]}>
+                  <Lock className={styles["lock-icon"]} />
+                  Your personal messages are end-to-end encrypted
+                </Box>
+              </Box>
             </>
           )}
         </Box>
 
         {/* Chat Input */}
         {selectedUser !== "" && chatList.length > 0 ? (
-          <Box
-            sx={{
-              p: 2,
-              display: "flex",
-              borderTop: "1px solid #ddd",
-              background: "#fff",
-              position: "sticky",
-              bottom: 0, // Sticks input to the bottom
-            }}
-          >
+          <Box className={styles["chat-input-container"]}>
             <form
               onSubmit={handleSubmit(sendMessage)}
-              style={{ display: "flex", flex: 1 }}
+              className={styles["chat-form"]}
               autoComplete="off"
             >
               <Controller
@@ -197,11 +163,11 @@ const Messages = ({
                     placeholder="Type a message"
                     variant="outlined"
                     size="small"
-                    sx={{ marginRight: 1 }}
+                    className={styles["chat-textfield"]}
                   />
                 )}
               />
-              <IconButton sx={{ color: "#062d72" }} type="submit">
+              <IconButton className={styles["chat-send-button"]} type="submit">
                 <SendIcon />
               </IconButton>
             </form>
