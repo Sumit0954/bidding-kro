@@ -221,44 +221,48 @@ const Summary = ({ bidDetails }) => {
                 ),
               status: "complete",
             },
-            {
-              label: "Commercial Bid Invite",
-              icon:
-                bidDetails?.participant?.sample?.approval_status ===
-                  "approved" && bidDetails?.bid_open_date !== null ? (
-                  <GroupAdd style={{ color: "green" }} />
-                ) : (
-                  <HourglassEmpty style={{ color: "#FFC107" }} />
-                ),
-              status: "complete",
-            },
-            {
-              label:
-                bidDetails?.participant?.status === "pending"
-                  ? "Pending"
-                  : bidDetails?.participant?.status === "accepted" ||
-                    bidDetails?.participant?.status === "revoked" ||
-                    bidDetails?.participant?.status === "participated" ||
-                    bidDetails?.participant?.status === "awarded"
-                  ? "Accepted"
-                  : bidDetails?.participant?.status === "declined"
-                  ? "Declined"
-                  : "Pending",
-              icon:
-                bidDetails?.participant?.status === "pending" ? (
-                  <HourglassEmpty style={{ color: "#FFBF00" }} />
-                ) : bidDetails?.participant?.status === "accepted" ||
-                  bidDetails?.participant?.status === "revoked" ||
-                  bidDetails?.participant?.status === "participated" ||
-                  bidDetails?.participant?.status === "awarded" ? (
-                  <CheckCircleOutline style={{ color: "green" }} />
-                ) : bidDetails?.participant?.status === "declined" ? (
-                  <CancelOutlined style={{ color: "red" }} />
-                ) : (
-                  <HourglassEmpty style={{ color: "#FFBF00" }} />
-                ),
-              status: "complete",
-            },
+            ...(bidDetails?.participant?.sample?.approval_status === "rejected"
+              ? []
+              : [
+                  {
+                    label: "Commercial Bid Invite",
+                    icon:
+                      bidDetails?.participant?.sample?.approval_status ===
+                        "approved" && bidDetails?.bid_open_date !== null ? (
+                        <GroupAdd style={{ color: "green" }} />
+                      ) : (
+                        <HourglassEmpty style={{ color: "#FFC107" }} />
+                      ),
+                    status: "complete",
+                  },
+                  {
+                    label:
+                      bidDetails?.participant?.status === "pending"
+                        ? "Pending"
+                        : bidDetails?.participant?.status === "accepted" ||
+                          bidDetails?.participant?.status === "revoked" ||
+                          bidDetails?.participant?.status === "participated" ||
+                          bidDetails?.participant?.status === "awarded"
+                        ? "Accepted"
+                        : bidDetails?.participant?.status === "declined"
+                        ? "Declined"
+                        : "Pending",
+                    icon:
+                      bidDetails?.participant?.status === "pending" ? (
+                        <HourglassEmpty style={{ color: "#FFBF00" }} />
+                      ) : bidDetails?.participant?.status === "accepted" ||
+                        bidDetails?.participant?.status === "revoked" ||
+                        bidDetails?.participant?.status === "participated" ||
+                        bidDetails?.participant?.status === "awarded" ? (
+                        <CheckCircleOutline style={{ color: "green" }} />
+                      ) : bidDetails?.participant?.status === "declined" ? (
+                        <CancelOutlined style={{ color: "red" }} />
+                      ) : (
+                        <HourglassEmpty style={{ color: "#FFBF00" }} />
+                      ),
+                    status: "complete",
+                  },
+                ]),
           ]),
       ...(bidDetails?.participant?.status === "revoked"
         ? [
