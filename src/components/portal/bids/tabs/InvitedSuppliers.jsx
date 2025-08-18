@@ -313,7 +313,7 @@ const InvitedSuppliers = ({ onActionComplete, id, type }) => {
                     }}
                   >
                     <DatePicker
-                      label="Live Bid Date*"
+                      label="Live Bid Date"
                       value={bidDate ? dayjs(bidDate) : null}
                       minDate={dayjs()}
                       format="DD/MM/YYYY"

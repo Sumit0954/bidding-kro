@@ -266,11 +266,12 @@ const BidDocuments = () => {
                             </p>
                             <button
                               className="btn button"
+                              style={{ width: "max-content" }}
                               type="button"
                               onClick={handleBrowseClick}
                               disabled={status === "cancelled" ? true : false}
                             >
-                              <DocumentScanner /> Choose a document
+                              Choose a document
                             </button>
                           </label>
                         </Box>
@@ -324,7 +325,12 @@ const BidDocuments = () => {
 
             <div
               className={cn("my-3", styles["btn-container"])}
-              style={{ display: "flex", justifyContent: "end", gap: "1rem" }}
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                gap: "1rem",
+                flexWrap: "wrap", // helps on small screens
+              }}
             >
               <button
                 className={cn("btn", "button")}
@@ -341,7 +347,7 @@ const BidDocuments = () => {
                   navigate(`/portal/bids/details/${id}?activeTab=0`)
                 }
               >
-                {documents?.length > 0 ? "proceed further" : "Skip"}
+                {documents?.length > 0 ? "Proceed Further" : "Skip"}
               </button>
             </div>
 

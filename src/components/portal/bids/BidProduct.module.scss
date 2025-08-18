@@ -32,3 +32,11 @@
     width: 100%; /* Full width button */
   }
 }
+
+@media (max-width: 768px) {
+  .bid-form-section {
+    flex-direction: column;
+    align-items: center; /* Align items to the left */
+    gap: 10px; /* Space between title and button */
+  }
+}

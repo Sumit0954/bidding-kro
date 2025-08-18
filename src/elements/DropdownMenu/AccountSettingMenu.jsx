@@ -1,5 +1,4 @@
 import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import React from "react";
 import styles from "./AccountSettingMenu.module.scss";
 import {
   AccountCircleRounded,
@@ -12,7 +11,6 @@ import cn from "classnames";
 import { logout } from "../../utils/AxiosInterceptors";
 import _sendAPIRequest from "../../helpers/api";
 import { PortalApiUrls } from "../../helpers/api-urls/PortalApiUrls";
-import { getMessaging, getToken } from "firebase/messaging";
 import fallback_user_img from "../../assets/images/portal/company-profile/fallback-profile-img.jpg";
 
 const AccountSettingMenu = ({
@@ -26,7 +24,6 @@ const AccountSettingMenu = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   console.log(companyDetails, " : companyDetails");
   const DeleteFCMToken = async (OldFCMToken) => {
     try {
@@ -96,15 +93,13 @@ const AccountSettingMenu = ({
             <Avatar
               src={companyDetails?.logo || fallback_user_img}
               alt="ProfileImg"
-              variant="square" // Make Avatar square (better for logos)
+              variant="square"
               sx={{
-                width: 50, // or your needed size
+                width: 50,
                 height: 50,
-                objectFit: "contain", // Important to prevent image from stretching
-                backgroundColor: "transparent", // Optional: white background for better logo visibility
-                padding: "1px", // Optional: small padding inside avatar
-                border: "1px solid gray", // Optional: soft border
-                borderRadius: "50%",
+                objectFit: "contain",
+                backgroundColor: "transparent",
+                padding: "1px",
               }}
             />
 
@@ -126,14 +121,14 @@ const AccountSettingMenu = ({
                     <Avatar
                       src={userDetails?.profile_image || fallback_user_img}
                       alt="ProfileImg"
-                      variant="square" // Make Avatar square (better for logos)
+                      variant="square"
                       sx={{
-                        width: 50, // or your needed size
+                        width: 50,
                         height: 50,
-                        objectFit: "contain", // Important to prevent image from stretching
-                        backgroundColor: "transparent", // Optional: white background for better logo visibility
-                        padding: "1px", // Optional: small padding inside avatar
-                        border: "1px solid gray", // Optional: soft border
+                        objectFit: "contain",
+                        backgroundColor: "transparent",
+                        padding: "1px",
+                        border: "1px solid gray",
                         borderRadius: "50%",
                       }}
                     />
@@ -173,17 +168,9 @@ const AccountSettingMenu = ({
           </div>
         )}
         <MenuItem
-          // onClick={() =>
-          //   // logout({
-          //   //   redirectPath: `${from === "Admin" ? "/admin" : "/login"}`,
-          //   // })
-          //   requestNotificationPermission()
-          // }
-
           onClick={() => {
             const OldFCMToken = localStorage.getItem("FCMToken");
             if (OldFCMToken) {
-              // requestNotificationPermission();
               DeleteFCMToken(OldFCMToken);
             } else {
               logout({

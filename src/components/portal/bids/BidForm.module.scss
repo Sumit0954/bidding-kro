@@ -1,21 +1,38 @@
 .form-container {
-	width: 80% !important;
-	margin: 0 auto !important;
+  width: 80% !important;
+  margin: 0 auto !important;
 
-	.bid-form-section {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		border-bottom: 2px solid var(--primary-color);
-		margin: 30px auto !important;
-	}
+  .bid-form-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--primary-color);
+    margin: 30px auto !important;
+  }
 
-	.form-section {
-		.btn-container {
-			display: flex;
-			align-items: center;
-			justify-content: flex-end;
-			gap: 10px;
-		}
-	}
+  .form-section {
+    .btn-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+
+      button {
+        width: auto;
+      }
+    }
+  }
+}
+
+/* ✅ Stack buttons ONLY for small screens */
+@media screen and (max-width: 768px) {
+  .form-container .form-section .btn-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    button {
+      width: 100%;
+    }
+  }
 }

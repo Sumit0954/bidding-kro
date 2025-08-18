@@ -95,3 +95,22 @@
 .alert-message {
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .btn-container button {
+    width: 100%;
+    max-width: 300px; /* Optional: prevents it from being too wide */
+  }
+  .btn-container {
+    flex-direction: column; /* Stack buttons vertically */
+    width: 100%;
+    align-items: center; /* Center buttons horizontally */
+    justify-content: center;
+    gap: 10px; /* spacing between buttons */
+  }
+
+  .btn-container button {
+    width: 100%;
+    max-width: 300px; /* optional: prevents stretching too wide */
+  }
+}

@@ -318,7 +318,6 @@ const Summary = ({ bidDetails }) => {
         true
       );
       if (response?.status === 200) {
-        console.log(response.data, "rrrrr");
         navigate("/portal/messages", { state: { chatId: response.data.id } });
       }
     } catch (error) {

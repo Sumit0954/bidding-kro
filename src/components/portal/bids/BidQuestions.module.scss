@@ -81,3 +81,27 @@
     animation: shake 0.5s ease-in-out;
   }
 }
+
+@media (max-width: 768px) {
+  .question-section {
+    flex-direction: column; /* Stack heading and button vertically */
+    align-items: stretch;
+  }
+
+  .btn-container {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .btn-container button {
+    width: 100%; /* Full width button */
+    max-width: 300px; /* Optional: controls max width */
+  }
+
+  .question-section button {
+    width: 100%; /* Full width button */
+    margin-top: 5px;
+  }
+}
