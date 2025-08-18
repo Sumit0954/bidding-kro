@@ -245,7 +245,7 @@ const ForgotPassword = () => {
         <CheckEmailModal
           checkEmail={checkEmail}
           setCheckEmail={setCheckEmail}
-          description={`We've sent a link to reset your password at ${email}`}
+          description={`We've sent a link to reset your password`}
         />
       )}
 
