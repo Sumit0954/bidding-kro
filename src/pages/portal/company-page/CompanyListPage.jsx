@@ -1,5 +1,5 @@
 import CompanyList from "../../../components/portal/companies/CompanyList";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
@@ -8,12 +8,11 @@ import { Box, Tab, Tabs } from "@mui/material";
 const CompanyListPage = () => {
   const [bidDetails, setBidDetails] = useState({});
   const [value, setValue] = useState(0);
+  const { id } = useParams();
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (newValue) => {
     setValue(newValue);
   };
-  // const id = new URLSearchParams(useLocation().search).get("bid");
-  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -54,23 +53,13 @@ const CompanyListPage = () => {
             aria-label="companies-list-tabs"
           >
             <Tab label="ALL COMPANIES" {...a11yProps(0)} />
-            {/* {id ? null : <Tab label="INVITE REQUESTS" {...a11yProps(1)} />} */}
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
           <CompanyList
             bidDetails={bidDetails}
             id={id}
-            tab={value}
             listtype={"allcompanies"}
-          />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <CompanyList
-            bidDetails={bidDetails}
-            id={id}
-            tab={value}
-            listtype={"InviteRequest"}
           />
         </TabPanel>
       </Box>
