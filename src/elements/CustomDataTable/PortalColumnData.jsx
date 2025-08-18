@@ -24,11 +24,12 @@ const patchBidStatus = async (id, formData, setAlert) => {
     );
 
     if (response.status === 204) {
+      console.log(formData.action, " : response");
+      return formData.action;
     }
   } catch (error) {
     console.log(error, " : response");
     if (error.status === 403) {
-      console.log(error.status, " :error");
       setAlert({
         isVisible: true,
         message: error.response.data.detail,
@@ -36,7 +37,9 @@ const patchBidStatus = async (id, formData, setAlert) => {
       });
     }
   }
+  return null;
 };
+
 const onCloneBidClick = async (id, navigate, setAlert, setScreenLoader) => {
   setScreenLoader(true);
   try {
@@ -1115,7 +1118,7 @@ export const Sample_Bid_Invitations_result_log = [
     Header: "Status",
     accessor: "status",
     align: "left",
-    width: 80, // Change to uniform width
+    width: 80,
     disablePadding: false,
     hideSortIcon: true,
     Cell: (data) => {
@@ -1511,32 +1514,36 @@ const SampleStatusCell = ({ data, onActionComplete }) => {
     isSamplePending: null,
     supplierName: null,
   });
-  const handleSampleApproved = (choice) => {
+
+  const handleSampleApproved = async (choice) => {
     setDeleteDetails({ open: false, title: "", message: "", formData: null });
     if (choice) {
-      setStatus("approve");
-      patchBidStatus(
+      const updatedStatus = await patchBidStatus(
         data.row.original.id,
         deleteDetails?.formData,
-        setAlert,
-        true,
-        data.row.original.company.id
+        setAlert
       );
+      if (updatedStatus) {
+        setStatus(updatedStatus);
+      }
+    } else {
+      setStatus(data.row.original.sample.approval_status);
     }
     if (onActionComplete) {
       onActionComplete();
     }
+
     setParticipant((prevDetails) => ({
       ...prevDetails,
-      approval_status: newActionStatus,
+      approval_status: choice
+        ? deleteDetails?.formData?.action
+        : prevDetails.approval_status,
     }));
   };
-  const handleStatusChange = (event) => {
-    console.log(data?.row?.original?.sample?.is_received, " supplier");
+  const handleStatusChange = async (event) => {
     const newActionStatus = event.target.value;
-    const formData = {
-      action: newActionStatus,
-    };
+    const formData = { action: newActionStatus };
+    console.log(newActionStatus, " : newActionStatus");
     if (newActionStatus === "approve") {
       setDeleteDetails({
         open: true,
@@ -1547,20 +1554,20 @@ const SampleStatusCell = ({ data, onActionComplete }) => {
             <b>{data?.row?.original?.company?.name}</b>?
           </>
         ),
-        formData: formData,
+        formData,
         isSamplePending:
           data?.row?.original?.sample?.is_received === false ? true : null,
         supplierName: data?.row?.original?.company?.name,
       });
     } else if (newActionStatus === "reject") {
-      setStatus(newActionStatus);
-      patchBidStatus(
+      const updatedStatus = await patchBidStatus(
         data.row.original.id,
         formData,
-        setAlert,
-        true,
-        data.row.original.company.id
+        setAlert
       );
+      if (updatedStatus) {
+        setStatus(updatedStatus);
+      }
     }
 
     setParticipant((prevDetails) => ({
@@ -1568,6 +1575,7 @@ const SampleStatusCell = ({ data, onActionComplete }) => {
       approval_status: newActionStatus,
     }));
   };
+
   return (
     <>
       <FormControl sx={{ minWidth: 120, maxWidth: 150 }} size="small">
@@ -1600,6 +1608,7 @@ const SampleStatusCell = ({ data, onActionComplete }) => {
           <MenuItem value="approve" sx={{ color: "green" }}>
             Approved
           </MenuItem>
+
           <MenuItem value="reject" sx={{ color: "red" }}>
             Not Approved
           </MenuItem>
@@ -1619,11 +1628,7 @@ const SampleStatusCell = ({ data, onActionComplete }) => {
     </>
   );
 };
-export const Sample_Bid_Invitations_column = ({
-  id,
-  onActionComplete,
-  setIsSampleApproved,
-}) => [
+export const Sample_Bid_Invitations_column = ({ id, onActionComplete }) => [
   {
     Header: "Company Name",
     accessor: "company_Name",

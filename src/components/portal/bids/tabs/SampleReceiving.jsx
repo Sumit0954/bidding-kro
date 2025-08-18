@@ -58,10 +58,9 @@ const SampleReceiving = ({ participant, onActionComplete }) => {
     (p) => p.sample?.invite_status === "accepted"
   );
 
-  const isApproved = filteredParticipants.some(
-    (p) => p.sample?.approval_status === "approved"
-  );
-
+  const isApproved =
+    Array.isArray(filteredParticipants) &&
+    filteredParticipants.some((p) => p.sample?.approval_status === "approved");
   const SampleBidInvitationscolumn = Sample_Bid_Invitations_column({
     id,
     onActionComplete,
