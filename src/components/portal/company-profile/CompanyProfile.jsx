@@ -98,7 +98,7 @@ const CompanyProfile = () => {
       setCompanyLogo(companyDetails?.logo || DummyLogo);
       reset({
         ...companyDetails,
-        organization_type: companyDetails?.organization_type,
+        organization_type_id: companyDetails?.organization_type?.id || null,
         business_mobile: numberFormatter(companyDetails?.business_mobile),
         business_email: companyDetails?.business_email,
         category: companyDetails?.category_meta?.id,
@@ -131,7 +131,7 @@ const CompanyProfile = () => {
             } else {
               createFormData.append(key, "");
             }
-          } else if (key === "organization_type") {
+          } else if (key === "organization_type_id") {
             createFormData.append(key, value);
           } else if (
             value !== undefined &&
@@ -385,7 +385,7 @@ const CompanyProfile = () => {
                   <div className="col-lg-6">
                     <CustomSelect
                       control={control}
-                      name="organization_type"
+                      name="organization_type_id"
                       placeholder="Organization Type"
                       options={organizationTypes}
                       label="Organization Type"
