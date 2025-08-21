@@ -3,39 +3,38 @@ import DataTable from "../../../elements/CustomDataTable/DataTable";
 import { TableCell, Typography } from "@mui/material";
 import { companies_column } from "../../../elements/CustomDataTable/PortalColumnData";
 import InvitationModal from "../../../elements/CustomModal/InvitationModal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
+import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 
 const CompanyList = ({ bidDetails, id, listtype }) => {
   const [addInvitaion, setInvitation] = useState(false);
   const [companyDetail, setCompanyDetail] = useState({});
   const [companies, setCompanies] = useState({});
   const [participants, setParticipants] = useState([]);
-
+  const { companyDetails } = useContext(CompanyDetailsContext);
   const handleInvite = (data) => {
     setInvitation(true);
     setCompanyDetail(data.row.original);
   };
-
-  useEffect(() => {
-    const getCompanyList = async () => {
-      try {
-        const response = await _sendAPIRequest(
-          "GET",
-          PortalApiUrls.COMPANY_LIST,
-          "",
-          true
-        );
-        if (response.status === 200) {
-          setCompanies(response?.data);
-        }
-      } catch (error) {
-        console.log(error);
+  const getCompanyList = async () => {
+    try {
+      const response = await _sendAPIRequest(
+        "GET",
+        PortalApiUrls.COMPANY_LIST,
+        "",
+        true
+      );
+      if (response.status === 200) {
+        setCompanies(response?.data);
       }
-    };
-
-    getCompanyList();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    Object.keys(companyDetails).length > 0 && getCompanyList();
   }, []);
 
   useEffect(() => {

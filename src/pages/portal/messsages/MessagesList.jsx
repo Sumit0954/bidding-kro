@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -21,6 +21,7 @@ import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
+import { CompanyDetailsContext } from "../../../contexts/CompanyDetailsProvider";
 const MessagesList = () => {
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedUserID, setSelectedUserID] = useState("");
@@ -31,7 +32,7 @@ const MessagesList = () => {
   const [readStatus, setReadStatus] = useState({});
   const isMobile = useMediaQuery("(max-width:600px)");
   const [screenLoader, setScreenLoader] = useState(true);
-
+  const { companyDetails } = useContext(CompanyDetailsContext);
   const getChatList = async () => {
     try {
       const response = await _sendAPIRequest(
@@ -49,7 +50,7 @@ const MessagesList = () => {
   };
 
   useEffect(() => {
-    getChatList();
+    Object.keys(companyDetails).length > 0 && getChatList();
   }, []);
 
   useEffect(() => {
