@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Typography,
   Radio,
-  FormControlLabel,
-  RadioGroup,
   Table,
   TableBody,
   TableCell,
@@ -16,14 +14,7 @@ import {
   Paper,
   Button,
   Box,
-  Alert,
 } from "@mui/material";
-import {
-  Expand,
-  ExpandCircleDown,
-  ExpandMore,
-  ExpandMoreRounded,
-} from "@mui/icons-material";
 import styles from "./Award.module.scss";
 import { ButtonLoader } from "../../../../elements/CustomLoader/Loader";
 import ScreenLoader from "../../../../elements/CustomScreeenLoader/ScreenLoader";
@@ -43,6 +34,8 @@ const Analysis = ({ bidDetails }) => {
   const [supplierName, setSupplierName] = useState();
   const [awardStatus, setAwardStatus] = useState(null);
   const { setAlert } = useContext(AlertContext);
+  const [activeIndex, setActiveIndex] = useState(null);
+
   const [deleteDetails, setDeleteDetails] = useState({
     open: false,
     title: "",
@@ -188,240 +181,181 @@ const Analysis = ({ bidDetails }) => {
 
       {bidders.map((awardBidder, index) => {
         return (
-          <>
-            <Accordion
-              expanded={true}
-              onChange={(event) => handleAccordionChange(index, event)}
-              key={index}
-              defaultExpanded={true}
-              sx={{
-                margin: "16px 0",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                borderRadius: "8px",
-              }}
-            >
-              <AccordionSummary>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="100%"
+          <Accordion
+            key={index}
+            expanded={true} // ✅ sab hamesha open
+            sx={{
+              margin: "16px 0",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
+            }}
+          >
+            {/* 3) SUMMARY pe click => is accordian ko active banao */}
+            <AccordionSummary onClick={() => setActiveIndex(index)}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <Typography
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "1.05rem",
+                    color: "#052c65",
+                  }}
                 >
-                  <Typography
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "1.05rem",
-                      color: "#052c65",
-                    }}
-                  >
-                    {awardBidder?.product}
-                  </Typography>
+                  {awardBidder?.product}
+                </Typography>
 
-                  <Box display="flex" alignItems="center" gap={2}>
-                    {isExpanded === false &&
-                    index === 0 &&
-                    awardBidder.award_status === "pending" ? (
-                      <>
-                        <Button
-                          variant="outlined"
-                          disabled={awardBidder?.award_status === "cancelled"}
-                          color="secondary"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setDeleteDetails({
-                              open: true,
-                              title: "Cancel Product Confirmation",
-                              message: `Are you sure you want to cancel ${awardBidder?.product} Product?`,
-                              alertmessage: `${awardBidder?.product} Cencelled Successfully`,
-                              id: awardBidder?.id,
-                              handleAction: "cencelProduct",
-                            });
-                          }}
-                          className={cn("btn", "button", "reject")}
-                        >
-                          {awardBidder?.award_status === "cancelled"
-                            ? "Cancelled"
-                            : "Cancel Product"}
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setDeleteDetails({
-                              open: selectedSupplier && true,
-                              title: "Award Supplier",
-                              message: `Are you sure you want to award this supplier`,
-                              alertmessage: "Product awarded Successfully",
-                              id: awardBidder?.id,
-                              handleAction: "awardSupplier",
-                            });
-                          }}
-                          className={styles["award-btn"]}
-                        >
-                          Award Supplier
-                        </Button>
-                      </>
-                    ) : isExpanded === true &&
-                      expandedIndex === index &&
-                      awardBidder.award_status === "pending" ? (
-                      <>
-                        <Button
-                          variant="outlined"
-                          disabled={awardBidder?.award_status === "cancelled"}
-                          color="secondary"
-                          onClick={(event) => {
-                            // cencelProduct(awardBidder?.id);
-                            event.stopPropagation();
-                            setDeleteDetails({
-                              open: true,
-                              title: "Cencel Product confirmation",
-                              message: `Are you sure you want to cancel ${awardBidder?.product} Product?`,
-                              alertmessage: `${awardBidder?.product} Cencelled Successfully`,
-                              id: awardBidder?.id,
-                              handleAction: "cencelProduct",
-                            });
-                          }}
-                          className={cn("btn", "button", "reject")}
-                        >
-                          {awardBidder?.award_status === "cancelled"
-                            ? "Cencelled"
-                            : "Cancel Product"}
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setDeleteDetails({
-                              open: selectedSupplier && true,
-                              title: "Award Supplier",
-                              message: `Are you sure you wants to award ${supplierName}.`,
-                              alertmessage: "Product awarded Successfully",
-                              id: awardBidder?.id,
-                              handleAction: "awardSupplier",
-                            });
-                          }}
-                          className={styles["award-btn"]}
-                        >
-                          Award Supplier
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          variant="contained"
-                          disabled={awardBidder?.award_status === "cancelled"}
-                          sx={{
-                            backgroundColor: `${
-                              awardBidder?.award_status === "pending"
-                                ? "#FFC107"
-                                : awardBidder?.award_status === "cancelled"
-                                ? "red"
-                                : "#22bb33"
-                            }`, // Retain background color
-                            color: "white", // Keep text color consistent
-                            boxShadow: "none", // Remove box shadow for disabled state
-                            pointerEvents: `${
-                              awardBidder?.award_status === "cancelled"
-                                ? "none"
-                                : "auto"
-                            }`, // Disable pointer events for disabled button
-                            "&:hover": {
-                              backgroundColor: `${
-                                awardBidder?.award_status === "cancelled"
-                                  ? "red" // Retain background on hover for disabled
-                                  : undefined
-                              }`,
-                            },
-                            "&.Mui-disabled": {
-                              backgroundColor: `${
-                                awardBidder?.award_status === "cancelled"
-                                  ? "red"
-                                  : undefined
-                              }`, // Keep disabled background same as active
-                              color: "white", // Ensure text remains visible
-                            },
-                          }}
-                        >
-                          {awardBidder?.award_status}
-                        </Button>
-                      </>
-                    )}
-                  </Box>
+                <Box display="flex" alignItems="center" gap={2}>
+                  {awardBidder.award_status === "pending" &&
+                  activeIndex === index ? (
+                    <>
+                      <Button
+                        variant="outlined"
+                        disabled={awardBidder?.award_status === "cancelled"}
+                        color="secondary"
+                        onClick={(event) => {
+                          event.stopPropagation(); // summary click ko cancel karo
+                          setDeleteDetails({
+                            open: true,
+                            title: "Cancel Product Confirmation",
+                            message: `Are you sure you want to cancel ${awardBidder?.product} Product?`,
+                            alertmessage: `${awardBidder?.product} Cancelled Successfully`,
+                            id: awardBidder?.id,
+                            handleAction: "cancelProduct", // ✨ typo fixed
+                          });
+                        }}
+                        className={cn("btn", "button", "reject")}
+                      >
+                        {awardBidder?.award_status === "cancelled"
+                          ? "Cancelled"
+                          : "Cancel Product"}
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setDeleteDetails({
+                            open: !!selectedSupplier,
+                            title: "Award Supplier",
+                            message: `Are you sure you want to award this supplier?`,
+                            alertmessage: "Product awarded Successfully",
+                            id: awardBidder?.id,
+                            handleAction: "awardSupplier",
+                          });
+                        }}
+                        className={styles["award-btn"]}
+                      >
+                        Award Supplier
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      disabled={awardBidder?.award_status === "cancelled"}
+                      sx={{
+                        backgroundColor:
+                          awardBidder?.award_status === "pending"
+                            ? "#FFC107"
+                            : awardBidder?.award_status === "cancelled"
+                            ? "red"
+                            : "#22bb33",
+                        color: "white",
+                        boxShadow: "none",
+                        "&:hover": {
+                          backgroundColor:
+                            awardBidder?.award_status === "cancelled"
+                              ? "red"
+                              : undefined,
+                        },
+                        "&.Mui-disabled": {
+                          backgroundColor:
+                            awardBidder?.award_status === "cancelled"
+                              ? "red"
+                              : undefined,
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {awardBidder?.award_status}
+                    </Button>
+                  )}
                 </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <TableContainer
-                  component={Paper}
-                  sx={{ borderRadius: "8px", overflow: "hidden" }}
-                >
-                  <Table aria-label="suppliers table">
-                    <TableHead sx={{ backgroundColor: "#9ec0fa" }}>
-                      <TableRow>
-                        <TableCell
-                          sx={{ fontWeight: "bold", color: "#052c65" }}
+              </Box>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <TableContainer
+                component={Paper}
+                sx={{ borderRadius: "8px", overflow: "hidden" }}
+              >
+                <Table aria-label="suppliers table">
+                  <TableHead sx={{ backgroundColor: "#9ec0fa" }}>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: "bold", color: "#052c65" }}>
+                        SUPPLIERS NAMES
+                      </TableCell>
+                      {/* ✨ small fix: centers -> center */}
+                      <TableCell
+                        align="center"
+                        sx={{ fontWeight: "bold", color: "#052c65" }}
+                      >
+                        BID AMOUNT
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{ fontWeight: "bold", color: "#052c65" }}
+                      >
+                        BID POSITION
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {awardBidder?.participant
+                      ?.sort((a, b) => a.amount - b.amount)
+                      .map((supplier, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{ "& td": { padding: "12px 16px" } }}
                         >
-                          SUPPLIERS NAMES
-                        </TableCell>
-                        <TableCell
-                          align="centers"
-                          sx={{ fontWeight: "bold", color: "#052c65" }}
-                        >
-                          BID AMOUNT
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{ fontWeight: "bold", color: "#052c65" }}
-                        >
-                          BID POSITION
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {awardBidder?.participant
-                        .sort((a, b) => a.amount - b.amount) // Sort in increasing order
-                        .map((supplier, index) => (
-                          <TableRow
-                            key={index}
-                            sx={{ "& td": { padding: "12px 16px" } }}
-                          >
-                            <TableCell>
-                              <Radio
-                                checked={
-                                  selectedSupplier === supplier?.id ||
-                                  supplier?.is_awarded
-                                }
-                                disabled={
-                                  awardBidder?.award_status === "cancelled" ||
-                                  awardBidder?.award_status === "awarded"
-                                }
-                                onChange={(event) =>
-                                  handleChange(event, supplier.id)
-                                }
-                                value={supplier?.company}
-                                name="supplier"
-                                inputProps={{ "aria-label": supplier?.company }}
-                                sx={{
-                                  "&.Mui-checked": { color: "#062d72" },
-                                }}
-                              />
-                              {supplier?.company}
-                            </TableCell>
-                            <TableCell align="left">
-                              ₹ {supplier?.amount}
-                            </TableCell>
-                            <TableCell align="right">
-                              {supplier?.position}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </AccordionDetails>
-            </Accordion>
-          </>
+                          <TableCell>
+                            <Radio
+                              checked={
+                                selectedSupplier === supplier?.id ||
+                                supplier?.is_awarded
+                              }
+                              disabled={
+                                awardBidder?.award_status === "cancelled" ||
+                                awardBidder?.award_status === "awarded"
+                              }
+                              onChange={(event) =>
+                                handleChange(event, supplier.id)
+                              }
+                              value={supplier?.company}
+                              name="supplier"
+                              inputProps={{ "aria-label": supplier?.company }}
+                              sx={{ "&.Mui-checked": { color: "#062d72" } }}
+                            />
+                            {supplier?.company}
+                          </TableCell>
+                          <TableCell align="left">
+                            ₹ {supplier?.amount}
+                          </TableCell>
+                          <TableCell align="right">
+                            {supplier?.position}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </AccordionDetails>
+          </Accordion>
         );
       })}
 
