@@ -51,7 +51,6 @@ const DeleteDialog = ({
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
   return (
     <>
       <Dialog
@@ -104,7 +103,7 @@ const DeleteDialog = ({
           </div>
         </DialogTitle>
 
-        {isNonL1 && (
+        {isNonL1 && title !== "Cancel Product Confirmation" && (
           <Alert severity="info" sx={{ mt: 2 }}>
             <strong>Note:</strong> {supplierName} is (non-L1) bidder of this
             product.
