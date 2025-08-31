@@ -480,8 +480,6 @@ const Summary = ({ bidDetails }) => {
             </div>
           </div>
           {bidDetails.type === "QCBS" && (
-            // type === "invited" &&
-            // bidDetails?.participant?.sample?.invite_status === "accepted" &&
             <>
               <Divider classes={{ root: "custom-divider" }} />
               <div className="row">
@@ -509,35 +507,41 @@ const Summary = ({ bidDetails }) => {
               </div>
             </>
           )}
-          <Divider classes={{ root: "custom-divider" }} />
-          <div className="row">
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Total reserved price</h6>
-              <p className={styles["col-data"]}>
-                ₹ {bidDetails?.total_reserved_price}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Total Bid amount</h6>
-              <p className={styles["col-data"]}>
-                ₹{" "}
-                {bidDetails?.total_bid_amount !== null
-                  ? bidDetails?.total_bid_amount
-                  : "-"}
-              </p>
-            </div>
-            <div className="col">
-              <h6 className={styles["col-heading"]}>Total Saving</h6>
-              <p className={styles["col-data"]}>
-                {" "}
-                ₹
-                {bidDetails?.total_bid_amount !== null
-                  ? bidDetails?.total_reserved_price -
-                    bidDetails?.total_bid_amount
-                  : " -"}
-              </p>
-            </div>
-          </div>
+          {type !== "invited" && (
+            <>
+              <Divider classes={{ root: "custom-divider" }} />
+              <div className="row">
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>
+                    Total reserved price
+                  </h6>
+                  <p className={styles["col-data"]}>
+                    ₹ {bidDetails?.total_reserved_price}
+                  </p>
+                </div>
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>Total Bid amount</h6>
+                  <p className={styles["col-data"]}>
+                    ₹{" "}
+                    {bidDetails?.total_bid_amount !== null
+                      ? bidDetails?.total_bid_amount
+                      : "-"}
+                  </p>
+                </div>
+                <div className="col">
+                  <h6 className={styles["col-heading"]}>Total Saving</h6>
+                  <p className={styles["col-data"]}>
+                    {" "}
+                    ₹
+                    {bidDetails?.total_bid_amount !== null
+                      ? bidDetails?.total_reserved_price -
+                        bidDetails?.total_bid_amount
+                      : " -"}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </AccordionDetails>
       </Accordion>
 

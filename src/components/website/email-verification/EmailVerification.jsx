@@ -41,9 +41,11 @@ const EmailVerification = () => {
         }
       } catch (error) {
         console.log(error, " : error 2");
-        if (error.response.status === 400) {
-          setSuccess(true);
-          setIsfalied(true);
+        if (error.response.status) {
+          if (error.response.status === 400) {
+            setSuccess(true);
+            setIsfalied(true);
+          }
         }
       }
     };

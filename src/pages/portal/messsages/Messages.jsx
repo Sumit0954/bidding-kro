@@ -21,7 +21,6 @@ const Messages = ({
   const [messages, setMessages] = useState([]);
   const [updateChat, setUpdateChat] = useState();
   const lastMessageRef = useRef(null);
-
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "instant" });

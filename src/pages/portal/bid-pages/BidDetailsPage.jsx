@@ -7,7 +7,6 @@ import {
   Tabs,
   Typography,
   Tooltip,
-  IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -17,8 +16,6 @@ import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import cn from "classnames";
 import AmendmentModal from "../../../elements/CustomModal/AmendmentModal";
 import DeleteDialog from "../../../elements/CustomDialog/DeleteDialog";
-import { UserDetailsContext } from "../../../contexts/UserDetailsProvider";
-import RazorpayPaymentHandler from "../../../utils/RazorpayPaymentHandler";
 import _sendAPIRequest from "../../../helpers/api";
 import { PortalApiUrls } from "../../../helpers/api-urls/PortalApiUrls";
 import ThankyouModal from "../../../elements/CustomModal/ThankyouModal";
@@ -29,17 +26,15 @@ import SampleReceiving from "../../../components/portal/bids/tabs/SampleReceivin
 import Feedback from "../../../components/portal/bids/tabs/Feedback";
 import LetterOfIntent from "../../../components/portal/bids/tabs/LetterOfIntent";
 import Bids from "../../../components/portal/bids/tabs/Bids";
-import Award from "../../../components/portal/bids/tabs/Award";
 import Remark from "../../../components/portal/bids/tabs/Remark";
 import AcceptanceStatus from "../../../components/portal/bids/tabs/AcceptanceStatus";
-import * as React from "react";
 import PendingRequests from "../../../components/portal/bids/tabs/PendingRequests";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../../../store/tabSlice";
 import ScreenLoader from "../../../elements/CustomScreeenLoader/ScreenLoader";
 import Analysis from "../../../components/portal/bids/tabs/Award";
 import Bidresult from "../../../components/portal/bids/tabs/Bidresult";
-import { Print, PrintOutlined } from "@mui/icons-material";
+import { Print } from "@mui/icons-material";
 import styles from "./BidDetailsPage.module.scss";
 import FeedbackSupplier from "../../../components/portal/bids/tabs/FeedbackSupplier";
 import { AlertContext } from "../../../contexts/AlertProvider";
@@ -54,7 +49,6 @@ const BidDetailsPage = () => {
   const [showThankyou, setShowThankyou] = useState(false);
   const { id } = useParams();
   const [bidDetails, setBidDetails] = useState({});
-  const componentRef = useRef(null);
   const type = new URLSearchParams(useLocation().search).get("type");
   const contentRef = useRef(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -71,15 +65,12 @@ const BidDetailsPage = () => {
     message: "",
   });
 
-  // const urlActiveTab = new URLSearchParams(useLocation().search).get("activeTab");
   const decodedSearch = decodeURIComponent(window.location.search).replace(
     /&amp;/g,
     "&"
-  ); // Decode the URL
+  );
   const urlParams = new URLSearchParams(decodedSearch);
-  // const urlParams = new URLSearchParams(location.search);
   const urlActiveTab = Number(urlParams.get("activeTab"));
-
   const isQCBSBid = bidDetails?.type === "QCBS";
 
   const isSampleNotApproved = !participant?.participants.some(
@@ -585,7 +576,6 @@ const BidDetailsPage = () => {
                 <Tooltip title={"Set the remark for this bid"}>
                   <Tab label="Remark" {...a11yProps(4)} key={4} />
                 </Tooltip>,
-
                 <Tooltip title={"See the result of this bid"}>
                   {bidDetails?.status === "completed" && (
                     <Tab label="Bid Result" {...a11yProps(5)} key={5} />
